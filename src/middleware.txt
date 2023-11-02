@@ -1,0 +1,79 @@
+import { PrismaClient } from "@prisma/client";
+import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
+import { getDataFromToken } from "./helpers/getDataFromToken";
+
+const prisma = new PrismaClient();
+
+export async function middleware(request: NextRequest) {
+    const path = request.nextUrl.pathname;
+
+    const isPublicPath = path === '/login' || path === '/register';
+
+    const token = request.cookies.get('token')?.value || '';
+
+    if (isPublicPath && token) {
+        return NextResponse.redirect(new URL('/', request.nextUrl));
+    }
+
+    if (!isPublicPath && !token) {
+        return NextResponse.redirect(new URL('/login', request.nextUrl));
+    }
+
+    // for dashboard
+    if (path.startsWith('/instructor/:id/dashboard/courses/:courseId')) {
+        try {
+            const reqBody = await request.json();
+            const { courseId, userId } = reqBody;
+
+            //* Query the course from the database,
+            //* To check if the course with this id is present
+            const course = await prisma.course.findUnique({
+                where: {
+                    courseId: courseId,
+                },
+            });
+
+            //* Query the user from the database,
+            //* To check if user is an instructor
+            const user = await prisma.user.findUnique({
+                where: {
+                    id: userId,
+                },
+            });
+
+            if (course && course.instructorID === userId && user && user.isInstructor ) {
+                //* 1. This course exists
+                //* 2. User is a creator of this course
+                //* 3. User is an instructor
+                // * Hence, continue with the next middleware 
+                //* OR redirect to delete or edit route course route
+                NextResponse.next();
+            }
+            else if (!course) {
+                return NextResponse.json({ message: 'Course does not exists, Not Found' }, { status: 403 });
+            }
+            else {   
+                return NextResponse.json({ message: 'You are not the creator of this course, Unauthorized' }, { status: 403 });
+            }
+        } catch (error: any) {
+            console.log(error);
+            return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+        }
+    }
+}
+
+export const config = {
+    matcher: [
+        '/',
+        '/register',
+        '/login',
+        '/instructor',
+        // '/instructor/dashboard/*',
+        '/profile',
+        // '/profile/*',
+        '/wishList',
+        // '/instructor/:id/dashboard/*',
+        '/instructor/:id/dashboard/courses/:courseId'
+    ],
+}

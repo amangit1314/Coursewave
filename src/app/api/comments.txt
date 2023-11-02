@@ -1,0 +1,19 @@
+// export const verifyRefreshToken = (req: NextRequest) => {
+//     const refreshToken = req.headers.get('Authorization')?.split(" ")[1];
+//     if (typeof refreshToken === "undefined") {
+//         return NextResponse.json({ message: "Refresh token is missing" }, { status: 401 });
+//     }
+//     try {
+//         const payload = jwt.verify(refreshToken, process.env.REFRESH_SECRET as string);
+//         // TODO: update the user session with new access token and save it to db
+//         // Then continue with next middleware
+//         NextResponse.next();
+//     } catch (error: any) {
+//         console.log(error.message);
+//         if (error.name === "TokenExpiredError") {
+//             return NextResponse.json({ message: "Refresh token has expired" }, { status: 401 });
+//         } else {
+//             return NextResponse.json({ message: "Invalid refresh token" }, { status: 401 });
+//         }
+//     }
+// };

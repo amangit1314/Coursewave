@@ -1,0 +1,187 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id                         String                   @id @unique
+  name                       String?
+  email                      String                   @unique
+  password                   String
+  isEmailVerified            Boolean?                 @default(false)
+  refreshTokenGenerationTime DateTime?                @default(now())
+  refreshToken               String?
+  refreshTokenExpiry         String?
+  refreshTokenStatus         String?
+  accessTokenGenerationTime  DateTime?                @default(now())
+  accessToken                String?
+  accessTokenExpiry          String?
+  accessTokenStatus          String?
+  resetTokenGenerationTime   DateTime?                @default(now())
+  resetToken                 String?
+  resetTokenExpiry           String?
+  resetTokenStatus           String?
+  isInstructor               Boolean?
+  enrolledCourses            enrolledCourses[]
+  videoNotes                 videoNotes[]
+  wishList                   wishList[]
+  cart                       cart[]
+  enrollement                enrollement[]
+  payment                    payment[]
+  instructorEarningModel     instructorEarningModel[]
+}
+
+model wishList {
+  userId          String   @id
+  wishListedItems String[]
+  user            user?    @relation(fields: [userId], references: [id])
+}
+
+model cart {
+  userId    String   @id
+  cartItems String[]
+  user      user?    @relation(fields: [userId], references: [id])
+}
+
+model instructor {
+  instructorID             String   @id
+  instructorName           String
+  instructorEmail          String
+  instructorTag            String
+  instructorProfilePicUrl  String
+  instructorCreatedCourses course[]
+}
+
+model category {
+  categoryName    String  @id
+  subCategoryName String
+  course          course? @relation(fields: [courseId], references: [courseId])
+  courseId        String?
+}
+
+model enrolledCourses {
+  uid             String   @id
+  enrolledCourses String[]
+  user            user?    @relation(fields: [uid], references: [id])
+}
+
+model course {
+  courseId               String                   @id
+  courseTitle            String
+  courseImage            String
+  courseCreator          String
+  courseDescription      String?
+  isFree                 Boolean                  @default(false)
+  coursePrice            String
+  dealPrice              String?
+  discount               String?
+  courseProgress         String?
+  instructor             instructor?              @relation(fields: [instructorID], references: [instructorID])
+  instructorID           String?
+  isLive                 Boolean?                 @default(false)
+  courseSections         courseSection[]
+  categories             category[]
+  enrolledStudents       enrolledStudents[]
+  enrollement            enrollement[]
+  payment                payment[]
+  instructorEarningModel instructorEarningModel[]
+}
+
+model enrolledStudents {
+  courseId         String   @id
+  enrolledStudents String[]
+  course           course?  @relation(fields: [courseId], references: [courseId])
+}
+
+model courseSection {
+  courseSectionId          String  @id
+  courseId                 String
+  instructorId             String
+  courseSectionNumber      Int
+  courseSectionTitle       String
+  courseSectionDescription String?
+  course                   course? @relation(fields: [courseId], references: [courseId])
+  videos                   video[]
+}
+
+model video {
+  videoId          String           @id
+  courseSection    courseSection?   @relation(fields: [courseSectionId], references: [courseSectionId])
+  courseSectionId  String?
+  videoUrl         String
+  videoTitle       String
+  videoDuration    String?
+  videoDescription String?
+  videoResources   videoResources[]
+  videoNotes       videoNotes[]
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @default(now())
+}
+
+model videoResources {
+  videoId        String   @id
+  resourceType   String
+  resourcesUrl   String[]
+  durationString String
+  video          video?   @relation(fields: [videoId], references: [videoId])
+}
+
+model videoNotes {
+  videoId   String   @id
+  sectionId String
+  courseId  String
+  studentId String
+  noteText  String?
+  noteDate  DateTime @default(now())
+  video     video?   @relation(fields: [videoId], references: [videoId])
+  user      user?    @relation(fields: [studentId], references: [id])
+}
+
+//     CompletionStatus (e.g., 'in-progress,' 'completed,' 'not-started')
+model enrollement {
+  enrollmentId     String   @id
+  userId           String
+  courseId         String
+  enrollmentDate   DateTime @default(now())
+  completionStatus String
+  user             user?    @relation(fields: [userId], references: [id])
+  course           course?  @relation(fields: [courseId], references: [courseId])
+}
+
+//     Payment-related information (e.g., payment method, transaction ID)
+model payment {
+  paymentId     String        @id // Primaru Key
+  userId        String // UserID (Foreign Key to User)
+  courseId      String // CourseID (Foreign Key to Course)
+  paymentDate   DateTime      @default(now())
+  amount        String
+  paymentMethod String?
+  transactionId String?
+  user          user?         @relation(fields: [userId], references: [id])
+  course        course?       @relation(fields: [courseId], references: [courseId])
+  transaction   transaction[]
+}
+
+//     TransactionStatus (e.g., 'success,' 'pending,' 'failed')
+model transaction {
+  transactionId     String   @id // (Primary Key)
+  paymentId         String // (Foreign Key to Payment)
+  transactionDate   DateTime @default(now())
+  transactionAmount String
+  transactionStatus String
+  payment           payment? @relation(fields: [paymentId], references: [paymentId])
+}
+
+model instructorEarningModel {
+  earningId     String  @id // Primary Key
+  instructorId  String // Foreign Key to User
+  courseId      String // Foreign Key to Course
+  earningDate   String
+  earningAmount String
+  instructor    user?   @relation(fields: [instructorId], references: [id])
+  course        course? @relation(fields: [courseId], references: [courseId])
+}
