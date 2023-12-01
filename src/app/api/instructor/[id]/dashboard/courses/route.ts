@@ -115,7 +115,7 @@ export const POST = async (req: NextRequest, { params }: {
 // }
 
 
-// get all created courses [WORKING]
+// get all created courses by instructor Id[WORKING]
 export const GET = async (req: NextRequest, { params }: {
     params: {
         id?: string;
@@ -123,9 +123,10 @@ export const GET = async (req: NextRequest, { params }: {
 }) => {
     const instructorId = params?.id;
     try {
-        const createdCourses = prisma.courseSection.findMany({
-            where: { instructorId: instructorId },
+        const createdCourses = await prisma.course.findMany({
+            where: { instructorID: instructorId },
         });
+        console.log(`InstructorID :-> ${instructorId}`)
 
         return NextResponse.json({
             success: true,

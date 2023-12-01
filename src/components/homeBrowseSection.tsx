@@ -4,6 +4,7 @@ import React from 'react'
 import Image from 'next/image'
 import { AiFillStar } from 'react-icons/ai';
 import { MdOutlineClass } from 'react-icons/md';
+import CourseWidget from '@/app/(browseCourses)/browseCourses/_components/course-widget';
 
 const style = { color: "blue", fontSize: "1.5em" }
 
@@ -51,21 +52,21 @@ const tabContentData = [
         content: "Content for Tab 4 goes here.",
         src: "/nextjs.png",
     },
-    {
-        title: "Coding",
-        content: "Content for Tab 1 goes here.",
-        src: "/web3.png",
-    },
-    {
-        title: "Programming",
-        content: "Content for Tab 2 goes here.",
-        src: "/android-jetpack.png",
-    },
-    {
-        title: "Management",
-        content: "Content for Tab 3 goes here.",
-        src: "/course_illus.png",
-    },
+    // {
+    //     title: "Coding",
+    //     content: "Content for Tab 1 goes here.",
+    //     src: "/web3.png",
+    // },
+    // {
+    //     title: "Programming",
+    //     content: "Content for Tab 2 goes here.",
+    //     src: "/android-jetpack.png",
+    // },
+    // {
+    //     title: "Management",
+    //     content: "Content for Tab 3 goes here.",
+    //     src: "/course_illus.png",
+    // },
 ];
 
 const HomeBrowseSection = () => {
@@ -96,12 +97,13 @@ const HomeBrowseSection = () => {
             </ul>
 
             {/* Tabs content section */}
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 my-6 w-9/12 justify-center mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 my-6 w-9/12 justify-center mx-auto">
                 {tabContentData.map((tab, index) => (
-                    <CourseItem key={index} tab={tab} index={index} />
+                    // <CourseItem key={index} tab={tab} index={index} />
+                    <CourseWidget key={index} index={index} courseImage={tab.src} courseNumber={index.toString()} title={tab.title} duration='20' subject='Course Tab' instructor='Aman Soni' price='299' />
                 ))}
             </div>
-
+ 
             {/* Courses Button */}
             <button className="flex justify-center px-6 mb-16 py-2 bg-blue-500 rounded-full place-items-center mx-auto font-semibold text-md text-white">
                 Explore Courses

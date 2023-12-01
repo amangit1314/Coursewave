@@ -11,6 +11,7 @@ model user {
   id                         String                   @id @unique
   name                       String?
   email                      String                   @unique
+  profileImageUrl            String?
   password                   String
   isEmailVerified            Boolean?                 @default(false)
   refreshTokenGenerationTime DateTime?                @default(now())
@@ -26,6 +27,7 @@ model user {
   resetTokenExpiry           String?
   resetTokenStatus           String?
   isInstructor               Boolean?
+  instructorName             String?
   enrolledCourses            enrolledCourses[]
   videoNotes                 videoNotes[]
   wishList                   wishList[]
@@ -41,10 +43,21 @@ model wishList {
   user            user?    @relation(fields: [userId], references: [id])
 }
 
+model cartItem {
+  id        String   @id @unique
+  userId    String
+  courseId  String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cart      cart?    @relation(fields: [id], references: [id])
+}
+
 model cart {
-  userId    String   @id
-  cartItems String[]
-  user      user?    @relation(fields: [userId], references: [id])
+  id        String     @id
+  userId    String
+  user      user       @relation(fields: [userId], references: [id])
+  cartItems cartItem[]
 }
 
 model instructor {
@@ -57,10 +70,8 @@ model instructor {
 }
 
 model category {
-  categoryName    String  @id
-  subCategoryName String
-  course          course? @relation(fields: [courseId], references: [courseId])
-  courseId        String?
+  categoryName            String   @id
+  coursesWithThisCategory course[]
 }
 
 model enrolledCourses {
@@ -85,14 +96,17 @@ model course {
   isLive                 Boolean?                 @default(false)
   courseSections         courseSection[]
   categories             category[]
+  courseCategories       String[]
   enrolledStudents       enrolledStudents[]
   enrollement            enrollement[]
   payment                payment[]
+  instructorName         String?
   instructorEarningModel instructorEarningModel[]
 }
 
 model enrolledStudents {
   courseId         String   @id
+  instructorId     String
   enrolledStudents String[]
   course           course?  @relation(fields: [courseId], references: [courseId])
 }
@@ -109,21 +123,24 @@ model courseSection {
 }
 
 model video {
-  videoId          String           @id
-  courseSection    courseSection?   @relation(fields: [courseSectionId], references: [courseSectionId])
-  courseSectionId  String?
-  videoUrl         String
-  videoTitle       String
-  videoDuration    String?
-  videoDescription String?
-  videoResources   videoResources[]
-  videoNotes       videoNotes[]
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @default(now())
+  videoId           String           @id @unique
+  videoTitle        String
+  videoDescription  String
+  videoDuration     String
+  videoThumbnailUrl String
+  videoUrl          String
+  courseSectionId   String
+  courseId          String
+  uploadedAt        DateTime         @default(now())
+  updatedAt         DateTime         @default(now())
+  courseSection     courseSection    @relation(fields: [courseSectionId], references: [courseSectionId])
+  videoResources    videoResources[]
+  videoNotes        videoNotes[]
 }
 
 model videoResources {
-  videoId        String   @id
+  resourceId     String   @id @unique
+  videoId        String
   resourceType   String
   resourcesUrl   String[]
   durationString String
@@ -141,7 +158,6 @@ model videoNotes {
   user      user?    @relation(fields: [studentId], references: [id])
 }
 
-//     CompletionStatus (e.g., 'in-progress,' 'completed,' 'not-started')
 model enrollement {
   enrollmentId     String   @id
   userId           String
@@ -152,7 +168,6 @@ model enrollement {
   course           course?  @relation(fields: [courseId], references: [courseId])
 }
 
-//     Payment-related information (e.g., payment method, transaction ID)
 model payment {
   paymentId     String        @id // Primaru Key
   userId        String // UserID (Foreign Key to User)
@@ -166,7 +181,6 @@ model payment {
   transaction   transaction[]
 }
 
-//     TransactionStatus (e.g., 'success,' 'pending,' 'failed')
 model transaction {
   transactionId     String   @id // (Primary Key)
   paymentId         String // (Foreign Key to Payment)

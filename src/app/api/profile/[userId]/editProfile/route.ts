@@ -3,15 +3,21 @@ import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-// edit profile
-export const POST = async (req: NextRequest) => {
+// edit profile username and profile image url
+export const PATCH = async (req: NextRequest, { params }: {
+    params: {
+        userId?: string;
+    }
+}) => {
+    const userId = params.userId;
     const reqBody = await req.json();
-    const { uid, data } = reqBody;
+    const { option, newUsername, newProfileImageUrl } = reqBody;
+    let updatedUser;
 
     try {
         const user = await prisma.user.findUnique({
             where: {
-                id: uid,
+                id: userId,
             },
         });
 
@@ -23,19 +29,57 @@ export const POST = async (req: NextRequest) => {
                 }, { status: 404 });
         }
 
-        const updatedUser = await prisma.user.update({
-            where: {
-                id: user.id,
-            },
-            data: data,
-        });
+        if (option === 'Username') {
+            if (!newUsername) {
+                return NextResponse
+                    .json({
+                        status: false,
+                        message: "username is required to update ...",
+                    }, { status: 202 });
+            }
 
-        return NextResponse
-            .json({
-                status: true,
-                data: updatedUser,
-                message: "User details successfully accessed..",
-            }, { status: 200 });
+            updatedUser = await prisma.user.update({
+                where: {
+                    id: user.id,
+                },
+                data: {
+                    name: newUsername,
+                },
+            });
+
+            return NextResponse
+                .json({
+                    status: true,
+                    data: updatedUser,
+                    message: "User name successfully updated..",
+                }, { status: 200 });
+        }
+
+        if (option === 'Image') {
+            if (!newUsername) {
+                return NextResponse
+                    .json({
+                        status: false,
+                        message: "new profile image url is required to update ...",
+                    }, { status: 202 });
+            }
+
+            updatedUser = await prisma.user.update({
+                where: {
+                    id: user.id,
+                },
+                data: {
+                    profileImageUrl: newProfileImageUrl,
+                },
+            });
+
+            return NextResponse
+                .json({
+                    status: true,
+                    data: updatedUser,
+                    message: "User name successfully updated..",
+                }, { status: 200 });
+        }
     } catch (error) {
         return NextResponse
             .json({

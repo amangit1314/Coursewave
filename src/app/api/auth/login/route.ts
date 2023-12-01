@@ -9,14 +9,14 @@ export const POST = async (req: NextRequest) => {
     const reqBody = await req.json();
     const { email, password } = reqBody;
 
-    if (!email || !password) {
-      return NextResponse.json({
-            status: false,
-            message: "Email and password fields are mandatory 👮‍♂️ ",
-        }, { status: 400 });
-    }
-
     try {
+        if (!email || !password) {
+            return NextResponse.json({
+                status: false,
+                message: "Email and password fields are mandatory 👮‍♂️ ",
+            }, { status: 400 });
+        }
+
         const user = await prisma.user.findUnique({ where: { email } });
 
         if (!user) {
@@ -31,6 +31,7 @@ export const POST = async (req: NextRequest) => {
         if (!isMatch) {
             return NextResponse.json({
                 status: false,
+                error: "Authentication failed. Wrong password ",
                 message: "Authentication failed. Wrong password ",
             }, { status: 401 });
         }

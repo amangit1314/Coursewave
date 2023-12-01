@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// Get all courses
+// Get course info
 export const GET = async (req: NextRequest, { params }: {
     params: {
         id?: string;
@@ -31,3 +31,5 @@ export const GET = async (req: NextRequest, { params }: {
         }, { status: 500 });
     }
 }
+
+// Get course free preview

@@ -15,7 +15,7 @@ function SessionsSection() {
             <div className='rounded-lg w-full h-auto pt-12 mb-16 relative lg:flex justify-center mx-auto
             grid grid-cols-2 gap-3 place-items-center lg:flex-row '>
                 <Image
-                    className="mb-3 lg:mb-0 mx-3 h-40 hover:cursor-pointer bg-blue-300 rounded-lg relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
+                    className="mb-3 lg:mb-0 mx-3 h-40 hover:cursor-pointer bg-blue-300 rounded-lg relative "
                     src="/web3.png"
                     alt="Next.js Logo"
                     width={200}
@@ -26,7 +26,7 @@ function SessionsSection() {
                     priority
                 />
                 <Image
-                    className="mb-3 lg:mb-0 mx-3 h-40 hover:cursor-pointer bg-blue-300 rounded-lg relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
+                    className="mb-3 lg:mb-0 mx-3 h-40 hover:cursor-pointer bg-blue-300 rounded-lg relative "
                     src="/android-jetpack.png"
                     alt="Next.js Logo"
                     width={200}
@@ -37,7 +37,7 @@ function SessionsSection() {
                     priority
                 />
                 <Image
-                    className="mb-3 lg:mb-0 mx-3 hover:cursor-pointer h-40 bg-blue-300 rounded-lg relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
+                    className="mb-3 lg:mb-0 mx-3 hover:cursor-pointer h-40 bg-blue-300 rounded-lg relative "
                     src="/nextjs.png"
                     alt="Next.js Logo"
                     width={200}

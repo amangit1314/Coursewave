@@ -5,66 +5,101 @@ import dotenv from "dotenv";
 dotenv.config();
 const prisma = new PrismaClient();
 
-// delete a course
-export const DELETE = async (req: NextRequest, { params }: {
+// Get details of a course with particular course id [DONE]
+export const GET = async (req: NextRequest, { params }: {
     params: {
-        id?: string;
+        courseId?: string;
     };
-}) => {
-
-    const courseId = params?.id;
-    const instructorId = '';
-
-    const reqBody = await req.json();
-    const { courseTitle, courseImage, courseCreatorName, coursePrice } = reqBody;
-
+}) => { 
+    const courseId = params.courseId;
     try {
-        const courseId = `course_${generateUid().split("-")[0]}`;
-        const isFree = coursePrice ? false : true;
-
-        if (!instructorId) {
-            return NextResponse.json({ success: false, message: "Invalid Instructor Id" }, { status: 400 });
+        if (!courseId) {
+            return NextResponse.json({
+                success: false,
+                message: "Invalid Instructor and/or course Id"
+            }, { status: 400 });
         }
 
-        if (!courseTitle || !courseImage || !courseCreatorName) {
-            return NextResponse.json({ success: false, message: "Course title, image and creator name are required fields ..." }, { status: 400 });
-        }
-
-        const createdCourse = await prisma.course.create({
-            data: {
-                courseId: courseId,
-                courseTitle: courseTitle,
-                courseImage: courseImage,
-                courseCreator: courseCreatorName,
-                coursePrice: coursePrice,
-                isFree: isFree,
-                instructorID: instructorId,
+        const response = await prisma.course.findUnique({
+            where: {
+                courseId
             }
         });
 
         return NextResponse.json({
             success: true,
-            data: createdCourse,
-            message: 'Course Successfully Created',
+            data: response,
+            message: `Details of Course with courseId: ${courseId}, Successfully Fetched`,
+        }, { status: 200 });
+    }
+    catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            error: error.message,
+            message: `Internal Server Error, Failed to fetch details of  course with courseId:${courseId} ...`,
+        }, { status: 500 });
+    }
+}
+
+// delete a course [DONE]
+export const DELETE = async (req: NextRequest, { params }: {
+    params: {
+        id: string;
+        courseId: string;
+    };
+}) => {
+    const courseId = params.courseId;
+    const instructorId = params.id;
+
+    try {
+        if (!instructorId || !courseId) {
+            return NextResponse.json({
+                success: false,
+                message: "Invalid Instructor and/or course Id"
+            }, { status: 400 });
+        }
+
+        await prisma.course.delete({
+            where: {
+                courseId: courseId,
+                instructorID: instructorId,
+           }
+        });
+
+        return NextResponse.json({
+            success: true,
+            message: `Course with courseId: ${courseId}, Successfully Deleted`,
         }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json({
             success: false,
             error: error.message,
-            message: 'Internal Server Error, Failed to create a course ...',
+            message: 'Internal Server Error, Failed to delete a course ...',
         }, { status: 500 });
     }
-
 }
 
 // edit a course
 export const POST = async (req: NextRequest, { params }: {
     params: {
-        id?: string;
+        id: string;
+        courseId: string;
     };
 }) => {
-    const instructorId = params?.id;
+    const instructorId = params.id;
+    const courseId = params.courseId;
+
+    const reqBody = await req.json();
+    const { newCourseTitle, newCourseDescription } = reqBody;
+
     try {
+        if (!instructorId || !courseId) {
+            return NextResponse.json({
+                success: false,
+                message: "Invalid Instructor and/or course Id"
+            }, { status: 400 });
+        }
+
         const createdCourses = prisma.courseSection.findMany({
             where: { instructorId: instructorId },
         });

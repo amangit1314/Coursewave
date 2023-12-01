@@ -4,59 +4,37 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react'
 import * as z from 'zod';
 import { FcGoogle } from "react-icons/fc"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
+
 import axios from 'axios';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
+import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5';
 
-const formSchema = z.object({
-    username: z.string().min(2, {
-        message: "Username must be at least 2 characters.",
-    }),
-    password: z.string().min(8, {
-        message: "Password must be 8 characters long."
-    }).refine(value => {
-        const hasSpecialChar = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(value);
-        const hasCapitalLetter = /[A-Z]/.test(value);
-        const hasLowercaseLetter = /[a-z]/.test(value);
-        const hasNumber = /[0-9]/.test(value);
-
-        return hasSpecialChar && hasCapitalLetter && hasLowercaseLetter && hasNumber;
-    }, {
-        message: "Password must contain at least one special character, one capital letter, one lowercase letter, and one number."
-    }),
-});
+const successNotification = (message: string) => toast.success(message);
+const errorNotification = (errorMessage: string) => toast.error(errorMessage);
 
 function Login() {
     const router = useRouter();
-    const [user, setUser] = React.useState({
-        email: "",
-        password: "",
 
-    })
-    const [isButtonDisabled, setButtonDisabled] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
-    const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
+    const [showPassword, setShowPassword] = React.useState(false);
+    const [user, setUser] = React.useState({ email: "", password: "" });
+    const [isButtonDisabled, setButtonDisabled] = React.useState(false);
 
-    const onSubmit = async () => {
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const onLogin = async () => {
         try {
             setLoading(true);
             const response = await axios.post("/api/auth/login", user);
             console.log("Login success", response.data);
-            toast.success("Login success");
-            router.push("/profile");
+            successNotification('Logged in successfully');
+            router.push("/browseCourses");
         } catch (error: any) {
             console.log("Login failed", error.message);
-            toast.error(error.message);
+            errorNotification(error.message);
         } finally {
             setLoading(false);
         }
@@ -89,53 +67,66 @@ function Login() {
                     {/* Right Section */}
                     <div className='flex flex-col m-14 py-8 px-8 bg-white rounded-lg'>
 
-                        <Button variant="outline" className='border-blue-500'><FcGoogle size={26} />  <div className="pl-2">Sign in with Google</div></Button>
+                        <Button
+                            variant="outline"
+                            className='p-3 border-blue-500'><FcGoogle size={26} />
+                            <div className="pl-2">Sign in with Google</div>
+                        </Button>
+
                         <div className="inline-flex items-center justify-center w-full">
                             <hr className="w-30 h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
-                            <span className="px-3 font-medium text-gray-900  bg-white dark:text-white dark:bg-gray-900">or</span>
+                            <span className="px-3 font-medium text-gray-900  bg-white  ">or</span>
                             <hr className="w-30 h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
                         </div>
 
-                        {/* <Input type="email" placeholder="Email" /> */}
-
                         <input
-                            className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+                            className="p-2 border border-gray-300 bg-transparent rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
                             id="email"
                             type="text"
                             value={user.email}
-                            onChange={(e) => setUser({ ...user, email: e.target.value })}
-                            placeholder="Email"
+                            onChange={(e) => {
+                                setUser({ ...user, email: e.target.value })
+                            }}
+                            placeholder="email"
                         />
 
-                        <input
-                            className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
-                            id="password"
-                            type="password"
-                            value={user.password}
-                            onChange={(e) => setUser({ ...user, password: e.target.value })}
-                            placeholder="Password"
-                        />
+                        <div className="password-input-container border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black">
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                className='bg-transparent outline-none p-2 mr-2'
+                                value={user.password}
+                                onChange={(e) => {
+                                    setUser({ ...user, password: e.target.value });
+                                }}
+                                placeholder="Enter password"
+                            />
+                            <button
+                                type="button"
+                                className="password-toggle-button mr-2"
+                                onClick={togglePasswordVisibility}
+                            >
+                                {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
+                            </button>
+                        </div>
 
-
-                        <a href="/forgotPassword" className='text-sm text-blue-500 cursor-point'>forgot password?</a>
-
+                        <a href="/forgotPassword" className='text-sm pb-2 text-blue-500 cursor-point'>forgot password?</a>
 
                         <button
-                            onClick={onSubmit}
+                            onClick={onLogin}
                             type="submit"
                             className="py-2 text-white w-full bg-blue-500 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
                             disabled={isButtonDisabled}
                         >
-
-                            {isButtonDisabled ? "Cant Login" : "Login"}
+                            {loading ? '...Loading' : (isButtonDisabled ? "Cant Login" : "Login")}
                         </button>
 
-                        <p className="pt-3 text-sm"> Dont have an account?
+                        <Toaster />
+
+                        <p className="pt-3 text-sm dark:text-gray-900"> Dont have an account?
                             <a href="/register" className="text-blue-500 "> Register!</a>
                         </p>
                     </div>
                 </div>
-
             </div>
         </div>
     )

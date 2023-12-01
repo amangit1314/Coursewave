@@ -1,66 +1,45 @@
 "use client"
-import { Controller, useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react'
+
 import axios from "axios";
-import * as z from 'zod';
-
-import { toast } from "react-hot-toast";
-import { Input } from "@/components/ui/input"
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import toast, { Toaster } from 'react-hot-toast';
 import { Button } from "@/components/ui/button"
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
 import { FcGoogle } from "react-icons/fc"
-const formSchema = z.object({
-    email: z.string().min(2, {
-        message: "Email must be at least 11 characters long.",
-    }),
-    password: z.string().min(8, {
-        message: "Password must be 8 characters long."
-    }).refine(value => {
-        const hasSpecialChar = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(value);
-        const hasCapitalLetter = /[A-Z]/.test(value);
-        const hasLowercaseLetter = /[a-z]/.test(value);
-        const hasNumber = /[0-9]/.test(value);
+import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5';
 
-        return hasSpecialChar && hasCapitalLetter && hasLowercaseLetter && hasNumber;
-    }, {
-        message: "Password must contain at least one special character, one capital letter, one lowercase letter, and one number."
-    }),
-});
 
 function RegisterPage() {
     const router = useRouter();
+    const [user, setUser] = React.useState({
+        email: "",
+        password: "",
 
-    const { control, handleSubmit, formState } = useForm();
-    const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
+    })
+
     const [isButtonDisabled, setButtonDisabled] = React.useState(false);
     const [loading, setLoading] = React.useState(false);
-    const [user, setUser] = React.useState({ email: "", password: "" });
+    const [showPassword, setShowPassword] = React.useState(false);
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+    
     useEffect(() => {
-        if (user.email.length > 0 && user.password.length > 0) {
+        if (user.email.length > 0 && user.password.length > 0 ) {
             setButtonDisabled(false);
-        }
-        else {
+        } else {
             setButtonDisabled(true);
         }
     }, [user]);
 
 
-    const onSignup = async () => {
+    const onRegister = async () => {
         try {
             setLoading(true);
             const response = await axios.post("/api/auth/register", user);
             console.log("Signup success", response.data);
-            router.push("/");
+            router.push("/login");
         } catch (error: any) {
             console.log("Signup failed", error.message);
             toast.error(error.message);
@@ -93,43 +72,53 @@ function RegisterPage() {
 
                         <div className="inline-flex items-center justify-center w-full">
                             <hr className="w-30 h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
-                            <span className="px-3 font-medium text-gray-900  bg-white dark:text-white dark:bg-gray-900">or</span>
+                            <span className="px-3 font-medium text-gray-900  bg-white  ">or</span>
                             <hr className="w-30 h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
                         </div>
 
-
                         <input
-                            className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+                            className="p-2 border bg-transparent border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
                             id="email"
-                            type="text"
+                            type="email"
                             autoComplete="true"
                             value={user.email}
-                            onChange={(e) => setUser({ ...user, email: e.target.value })}
-                            placeholder="Email"
+                            onChange={(e) => {
+                                setUser({ ...user, email: e.target.value });
+                            }}
+                            placeholder="email"
                         />
 
-                        <input
-                            className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
-                            id="password"
-                            type="password"
-                            value={user.password}
-                            autoComplete="true"
-                            onChange={(e) => setUser({ ...user, password: e.target.value })}
-                            placeholder="Password"
-                        />
+                        <div className="password-input-container border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black">
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                className='bg-transparent outline-none p-2 mr-2'
+                                value={user.password}
+                                onChange={(e) => {
+                                    setUser({ ...user, password: e.target.value });
+                                }}
+                                placeholder="Enter password"
+                            />
+                            <button
+                                type="button"
+                                className="password-toggle-button mr-2"
+                                onClick={togglePasswordVisibility}
+                            >
+                                {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
+                            </button>
+                        </div>
 
                         <br className="py-2" />
                         <button
-                            onClick={onSignup}
+                            onClick={onRegister}
                             type="submit"
                             className="py-2 text-white w-full bg-blue-500 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
                             disabled={isButtonDisabled}
                         >
-
-                            {isButtonDisabled ? "Cant Register" : "Register"}
+                            {loading ? '...Loading' : (isButtonDisabled ? "Cant Register" : "Register")}
                         </button>
+                        <Toaster />
 
-                        <p className="pt-3 text-sm"> Already have an account?
+                        <p className="pt-3 text-sm dark:text-gray-900"> Already have an account?
                             <a href="/login" className="text-blue-500 "> Login!</a>
                         </p>
 
