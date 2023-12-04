@@ -54,7 +54,7 @@ function HeroSection() {
     <div className="h-screen pt-20 relative flex flex-col place-items-center -z-1">
       <Image
         className="relative"
-        src="/course_illus.png"
+        src="/assets/illustrations/course_illus.png"
         alt="Next.js Logo"
         width={180}
         height={37}

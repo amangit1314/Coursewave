@@ -3,9 +3,11 @@ import React from 'react'
 
 function page() {
   return (
-    <SignIn
-      afterSignInUrl={'/userId/browseCourses'}
-    />
+    <div className='flex mx-auto items-center justify-center'>
+      <SignIn
+        afterSignInUrl={`/${userId}/browseCourses`}
+      />
+  </div>
   )
 }
 

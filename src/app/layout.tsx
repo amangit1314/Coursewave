@@ -6,6 +6,7 @@ import './globals.css'
 import { SessionProvider } from "next-auth/react"
 import { ClerkProvider } from '@clerk/nextjs'
 import { ThemeProvider } from '@/components/theme-provider'
+import { cn } from '@/lib/utils'
 
 const inter = Poppins({ weight: ["400", "500", "600", "700"], subsets: ["latin"] })
 
@@ -28,7 +29,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
     <html lang="en">
-      <body className={inter.className}>
+        <body className={cn(
+          "!scroll-smooth",
+          inter.className
+        )}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

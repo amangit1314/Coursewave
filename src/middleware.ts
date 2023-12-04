@@ -68,7 +68,7 @@ export default authMiddleware({
         }
     },
     
-    publicRoutes: ["/", "/register", "/login", "/browseCourses", "/browseSessions"]
+    publicRoutes: ["/","/sign-in", "/sign-up", "/register", "/login", "/browseCourses", "/browseSessions"]
 });
 
 export const config = {

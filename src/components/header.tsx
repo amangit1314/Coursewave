@@ -20,7 +20,7 @@ const Header: React.FC<TestimonialItemProps> = ({
 
  
     return (
-        <div className="z-10  bg-transparent max-w-7xl flex w-full items-center py-auto justify-between  text-sm lg:flex">
+        <div className="z-10 bg-transparent max-w-8xl flex w-full items-center py-auto justify-between">
             <div className="flex cursor-pointer items-center py-auto">
                 <Image
                     src="/courseWaveFaviconColored.png"
@@ -29,7 +29,7 @@ const Header: React.FC<TestimonialItemProps> = ({
                     height={8}
                     priority
                 />
-                <p className="pl-2 text-blue-500 font-bold font-mono text-xl">Coursewave</p>
+                <p className="pl-2 text-blue-500 font-bold font-mono text-sm md:text-xl">Coursewave</p>
             </div>
 
             <div className='hidden lg:flex lg:visible justify-around'>
@@ -39,7 +39,7 @@ const Header: React.FC<TestimonialItemProps> = ({
                 {/* <a href="" className="text-md ml-2 hover:font-semibold hover:text-blue-500 border hover:border-blue-500 cursor-point bg-transparent font-md rounded-3xl px-4 py-2">Mentorships</a> */}
             </div>
 
-            <div className='flex justify-center'>
+            <div className='flex justify-center items-center py-auto'>
                 <ThemeModeToggle />
 
                 {/* <UserButton afterSignOutUrl="/" /> */}
@@ -49,7 +49,7 @@ const Header: React.FC<TestimonialItemProps> = ({
                     </a> 
                 </div>
 
-                <CgMenuRightAlt size={24} className="visible xl:hidden lg:hidden md:hidden " />
+                <CgMenuRightAlt size={20} className="ml-1.5 dark:bg-gray-700 dark:border-transparent h-10 w-10 visible xl:hidden lg:hidden md:hidden p-3 border rounded-full border-blue-300" />
             </div>
         </div>
     )

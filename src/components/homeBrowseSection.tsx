@@ -3,10 +3,14 @@
 import React from 'react'
 import Image from 'next/image'
 import { AiFillStar } from 'react-icons/ai';
-import { MdOutlineClass } from 'react-icons/md';
-import CourseWidget from '@/app/(browseCourses)/browseCourses/_components/course-widget';
+// import { MdOutlineClass } from 'react-icons/md';
+// import CourseWidget from '@/app/(browseCourses)/browseCourses/_components/course-widget';
+import { CiBookmark } from "react-icons/ci";
+// import { BsBookmarkCheckFill } from "react-icons/bs";
+// import { Badge } from './ui/badge';
 
-const style = { color: "blue", fontSize: "1.5em" }
+// const style = { color: "blue", fontSize: "1.5em" }
+const starStyle = { color: "yellow" }
 
 const tabs = [
     {
@@ -51,29 +55,14 @@ const tabContentData = [
         title: "Data",
         content: "Content for Tab 4 goes here.",
         src: "/nextjs.png",
-    },
-    // {
-    //     title: "Coding",
-    //     content: "Content for Tab 1 goes here.",
-    //     src: "/web3.png",
-    // },
-    // {
-    //     title: "Programming",
-    //     content: "Content for Tab 2 goes here.",
-    //     src: "/android-jetpack.png",
-    // },
-    // {
-    //     title: "Management",
-    //     content: "Content for Tab 3 goes here.",
-    //     src: "/course_illus.png",
-    // },
+    }
 ];
 
 const HomeBrowseSection = () => {
     const [activeTab, setActiveTab] = React.useState(0);
 
     return (
-        <div className="max-h-screen mb-12 max-w-7xl place-items-center items-center w-full h-full">
+        <div className="max-h-screen mt-[14rem] md:mt-[1rem] mb-12 max-w-7xl place-items-center items-center w-full h-full">
             <p className="text-2xl font-bold text-center">Browse Different Course Categories</p>
             <p className="pt-4 text-md opacity-80 text-center">
                 Browse different courses according to the selected course <br /> categories on{' '}
@@ -97,15 +86,16 @@ const HomeBrowseSection = () => {
             </ul>
 
             {/* Tabs content section */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 my-6 w-9/12 justify-center mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-x-0 gap-y-2 md:gap-y-4 md:gap-x-16 my-6 w-9/12 justify-center mx-auto">
                 {tabContentData.map((tab, index) => (
-                    // <CourseItem key={index} tab={tab} index={index} />
-                    <CourseWidget key={index} index={index} courseImage={tab.src} courseNumber={index.toString()} title={tab.title} duration='20' subject='Course Tab' instructor='Aman Soni' price='299' />
-                ))}
+                    <CourseItem key={index} tab={tab} index={index} />
+                    // <CourseWidget key={index} index={index.toString()} courseImage={tab.src} courseNumber={index.toString()} title={tab.title} duration='20' subject='Course Tab' instructor='Aman Soni' price='299' />
+                ))
+                }
             </div>
- 
+
             {/* Courses Button */}
-            <button className="flex justify-center px-6 mb-16 py-2 bg-blue-500 rounded-full place-items-center mx-auto font-semibold text-md text-white">
+            <button className="flex justify-center px-6 mb-16 py-2 bg-blue-500 rounded-full place-items-center mx-auto font-bold text-sm text-white">
                 Explore Courses
             </button>
         </div>
@@ -125,7 +115,7 @@ const CourseItem: React.FC<CourseItemProps> = ({
 }) => {
     return <div
         key={index}
-        className={`group rounded-lg border border-blue-100 p-3 transition-colors hover:border-blue-500 hover:bg-white hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30`}
+        className={`group rounded-xl w-[15rem] dark:bg-gray-800 p-2.5 transition-colors hover:border-blue-500 hover:bg-white hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30`}
     >
         <Image
             className="h-40 w-[15rem] bg-slate-700 rounded-lg relative"
@@ -136,34 +126,31 @@ const CourseItem: React.FC<CourseItemProps> = ({
             style={{
                 objectFit: 'cover',
             }}
-            priority
+        // unoptimized
         />
-        <h2 className="pt-4 text-md font-semibold">{tab.title}</h2>
+        {/* <Badge className='mt-2 text-xs bg-transparent text-blue-500 font-normal border-blue-500'>Default</Badge> */}
+        <p className='mt-2 text-xs bg-transparent text-blue-500 font-normal border-blue-500'>Default</p>
+        <p className="text-sm font-semibold line-clamp-2">{tab.title}</p>
 
-        <div className="pl-1 flex justify-start items-center py-1">
-            {/* stars */}
-            <div className="flex justify-start">
-                <AiFillStar className="my-2" style={style} size={18} />
-                <AiFillStar className="my-2" style={style} size={18} />
-                <AiFillStar className="my-2" style={style} size={18} />
-                <AiFillStar className="my-2" style={style} size={18} />
-                <AiFillStar className="my-2" style={style} size={18} />
+        <div className="flex justify-between items-center py-auto">
+            <div className="flex text-xs items-center py-auto">
+                <AiFillStar className="my-2" style={starStyle} size={18} />
+                <p className="ms-1 text-xs font-medium text-gray-500 dark:text-gray-400">4.95</p>
+                <p className="ms-1 text-xs font-medium text-gray-500 dark:text-gray-400"> (25 </p>
+                <p className="ms-1 text-xs font-medium text-gray-500 dark:text-gray-400">Reviews)</p>
             </div>
 
-            {/* rating number */}
-            <div className="pl-1 flex text-sm">5.0
-                <div className="pl-1 text-sm font-semibold">(25)</div>
+            <div className='h-7 hover:bg-indigo-600 w-7 p-1 items-center cursor-pointer flex py-auto justify-center rounded-full bg-indigo-400'>
+                <CiBookmark size={16} style={{ color: "white" }} />
+                {/* <BsBookmarkCheckFill /> */}
             </div>
         </div>
 
-        <div className='flex justify-between'>
-            <div className='flex justify-start'>
-                <MdOutlineClass style={style} size={20} />
-                <p className='pl-1 text-sm'> 10 Classes</p>
+        <div className='flex justify-start'>
+            <div className='flex justify-between'>
+                <p className='text-xs'>◽ 10 Classes</p>
+                <p className='pl-1 text-xs'>◽ 48 hours</p>
             </div>
-
-            <p className='font-bold text-blue-500'>499 ₹</p>
         </div>
-        {/* <p className="text-sm opacity-80">{tab.content}</p> */}
     </div>
 }

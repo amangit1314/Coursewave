@@ -26,7 +26,7 @@ function About() {
                         loop
                         autoPlay
                     >
-                        <source className='bg-cover' src="vid.mp4" type="video/mp4" />
+                        <source className='bg-cover' src="assets/videos/vid.mp4" type="video/mp4" />
                     </video>
                     <div className='smooth-content pt-2 '>
                         <p className='font-semibold text-md'>About Courewave</p>
