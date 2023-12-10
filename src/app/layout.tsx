@@ -1,14 +1,12 @@
-// "use client";
-
-import type { Metadata } from 'next'
-import { Poppins } from 'next/font/google'
 import './globals.css'
-import { SessionProvider } from "next-auth/react"
-import { ClerkProvider } from '@clerk/nextjs'
-import { ThemeProvider } from '@/components/theme-provider'
+import { store } from './store'
 import { cn } from '@/lib/utils'
+import type { Metadata } from 'next'
+import { Provider } from 'react-redux'
+import { Poppins } from 'next/font/google'
+import { ThemeProvider } from '@/components/theme-provider'
 
-const inter = Poppins({ weight: ["400", "500", "600", "700"], subsets: ["latin"] })
+const poppins = Poppins({ weight: ["400", "500", "600", "700"], subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: 'Coursewave',
@@ -21,28 +19,26 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  session,
 }: {
   children: React.ReactNode
-  session: { session: any, expires: string }
 }) {
   return (
-    <ClerkProvider>
     <html lang="en">
-        <body className={cn(
-          "!scroll-smooth",
-          inter.className
-        )}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider></body>
-    </html>
-  </ClerkProvider>
+      <body className={poppins.className}>
+        {/* <Provider store={store}> */}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
 
+          </ThemeProvider>
+
+        {/* </Provider> */}
+
+      </body>
+    </html>
   )
 }

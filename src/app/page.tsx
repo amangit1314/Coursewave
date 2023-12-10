@@ -18,7 +18,7 @@ export default function Home() {
   const router = useRouter();
 
   const handleLoginClick = () => {
-    router.push('/sign-in');
+    router.push('/login');
   };
 
   const handleSignUpClick = () => {

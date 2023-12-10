@@ -1,8 +1,12 @@
 "use client";
-import Link from "next/link";
-import React, { useEffect } from "react";
 
+import Link from "next/link";
+import { user } from "@prisma/client";
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { ThemeModeToggle } from "./themeModeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 // import {
 //   DropdownMenu,
 //   DropdownMenuContent,
@@ -12,9 +16,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 //   DropdownMenuTrigger,
 // } from "@/components/ui/dropdown-menu";
 // import { Badge } from "./ui/badge";
-import { ThemeModeToggle } from "./themeModeToggle";
-import { useRouter } from "next/navigation";
-import { UserButton } from "@clerk/nextjs";
 
 interface Props {
   userId: string
@@ -22,27 +23,28 @@ interface Props {
 
 export const UserAvatar: React.FC<Props> = ({ userId }) => {
   const router = useRouter();
-  const [user, setUser] = React.useState({});
+  const [user, setUser] = React.useState<user>();
   const [profileImage, setProfileImage] = React.useState('https://github.com/shadcn.png')
 
   const goToEnrolledCourses = () => {
     router.push(`/${userId}/enrolledCourses`);
   }
 
-  // useEffect(() => {
-  //   fetch(`https://localhost:3000/api/profile/${userId}`)
-  //     .then(
-  //       (response) => {
-  //         console.log(response.json().toString());
-  //         setUser(response.json());
-  //       })
-  //     .catch((error: any) => {
-  //       console.log("Error", error.message);
-  //     })
-  // });
+  useEffect(() => {
+    fetch(`https://localhost:3000/api/profile/${userId}`)
+      .then(
+        (response) => {
+          console.log(response.json().toString());
+          // setUser(response.json());
+          // setProfileImage(user.profileImage);
+        })
+      .catch((error: any) => {
+        console.log("Error", error.message);
+      })
+  });
 
   /**
-   *       <DropdownMenu>
+   *  <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar className="mx-2 lg:mx-3">
             <AvatarImage src={profileImage} alt="@shadcn" />
@@ -64,7 +66,6 @@ export const UserAvatar: React.FC<Props> = ({ userId }) => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
    */
 
   return (
@@ -72,14 +73,13 @@ export const UserAvatar: React.FC<Props> = ({ userId }) => {
       <ThemeModeToggle />
 
       <Link href={`/profile/${userId}/`}>
-        {/* <Avatar className="mx-2 lg:mx-3">
-          <AvatarImage src={profileImage} alt="@shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar> */}
-        <div className="mx-1 p-1 rounded-full bg-gray-900 lg:mx-3">
+        <Avatar className="mx-2 lg:mx-3">
+          <AvatarImage src={profileImage} alt="username" />
+          <AvatarFallback>{userId.substring(0, 1)}</AvatarFallback>
+        </Avatar>
+        {/* <div className="mx-1 p-1 rounded-full bg-gray-900 lg:mx-3">
           <UserButton afterSignOutUrl="/" />
-        </div>
-        
+        </div> */}        
       </Link>
     </div>
   );

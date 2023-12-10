@@ -3,9 +3,11 @@
 import React from 'react'
 import Image from 'next/image'
 import { AiFillStar } from 'react-icons/ai';
+import { BsFillBookmarkStarFill } from "react-icons/bs";
 // import { MdOutlineClass } from 'react-icons/md';
 // import CourseWidget from '@/app/(browseCourses)/browseCourses/_components/course-widget';
 import { CiBookmark } from "react-icons/ci";
+import { Badge } from './ui/badge';
 // import { BsBookmarkCheckFill } from "react-icons/bs";
 // import { Badge } from './ui/badge';
 
@@ -35,26 +37,31 @@ const tabContentData = [
         title: "Coding",
         content: "Content for Tab 1 goes here.",
         src: "/course_illus.png",
+        price: "300"
     },
     {
         title: "Programming",
         content: "Content for Tab 2 goes here.",
         src: "/images1.jpg",
+        price: "149"
     },
     {
         title: "Management",
         content: "Content for Tab 3 goes here.",
         src: "/images2.jpg",
+        price: "274"
     },
     {
         title: "Sales",
         content: "Content for Tab 4 goes here.",
         src: "/images3.jpg",
+        price: "498"
     },
     {
         title: "Data",
         content: "Content for Tab 4 goes here.",
         src: "/nextjs.png",
+        price: "229"
     }
 ];
 
@@ -113,22 +120,48 @@ const CourseItem: React.FC<CourseItemProps> = ({
     index,
     tab,
 }) => {
+
+    const [isBookmarked, setBookmarked] = React.useState(false);
+
+    const toggleBookmark = () => {
+        setBookmarked(!isBookmarked);
+    };
+
     return <div
         key={index}
         className={`group rounded-xl w-[15rem] dark:bg-gray-800 p-2.5 transition-colors hover:border-blue-500 hover:bg-white hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30`}
     >
-        <Image
-            className="h-40 w-[15rem] bg-slate-700 rounded-lg relative"
-            src={tab.src}
-            alt="Next.js Logo"
-            width={250}
-            height={35}
-            style={{
-                objectFit: 'cover',
-            }}
-        // unoptimized
-        />
+         {/* <Image
+                className="h-40 w-[15rem] bg-slate-700 rounded-lg relative left-0 right-0"
+                src={tab.src}
+                alt="Next.js Logo"
+                width={250}
+                height={35}
+                style={{
+                    objectFit: 'cover',
+                }}
+            // unoptimized
+            />
+            <Badge className='absolute top-10'>Price</Badge>    */}
         {/* <Badge className='mt-2 text-xs bg-transparent text-blue-500 font-normal border-blue-500'>Default</Badge> */}
+        
+        {/* --------------------------------------------------------------- */}
+
+        <div className="relative">
+            <Image
+                className="h-40 w-[15rem] bg-slate-700 rounded-lg relative left-0 right-0"
+                src={tab.src}
+                alt="Next.js Logo"
+                width={250}
+                height={35}
+                style={{
+                    objectFit: 'cover',
+                }}
+            // unoptimized
+            />
+            <Badge className='absolute bottom-2 right-2'>${tab.price}</Badge>
+        </div>
+        
         <p className='mt-2 text-xs bg-transparent text-blue-500 font-normal border-blue-500'>Default</p>
         <p className="text-sm font-semibold line-clamp-2">{tab.title}</p>
 
@@ -140,9 +173,23 @@ const CourseItem: React.FC<CourseItemProps> = ({
                 <p className="ms-1 text-xs font-medium text-gray-500 dark:text-gray-400">Reviews)</p>
             </div>
 
-            <div className='h-7 hover:bg-indigo-600 w-7 p-1 items-center cursor-pointer flex py-auto justify-center rounded-full bg-indigo-400'>
+            {/* <div className='h-7 hover:bg-indigo-600 w-7 p-1 items-center cursor-pointer flex py-auto justify-center rounded-full bg-indigo-400'>
                 <CiBookmark size={16} style={{ color: "white" }} />
-                {/* <BsBookmarkCheckFill /> */}
+                <BsBookmarkCheckFill />
+            </div> */}
+
+            <div
+                className={`h-7 hover:bg-indigo-600 w-7 p-1 items-center cursor-pointer flex py-auto justify-center rounded-full ${isBookmarked ? 'bg-indigo-600' : 'bg-indigo-400'
+                    }`}
+                onClick={toggleBookmark}
+            >
+                {isBookmarked ? (
+                    // <CiBookmark size={16} style={{ color: "white" }} />
+                    <BsFillBookmarkStarFill />
+                ): (
+                    <CiBookmark size={16} style={{ color: "white" }} />
+                    // Use your unfilled bookmark icon here
+                )}
             </div>
         </div>
 

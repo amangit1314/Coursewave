@@ -12,8 +12,8 @@ import { UserButton } from '@clerk/nextjs';
 const routes = [
     {
         icon: <MdDashboard size={22} />,
-        label: 'Dashboard',
-        href: `/userId/enrolledCourses`,
+        label: 'EnrolledCourses',
+        href: `/${1234}/enrolledCourses`,
     },
     {
         icon: <FaCompass size={22} />,
@@ -30,11 +30,11 @@ const routes = [
         label: 'Sessions',
         href: `/browseSessions`,
     },
-    {
-        icon: <TbShoppingCartCode size={22} />,
-        label: 'Cart',
-        href: `/cart`,
-    },
+    // {
+    //     icon: <TbShoppingCartCode size={22} />,
+    //     label: 'Cart',
+    //     href: `/cart`,
+    // },
     {
         icon: <AiOutlineTransaction size={22} />,
         label: 'Subscription',

@@ -2,14 +2,14 @@
 
 import React, { useEffect } from 'react'
 import { category } from '@prisma/client';
-import CategoriesComponent from '@/components/course/courses-categories-component';
 import { FilteredCoursesComponent } from '@/components/course/filtered-courses';
+import CategoriesComponent from '@/components/course/courses-categories-component';
 
-interface BrowseSectionProps {
+interface BrowseEnrolledCoursesSectionProps {
     children: React.ReactNode;
 }
 
-const BrowseSection: React.FC<BrowseSectionProps> = ({ children }) => {
+const BrowseEnrolledCoursesSection: React.FC<BrowseEnrolledCoursesSectionProps> = ({ children }) => {
     const [loading, setLoading] = React.useState(true);
     const [activeCategoryIndex, setActiveCategoryIndex] = React.useState<number>(0);
     const [categories, setCategories] = React.useState<category[]>([]);
@@ -43,13 +43,14 @@ const BrowseSection: React.FC<BrowseSectionProps> = ({ children }) => {
     const activeCategory = categories[activeCategoryIndex]?.categoryName || 'All';
 
     return (
-        <div className="pt-[80px] pb-12 w-full">
+        <div className="max-h-screen mt-[14rem] md:mt-[1rem] mb-12 max-w-7xl place-items-center items-center w-full h-full">
             <CategoriesComponent
                 activeCategory={activeCategoryIndex}
                 setActiveCategory={handleClick}
                 categories={categories}
                 loading={loading}
             />
+
             <FilteredCoursesComponent
                 activeCategory={activeCategory}
                 categories={categories}
@@ -58,4 +59,4 @@ const BrowseSection: React.FC<BrowseSectionProps> = ({ children }) => {
     );
 };
 
-export default BrowseSection;
+export default BrowseEnrolledCoursesSection;
