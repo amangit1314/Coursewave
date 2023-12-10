@@ -1,15 +1,17 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
+import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export default async function DELETE(req: NextApiRequest, res: NextApiResponse) {
+export default async function DELETE(req: NextRequest, res: NextResponse) {
+    
+    const reqBody = await req.json();
+    const { userId } = reqBody;
+    
     try {
-        const userId = req.body; // Assuming userId is passed in the request body
-
         const updatedUser = await prisma.user.update({
             where: {
-                id: userId,
+                id: userId
             },
             data: {
                 refreshToken: null,
@@ -21,21 +23,24 @@ export default async function DELETE(req: NextApiRequest, res: NextApiResponse) 
             },
         });
 
-        res.setHeader("Authorization", ""); // Use setHeader to clear the Authorization header
+        NextResponse.next().headers.set("Authorization", ``);
 
-        // To clear cookies, if needed, uncomment the following lines:
-        // res.setHeader(
-        //   "Set-Cookie",
-        //   "token=; HttpOnly; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure"
-        // );
-
-        res.status(200).json({
+        const response = NextResponse.json({
             status: true,
             data: updatedUser,
-            message: "Successfully logged out",
-        });
+            message: "Logout Successfull 😶 ",
+        }, { status: 200 });
+
+        response.cookies.set("token", '');
+
+        return response;
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Failed to logout user" });
+        console.error("Error:", error);
+        return NextResponse.json({
+            status: false,
+            error: error,
+            message: "Failed to logout user ⚠👮‍♂️..",
+        }, { status: 500 });
     }
 };
