@@ -3,8 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export default async function DELETE(req: NextRequest, res: NextResponse) {
-    
+export default async function handler(req: NextRequest) {
     const reqBody = await req.json();
     const { userId } = reqBody;
     
