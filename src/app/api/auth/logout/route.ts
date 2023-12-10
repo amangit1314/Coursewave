@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const POST = async (req: NextApiRequest, res: NextApiResponse) => {
+export default async function DELETE(req: NextApiRequest, res: NextApiResponse) {
     try {
         const userId = req.body; // Assuming userId is passed in the request body
 
