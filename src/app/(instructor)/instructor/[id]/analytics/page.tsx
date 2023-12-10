@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Text, Title, AreaChart } from "@tremor/react";
+
 import CardDataStats from '@/components/CardDataStats';
 import ChartOne from '@/components/Charts/ChartOne';
 import ChartThree from '@/components/Charts/ChartThree';
@@ -36,6 +36,7 @@ function Analytics() {
             </svg>
           </div>
         </CardDataStats>
+
         <CardDataStats title="Total Earnings" total="$45,2K" rate="4.35%" levelUp>
           <div className='p-1.5 h-[2.5rem] w-[2.5rem] flex justify-center items-center rounded-full bg-slate-200 dark:bg-slate-700 bg-opacity-30   '>
             {/* <svg
@@ -63,6 +64,7 @@ function Analytics() {
           </div>
 
         </CardDataStats>
+        
         <CardDataStats title="Total Courses" total="4" rate="2.59%" levelUp>
           <div className='p-1.5 h-[2.5rem] w-[2.5rem] flex justify-center items-center rounded-full bg-slate-200 dark:bg-slate-700 bg-opacity-30   '>
             {/* <svg
@@ -86,6 +88,7 @@ function Analytics() {
           </div>
 
         </CardDataStats>
+        
         <CardDataStats title="Total Students" total="3,456" rate="0.95%" levelDown>
           <div className='p-1.5 h-[2.5rem] w-[2.5rem] flex justify-center items-center rounded-full bg-slate-200 dark:bg-slate-700 bg-opacity-30  '>
             <svg
@@ -133,66 +136,3 @@ function Analytics() {
 }
 
 export default Analytics
-
-const generateData = () => {
-  let chartdata = [];
-  const dates = [
-    'Nov 23',
-    'Nov 24',
-    'Nov 25',
-    'Nov 26',
-    'Nov 27',
-    'Nov 28',
-    'Nov 29',
-    'Nov 30',
-    'Dec 01',
-    'Dec 02',
-    'Dec 03',
-    'Dec 04',
-    'Dec 05',
-    'Dec 06',
-    'Dec 07',
-    'Dec 08',
-    'Dec 09',
-    'Dec 10',
-    'Dec 11',
-    'Dec 12',
-    'Dec 13',
-    'Dec 14',
-    'Dec 15',
-    'Dec 16',
-    'Dec 17',
-    'Dec 18',
-    'Dec 19',
-    'Dec 20',
-  ];
-
-  for (let date of dates) {
-    chartdata.push({
-      date,
-      'courses': Math.round(150 + Math.random() * 20 - 10),
-      'sessions': Math.round(150 + Math.random() * 20 - 10),
-    });
-  }
-
-  return chartdata;
-}
-
-const mockDataSet = generateData();
-
-export const AreaChartDemo = () => (
-  <Card className='rounded-lg mt-2'>
-    <Title>Total revenue over time (USD)</Title>
-    <AreaChart
-      className='h-80 mt-4'
-      data={mockDataSet}
-      index='date'
-      defaultValue={0}
-      categories={["Courses", "Sessions"]}
-      colors={["indigo", "orange", "fuchsia", "emerald"]}
-      allowDecimals={false}
-      yAxisWidth={60}
-      noDataText='There is no data, yet'
-    />
-  </Card>
-);
