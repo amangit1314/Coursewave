@@ -9,11 +9,15 @@ import SidebarItem from '@/app/(browseCourses)/browseCourses/_components/sidebar
 // import { FaFileInvoice } from "react-icons/fa6";
 import { HiUserGroup } from 'react-icons/hi';
 import { useParams } from 'next/navigation';
+import { VscFeedback } from "react-icons/vsc";
+import { FaHandsHelping } from "react-icons/fa";
+
+
 
 
 
 function InstructorSideBarRoutes() {
-    let { instructorId } = useParams();
+    let instructorId  = '123456';
 
     const routes = [
         {
@@ -26,11 +30,11 @@ function InstructorSideBarRoutes() {
         //     label: 'Dashboard',
         //     href: '/instructorDashboard',
         // },
-        {
-            icon: <BiBroadcast size={22} />,
-            label: 'Sessions',
-            href: `/instructor/${instructorId}/createdSessions`,
-        },
+        // {
+        //     icon: <BiBroadcast size={22} />,
+        //     label: 'Sessions',
+        //     href: `/instructor/${instructorId}/createdSessions`,
+        // },
         {
             icon: <BsPersonVideo2 size={22} />,
             label: 'Courses',
@@ -38,7 +42,7 @@ function InstructorSideBarRoutes() {
         },
         {
             icon: <HiUserGroup size={22} />,
-            label: 'Enrollements',
+            label: 'Enrollments',
             href: `/instructor/${instructorId}/enrollements`
         },
         // {
@@ -47,9 +51,9 @@ function InstructorSideBarRoutes() {
         //     href: '/invoices'
         // },
         {
-            icon: <AiOutlineTransaction size={22} />,
-            label: 'Payouts',
-            href: `/instructor/${instructorId}/payouts`,
+            icon: <VscFeedback size={22} />,
+            label: 'Feedback',
+            href: `/instructor/${instructorId}/feedback`,
         }, {
             icon: <BsPatchQuestion size={22} />,
             label: 'Questions',
@@ -58,6 +62,11 @@ function InstructorSideBarRoutes() {
         {
             icon: <AiFillSetting size={22} />,
             label: 'Settings',
+            href: `/instructor/${instructorId}/instructorSettings`,
+        },
+        {
+            icon: <FaHandsHelping size={22} />,
+            label: 'Help & Support',
             href: `/instructor/${instructorId}/instructorSettings`,
         },
     ]

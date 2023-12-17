@@ -18,7 +18,7 @@ export function SessionCard() {
             />
             <div className='flex flex-col pt-3 px-3'>
                 <div className='flex justify-between'>
-                    <Badge className='border font-medium text-gray-700 bg-transparent dark:hover:bg-transparent dark:hover:text-gray-200 hover:cursor-default border-black dark:text-gray-400 dark:border-gray-400'>Blog</Badge>
+                    <Badge className='border hover:text-gray-100 font-medium text-gray-700 bg-transparent dark:hover:bg-transparent dark:hover:text-gray-200 hover:cursor-default border-black dark:text-gray-400 dark:border-gray-400'>Blog</Badge>
                     <div className='flex'>
                         <p className='my-1 text-xs text-gray-700 mr-[2px] dark:text-slate-400'>6 video</p>
                         <p className='my-1 text-xs text-gray-700 dark:text-slate-400'>◽ 40 min</p>

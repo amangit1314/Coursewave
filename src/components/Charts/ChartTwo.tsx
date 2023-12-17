@@ -1,4 +1,5 @@
 "use client";
+
 import { ApexOptions } from "apexcharts";
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
@@ -7,12 +8,13 @@ const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
 const options: ApexOptions = {
   colors: ["#3C50E0", "#80CAEE"],
   chart: {
-    // events: {
-    //   beforeMount: (chart) => {
-    //     chart.windowResizeHandler();
-    //   },
-    // },
-    fontFamily: "Satoshi, sans-serif",
+    events: {
+      beforeMount: (chart) => {
+        if (chart && chart.windowResizeHandler) {
+          chart.windowResizeHandler();
+        }
+      },
+    },
     type: "bar",
     height: 335,
     stacked: true,
@@ -95,22 +97,21 @@ const ChartTwo: React.FC = () => {
       ...prevState,
     }));
   };
-  handleReset;
 
   return (
-    <div className="col-span-12 rounded-sm border border-stroke bg-white p-7 shadow-default dark:border-gray-800  dark:bg-gray-800 xl:col-span-4">
-      <div className="mb-4 justify-between gap-4 sm:flex">
+    <div className="col-span-12 rounded-sm border border-stroke bg-white p-7 shadow-default dark:border-gray-800 dark:bg-gray-800 xl:col-span-4">
+      <div className="mb-4 flex justify-between">
         <div>
           <h4 className="text-xl font-semibold text-black dark:text-white">
             Profit this week
           </h4>
         </div>
         <div>
-          <div className="relative z-20 inline-block">
+          <div className="relative inline-block">
             <select
               name="#"
               id="#"
-              className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none"
+              className="relative inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none"
             >
               <option value="">This Week</option>
               <option value="">Last Week</option>

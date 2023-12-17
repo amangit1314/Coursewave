@@ -38,6 +38,7 @@ export const CourseItem: React.FC<CourseItemProps> = ({
             className={`group rounded-xl w-[15rem] dark:bg-gray-800 p-2.5 transition-colors hover:border-blue-500 hover:bg-white hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30`}
         >
 
+            {/* Course Image */}
             <div className="relative">
                 <Image
                     className="h-40 w-[15rem] bg-slate-700 rounded-lg relative left-0 right-0"
@@ -52,21 +53,36 @@ export const CourseItem: React.FC<CourseItemProps> = ({
                 <Badge className='absolute bottom-2 right-2'>{course.isFree ? 'Free' : course.coursePrice}</Badge>
             </div>
 
-            <p
+
+            {/* <p
                 className='mt-2 text-xs bg-transparent text-blue-500 font-normal border-blue-500'>{course.courseCategories ? course.courseCategories[0] : 'Default'}
-            </p>
+            </p> */}
+
+            <div className='flex justify-between mt-2'>
+                <p className='text-xs'>10 Classes</p>
+                <p className='pl-1 text-xs'>48 hours</p>
+            </div>
+
+            {/* Course Title */}
             <p
-                className="text-sm font-semibold line-clamp-2">
+                className="text-md tracking-tight mt-1 mr-3 font-semibold line-clamp-2">
                 {course.courseTitle}
             </p>
 
-            <div className="flex justify-between items-center py-auto">
-                <div className="flex text-xs items-center py-auto">
-                    <AiFillStar className="my-2" style={starStyle} size={18} />
-                    <p className="ms-1 text-xs font-medium text-gray-500 dark:text-gray-400">{courseRating}</p>
-                    <p className="ms-1 text-xs font-medium text-gray-500 dark:text-gray-400"> ({noOfCourseReviews} Reviews)</p>
+            <div className="flex justify-between items-center py-auto  mt-3 mb-1">
+                <div className='flex items-center py-auto'>
+                    <Image
+                        className='h-8 w-8 rounded-full'
+                        src='/nextjs.png'
+                        alt='p'
+                        height={28}
+                        width={28}
+                        content='cover'
+                    />
+                    <p className='text-xs text-gray-600 ml-[6px] dark:text-gray-400'>Terisha Simmons</p>
                 </div>
 
+                {/* bookmark icon */}
                 <div
                     className={`h-7 hover:bg-indigo-600 w-7 p-1 items-center cursor-pointer flex py-auto justify-center rounded-full ${isBookmarked ? 'bg-indigo-600' : 'bg-indigo-400'}`}
                     onClick={toggleBookmark}
@@ -75,14 +91,7 @@ export const CourseItem: React.FC<CourseItemProps> = ({
                         <CiBookmark size={16} style={{ color: "white" }} />
                     )}
                 </div>
-            </div>
-
-            <div className='flex justify-start'>
-                <div className='flex justify-between'>
-                    <p className='text-xs'>◽ 10 Classes</p>
-                    <p className='pl-1 text-xs'>◽ 48 hours</p>
-                </div>
-            </div>
+           </div>
         </div>
     );
 }

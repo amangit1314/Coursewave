@@ -2,6 +2,8 @@
 import { ApexOptions } from "apexcharts";
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
+
+
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
@@ -131,6 +133,8 @@ interface ChartOneState {
   }[];
 }
 
+// ... (imports)
+
 const ChartOne: React.FC = () => {
   const [state, setState] = useState<ChartOneState>({
     series: [
@@ -138,7 +142,6 @@ const ChartOne: React.FC = () => {
         name: "Product One",
         data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45],
       },
-
       {
         name: "Product Two",
         data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 51],
@@ -146,86 +149,35 @@ const ChartOne: React.FC = () => {
     ],
   });
 
-  const handleReset = () => {
-    setState((prevState) => ({
-      ...prevState,
-    }));
-  };
-
-  handleReset;
+  
 
   // NextJS Requirement
   const isWindowAvailable = () => typeof window !== "undefined";
 
   if (!isWindowAvailable()) return <></>;
 
-  // return (
-  //   <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-gray-800  sm:px-7.5 xl:col-span-8">
-  //     <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
-  //       <div className="flex w-full flex-wrap gap-3 sm:gap-5">
-  //         <div className="flex min-w-47.5">
-  //           <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-primary">
-  //             <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
-  //           </span>
-  //           <div className="w-full">
-  //             <p className="font-semibold text-primary">Total Revenue</p>
-  //             <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
-  //           </div>
-  //         </div>
-  //         <div className="flex min-w-4.5">
-  //           <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-start justify-start rounded-full border border-secondary">
-  //             <span className="block h-2.5 w-2.5 max-w-2.5 rounded-full bg-indigo-500"></span>
-  //           </span>
-  //           <div className="flex w-full">
-  //             <p className="font-semibold text-secondary">Total Sales</p>
-  //             <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
-  //           </div>
-  //         </div>
-  //       </div>
-  //       <div className="flex w-full max-w-45 justify-end">
-  //         <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4">
-  //           <button className="rounded bg-white py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark">
-  //             Day
-  //           </button>
-  //           <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
-  //             Week
-  //           </button>
-  //           <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
-  //             Month
-  //           </button>
-  //         </div>
-  //       </div>
-  //     </div>
+  const handleReset = () => {
+    setState((prevState) => ({
+      ...prevState,
+    }));
+  };// Invoke the function
 
-  //     <div>
-  //       <div id="chartOne" className="-ml-5 h-[355px] w-[105%]">
-  //         <ReactApexChart
-  //           options={options}
-  //           series={state.series}
-  //           type="area"
-  //           width="100%"
-  //           height="100%"
-  //         />
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
       <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
         <div className="flex w-full flex-wrap gap-3 sm:gap-5">
-          <div className="flex min-w-47.5">
-            <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-primary">
-              <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
+          <div className="flex min-w-[11.875rem]">
+            <span className="mt-1 mr-2 flex h-4 w-4 max-w-4 items-center justify-center rounded-full border border-primary">
+              <span className="block h-2.5 w-2.5 max-w-2.5 rounded-full bg-primary"></span>
             </span>
             <div className="w-full">
               <p className="font-semibold text-primary">Total Revenue</p>
               <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
             </div>
           </div>
-          <div className="flex min-w-47.5">
-            <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-secondary">
-              <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-secondary"></span>
+          <div className="flex min-w-[11.875rem]">
+            <span className="mt-1 mr-2 flex h-4 w-4 max-w-4 items-center justify-center rounded-full border border-secondary">
+              <span className="block h-2.5 w-2.5 max-w-2.5 rounded-full bg-secondary"></span>
             </span>
             <div className="w-full">
               <p className="font-semibold text-secondary">Total Sales</p>
@@ -233,8 +185,8 @@ const ChartOne: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="flex w-full max-w-45 justify-end">
-          <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4">
+        <div className="flex w-full max-w-[11.25rem] justify-end">
+          <div className="inline-flex items-center rounded-md bg-white p-1.5 dark:bg-meta-4">
             <button className="rounded bg-white py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark">
               Day
             </button>
@@ -249,13 +201,12 @@ const ChartOne: React.FC = () => {
       </div>
 
       <div>
-        <div id="chartOne" className="-ml-5 h-[355px] w-[105%]">
+        <div id="chartOne" className="-ml-5 h-[355px] w-full">
           <ReactApexChart
             options={options}
             series={state.series}
             type="area"
             width="100%"
-            height="100%"
           />
         </div>
       </div>

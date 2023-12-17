@@ -1,54 +1,32 @@
-import { Card, Text, Title, AreaChart } from "@tremor/react";
+"use client";
 
-const generateData = () => {
-    let chartdata = [];
-    const dates = [
-        'Nov 23',
-        'Nov 24',
-        'Nov 25',
-        'Nov 26',
-        'Nov 27',
-        'Nov 28',
-        'Nov 29',
-        'Nov 30',
-        'Dec 01',
-        'Dec 02',
-        'Dec 03',
-        'Dec 04',
-        'Dec 05',
-        'Dec 06',
-        'Dec 07',
-        'Dec 08',
-        'Dec 09',
-        'Dec 10',
-        'Dec 11',
-        'Dec 12',
-        'Dec 13',
-        'Dec 14',
-        'Dec 15',
-        'Dec 16',
-        'Dec 17',
-        'Dec 18',
-        'Dec 19',
-        'Dec 20',
-    ];
+import { FC } from "react";
+import { AreaChart, Card, Title } from "@tremor/react";
 
-    for (let date of dates) {
-        chartdata.push({
-            date,
-            'courses': Math.round(150 + Math.random() * 20 - 10),
-            'sessions': Math.round(150 + Math.random() * 20 - 10),
-        });
-    }
-
-    return chartdata;
+interface ChartData {
+    date: string;
+    Courses: number;
+    Sessions: number;
 }
 
-const mockDataSet = generateData();
+const mockDataSet: ChartData[] = [
+    { date: '2023-01-01', Courses: 900, Sessions: 800 },
+    { date: '2023-01-02', Courses: 340, Sessions: 1000 },
+    { date: '2023-01-03', Courses: 840, Sessions: 808 },
+    { date: '2023-01-04', Courses: 600, Sessions: 600 },
+    { date: '2023-01-05', Courses: 900, Sessions: 900 },
+    { date: '2023-01-06', Courses: 1200, Sessions: 900 },
+    { date: '2023-01-07', Courses: 900, Sessions: 1200 },
+    { date: '2023-01-08', Courses: 800, Sessions: 700 },
+    { date: '2023-01-09', Courses: 1100, Sessions: 500 },
+    { date: '2023-01-10', Courses: 400, Sessions: 808 },
+    { date: '2023-01-11', Courses: 600, Sessions: 900 },
+    { date: '2023-01-12', Courses: 808, Sessions: 500 },
+    { date: '2023-01-13', Courses: 740, Sessions: 700 },
+    { date: '2023-01-14', Courses: 420, Sessions: 740 },
+];
 
-
-
-const AreaChartDemo = () => (
+const AreaChartDemo: FC = () => (
     <Card className='rounded-lg mt-2'>
         <Title>Total revenue over time (USD)</Title>
         <AreaChart

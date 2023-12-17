@@ -18,7 +18,6 @@ const options: ApexOptions = {
     show: true,
     position: "bottom",
   },
-
   plotOptions: {
     pie: {
       donut: {
@@ -50,30 +49,31 @@ const options: ApexOptions = {
   ],
 };
 
+
 const ChartThree: React.FC = () => {
   const [state, setState] = useState<ChartThreeState>({
     series: [65, 34, 12, 56],
   });
 
   return (
-    <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-gray-800  sm:px-7.5 xl:col-span-5">
-      <div className="mb-3 justify-between gap-4 sm:flex">
+    <div className="col-span-12 rounded-sm border border-gray-300 bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-gray-700 dark:bg-gray-800  sm:px-7.5 xl:col-span-5">
+      <div className="mb-3 flex justify-between gap-4 sm:flex">
         <div>
           <h5 className="text-xl font-semibold text-black dark:text-white">
             Visitors Analytics
           </h5>
         </div>
         <div>
-          <div className="relative z-20 inline-block">
+          <div className="relative inline-block">
             <select
               name=""
               id=""
-              className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none"
+              className="relative inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none"
             >
               <option value="">Monthly</option>
               <option value="">Yearly</option>
             </select>
-            <span className="absolute top-1/2 right-3 z-10 -translate-y-1/2">
+            <span className="absolute top-1/2 right-3 -translate-y-1/2">
               <svg
                 width="10"
                 height="6"

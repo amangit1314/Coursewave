@@ -75,7 +75,7 @@ export const UserAvatar: React.FC<Props> = ({ userId }) => {
       <Link href={`/profile/${userId}/`}>
         <Avatar className="mx-2 lg:mx-3">
           <AvatarImage src={profileImage} alt="username" />
-          <AvatarFallback>{userId.substring(0, 1)}</AvatarFallback>
+          <AvatarFallback>{'A'}</AvatarFallback>
         </Avatar>
         {/* <div className="mx-1 p-1 rounded-full bg-gray-900 lg:mx-3">
           <UserButton afterSignOutUrl="/" />

@@ -8,9 +8,9 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
     return <div className="min-h-screen h-full dark:bg-slate-900">
-        <div className="h-[60px] md:pl-56 fixed inset-y-0 w-full z-50 ">
+        {/* <div className="h-[60px] md:pl-56 fixed inset-y-0 w-full z-50 ">
             <Navbar />
-        </div>
+        </div> */}
         <div className="hidden md:flex h-full fixed inset-y-0 z-50">
             <Sidebar />
         </div>
