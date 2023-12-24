@@ -97,7 +97,7 @@ const chartdata = [
 const valueFormatter = (number: number) =>
   `${new Intl.NumberFormat("us").format(number).toString()}K`;
 
-export const LineChartForLearningActivity = () => {
+ const LineChartForLearningActivity = () => {
   return (
     <Card className="rounded-md mr-[2rem] my-[1rem]">
       <Title className="font-semibold text-lg dark:text-gray-400">
@@ -115,7 +115,7 @@ export const LineChartForLearningActivity = () => {
   );
 };
 
-export const EnrolledCourses = () => {
+ const EnrolledCourses = () => {
   return (
     <div className=" w-full">
       <div className="flex justify-between items-center py-auto">
@@ -140,7 +140,7 @@ export const EnrolledCourses = () => {
   );
 };
 
-export const EnrolledCoursesCard = ({ courseId, courseImage, courseName, courseLessons, courseAssignments, courseDuration, courseProgress }: any) => {
+ const EnrolledCoursesCard = ({ courseId, courseImage, courseName, courseLessons, courseAssignments, courseDuration, courseProgress }: any) => {
   const router = useRouter();
 
   const onClick = () => {
@@ -197,7 +197,7 @@ export const EnrolledCoursesCard = ({ courseId, courseImage, courseName, courseL
 
 // -------------- left side -------------------
 
-export const NotificationBade = () => {
+ const NotificationBade = () => {
   return (
     <button
       className="relative  rounded-full  transition duration-150 ease-in-out"
@@ -215,7 +215,7 @@ export const NotificationBade = () => {
   );
 }
 
-export const DashboardLeftHeader = () => {
+ const DashboardLeftHeader = () => {
   return (
     <div className="flex justify-between">
       {/* image and text */}
@@ -240,7 +240,7 @@ export const DashboardLeftHeader = () => {
   );
 }
 
-export const DateRangeWidget = () => {
+ const DateRangeWidget = () => {
   return (
     <div className="flex items-center" data-rangepicker>
       <div className="relative">
@@ -286,7 +286,7 @@ export const DateRangeWidget = () => {
   );
 }
 
-export function ScheduledSessionCard() {
+ function ScheduledSessionCard() {
   return (
     <Card className="rounded-xl cursor-pointer p-4 flex justify-start  my-4">
       <div className={`bg-purple-500 h-15 w-1 rounded-full`}></div>
@@ -338,7 +338,7 @@ export function ScheduledSessionCard() {
   );
 }
 
-export const ScheduledSessions = () => {
+ const ScheduledSessions = () => {
   return (
     <div>
       <div className="flex mb-4 justify-between items-center py-auto">
@@ -364,7 +364,7 @@ export const ScheduledSessions = () => {
   );
 }
 
-export const LearningGoalCard = () => {
+ const LearningGoalCard = () => {
   return (
     <div>
 
@@ -372,7 +372,7 @@ export const LearningGoalCard = () => {
   );
 };
 
-export const LearningGoals = () => {
+ const LearningGoals = () => {
   return (
     <div className=" mr-[2rem] w-full">
       <div className="flex justify-between">
