@@ -126,7 +126,7 @@ function CoursePreview({ params }: any) {
 
           {/* course title, description, ratings, what you will learn */}
           <div className="flex flex-col">
-            <p className="pl-6 md:pl-0 dark:text-white text-gray-800 font-semibold text-2xl">
+            <p className="pl-6 md:pl-0 md:mb-4 dark:text-white tracking-tight text-gray-800 font-semibold text-2xl">
               {" "}
               {course?.courseTitle}{" "}
             </p>
@@ -147,7 +147,7 @@ function CoursePreview({ params }: any) {
               </video>
             </div> */}
 
-            <h3 className=" tracking-tight text-xl font-semibold text-gray-700 dark:text-slate-200">
+            <h3 className=" tracking-tight text-xl mt-2 font-semibold text-gray-700 dark:text-slate-200">
               About Course:
             </h3>
             <p className="text-md text-base p-6 md:py-2 md:text-md md:p-0 md:pr-[8rem] w-auto line-clamp-5 md:line-clamp-3 font-noraml text-gray-700 dark:text-gray-400">
@@ -221,9 +221,9 @@ function CourseDetailLeftSection({
   const iconStyle = { color: "white" };
   return (
     // <div className="w-[30rem] ml-[8rem] mt-[60px]"></div>
-    <div className="hidden md:flex md:flex-col relative w-[30rem] ml-[8rem] mt-[75px] shadow-lg z-99 shadow-gray-950 rounded-lg bg-slate-800 border-gray-500 max-h-[23rem]">
+    <div className="hidden md:flex md:flex-col relative w-[30rem] ml-[8rem] mt-[75px] shadow-lg z-99 shadow-gray-950 rounded-xl bg-slate-800 border-gray-500 max-h-[23rem]">
       <Image
-        className="h-60 w-[20rem] bg-slate-700 rounded-t-lg relative left-0 right-0"
+        className="h-60 w-[20rem] bg-slate-700 rounded-t-xl relative left-0 right-0"
         src={
           "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210301154221/System-Design-Live-Course-By-GeeksforGeeks.png"
         }
@@ -900,7 +900,7 @@ function InstructorCard() {
         </p>
       </div>
 
-      <div className="stats stats-vertical md:stats-horizontal shadow my-4 dark:bg-gray-800">
+      <div className="stats stats-vertical md:stats-horizontal shadow my-4 dark:bg-slate-800">
         <div className="stat">
           <div className="stat-figure text-primary">
             <MdOutlineRateReview size={36} style={insStyle} />
