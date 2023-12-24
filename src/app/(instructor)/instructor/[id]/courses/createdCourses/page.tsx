@@ -319,16 +319,18 @@ export default function CreatedCourses() {
           <TableHead>
             <TableRow>
               <TableHeaderCell>Name</TableHeaderCell>
-              <TableHeaderCell className="text-right">Leads</TableHeaderCell>
+              <TableHeaderCell className="text-right">Price ($)</TableHeaderCell>
               <TableHeaderCell className="text-right">
-                Sales ($)
+                Enrollements
               </TableHeaderCell>
               <TableHeaderCell className="text-right">
-                Quota ($)
+                Total Sales ($)
               </TableHeaderCell>
-              <TableHeaderCell className="text-right">Variance</TableHeaderCell>
+              <TableHeaderCell className="text-right">
+                Popularity
+              </TableHeaderCell>
               <TableHeaderCell className="text-right">Region</TableHeaderCell>
-              <TableHeaderCell className="text-right">Status</TableHeaderCell>
+              <TableHeaderCell className="text-right">Performance Status</TableHeaderCell>
             </TableRow>
           </TableHead>
 

@@ -5,9 +5,9 @@ import SideBarRoutes from './sidebarRoutes';
 function Sidebar() {
   return (
     <div
-      className="fixed border-r top-0 left-0 z-40 w-4xl lg:w-64 h-screen scrollbar-thin transition-transform -translate-x-full sm:translate-x-0 shadow-sm bg-white overflow-y-auto" aria-label="Sidebar"
+      className="fixed border-r top-0 left-0 z-40 w-auto lg:w-64 h-screen scrollbar-thin transition-transform -translate-x-full sm:translate-x-0 shadow-sm bg-white overflow-y-auto" aria-label="Sidebar"
     >
-      <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+      <div className="h-full pl-3 md:px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
         <a href='/browseCourses' className="pb-6 flex cursor-pointer items-center">
           <Image
             src="/courseWaveFaviconColored.png"

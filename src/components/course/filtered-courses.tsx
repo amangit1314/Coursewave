@@ -56,7 +56,7 @@ export function FilteredCoursesComponent({ activeCategory, categories }: Filtere
 
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-10 my-6 w-10/12 justify-start mx-auto">
+        <div className="grid grid-cols-1 max-w-5xl lg:grid-cols-4 gap-10 my-6 justify-center mx-auto">
             {
                 loading ? ('Loading ...') : (
                     filteredCourses.map((course: course) => (

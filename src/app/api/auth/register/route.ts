@@ -4,6 +4,7 @@ import { generateVerificationToken } from "@/helpers/jwt_helper";
 import { sendEmail } from "@/helpers/send_email_helper";
 import { generateUid } from "@/helpers/id_helper";
 import { NextRequest, NextResponse } from "next/server";
+import { NextApiResponse } from "next";
 
 const prisma = new PrismaClient();
 
@@ -11,6 +12,15 @@ const isPasswordValid = (password: string) => {
     const passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
     return passwordRegex.test(password);
 };
+
+export default function handler(req: NextRequest, res: NextApiResponse) {
+    if (req.method === 'POST') {
+        POST(req); // Call the POST handler
+    } else {
+        res.status(405).json({ message: 'Method not allowed' }); // Handle other HTTP methods
+    }
+}
+
 
 export const POST = async (req: NextRequest) => {
     const reqBody = await req.json();

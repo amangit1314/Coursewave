@@ -144,7 +144,7 @@ export const EnrolledCoursesCard = ({ courseId, courseImage, courseName, courseL
   const router = useRouter();
 
   const onClick = () => {
-    router.push(`${123456}/dashboard/enrolledCourses/${courseId}`);
+    router.push(`/${1234}/dashboard/enrolledCourses/${courseId}`);
   }
 
   return (

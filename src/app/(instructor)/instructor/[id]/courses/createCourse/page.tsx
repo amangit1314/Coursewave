@@ -1,8 +1,10 @@
 "use client";
 
 import React from "react";
-import CreateCourseForm from "../_components/create-course-form";
-import { Button } from "@/components/ui/button";
+
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 import {
   Form,
   FormControl,
@@ -13,29 +15,34 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+
+import axios from "axios";
 import { Textarea } from "@tremor/react";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import toast from "react-hot-toast";
 
 const formSchema = z.object({
-  username: z.string().min(2).max(50),
+  title: z.string().min(2, {
+    message: "Title is required",
+  }),
 });
 
 function CreateCourse() {
   return (
-    <div className="flex flex-col dark:bg-black dark:bg-opacity-80 pt-[80px] min-h-screen h-full px-[2rem]">
+    <div className="flex flex-col md:items-center md:justify-start max-w-5xl mx-auto dark:bg-black dark:bg-opacity-80 pt-[80px] min-h-screen h-full p-6">
       <div className="flex flex-col">
         <p className="text-2xl font-semibold">Name your Course</p>
-        <p className="text-base dark:text-gray-400">
-          What would you like to name your course? Dont worry you can change
-          this later.{" "}
+        <p className="text-base text-slate-600 dark:text-slate-400">
+          What would you like to name your course? Don&apos;t worry you can
+          change this later.
         </p>
       </div>
 
-      <div className="mt-[2rem]">
-        <Create />
+      <div className="my-[2rem]">
+        <CreateCourseForm />
       </div>
     </div>
   );
@@ -43,85 +50,109 @@ function CreateCourse() {
 
 export default CreateCourse;
 
-function Create() {
-  // 1. Define your form.
+function CreateCourseForm() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      title: "",
     },
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-  }
+  const { isSubmitting, isValid } = form.formState;
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const response = await axios.post("/api/course", values);
+      router.push(`/instructor/createdCourses/${response.data.id}`);
+      console.log(values);
+    } catch (error: any) {
+      toast.error('Something went wrong ...')
+    }
+  };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-8">
         <FormField
           control={form.control}
-          name="username"
+          name="title"
           render={({ field }) => (
-            <FormItem>
+            <div>
               {/* Image upload */}
-              <InputFile />
+              <FormItem>
+                <InputFile />
+              </FormItem>
 
               {/* for coursename */}
-              <div>
-                <FormLabel>Coursename</FormLabel>
+              <FormItem>
+                <FormLabel className="my-4 text-base">Course Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input
+                    disabled={isSubmitting}
+                    placeholder="e.g. 'Full Stack Bootcamp'"
+                    {...field}
+                  />
                 </FormControl>
-                <FormDescription>
-                  This is your public display name.
+                <FormDescription className="pt-2">
+                  What will you teach in this course?
                 </FormDescription>
                 <FormMessage />
-              </div>
+              </FormItem>
 
-              {/* for coursedescription */}
-              <div>
-                <FormLabel className="pt-2">Course Description</FormLabel>
+              {/* for course description */}
+              <FormItem>
+                <FormLabel className="my-4 text-base">
+                  Course Description
+                </FormLabel>
                 <FormControl>
-                  {/* <Input placeholder="shadcn" {...field} /> */}
                   <Textarea
                     placeholder="Write a description for your course ..."
                     {...field}
                   />
                 </FormControl>
-                <FormDescription>
+                <FormDescription className="pt-2">
                   This is your public display name.
                 </FormDescription>
                 <FormMessage />
-              </div>
+              </FormItem>
 
               {/* creator name */}
-              <div>
-                <FormLabel className="pt-2">Creator Name</FormLabel>
+              <FormItem>
+                <FormLabel className="my-4 text-base">
+                  Instructor Name
+                </FormLabel>
                 <FormControl>
-                  <Input placeholder="shadcn" {...field} />
+                  <Input placeholder="Instructor Name" {...field} />
                 </FormControl>
-                <FormDescription>
+                <FormDescription className="pt-2">
                   This is the instrctor name which will be displayed.
                 </FormDescription>
                 <FormMessage />
-              </div>
+              </FormItem>
 
               {/* price slider */}
-              <div className="flex flex-col mt-4">
+              <FormItem className="flex flex-col mt-4">
                 <PriceRange />
-                <FormDescription className="pt-4">
-                  We recommend to keep price between 1 to 100$ to ensure
+                <FormDescription className="pt-2">
+                  We recommend to keep price between 1 to 500$ to ensure
                   affordability.
                 </FormDescription>
-              </div>
-            </FormItem>
+              </FormItem>
+            </div>
           )}
         />
-        <Button type="submit">Submit</Button>
+
+        <div className="flex items-center gap-x-2 mb-4">
+          <Link href="/">
+            <Button variant="ghost" type="button">
+              Cancel
+            </Button>
+          </Link>
+          <Button type="submit" disabled={!isValid || isSubmitting}>
+            Continue
+          </Button>
+        </div>
       </form>
     </Form>
   );
@@ -129,64 +160,24 @@ function Create() {
 
 export function InputFile() {
   return (
-    <div className="grid w-full max-w-sm items-center gap-1.5">
-      <Label htmlFor="picture">Picture</Label>
-      <Input id="picture" type="file" />
-    </div>
-  );
-}
-
-export function PriceSlider() {
-  return (
-    <div>
-      <div className="flex flex-col mx-auto items-center h-32 justify-center">
-        <div className="py-1  w-64 relative min-w-full">
-          <div className="h-2 bg-gray-200 rounded-full">
-            <div
-              className="absolute h-2 rounded-full bg-teal-600 w-0"
-              style={{ width: "58.5714%" }}
-            />
-            <div
-              className="absolute h-4 flex items-center justify-center w-4 rounded-full bg-white shadow border border-gray-300 -ml-2 top-0 cursor-pointer"
-              unselectable="on"
-              onSelect={() => false}
-              style={{ left: "58.5714%" }}
-            >
-              <div className="relative -mt-2 w-1">
-                <div
-                  className="absolute z-40 opacity-100 bottom-100 mb-2 left-0 min-w-full"
-                  style={{ marginLeft: "-20.5px" }}
-                >
-                  <div className="relative shadow-md">
-                    <div className="bg-black -mt-8 text-white truncate text-xs rounded py-1 px-4">
-                      92
-                    </div>
-                    <svg
-                      className="absolute text-black w-full h-2 left-0 top-100"
-                      x="0px"
-                      y="0px"
-                      viewBox="0 0 255 255"
-                      xmlSpace="preserve"
-                    >
-                      <polygon
-                        className="fill-current"
-                        points="0,0 127.5,127.5 255,0"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="absolute text-gray-800 -ml-1 bottom-0 left-0 -mb-6">
-              1
-            </div>
-            <div className="absolute text-gray-800 -mr-1 bottom-0 right-0 -mb-6">
-              150
-            </div>
-          </div>
-        </div>
+    // <div className="grid w-full max-w-sm items-center gap-1.5">
+    //   <Label htmlFor="picture">Picture</Label>
+    //   <Input id="picture" type="file" />
+    // </div>
+    <label className="form-control w-full max-w-xs">
+      <div className="label">
+        <span className="label-text">Pick a file</span>
+        <span className="label-text-alt">Max size 5MB</span>
       </div>
-    </div>
+      <input
+        type="file"
+        className="file-input file-input-bordered w-full max-w-xs"
+      />
+      {/* <div className="label">
+        <span className="label-text-alt">Max 5MB</span>
+        <span className="label-text-alt">Alt label</span>
+      </div> */}
+    </label>
   );
 }
 
@@ -205,30 +196,17 @@ const PriceRange = () => {
 
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor="priceMin">Minimum price ($)</label>
+      <label htmlFor="priceMin">Course price ($)</label>
       <input
         type="number"
         id="priceMin"
         className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:shadow-outline-blue px-3 py-2"
         min={0}
-        max={100}
-        {...register("price.min", { required: true })}
+        max={500}
+        {...register("price", { required: true })}
       />
-      {errors.price && errors.price.min && (
-        <span className="text-red-500 font-sm">{errors.price.min.message}</span>
-      )}
-
-      <label htmlFor="priceMax">Maximum price ($)</label>
-      <input
-        type="number"
-        id="priceMax"
-        className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:shadow-outline-blue px-3 py-2"
-        min={ 0}
-        max={100}
-        {...register("price.max", { required: true })}
-      />
-      {errors.price && errors.price.max && (
-        <span className="text-red-500 font-sm">{errors.price.max.message}</span>
+      {errors.price && (
+        <span className="text-red-500 font-sm">{errors.price.message}</span>
       )}
     </div>
   );

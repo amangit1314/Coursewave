@@ -26,7 +26,7 @@ export default function Home() {
   };
 
   return (
-    <main className="flex dark:bg-gray-950 min-h-screen flex-col items-center justify-between p-10">
+    <main className="flex dark:bg-black dark:bg-opacity-80 min-h-screen flex-col items-center justify-between p-10">
       <Header
         handleLoginClick={handleLoginClick}
         // handleSignUpClick={handleSignUpClick}
@@ -60,8 +60,8 @@ function HeroSection() {
         height={37}
         priority
       />
-      <div className="pt-8 text-2xl tracking-tight lg:text-4xl xl:tex-5xl font-extrabold text-center">Unlock Your Learning Potential with <br /><span className="text-blue-500">Coursewave!</span></div>
-      <p className="pt-4 text-md opacity-80 text-center">Unlock Your Infinte Learning and Professional Protential with <br /> wide range of courses of <span className="text-blue-500">Coursewave!</span></p>
+      <div className="pt-8 text-2xl text-gray-900 dark:text-white tracking-tight lg:text-4xl xl:tex-5xl font-extrabold text-center">Unlock Your Learning Potential with <br /><span className="text-blue-500">Coursewave!</span></div>
+      <p className="pt-4 text-base text-slate-700 dark:text-slate-300 opacity-80 text-center">Unlock Your Infinte Learning and Professional Protential with <br /> wide range of courses of <span className="text-blue-500">Coursewave!</span></p>
       <button className='bg-blue-500 font-semibold text-white px-4 py-2 rounded-xl mt-4'>Courses</button>
 
       <svg

@@ -41,7 +41,7 @@ export default async function DataComponent() {
                 courses.data.map((course: course, index: number) => (
                     <CourseWidget
                         key={index}
-                        index={index}
+                        index={index.toString()}
                         title={course.courseTitle}
                         courseImage={course.courseImage}
                         courseNumber={course.courseId}

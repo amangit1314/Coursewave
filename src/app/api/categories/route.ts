@@ -1,7 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { NextApiResponse } from "next";
 
 const prisma = new PrismaClient();
+
+export default function handler(req: NextRequest, res: NextApiResponse) {
+    if (req.method === 'POST') {
+        POST(req); 
+    } else if (req.method === 'GET') {
+        GET(req);
+     }
+    else if (req.method === 'PUT') { 
+        POST(req);
+    }
+    else if (req.method === 'DELETE') { 
+        DELETE(req);
+    }
+    else {
+        res.status(405).json({ message: 'Method not allowed' }); // Handle other HTTP methods
+    }
+}
+
+
 
 // Get all categories
 export const GET = async (req: NextRequest) => {
