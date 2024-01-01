@@ -41,9 +41,9 @@ import ChartFour from "./_components/apex-chart";
 
 function Analytics() {
   return (
-    <div className="dark:bg-gray-900 h-auto flex justify-between">
+    <div className="dark:bg-gray-900 h-auto flex justify-center">
       {/* first column */}
-      <div>
+      <div className="mr-4">
         <div className="px-[2rem] pt-[90px]">
           <div className="flex flex-col justify-start md:flex-row md:justify-between items-center py-auto">
             <div className="font-semibold text-xl pt-2 pb-4 text-gray-700 dark:text-gray-400">
@@ -311,46 +311,6 @@ function BestSellingCourses() {
 }
 
 // -----------------------------------------------------------------------------------
-
-const chartdata3 = [
-  {
-    date: "Jan 23",
-    Courses: 167,
-    Sessions: 145,
-    Articles: 135,
-  },
-  {
-    date: "Feb 23",
-    Courses: 125,
-    Sessions: 110,
-    Articles: 155,
-  },
-  {
-    date: "Mar 23",
-    Courses: 156,
-    Sessions: 149,
-    Articles: 145,
-  },
-  {
-    date: "Apr 23",
-    Courses: 165,
-    Sessions: 112,
-    Articles: 125,
-  },
-  {
-    date: "May 23",
-    Courses: 153,
-    Sessions: 138,
-    Articles: 165,
-  },
-  {
-    date: "Jun 23",
-    Courses: 124,
-    Sessions: 145,
-    Articles: 175,
-  },
-];
-
 const chartdata = [
   {
     year: 2023,
@@ -401,83 +361,6 @@ export const LineChartForStudents = () => {
   );
 };
 
-// -----------------------------------------------------------------------------
-
-// ChartJS.register(
-//   LineElement,
-//   CategoryScale,
-//   LinearScale,
-//   PointElement,
-// );
-
-// export const LineChartSliderExample = () => {
-//   const [value, setValue] = React.useState(true);
-
-//   const data = {
-//     labels: ["May 12", "June 13", "July 15", "Aug 15", "Sep 15", "Oct 18", "Dec 31"],
-//     datasets: [{
-//       data: [3, 7, 5, 7, 8, 6, 9, 1, 6, 8],
-//       backgroundColor: 'transparent',
-//       borderColor: '#f26ced',
-//       pointBorderColor: 'transparent',
-//       pointBorderWidth: 4,
-//       tension: 0.5
-//     }],
-//   };
-
-//   const options = {
-//     plugins: {
-//       legend: false,
-//     },
-//     scales: {
-//       x: {
-//         grid: {
-//           display: false
-//         }
-//       },
-//       y: {
-//         min: .2,
-//         max: 10,
-//         ticks: {
-//           stepSize: 2,
-//           callback:  (value: any) => value + 'K'
-//         },
-//         grid: {
-//           borderDash: [10]
-//         }
-//       }
-//     }
-//   };
-
-//   return (
-//     // <Card className="max-w-3xl mx-auto p-0 rounded-lg mt-2">
-//     //   <div className="p-6">
-//     //     <LineChart
-//     //       className="h-80 mt-4"
-//     //       data={chartdata3}
-//     //       index="date"
-//     //       categories={[
-//     //         "Courses",
-//     //         "Sessions",
-//     //         "Articles",
-//     //       ]}
-//     //       colors={["amber", "indigo", "rose"]}
-//     //       yAxisWidth={30}
-//     //       enableLegendSlider={value}
-//     //     />
-//     //   </div>
-//     //   <div className="p-6 bg-gray-50 border-t flex items-center space-x-3 rounded-b-lg">
-//     //     <Switch  id="switch" checked={value} onChange={() => setValue(!value)} />
-//     //     <label className="text-sm text-slate-500" htmlFor="switch">
-//     //       Enable Legend Slider
-//     //     </label>
-//     //   </div>
-//     // </Card>
-//     <Card className='w-full rounded-lg mt-2'>
-//       <Line className='w-full' data={data} options={options}></Line>
-//     </Card>
-//   );
-// };
 
 export function DateRangePickerSpanish() {
   const [value, setValue] = React.useState<DateRangePickerValue>({

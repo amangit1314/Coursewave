@@ -23,14 +23,6 @@ function Cart() {
         </div>
       </div>
 
-      {/* <div className='w-full sticky justify-between flex p-3 rounded-lg bg-gray-800 h-[4rem]'>
-        <div className='flex items-center py-auto '>
-          <div className='text-md text-white font-medium'>Total Price</div>
-          <div className='text-xl font-semibold text-blue-500 ml-1'>300</div>
-        </div>
-        <Button className='bg-blue-500 text-white font-medium hover:text-blue-500'>Checkout</Button>
-      </div> */}
-
     </div>
   )
 }

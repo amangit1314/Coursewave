@@ -12,7 +12,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname();
 
   // Use regex to match specific URL patterns
-  const hideSidebar = pathname.match(
+  const hideSidebar = 
+    pathname.match(
     /dashboard\/enrolledCourses\/(undefined|null)/
   );
 

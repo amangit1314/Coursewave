@@ -16,11 +16,10 @@ export const POST = async (req: NextRequest, { params }: {
     const instructorId = params?.id;
 
     const reqBody = await req.json();
-    const { courseTitle, courseImage, courseCreatorName, coursePrice } = reqBody;
+    const { courseTitle, courseImage, courseCreatorName, coursePrice, courseDescription, courseCategories } = reqBody;
 
     try {
         const courseId = `course_${generateUid().split("-")[0]}`;
-        const isFree = coursePrice ? false : true;
 
         if (!instructorId) {
             return NextResponse.json({ success: false, message: "Invalid Instructor Id" }, { status: 400 });
@@ -37,7 +36,9 @@ export const POST = async (req: NextRequest, { params }: {
                 courseImage: courseImage,
                 courseCreator: courseCreatorName,
                 coursePrice: coursePrice,
-                isFree: isFree,
+                courseDescription: courseDescription,
+                courseCategories: courseCategories,
+                isFree: coursePrice ? false : true,
                 instructorID: instructorId,
             }
         });

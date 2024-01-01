@@ -26,27 +26,29 @@ export default function Home() {
   };
 
   return (
-    <main className="flex dark:bg-black dark:bg-opacity-80 min-h-screen flex-col items-center justify-between p-10">
-      <Header
-        handleLoginClick={handleLoginClick}
-        // handleSignUpClick={handleSignUpClick}
-      />
+    <main className="flex dark:bg-black dark:bg-opacity-80 min-h-screen flex-col items-center justify-between ">
+      <div className="p-10">
+        <Header
+          handleLoginClick={handleLoginClick}
+          // handleSignUpClick={handleSignUpClick}
+        />
 
-      <HeroSection />
+        <HeroSection />
 
-      <About />
+        <About />
 
-      <Offerings />
+        <Offerings />
 
-      <SessionsSection />
+        <SessionsSection />
 
-      <Testimonials />
+        <Testimonials />
 
-      <HomeBrowseSection />
+        <HomeBrowseSection />
+      </div>
 
       <Footer />
     </main>
-  )
+  );
 }
 
 function HeroSection() {

@@ -6,33 +6,19 @@ import toast, { Toaster } from "react-hot-toast";
 import CreateCourseButton from "../_components/create-course-button";
 import CreatedCourseWidget from "../_components/created-course-widget";
 
-// export const CreatedCourses = () => {
-//   const [loading, setLoading] = React.useState(true);
-//   const [courses, setCourses] = React.useState<course[]>([]);
-
-//   useEffect(() => {
-//     fetch(
-//       "https://localhost:3000/api/instructor/4675e19e-432b-4135-b285-cc0953095f9d/dashboard/courses"
-//     )
-//       .then((res) => {
-//         if (res.ok) {
-//           return res.json();
-//         } else {
-//           throw new Error("Failed to fetch created courses");
-//         }
-//       })
-//       .then((data) => {
-//         console.log(data); // Check the data in the console
-
-//         // Assuming your data.data is an array of courses
-//         setCourses(data.data);
-//         setLoading(false);
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching courses:", error);
-//         setLoading(false);
-//       });
-//   }, []);
+import {
+  Card,
+  Table,
+  TableRow,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableBody,
+  BadgeDelta,
+  MultiSelect,
+  MultiSelectItem,
+  Flex,
+} from "@tremor/react";
 
 //   return (
 //     <div className="pt-[80px] pb-12">
@@ -40,7 +26,6 @@ import CreatedCourseWidget from "../_components/created-course-widget";
 //         <SearchForm />
 //         <CreateCourseButton />
 //       </div>
-
 //       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 my-6 w-10/12 justify-start mx-auto">
 //         {loading
 //           ? "Loading ..."
@@ -60,7 +45,6 @@ import CreatedCourseWidget from "../_components/created-course-widget";
 //       </div>
 //     </div>
 //   );
-// };
 
 
 function SearchForm() {
@@ -203,21 +187,6 @@ function SearchForm() {
   );
 }
 
-import { useState } from "react";
-import {
-  Card,
-  Table,
-  TableRow,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableBody,
-  BadgeDelta,
-  MultiSelect,
-  MultiSelectItem,
-  Flex,
-} from "@tremor/react";
-
 const salesPeople = [
   {
     name: "Peter Doe",
@@ -292,10 +261,36 @@ const salesPeople = [
 ];
 
 export default function CreatedCourses() {
-  const [selectedNames, setSelectedNames] = useState<string[]>([]);
+  const [selectedNames, setSelectedNames] = React.useState<string[]>([]);
+  const [loading, setLoading] = React.useState(false);
+  const [createdCourses, setCreatedCourses] = React.useState<course[]>([]);
 
   const isSalesPersonSelected = (salesPerson: any) =>
     selectedNames.includes(salesPerson.name) || selectedNames.length === 0;
+
+    useEffect(() => {
+      fetch(
+        "https://localhost:3001/api/instructor/4675e19e-432b-4135-b285-cc0953095f9d/dashboard/courses"
+      )
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          } else {
+            throw new Error("Failed to fetch created courses");
+          }
+        })
+        .then((data) => {
+          console.log(data); // Check the data in the console
+
+          // Assuming your data.data is an array of courses
+          setCreatedCourses(data.data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching courses:", error);
+          setLoading(false);
+        });
+    }, []);
 
   return (
     <div className="pt-[80px] px-[2rem] h-full">
@@ -319,7 +314,9 @@ export default function CreatedCourses() {
           <TableHead>
             <TableRow>
               <TableHeaderCell>Name</TableHeaderCell>
-              <TableHeaderCell className="text-right">Price ($)</TableHeaderCell>
+              <TableHeaderCell className="text-right">
+                Price ($)
+              </TableHeaderCell>
               <TableHeaderCell className="text-right">
                 Enrollements
               </TableHeaderCell>
@@ -330,24 +327,26 @@ export default function CreatedCourses() {
                 Popularity
               </TableHeaderCell>
               <TableHeaderCell className="text-right">Region</TableHeaderCell>
-              <TableHeaderCell className="text-right">Performance Status</TableHeaderCell>
+              <TableHeaderCell className="text-right">
+                Performance Status
+              </TableHeaderCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {salesPeople
+            {createdCourses
               .filter((item) => isSalesPersonSelected(item))
               .map((item) => (
-                <TableRow key={item.name}>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell className="text-right">{item.leads}</TableCell>
-                  <TableCell className="text-right">{item.sales}</TableCell>
+                <TableRow key={item.courseId}>
+                  <TableCell>{item.courseTitle}</TableCell>
+                  <TableCell className="text-right">{item.coursePrice}</TableCell>
+                  {/* <TableCell className="text-right">{item.sales}</TableCell>
                   <TableCell className="text-right">{item.quota}</TableCell>
                   <TableCell className="text-right">{item.variance}</TableCell>
-                  <TableCell className="text-right">{item.region}</TableCell>
+                  <TableCell className="text-right">{item.region}</TableCell> */}
                   <TableCell className="text-right">
-                    <BadgeDelta deltaType={item.deltaType} size="xs">
-                      {item.status}
+                    <BadgeDelta deltaType={'moderateIncrease'} size="xs">
+                      {'overperforming'}
                     </BadgeDelta>
                   </TableCell>
                 </TableRow>
