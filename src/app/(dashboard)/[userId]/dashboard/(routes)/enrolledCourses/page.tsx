@@ -1,9 +1,9 @@
 import React from 'react'
 
-const page = () => {
+const EnrolledCourses = () => {
   return (
-    <div>page</div>
+    <div>EnrolledCourses</div>
   )
 }
 
-export default page
+export default EnrolledCourses;

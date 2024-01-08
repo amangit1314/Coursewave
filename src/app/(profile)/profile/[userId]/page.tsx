@@ -6,7 +6,7 @@ import { Metadata } from "next";
 import { FcGoogle } from "react-icons/fc";
 import React from 'react';
 
-export const metadata: Metadata = {
+ const metadata: Metadata = {
     title: "Profile Page | Next.js E-commerce Dashboard Template",
     description: "This is Profile page for TailAdmin Next.js",
     // other metadata

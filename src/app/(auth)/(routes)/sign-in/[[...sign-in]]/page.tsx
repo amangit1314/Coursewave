@@ -5,7 +5,7 @@ function page() {
   return (
     <div className='flex mx-auto items-center justify-center'>
       <SignIn
-        afterSignInUrl={`/${userId}/browseCourses`}
+        // afterSignInUrl={`/${userId}/browseCourses`}
       />
   </div>
   )

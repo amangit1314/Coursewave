@@ -243,7 +243,7 @@ function CreateCourseForm() {
   );
 }
 
-export function PickCourseImage() {
+ function PickCourseImage() {
   return (
     <label className="form-control w-full max-w-5xl">
       <div className="label">

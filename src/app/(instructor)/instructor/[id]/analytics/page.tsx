@@ -344,7 +344,7 @@ const valueFormatter = (number: number) =>
   `${new Intl.NumberFormat("us").format(number).toString()}K`;
 
 // --------------------------------------------------------------------------------
-export const LineChartForStudents = () => {
+const LineChartForStudents = () => {
   return (
     <Card>
       <Title>Students enrolled in Courses/Sessions (2023 to Present)</Title>
@@ -362,7 +362,7 @@ export const LineChartForStudents = () => {
 };
 
 
-export function DateRangePickerSpanish() {
+function DateRangePickerSpanish() {
   const [value, setValue] = React.useState<DateRangePickerValue>({
     from: new Date(2023, 1, 1),
     to: new Date(),

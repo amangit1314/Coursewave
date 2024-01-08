@@ -1,7 +1,7 @@
 import CourseWidget from "./course-widget";
 import { course } from '@prisma/client';
 
-export const getCourses = async () => {
+const getCourses = async () => {
     try {
         const res = await fetch('https://localhost:3000/api/courses');
 
