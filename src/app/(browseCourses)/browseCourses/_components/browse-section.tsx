@@ -15,7 +15,7 @@ const BrowseSection: React.FC<BrowseSectionProps> = ({ children }) => {
     const [categories, setCategories] = React.useState<category[]>([]);
 
     useEffect(() => {
-        fetch('https://localhost:3000/api/categories/')
+        fetch('/api/categories/')
             .then((res) => {
                 if (res.ok) {
                     return res.json();
