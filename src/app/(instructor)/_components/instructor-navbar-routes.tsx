@@ -35,7 +35,10 @@ function InstructorNavbarRoutes() {
                         </div>
                     </span>
                 </button>
-                <UserAvatar />
+                <UserAvatar
+                    // put here uid of current user
+                    userId='111'
+                />
             </div>
         </div>
 

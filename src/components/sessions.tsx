@@ -1,9 +1,6 @@
-"use client";
-
 import React from 'react'
 import Image from 'next/image'
 import { BsFillArrowRightCircleFill } from 'react-icons/bs';
-import Link from 'next/link';
 
 function SessionsSection() {
 
