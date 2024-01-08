@@ -5,7 +5,7 @@ import { generateUid } from "@/helpers/id_helper";
 
 dotenv.config();
 const prisma = new PrismaClient();
-
+export const dynamic = 'force-dynamic';
 // create a course[PROBLEM]
 export const POST = async (req: NextRequest, { params }: {
     params: {

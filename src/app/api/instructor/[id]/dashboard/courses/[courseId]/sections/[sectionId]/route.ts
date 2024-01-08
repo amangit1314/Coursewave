@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 const prisma = new PrismaClient();
-
+export const dynamic = 'force-dynamic';
 // edit a course section (name, description)
 export const PUT = async (req: NextRequest, { params }: {
     params: {

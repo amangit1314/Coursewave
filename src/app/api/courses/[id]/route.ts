@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { NextApiResponse } from "next";
+// import { NextApiResponse } from "next";
 
 const prisma = new PrismaClient();
+export const dynamic = 'force-dynamic';
 
 // export default function handler(req: NextRequest, res: NextApiResponse) {
 //     if (req.method === 'POST') {

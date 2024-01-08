@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 // import { generateUid } from "@/helpers/id_helper";
-
+export const dynamic = 'force-dynamic';
 export const PUT = async (req: NextRequest, { params }: {
     params: {
         id?: string;

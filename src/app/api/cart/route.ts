@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { NextApiResponse } from "next";
-
+// import { NextApiResponse } from "next";
+export const dynamic = 'force-dynamic';
 const prisma = new PrismaClient();
 
-export default function handler(req: NextRequest, res: NextApiResponse) {
-    if (req.method === 'POST') {
-        POST(req); // Call the POST handler
-    } else {
-        res.status(405).json({ message: 'Method not allowed' }); // Handle other HTTP methods
-    }
-}
+// export default function handler(req: NextRequest, res: NextApiResponse) {
+//     if (req.method === 'POST') {
+//         POST(req); // Call the POST handler
+//     } else {
+//         res.status(405).json({ message: 'Method not allowed' }); // Handle other HTTP methods
+//     }
+// }
 
 
 export const POST = async (req: NextRequest) => {

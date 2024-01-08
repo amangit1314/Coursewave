@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-
+export const dynamic = 'force-dynamic';
 //* get video information for provided videoId
 export async function GET(req: NextRequest, { params }: {
     params: {

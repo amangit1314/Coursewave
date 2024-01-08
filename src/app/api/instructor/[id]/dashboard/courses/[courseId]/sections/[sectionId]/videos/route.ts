@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { createClient } from "@supabase/supabase-js";
-
+export const dynamic = 'force-dynamic';
 const prisma = new PrismaClient();
 // const supabaseURL = process.env.SUPABASE_URL!;
 // const supabaseAPIKey = process.env.SUPABASE_API_KEY!;

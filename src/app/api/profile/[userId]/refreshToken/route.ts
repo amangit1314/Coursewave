@@ -1,6 +1,6 @@
 import { generateAccessToken } from "@/helpers/jwt_helper";
 import { NextRequest, NextResponse } from "next/server";
-
+export const dynamic = 'force-dynamic';
 // refresh token
 export const POST = async (req: NextRequest) => {
     const reqBody = await req.json();

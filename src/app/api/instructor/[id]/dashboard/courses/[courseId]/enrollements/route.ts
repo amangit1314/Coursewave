@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-
+export const dynamic = 'force-dynamic';
 // get enrolled students for courseId
 export const GET = async (req: NextRequest, { params }: {
     params: {

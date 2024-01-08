@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import dotenv from "dotenv";
 dotenv.config();
 const prisma = new PrismaClient();
-
+export const dynamic = 'force-dynamic';
 // Get details of a course with particular course id [DONE]
 export const GET = async (req: NextRequest, { params }: {
     params: {

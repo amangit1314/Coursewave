@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
-
+export const dynamic = 'force-dynamic';
 // change password
 export const POST = async (req: NextRequest, { params: { uid } }: { params: { uid: string }; }) => {
     const reqBody = await req.json();

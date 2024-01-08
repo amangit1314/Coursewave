@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
-
+export const dynamic = 'force-dynamic';
 // edit profile username and profile image url
 export const PATCH = async (req: NextRequest, { params }: {
     params: {
