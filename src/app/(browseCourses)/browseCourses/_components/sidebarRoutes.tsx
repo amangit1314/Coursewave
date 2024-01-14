@@ -1,15 +1,15 @@
-import React from 'react'
-import { FaCompass } from 'react-icons/fa';
-import { AiFillSetting, AiOutlineTransaction } from 'react-icons/ai'
-import { BiBroadcast } from 'react-icons/bi';
-import { TbShoppingCartCode } from 'react-icons/tb';
-import SidebarItem from './sidebarItem';
-import { MdDashboard } from 'react-icons/md';
-import { CiLogout } from 'react-icons/ci';
-import { ImSearch } from 'react-icons/im';
-import { UserButton } from '@clerk/nextjs';
+import React from "react";
+import { FaCompass } from "react-icons/fa";
+import { AiFillSetting, AiOutlineTransaction } from "react-icons/ai";
+import { BiBroadcast } from "react-icons/bi";
+import { TbShoppingCartCode } from "react-icons/tb";
+import SidebarItem from "./sidebarItem";
+import { MdDashboard } from "react-icons/md";
+import { CiLogout } from "react-icons/ci";
+import { ImSearch } from "react-icons/im";
+import { UserButton } from "@clerk/nextjs";
 import { FaHandsHelping } from "react-icons/fa";
-import { PiChatsTeardropFill } from 'react-icons/pi';
+import { PiChatsTeardropFill } from "react-icons/pi";
 
 const routes = [
   {
@@ -22,11 +22,11 @@ const routes = [
     label: "Browse",
     href: `/browseCourses`,
   },
-//   {
-//     icon: <ImSearch size={22} />,
-//     label: "Search",
-//     href: `/search`,
-//   },
+  //   {
+  //     icon: <ImSearch size={22} />,
+  //     label: "Search",
+  //     href: `/search`,
+  //   },
   {
     icon: <BiBroadcast size={22} />,
     label: "Sessions",
@@ -54,32 +54,23 @@ const routes = [
   },
 ];
 
-function SideBarRoutes() {
-    return (
-        <div className='flex flex-col font-medium justify-between'>
-            <ul className="space-y-2 font-medium">
-                {routes.map((route, index) => {
-                    return (
-                        <SidebarItem
-                            key={index}
-                            href={route.href}
-                            icon={route.icon}
-                            label={route.label}
-                        />
-                    )
-                })}
-            </ul>
+const SideBarRoutes = () => {
+  return (
+    <div className="flex flex-col font-medium justify-between">
+      <ul className="space-y-2 font-medium">
+        {routes.map((route, index) => {
+          return (
+            <SidebarItem
+              key={index}
+              href={route.href}
+              icon={route.icon}
+              label={route.label}
+            />
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
 
-            {/* <div className='mt-[19rem]'> */}
-                {/* <SidebarItem
-                    href='/signOut'
-                    icon={<CiLogout size={22} />}
-                    label='LogOut'
-                /> */}
-                {/* <UserButton afterSignOutUrl="/" /> */}
-            {/* </div> */}
-        </div>
-    )
-}
-
-export default SideBarRoutes
+export default SideBarRoutes;

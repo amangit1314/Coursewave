@@ -4,7 +4,7 @@ import NavbarRoutes from '@/components/navbar-routes'
 
 function Navbar() {
   return (
-      <div className='p-4 border-b h-full flex items-center dark:bg-slate-800 bg-white shadow-sm'>
+      <div className='p-4 border-b h-full flex items-center dark:bg-zinc-900 bg-white shadow-sm'>
           <MobileSidebar />
           <NavbarRoutes />
     </div>

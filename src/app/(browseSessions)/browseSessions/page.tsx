@@ -5,7 +5,7 @@ import { YourUpComingSessions } from './_components/your-upcomming-sessions';
 
 export default function BrowseSessions() {
   return (
-    <div className='p-12 mt-[3rem] max-w-7xl'>
+    <div className='p-12 max-w-7xl overflow-x-hidden'>
       <YourUpComingSessions />
 
       <MeetOurCoaches />

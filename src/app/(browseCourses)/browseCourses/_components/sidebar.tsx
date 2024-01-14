@@ -1,14 +1,24 @@
 import React from 'react'
 import Image from 'next/image'
+import { Josefin_Sans } from "next/font/google";
 import SideBarRoutes from './sidebarRoutes';
 
-function Sidebar() {
+const josefinSans = Josefin_Sans({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+});
+
+const Sidebar = () => {
   return (
     <div
-      className="fixed border-r top-0 left-0 z-40 w-auto lg:w-64 h-screen scrollbar-thin transition-transform -translate-x-full sm:translate-x-0 shadow-sm bg-white overflow-y-auto" aria-label="Sidebar"
+      className="fixed border-r top-0 left-0 z-40 w-auto lg:w-64 h-screen scrollbar-thin transition-transform -translate-x-full sm:translate-x-0 shadow-sm bg-white overflow-y-auto"
+      aria-label="Sidebar"
     >
-      <div className="h-full pl-3 md:px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
-        <a href='/browseCourses' className="pb-6 flex cursor-pointer items-center">
+      <div className="h-full pl-3 md:px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-zinc-900">
+        <a
+          href="/browseCourses"
+          className="pb-6 flex cursor-pointer items-center"
+        >
           <Image
             src="/courseWaveFaviconColored.png"
             alt="CourseWave Logo"
@@ -17,12 +27,16 @@ function Sidebar() {
             height={8}
             priority
           />
-          <p className="pl-2 text-blue-500 font-bold font-mono text-xl">Coursewave</p>
+          <p
+            className={`pl-2 text-blue-500 font-bold text-xl ${josefinSans.className}`}
+          >
+            Coursewave
+          </p>
         </a>
         <SideBarRoutes />
       </div>
     </div>
-  )
+  );
 }
 
 export default Sidebar

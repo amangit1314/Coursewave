@@ -1,9 +1,14 @@
 import React from 'react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import Sidebar from './sidebar';
 import Image from "next/image";
-import SideBarRoutes from "./sidebarRoutes";
 import { Menu } from './menu';
+import { Josefin_Sans } from "next/font/google";
+import SideBarRoutes from "./sidebarRoutes";
+
+const josefinSans = Josefin_Sans({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+});
 
 function MobileSidebar() {
     return (
@@ -11,7 +16,10 @@ function MobileSidebar() {
         <SheetTrigger className="md:hidden pr-4 hover:opacity-75 transition">
           <Menu />
         </SheetTrigger>
-        <SheetContent side="left" className="px-3 py-4 bg-white dark:bg-gray-800">
+        <SheetContent
+          side="left"
+          className="px-3 py-4 bg-white dark:bg-gray-800"
+        >
           {/* <Sidebar /> */}
           <a
             href="/browseCourses"
@@ -25,7 +33,9 @@ function MobileSidebar() {
               height={8}
               priority
             />
-            <p className="pl-2 text-blue-500 font-bold font-mono text-xl">
+            <p
+              className={`pl-2 text-blue-500 font-bold text-xl ${josefinSans.className}`}
+            >
               Coursewave
             </p>
           </a>

@@ -35,7 +35,7 @@ export const CourseItem: React.FC<CourseItemProps> = ({
         <div
             key={course.courseId}
             onClick={onViewDetails}
-            className={`group cursor-pointer rounded-xl w-[15rem] dark:bg-gray-800 p-2.5 transition-colors hover:border-blue-500 hover:bg-white hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30`}
+            className={`group cursor-pointer rounded-xl max-w-[15rem] w-auto dark:bg-gray-800 p-2.5 transition-colors hover:border-blue-500 hover:bg-white hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30`}
         >
 
             {/* Course Image */}
@@ -79,7 +79,7 @@ export const CourseItem: React.FC<CourseItemProps> = ({
                         width={28}
                         content='cover'
                     />
-                    <p className='text-xs text-gray-600 ml-[6px] dark:text-gray-400'>Terisha Simmons</p>
+                    <p className='text-xs text-gray-600 ml-[6px] tracking-tight dark:text-gray-400'>Terisha Simmons</p>
                 </div>
 
                 {/* bookmark icon */}

@@ -6,8 +6,8 @@ interface BrowseSessionsLayoutProps {
 }
 
 export default function BrowseSessionsLayout({ children }: BrowseSessionsLayoutProps) {
-    return <div className="min-h-screen h-full dark:bg-slate-700">
-        <div className="h-[60px] md:pl-56 fixed inset-y-0 w-full z-50 ">
+    return <div className="min-h-screen h-full dark:bg-zinc-900">
+        <div className="h-[64px] md:pl-56 fixed inset-y-0 w-full z-50 ">
             <Navbar />
         </div>
         

@@ -28,7 +28,7 @@ function SidebarItem({ href, icon, label }: SidebarItemProps) {
         >
             <div className='pl-2  flex py-2 item-center gap-x-2'>
                 <div className={cn('text-slate-500', isActive && "text-blue-500")}>{icon}</div>
-                <span className="flex-1 ml-3 whitespace-nowrap">{label} </span>
+                <span className="flex-1 ml-3 tracking-tight whitespace-nowrap">{label} </span>
             </div>
 
             <div className={cn('ml-auto opacity-0 rounded-l-md border-2 border-blue-500 h-8 transition-all ',

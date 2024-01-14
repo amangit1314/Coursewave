@@ -1,39 +1,74 @@
-import React from 'react'
-import Image from 'next/image'
+"use client";
+
+import React, { useEffect } from "react";
+import Image from "next/image";
+import { Badge, Select, SelectItem } from "@tremor/react";
+import { CalculatorIcon } from "lucide-react";
 
 export function UpcommingSessionsCard() {
-    return (
-        <div className='rounded-xl p-4 flex border border-gray-300 mt-2 mb-8'>
-            <div className={`bg-purple-500 h-[4.5rem] w-1 rounded-full`}></div>
+  const [value, setValue] = React.useState("");
+  const [randomColor, setRandomColor] = React.useState("");
 
-            <div className='mx-3 justify-start items-start py-auto flex flex-col'>
-                <p className='uppercase text-gray-600 text-sm dark:text-gray-400'>Tuesday, jan 3 at 3:40 pm (pt)</p>
-                <div className='flex justify-between'>
-                    <div className='flex'>
-                        <p className='text-base font-medium'>One-on-One Session (40m) </p>
-                        <p className='text-xs ml-[8px] font-medium bg-green-400 p-[6px] rounded-xl'>Confirmed</p>
-                    </div>
+  useEffect(() => {
+    // Generate a random color on page load
+    const colors = ["red", "green", "blue", "orange", "purple", "yellow"];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    setRandomColor(colors[randomIndex]);
+  }, []); // Empty dependency array runs the effect only once on mount
 
-                    {/* modify */}
-                    <div className="text-xs ml-4 font-medium border border-gray-200 bg-transparent p-[6px] rounded-xl">
-                        Modify
-                        <span className='font-bold ml-2 rotate-180'>^</span>
-                    </div>
-                </div>
+  return (
+    <div className="rounded-xl w-full cursor-pointer backdrop-blur-xl p-4 hover:shadow-xl flex border border-gray-300 mt-2 mb-8">
+      {/* <div
+        className={`bg-${randomColor} h-[4.5rem] w-[2px] rounded-full`}
+      ></div> */}
 
-                <div className='flex'>
-                    <Image
-                        className='h-6 w-6 rounded-full'
-                        src='/nextjs.png'
-                        alt='p'
-                        height={24}
-                        width={24}
-                        content='cover'
-                    />
-                    <p className='text-sm text-gray-600 ml-2 dark:text-gray-400'>Terisha Simmons</p>
-                </div>
-            </div>
-
+      <div className="justify-start items-start py-auto">
+        <p className="uppercase text-gray-600 text-xs dark:text-gray-300">
+          Tuesday, jan 3 at 3:40 pm (pt)
+        </p>
+        <div className="justify-between">
+          <div className="flex">
+            <p className="text-base font-medium tracking-tight">
+              One-on-One Session (40m){" "}
+            </p>
+          </div>
         </div>
-    );
+        <div className="flex justify-start">
+          {/* instructor name and image */}
+          <div className="flex justify-start items-center mt-[6px]">
+            <Image
+              className="h-8 w-8 ring-1 ring-blue-500 rounded-full"
+              src="/assets/images/user/user-01.png"
+              alt="p"
+              height={31}
+              width={31}
+              content="cover"
+            />
+            <p className="text-sm ml-[6px] tracking-tight dark:text-gray-300">John Doe</p>
+          </div>
+
+          {/* <div
+            className=" mx-2 text-xs px-2 flex justify-between items-center font-medium border border-green-500 text-green-500 tracking-tight bg-transparent rounded-full"
+          
+          >
+            Confirmed
+          </div> */}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+{
+  /* modify */
+}
+{
+  /* <div className="max-w-sm mx-auto space-y-6">
+            <Select value={value} onValueChange={setValue}>
+              <SelectItem value="1">Kilometers</SelectItem>
+              <SelectItem value="2">Meters</SelectItem>
+              <SelectItem value="3">Miles</SelectItem>
+              <SelectItem value="4">Nautical Miles</SelectItem>
+            </Select>
+          </div> */
 }

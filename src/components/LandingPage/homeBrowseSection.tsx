@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
 import React from "react";
 import Image from "next/image";
 import { BsFillBookmarkStarFill } from "react-icons/bs";
 import { CiBookmark } from "react-icons/ci";
-import { Badge } from "./ui/badge";
+import { Badge } from "../ui/badge";
 import { useRouter } from "next/navigation";
 import { course } from "@prisma/client";
 
@@ -71,7 +71,7 @@ const HomeBrowseSection = () => {
   const [activeTab, setActiveTab] = React.useState(0);
 
   return (
-    <div className="h-auto mt-[14rem] md:mt-[1rem] mb-2 max-w-7xl place-items-center items-center w-full">
+    <div className="min-h-screen h-auto mt-[14rem] md:mt-[1rem] mb-2 max-w-7xl place-items-center items-center w-full overflow-x-hidden">
       {/* heading */}
       <p className="text-2xl font-bold text-center">
         Browse Different Course Categories
@@ -101,7 +101,7 @@ const HomeBrowseSection = () => {
       </ul>
 
       {/* courses  section */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-y-4 md:gap-x-16 my-6 w-full justify-center mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-y-4 my-6 w-9/12 justify-center mx-auto">
         {courses.map((course, index) => (
           <CourseItem key={index} course={course} />
         ))}
@@ -140,10 +140,12 @@ const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
   };
 
   return (
+    // hover:border hover:border-blue-500 hover:bg-white hover:dark:border-blue-500
+
     <div
       key={course.courseId}
       onClick={onViewDetails}
-      className={`flex flex-col items-center mx-auto md:mx-0 group cursor-pointer hover:shadow-md rounded-xl w-[15rem] dark:bg-gray-800 p-2.5 transition-colors hover:border hover:border-blue-500 hover:bg-white hover:dark:border-blue-500 `}
+      className={`flex flex-col items-center mx-auto md:mx-0 group cursor-pointer hover:shadow-md rounded-xl max-w-[15rem] w-auto dark:bg-gray-800 p-2.5 transition-colors  `}
     >
       {/* Course Image  and price*/}
       <div className="relative">
@@ -165,8 +167,8 @@ const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
 
       {/* Course classes and duration */}
       <div className="flex w-full justify-between mt-2">
-        <p className="text-xs">10 Classes</p>
-        <p className="pl-1 text-xs">48 hours</p>
+        <p className="text-xs tracking-tight">10 Classes</p>
+        <p className="pl-1 text-xs tracking-tight">48 hours</p>
       </div>
 
       {/* Course Title */}
@@ -177,16 +179,19 @@ const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
       {/* instructor(image and name) & bookmark icon */}
       <div className="flex w-full justify-between items-center py-auto  mt-1 mb-1">
         {/* instructor image and name */}
-        <div className="flex items-center py-auto">
-          <Image
+        <div className="flex items-center space-x-1 py-auto">
+          {/* <Image
             className="h-8 w-8 rounded-full"
             src="/nextjs.png"
             alt="p"
             height={28}
             width={28}
             content="cover"
-          />
-          <p className="text-xs text-gray-600 ml-[6px] dark:text-gray-400">
+          /> */}
+          <p className="text-xs text-gray-600 tracking-tight dark:text-gray-400">
+            By
+          </p>
+          <p className="text-xs text-gray-600 tracking-tight hover:underline dark:text-gray-400">
             Terisha Simmons
           </p>
         </div>

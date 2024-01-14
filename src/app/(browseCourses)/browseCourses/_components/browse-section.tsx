@@ -43,7 +43,7 @@ const BrowseSection: React.FC<BrowseSectionProps> = ({ children }) => {
     const activeCategory = categories[activeCategoryIndex]?.categoryName || 'All';
 
     return (
-        <div className="pt-[80px] pb-12 w-full">
+        <div className="py-12 w-full px-12 overflow-x-hidden">
             <CategoriesComponent
                 activeCategory={activeCategoryIndex}
                 setActiveCategory={handleClick}
