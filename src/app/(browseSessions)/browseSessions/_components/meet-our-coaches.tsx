@@ -26,35 +26,37 @@ export const MeetOurCoaches = () => {
 const coaches = [
   {
     name: "Jessica Gutierrez",
-    image: "/assets/images/user/user-01.png",
+    image: "https://content.wepik.com/statics/20269014/preview-page0.jpg",
     profession: "Data Scientist",
     about:
       "I aim to bring out your strengths and be an empatheic, supportive, and non-judgemental person for you.",
   },
   {
     name: "James Arnol",
-    image: "/assets/images/user/user-02.png",
+    image: "https://content.wepik.com/statics/20269016/preview-page1.jpg",
     profession: "Data Scientist",
     about:
       "I aim to bring out your strengths and be an empatheic, supportive, and non-judgemental person for you.",
   },
   {
     name: "Hamed Jones",
-    image: "/assets/images/user/user-03.png",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHb5zQa03D0ITa-0U8U8gf8sa2FoQbRPxDXzzUH02yyzqErzhZ6nRaiTZrH3_0C65mXO0&usqp=CAU",
     profession: "Data Scientist",
     about:
       "I aim to bring out your strengths and be an empatheic, supportive, and non-judgemental person for you.",
   },
   {
     name: "Jane Guzlord",
-    image: "/assets/images/user/user-04.png",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRZL_7w2skq-AFEZMKNRVsEZxFdw7wMnFiLSJU_e5pSn9hZ-CidVx8apClM9BA8xkvKPQ&usqp=CAU",
     profession: "Data Scientist",
     about:
       "I aim to bring out your strengths and be an empatheic, supportive, and non-judgemental person for you.",
   },
   {
     name: "Amatro Hollan",
-    image: "/assets/images/user/user-05.png",
+    image: "https://content.wepik.com/statics/20269016/preview-page1.jpg",
     profession: "Data Scientist",
     about:
       "I aim to bring out your strengths and be an empatheic, supportive, and non-judgemental person for you.",

@@ -10,10 +10,28 @@ import SessionsSection from "@/components/LandingPage/sessions";
 import HeroSection from "@/components/LandingPage/hero-section";
 import Testimonials from "@/components/LandingPage/testimonials";
 import HomeBrowseSection from "@/components/LandingPage/homeBrowseSection";
+import { usePathname, useRouter } from "next/navigation";
+import LandingPageHeader from "@/components/LandingPage/header";
 
 export default function Home() {
+   const router = useRouter();
+   const pathname = usePathname();
+
+   const handleLoginClick = () => {
+     router.push("/login");
+   };
+
+   const handleSignUpClick = () => {
+     router.push("/register");
+   };
+
+   const hideSidebar = pathname.match(
+     /courses\/enrolledCourses\/(undefined|null)/
+   );
+  
   return (
     <main className="flex dark:bg-black dark:bg-opacity-80 min-h-screen flex-col items-center justify-between  ">
+      <LandingPageHeader handleLoginClick={handleLoginClick} />
       <div className="p-10">
         <HeroSection scrollAnimation={scrollAnimation} />
 

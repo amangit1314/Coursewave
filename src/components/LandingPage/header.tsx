@@ -12,7 +12,7 @@ interface TestimonialItemProps {
 const LandingPageHeader: React.FC<TestimonialItemProps> = ({
     handleLoginClick,
 }) => {
-   
+
     return (
       <div className="bg-transparent border-b sticky z-10 top-0 backdrop-blur-xl  p-[1rem] max-w-7xl h-[64px] w-full mx-auto flex justify-between items-center py-auto ">
         {/* coursewave logo and text */}
@@ -50,7 +50,7 @@ const LandingPageHeader: React.FC<TestimonialItemProps> = ({
             Articles
           </Link> */}
           <Link
-            href=""
+            href="/browseSessions"
             className="text-[14px] text-gray-400 hover:text-blue-500 cursor-point font-medium"
           >
             Sessions

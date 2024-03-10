@@ -1,21 +1,10 @@
 import bcrypt from "bcrypt";
-import { PrismaClient } from "@prisma/client";
-import { generateAccessToken, generateRefreshToken } from "@/helpers/jwt_helper";
+
+import { generateAccessToken, generateRefreshToken } from "@/lib/helpers/jwt_helper";
 import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/lib/db";
 
-const prisma = new PrismaClient();
 export const dynamic = 'force-dynamic';
-
-// import type { NextApiRequest, NextApiResponse } from 'next';
-
-// export default function handler(req: NextRequest, res: NextApiResponse) {
-//     if (req.method === 'POST') {
-//         POST(req); // Call the POST handler
-//     } else {
-//         res.status(405).json({ message: 'Method not allowed' }); // Handle other HTTP methods
-//     }
-// }
-
 
 export const POST = async (req: NextRequest) => {
     const reqBody = await req.json();
@@ -29,7 +18,7 @@ export const POST = async (req: NextRequest) => {
             }, { status: 400 });
         }
 
-        const user = await prisma.user.findUnique({ where: { email } });
+        const user = await db.user.findUnique({ where: { email } });
 
         if (!user) {
             return NextResponse.json({
@@ -48,17 +37,24 @@ export const POST = async (req: NextRequest) => {
             }, { status: 401 });
         }
 
-        const accessToken = generateAccessToken({
+        const accessToken = await generateAccessToken({
             id: user.id,
             name: user.name,
             email: user.email,
         });
 
-        const refreshToken = generateRefreshToken({
+        const refreshToken = await generateRefreshToken({
             id: user.id,
             name: user.name,
             email: user.email,
         });
+
+        if (!accessToken || !refreshToken) {
+            return NextResponse.json({
+                status: false,
+                error: "Accesstoken and refresh token are null. Internal error ... ",
+            }, { status: 403 });
+        }
 
         const hashedAccessToken = await bcrypt.hash(accessToken, 10);
         const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
@@ -68,7 +64,7 @@ export const POST = async (req: NextRequest) => {
         const refreshTokenExpiration = new Date();
         refreshTokenExpiration.setDate(refreshTokenExpiration.getDate() + 14); // Expires in 14 days
 
-        const updatedUser = await prisma.user.update({
+        const updatedUser = await db.user.update({
             where: { id: user.id },
             data: {
                 refreshTokenGenerationTime: new Date(),
@@ -85,7 +81,7 @@ export const POST = async (req: NextRequest) => {
         // Set the Authorization header
         NextResponse.next().headers.set("Authorization", `Bearer ${accessToken}`);
 
-        // response 
+        // response
         const response = NextResponse.json({
             status: true,
             data: updatedUser,

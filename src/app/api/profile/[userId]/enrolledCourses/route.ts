@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 
-const prisma = new PrismaClient();
 export const dynamic = 'force-dynamic';
+
 // Get all enrolled courses
 export const GET = async (req: NextRequest, { params }: {
     params: {
@@ -13,40 +13,36 @@ export const GET = async (req: NextRequest, { params }: {
         const uid = params?.userId;
 
         if (!uid) {
-            // Handle the case where the 'uid' parameter is missing or undefined.
             return NextResponse.json({
                 success: false,
-                error: 'Missing or undefined uid parameter',
-            }, { status: 400 }); // Return a 400 Bad Request status code.
+                error: 'Missing or undefined uid parameter ...',
+            }, { status: 400 });
         }
 
-        // Construct the correct URL based on the 'uid' parameter
-        const currentURL = `https://localhost:3000/api/profile/${uid}`;
-
-        const enrolledCourses = await prisma.enrolledCourses.findUnique({
+        const enrolledCourses = await db.enrollement.findMany({
             where: {
-                uid: uid, // Provide the 'uid' here
+                userId: uid
+            },
+            select: {
+                enrollmentId: true,
+                userId: true,
+                courseId: true,
+                enrollmentDate: true,
+                completionStatus: true,
+                user: true,
+                course: true,
             }
         });
 
-        if (!enrolledCourses) {
-            return NextResponse.json({
-                success: true,
-                message: 'No enrolled courses ...'
-            }, { status: 200 });
-        }
-
         return NextResponse.json({
             success: true,
-            data: {
-                enrolledCourses,
-                currentURL, // Include the current URL in the response
-            },
+            data: enrolledCourses,
         }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json({
             success: false,
             error: error.message,
+            message: 'Failed to get enrolled courses by user ...'
         }, { status: 500 });
     }
 }

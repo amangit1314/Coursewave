@@ -1,34 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-// import { NextApiResponse } from "next";
-
-const prisma = new PrismaClient();
+import { db } from "@/lib/db";
 export const dynamic = 'force-dynamic';
-
-// export default function handler(req: NextRequest, res: NextApiResponse) {
-//     if (req.method === 'POST') {
-//         POST(req); 
-//     } else if (req.method === 'GET') {
-//         GET(req);
-//      }
-//     else if (req.method === 'PUT') { 
-//         POST(req);
-//     }
-//     else if (req.method === 'DELETE') { 
-//         DELETE(req);
-//     }
-//     else {
-//         res.status(405).json({ message: 'Method not allowed' }); // Handle other HTTP methods
-//     }
-// }
-
-
 
 // Get all categories
 export const GET = async (req: NextRequest) => {
     // return await fetch(`${process.env.NEXT_PUBLIC_API}/categorys`)
     try {
-        const categories = await prisma.category.findMany({});
+        const categories = await db.category.findMany({});
         return NextResponse.json({
             success: true,
             data: categories,
@@ -54,9 +32,9 @@ export const POST = async (req: NextRequest) => {
             }, { status: 400 });
         }
 
-        const category = await prisma.category.create({
+        const category = await db.category.create({
             data: {
-                categoryName: categoryName,
+                name: categoryName,
             }
         });
 
@@ -86,9 +64,9 @@ export const PUT = async (req: NextRequest) => {
             }, { status: 400 });
         }
 
-        const category = await prisma.category.findUnique({
+        const category = await db.category.findUnique({
             where: {
-                categoryName: categoryName,
+                name: categoryName,
             },
         })
 
@@ -99,12 +77,12 @@ export const PUT = async (req: NextRequest) => {
             }, { status: 404 });
         }
 
-        const updatedCategory = await prisma.category.update({
+        const updatedCategory = await db.category.update({
             where: {
-                categoryName: categoryName,
+                name: categoryName,
             },
             data: {
-                categoryName: newCategoryName
+                name: newCategoryName
             }
         });
 
@@ -134,9 +112,9 @@ export const DELETE = async (req: NextRequest) => {
             }, { status: 400 });
         }
 
-        const category = await prisma.category.findUnique({
+        const category = await db.category.findUnique({
             where: {
-                categoryName: categoryName,
+                name: categoryName,
             },
         });
 
@@ -147,9 +125,9 @@ export const DELETE = async (req: NextRequest) => {
             }, { status: 404 });
         }
 
-        await prisma.category.delete({
+        await db.category.delete({
             where: {
-                categoryName: categoryName,
+                name: categoryName,
             },
         });
 

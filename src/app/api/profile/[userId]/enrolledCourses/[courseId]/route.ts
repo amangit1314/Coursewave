@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { db } from "@/lib/db";
+// import { PrismaClient } from "@prisma/client";
+// const prisma = new PrismaClient();
 export const dynamic = 'force-dynamic';
 // Get all enrolled courses
 export const GET = async (req: NextRequest, { params }: {
@@ -33,7 +33,7 @@ export const GET = async (req: NextRequest, { params }: {
         // Construct the correct URL based on the 'uid' parameter
         const currentURL = `https://localhost:3000/api/profile/${uid}`;
 
-        const enrolledCourses = await prisma.enrolledCourses.findUnique({
+        const enrolledCourses = await db.enrolledCourses.findUnique({
             where: {
                 uid: uid, // Provide the 'uid' here
             }

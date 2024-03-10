@@ -1,12 +1,10 @@
 import bcrypt from "bcrypt";
-import { PrismaClient } from "@prisma/client";
-import { generateVerificationToken } from "@/helpers/jwt_helper";
-import { sendEmail } from "@/helpers/send_email_helper";
-import { generateUid } from "@/helpers/id_helper";
+import { db } from "@/lib/db";
+import { generateUid } from "@/lib/helpers/id_helper";
+import { sendEmail } from "@/lib/helpers/send_email_helper";
 import { NextRequest, NextResponse } from "next/server";
-// import { NextApiResponse } from "next";
+import { generateVerificationToken } from "@/lib/helpers/jwt_helper";
 
-const prisma = new PrismaClient();
 export const dynamic = 'force-dynamic';
 
 const isPasswordValid = (password: string) => {
@@ -14,23 +12,14 @@ const isPasswordValid = (password: string) => {
     return passwordRegex.test(password);
 };
 
-// export default function handler(req: NextRequest, res: NextApiResponse) {
-//     if (req.method === 'POST') {
-//         POST(req); // Call the POST handler
-//     } else {
-//         res.status(405).json({ message: 'Method not allowed' }); // Handle other HTTP methods
-//     }
-// }
-
-
 export const POST = async (req: NextRequest) => {
     const reqBody = await req.json();
     const { email, password } = reqBody;
 
     console.log(reqBody);
-    
+
     if (!email || !password) {
-       return NextResponse.json({
+        return NextResponse.json({
             status: false,
             message: "All fields are mandatory 👮‍♂️ ",
         }, { status: 400 });
@@ -50,19 +39,19 @@ export const POST = async (req: NextRequest) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         console.log("Hashed password: ", hashedPassword);
 
-        const isUserAlreadyRegistered = await prisma.user.findUnique({
+        const isUserAlreadyRegistered = await db.user.findUnique({
             where: { email },
         });
 
         if (isUserAlreadyRegistered) {
-
-           return NextResponse.json({
+            console.log('Registeration ERROR: Authentication failed. There is already a user with these credentials 🔐👮‍♂️ ...');
+            return NextResponse.json({
                 status: false,
                 message: "Authentication failed. There is already a user with these credentials 🔐👮‍♂️ ...",
             }, { status: 403 });
         }
 
-        const createdUser = await prisma.user.create({
+        const createdUser = await db.user.create({
             data: {
                 id: uuid4,
                 email,
@@ -71,7 +60,7 @@ export const POST = async (req: NextRequest) => {
             },
         });
 
-        const verificationToken = generateVerificationToken(email);
+        const verificationToken = generateVerificationToken({ id: createdUser.id, email: createdUser.email, name: createdUser.name });
 
         sendEmail(
             email,
@@ -87,7 +76,7 @@ export const POST = async (req: NextRequest) => {
                     },
                     message: "Registration Successful 🎉 + Verification email sent 👮‍♂️",
                 }, { status: 200 });
-                
+
             }
         );
 
@@ -99,7 +88,7 @@ export const POST = async (req: NextRequest) => {
             message: "Registration Successful 🎉",
         }, { status: 200 });
     } catch (error) {
-        console.log(error);
+        console.log('Registeration ERROR: ', error);
         return NextResponse.json({
             status: false,
             error: error,

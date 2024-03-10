@@ -1,33 +1,40 @@
-// import { authMiddleware, redirectToSignIn } from '@clerk/nextjs';
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
-    const token = request.cookies.get('token')?.value || '';
-    const isPublicPath = path === '/login' || path === '/register' || path === '/';
+    const token = cookies().get('token')?.value;
+
+    // const isPublicPath = path === '/login' || path === '/register' || path === '/';
 
     //! If there's no token and the path is not public, redirect to login
-    if (!token && !isPublicPath) {
+    if (!token
+        // && !isPublicPath
+    ) {
         return NextResponse.redirect(new URL('/login', request.nextUrl));
     }
 
     //? If there's no token and the path is public, redirect to /browseCourses
-    if (!token && isPublicPath) {
+    if (!token
+        // && isPublicPath
+    ) {
         return NextResponse.redirect(new URL(`/browseCourses`, request.nextUrl));
     }
 
     //* If there's a token and the path is not-public, redirect to /:uid/browseCourses
-    if (token && !isPublicPath) {
+    if (token
+        // && !isPublicPath
+    ) {
         const uid = getTokenUid(token);
         return NextResponse.redirect(new URL(`/${uid}/browseCourses`, request.nextUrl));
-    } 
+    }
 
     //! --- ONly for testing after testing update this ---
     if (token && path.includes('/instructor')) {
         return NextResponse.redirect(new URL(`${path}`, request.nextUrl));
     }
 
-    if (token && path.includes('profile')) {
+    if (token && path.includes('/profile')) {
         return NextResponse.redirect(new URL(`${path}`, request.nextUrl));
     }
 }
@@ -55,21 +62,6 @@ async function getTokenUid(token: string): Promise<string | null> {
         return null;
     }
 }
-
-// export default authMiddleware({
-//     afterAuth(auth, req, evt) {
-//? ---------------- handle users who aren't authenticated ----------------------------
-//         if (!auth.userId && !auth.isPublicRoute) {
-//             return redirectToSignIn({ returnBackUrl: req.url });
-//         }
-//? ---------------- redirect them to organization selection page ----------------------
-//         if (auth.userId && !auth.orgId && req.nextUrl.pathname !== "/org-selection") {
-//             const orgSelection = new URL('/org-selection', req.url)
-//             return NextResponse.redirect(orgSelection)
-//         }
-//     },
-//     publicRoutes: ["/","/sign-in", "/sign-up", "/register", "/login", "/browseCourses", "/browseSessions"]
-// });
 
 export const config = {
     matcher: [

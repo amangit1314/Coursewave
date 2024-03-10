@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { db } from "@/lib/db";
 
-const prisma = new PrismaClient();
 export const dynamic = 'force-dynamic';
+
 export const POST = async (req: NextRequest, { params }: {
     params: {
         id?: string;
@@ -24,7 +24,7 @@ export const POST = async (req: NextRequest, { params }: {
             return NextResponse.json({ success: false, message: "Please provide some categories to update ..." }, { status: 400 });
         }
 
-        const course = await prisma.course.findUnique({
+        const course = await db.course.findUnique({
             where: { courseId, instructorID: instructorId }
         })
 
@@ -35,7 +35,7 @@ export const POST = async (req: NextRequest, { params }: {
         }
 
         // Update the course with the new category names
-        const updatedCourse = await prisma.course.update({
+        const updatedCourse = await db.course.update({
             where: {
                 courseId: courseId,
             },
@@ -52,6 +52,7 @@ export const POST = async (req: NextRequest, { params }: {
             message: 'Course categories successfully updated ...',
         }, { status: 200 });
     } catch (error: any) {
+        console.log('ERROR IN instructor/id/dashboard/courses/courseId/editCategories :', error.message);
         return NextResponse.json({
             success: false,
             error: error.message,

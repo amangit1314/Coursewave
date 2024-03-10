@@ -1,20 +1,16 @@
 import bcrypt from "bcrypt";
-import { PrismaClient } from "@prisma/client";
-import { generateResetToken } from "@/helpers/jwt_helper";
-import { sendEmail } from "@/helpers/send_email_helper";
+
+import { generateResetToken } from "@/lib/helpers/jwt_helper";
+import { sendEmail } from "@/lib/helpers/send_email_helper";
 import { NextRequest, NextResponse } from "next/server";
-import { forgotHtml } from "@/helpers/forgot_password_email_html";
+import { forgotHtml } from "@/lib/helpers/forgot_password_email_html";
 import { NextApiResponse } from "next";
 
-const prisma = new PrismaClient();
+import { db } from "@/lib/db";
+// import { PrismaClient } from "@prisma/client";
+// const prisma = new PrismaClient();
 export const dynamic = 'force-dynamic';
-// export default function handler(req: NextRequest, res: NextApiResponse) {
-//     if (req.method === 'POST') {
-//         POST(req); // Call the POST handler
-//     } else {
-//         res.status(405).json({ message: 'Method not allowed' }); // Handle other HTTP methods
-//     }
-// }
+
 
 
 export const POST = async (req: NextRequest) => {
@@ -22,7 +18,7 @@ export const POST = async (req: NextRequest) => {
         const reqBody = await req.json();
         const { email } = reqBody;
 
-        const user = await prisma.user.findUnique({ where: { email } });
+        const user = await db.user.findUnique({ where: { email } });
 
         if (!user) {
             return NextResponse.json({
@@ -37,7 +33,7 @@ export const POST = async (req: NextRequest) => {
         const resetTokenExpiration = new Date();
         resetTokenExpiration.setHours(resetTokenExpiration.getHours() + 1); // Expires in 1 hour
 
-        await prisma.user.update({
+        await db.user.update({
             where: { email },
             data: {
                 resetTokenGenerationTime: new Date(),
@@ -50,14 +46,14 @@ export const POST = async (req: NextRequest) => {
         const resetPasswordUrl = `http://192.168.1.3:3000/forgotPassword`;
         const emailText = `Click here to reset your password`;
         const logoUrl = 'https://wcgwzdehnxpexussrkni.supabase.co/storage/v1/object/public/assets/coursewave-high-resolution-color-logo.png';
-        const forgotPasswordhtml = `<p> 
+        const forgotPasswordhtml = `<p>
             <h2 style=" font-weight: bold; font-size: 18px;">Reset your CourseWave password</h2>
             <a style="text decoration:underline;" href="${resetPasswordUrl}">${emailText}</a>
             <br>
             <a style="font-size: 12px; padding-top: 20px ; color: #808080;">If you didn't request a reset, don't worry. You can safely ignore this email.</a>
             <br>
-            <a style="font-weight: bold; padding-top: 10px ;font-size: 10px; color: #10101081;">CourseWave</a>   
-            </p>`; 
+            <a style="font-weight: bold; padding-top: 10px ;font-size: 10px; color: #10101081;">CourseWave</a>
+            </p>`;
         sendEmail(
             email,
             "Password Reset Request",

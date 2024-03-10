@@ -21,18 +21,6 @@ const getCourses = async () => {
 export default async function DataComponent() {
     const courses = await getCourses();
     console.log(courses.data);
-    /**
- *  try {
- *     setLoading(true);
- *             successNotification('Courses fetched successfully 🤘');
- *  } catch (error: any) {
- *      console.log("Course fetch failed", error.message);
- *      errorNotification(error.message);
- *      toast.error(error.message);
- *   } finally {
- *      setLoading(false);
- *  }
- */
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 my-6 w-9/12 justify-start mx-auto">

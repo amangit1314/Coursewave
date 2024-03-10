@@ -1,87 +1,92 @@
 "use client";
 
 import Link from "next/link";
-import { user } from "@prisma/client";
-import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { ThemeModeToggle } from "./themeModeToggle";
+import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import useUserInfo from "@/lib/hooks/use-user-info";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuLabel,
-//   DropdownMenuSeparator,
-//   DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu";
-// import { Badge } from "./ui/badge";
-
-interface Props {
-  userId: string
-}
-
-export const UserAvatar: React.FC<Props> = ({ userId }) => {
-  const router = useRouter();
-  const [user, setUser] = React.useState<user>();
-  const [profileImage, setProfileImage] = React.useState('https://github.com/shadcn.png')
-
-  const goToEnrolledCourses = () => {
-    router.push(`/${userId}/enrolledCourses`);
-  }
-
-  useEffect(() => {
-    fetch(`https://localhost:3000/api/profile/${userId}`)
-      .then(
-        (response) => {
-          console.log(response.json().toString());
-          // setUser(response.json());
-          // setProfileImage(user.profileImage);
-        })
-      .catch((error: any) => {
-        console.log("Error", error.message);
-      })
-  });
-
-  /**
-   *  <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Avatar className="mx-2 lg:mx-3">
-            <AvatarImage src={profileImage} alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={goToEnrolledCourses}
-          >Enrolled Courses</DropdownMenuItem>
-          <DropdownMenuItem>Cart</DropdownMenuItem>
-          <DropdownMenuItem>Notification</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-center items-center">
-            <Badge className="mx-auto items-center" variant="destructive">Logout</Badge>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-   */
-
+export function UserAvatar() {
+  const user = useUserInfo();
   return (
-    <div className="flex items-center py-auto">
-      <ThemeModeToggle />
-
-      <Link href={`/profile/${userId}/`}>
-        <Avatar className="mx-2 lg:mx-3">
-          <AvatarImage src={profileImage} alt="username" />
-          <AvatarFallback>{'A'}</AvatarFallback>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        {/* <Button variant="outline">Open</Button> */}
+        <Avatar className="rounded-lg cursor-pointer transition-all">
+          <AvatarImage
+            src={
+              user.user?.profileImageUrl
+                ? user.user?.profileImageUrl
+                : "https://github.com/shadcn.png"
+            }
+            alt="username"
+          />
+          <AvatarFallback>{user.user?.name}</AvatarFallback>
         </Avatar>
-        {/* <div className="mx-1 p-1 rounded-full bg-gray-900 lg:mx-3">
-          <UserButton afterSignOutUrl="/" />
-        </div> */}        
-      </Link>
-    </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56 my-2 mr-2 rounded-xl overflow-hidden">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem className="transition-all">
+            <Link href={`/profile/${user.user?.id}/`}>Profile</Link>
+            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="transition-all">
+            Billing
+            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="transition-all">
+            Settings
+            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="transition-all">
+            Keyboard shortcuts
+            <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem>Team</DropdownMenuItem>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem>Email</DropdownMenuItem>
+                <DropdownMenuItem>Message</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>More...</DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+          <DropdownMenuItem>
+            New Team
+            <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="transition-all">Support</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="transition-all">
+          Log out
+          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 

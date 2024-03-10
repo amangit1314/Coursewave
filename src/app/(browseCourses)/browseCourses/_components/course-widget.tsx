@@ -1,8 +1,6 @@
 "use client";
 
 import React from 'react'
-import { MdOutlineClass } from 'react-icons/md';
-import { PiSuitcaseSimple } from 'react-icons/pi';
 import { SlCalender } from 'react-icons/sl';
 import Image from 'next/image'
 import { useRouter, useParams } from 'next/navigation';
@@ -20,7 +18,7 @@ interface CourseProps {
     categories?: string[];
     instructorId?: string;
 }
-//  
+
 function CourseWidget({ index, instructorId, courseImage, courseNumber, title, duration, subject, instructor, price, categories }: CourseProps) {
     const router = useRouter();
     const params = useParams()
@@ -73,21 +71,19 @@ function CourseWidget({ index, instructorId, courseImage, courseNumber, title, d
                                         <Badge className='text-xs text-blue-500 font-normal border-blue-500' key={index} variant='outline'>Default</Badge>
                                 </span>
                             )}
-
-
                         </div>
                     </div>
                 </div>
 
                 {/* <div className='w-full py-2 flex gap-x-20 md:gap-x-0 items-center justify-between'>
                 <div className='flex justify-center items-center py-auto'>
-                    
+
                     <MdOutlineClass size={30} />
                     <div className='flex flex-col justify-start items-start'>
                         <p className='pl-1 text-xs text-slate-400 uppercase font-thin'>Instructor</p>
                         <p className='pl-1 text-xs font-medium '>{instructor} </p>
                     </div>
-                    
+
                 </div>
                 <div className='md:ml-4 flex justify-center items-center py-auto'>
                     <PiSuitcaseSimple size={30} />

@@ -1,7 +1,7 @@
 import React from 'react'
-import Sidebar from '../_components/sidebar'
 import BrowseSection from '../_components/browse-section'
 import DataComponent from '../_components/DataComponent'
+
 
 function BrowseCourses() {
     return (

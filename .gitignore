@@ -32,9 +32,27 @@ yarn-error.log*
 # vercel
 .vercel
 
+# vs code settings
+.vscode
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+video.d.ts
 
 certificates
 prisma/migrations
+# next-video
+videos
+videos/*
+!videos/*.json
+!videos/*.js
+!videos/*.ts
+public/_next-video
+
+# next-video
+public/assets/nextVideosRelatedVideos/*
+!public/assets/nextVideosRelatedVideos/*.json
+!public/assets/nextVideosRelatedVideos/*.js
+!public/assets/nextVideosRelatedVideos/*.ts
+public/_next-video

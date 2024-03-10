@@ -1,34 +1,63 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateUid } from "@/helpers/id_helper";
-import { PrismaClient } from "@prisma/client";
+import { cookies } from "next/headers";
 import dotenv from "dotenv";
-import { getDataFromToken } from "@/helpers/getDataFromToken";
-// import { NextApiResponse } from "next";
 dotenv.config();
-const prisma = new PrismaClient();
+import { db } from "@/lib/db";
+import { getUserIdFromToken } from "@/app/lib";
+import { decrypt, verifyToken } from "@/lib/helpers/jwt_helper";
+
 export const dynamic = 'force-dynamic';
 
-// export default function handler(req: NextRequest, res: NextApiResponse) {
-//     if (req.method === 'GET') {
-//         GET(req); 
-//     } else {
-//         res.status(405).json({ message: 'Method not allowed' }); // Handle other HTTP methods
-//     }
-// }
-
-
-export async function GET(request: NextRequest) {
+export async function GET(req: NextRequest) {
     try {
-        const userId = await getDataFromToken(request);
-        const user = await prisma.user.findUnique({
+        const token = cookies().get('token')?.value;
+        if (!token) {
+            return NextResponse.json({
+                success: false,
+                response: "ERROR",
+                message: 'Token is missing ⚠, Login first ...'
+            }, { status: 404 });
+        };
+
+        const decryptedToken = await decrypt(token);
+        const userId = decryptedToken.id;
+        if (!userId) {
+            console.log('No userId is provided ...');
+            return NextResponse.json({
+                success: false,
+                response: "ERROR",
+                message: `TOKEN: ${token}, ERROR: user id not found 🤦‍♂️⚠...`
+            }, { status: 403 });
+        }
+
+        const user = await db.user.findUnique({
             where: {
                 id: userId,
             }
         });
-        if (!userId || !user) return NextResponse.redirect("/login");
 
-        return NextResponse.json({ message: 'User found', data: user.id, });
+        if (!user) {
+            console.log('No user found in the db ...');
+            return NextResponse.json({
+                success: false,
+                response: "ERROR",
+                message: `No user found with this ${userId} 🤦‍♂️⚠...`
+            }, { status: 404 });
+        }
+
+        return NextResponse.json({
+            success: true,
+            response: "OK",
+            data: user,
+            message: 'User found successfully ...',
+        }, { status: 200 });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        console.error('ERROR in api/auth/me: ', error.message);
+        return NextResponse.json({
+            success: false,
+            response: "ERROR",
+            error: error.message,
+            message: 'Internal Server Error ⚠ ...'
+        }, { status: 500 });
     }
 }

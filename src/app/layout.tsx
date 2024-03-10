@@ -5,8 +5,9 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ToastProvider } from "@/components/providers/toaster-provider";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import LandingPageHeader from "@/components/LandingPage/header";
+import { GlobalQueryClientProvider } from "@/app/QueryClientProvider";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -28,6 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleLoginClick = () => {
     router.push("/login");
@@ -37,26 +39,37 @@ export default function RootLayout({
     router.push("/register");
   };
 
+  const hideSidebar = pathname.match(
+    /courses\/enrolledCourses\/(undefined|null)/
+  );
+
   return (
     <html lang="en">
       <body className={poppins.className}>
-        {/* <Provider store={store}> */}
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <ToastProvider />
-
+        <GlobalQueryClientProvider>
           {/* <Provider store={store}> */}
-          <div className="dark:bg-black">
-            <LandingPageHeader handleLoginClick={handleLoginClick} />
-            {children}
-          </div>
-        </ThemeProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <ToastProvider />
 
-        {/* </Provider> */}
+            {/* <Provider store={store}> */}
+            <div className="dark:bg-black">
+              {hideSidebar && (
+                <LandingPageHeader handleLoginClick={handleLoginClick} />
+              )}
+
+              {/* <LandingPageHeader handleLoginClick={handleLoginClick} /> */}
+
+              {children}
+            </div>
+          </ThemeProvider>
+
+          {/* </Provider> */}
+        </GlobalQueryClientProvider>
       </body>
     </html>
   );

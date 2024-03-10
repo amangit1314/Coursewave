@@ -6,12 +6,16 @@ function CreatedSessions() {
     return (
       <div className="pt-[80px] mx-12">
         <div className="h-full grid grid-cols-4 gap-4 w-full rounded-xl bg-gray-200 dark:bg-gray-700 p-8">
+          <SessionCard
+            sessionImage={'/assets/images/cover/cover-01.png'}
+            sessionName={'Webinar on building a course website'}
+            instructor={'Aman Soni'}
+          />
+          {/* <SessionCard />
           <SessionCard />
           <SessionCard />
           <SessionCard />
-          <SessionCard />
-          <SessionCard />
-          <SessionCard />
+          <SessionCard /> */}
 
         </div>
       </div>

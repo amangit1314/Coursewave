@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 import { IoEyeOffOutline, IoEyeOutline } from 'react-icons/io5';
+import { useQueryClient } from 'react-query';
 
 const successNotification = (message: string) => toast.success(message);
 const errorNotification = (errorMessage: string) => toast.error(errorMessage);
@@ -21,19 +22,23 @@ function Login() {
     const [user, setUser] = React.useState({ email: "", password: "" });
     const [isButtonDisabled, setButtonDisabled] = React.useState(false);
 
+     const queryClient = useQueryClient();
+
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
     const onLogin = async () => {
         try {
-            setLoading(true);
-            const response = await axios.post("/api/auth/login", user);
-            console.log("Login success", response.data);
-            successNotification('Logged in successfully');
-            router.push("/browseCourses");
+          setLoading(true);
+          const response = await axios.post("/api/auth/login", user);
+          // Cache the user information using React Query
+          queryClient.setQueryData("user", response.data);
+          console.log("Login success", response.data);
+          successNotification("Logged in successfully");
+          router.push("/browseCourses");
         } catch (error: any) {
-            console.log("Login failed", error.message);
+            console.error("Login failed: ", error.message);
             errorNotification(error.message);
         } finally {
             setLoading(false);

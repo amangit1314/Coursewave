@@ -1,13 +1,15 @@
 "use client";
+
 import { ApexOptions } from "apexcharts";
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import { Card } from "@tremor/react";
+
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-interface ChartThreeState {
+interface VisitorsAnalyticsChartState {
   series: number[];
 }
 
@@ -16,7 +18,7 @@ const options: ApexOptions = {
     type: "donut",
   },
   colors: ["#10B981", "#375E83", "#259AE6", "#FFA70B"],
-  labels: ["Remote", "Hybrid", "Onsite", "Leave"],
+  labels: ["Desktop", "Tablet", "Mobile", "Unknown"],
   legend: {
     show: true,
     position: "bottom",
@@ -38,8 +40,8 @@ const options: ApexOptions = {
       breakpoint: 2600,
       options: {
         chart: {
-            width: 200,
-            height: 200,
+          width: 200,
+          height: 200,
         },
       },
     },
@@ -55,16 +57,16 @@ const options: ApexOptions = {
   ],
 };
 
-const ChartThree: React.FC = () => {
-  const [state, setState] = useState<ChartThreeState>({
+const VisitorsAnalyticsChart: React.FC = () => {
+  const [state, setState] = useState<VisitorsAnalyticsChartState>({
     series: [65, 34, 12, 56],
   });
 
   return (
-    <Card className="col-span-12 rounded-sm border border-stroke px-5 pt-8 pb-5 sm:px-8 xl:col-span-5">
+    <Card className="col-span-12 rounded-sm border border-stroke p-8 md:p-5 xl:col-span-5">
       <div className="mb-3 justify-between gap-4 sm:flex">
         <div>
-          <h5 className="text-md font-semibold text-black dark:text-white">
+          <h5 className="text-md font-semibold tracking-tight text-black dark:text-white">
             Visitors Analytics
           </h5>
         </div>
@@ -117,7 +119,7 @@ const ChartThree: React.FC = () => {
           <div className="flex w-full items-center">
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> Desktop </span>
+              <span className="tracking-tight"> Desktop </span>
               <span> 65% </span>
             </p>
           </div>
@@ -126,7 +128,7 @@ const ChartThree: React.FC = () => {
           <div className="flex w-full items-center">
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#6577F3]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> Tablet </span>
+              <span className="tracking-tight"> Tablet </span>
               <span> 34% </span>
             </p>
           </div>
@@ -135,7 +137,7 @@ const ChartThree: React.FC = () => {
           <div className="flex w-full items-center">
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#8FD0EF]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> Mobile </span>
+              <span className="tracking-tight"> Mobile </span>
               <span> 45% </span>
             </p>
           </div>
@@ -144,7 +146,7 @@ const ChartThree: React.FC = () => {
           <div className="flex w-full items-center">
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#0FADCF]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> Unknown </span>
+              <span className="tracking-tight"> Unknown </span>
               <span> 12% </span>
             </p>
           </div>
@@ -154,4 +156,4 @@ const ChartThree: React.FC = () => {
   );
 };
 
-export default ChartThree;
+export default VisitorsAnalyticsChart;

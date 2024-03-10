@@ -5,12 +5,12 @@ import { YourUpComingSessions } from './_components/your-upcomming-sessions';
 
 export default function BrowseSessions() {
   return (
-    <div className='p-12 max-w-7xl overflow-x-hidden'>
-      <YourUpComingSessions />
+    <div className='px-10 py-8 max-w-7xl overflow-x-hidden'>
+      {/* <YourUpComingSessions /> */}
 
       <MeetOurCoaches />
 
-      <PopularTalksAndSessions /> 
+      <PopularTalksAndSessions />
     </div>
   )
 }

@@ -1,98 +1,86 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-// import { NextApiResponse } from "next";
-
-const prisma = new PrismaClient();
+import { db } from "@/lib/db";
 export const dynamic = 'force-dynamic';
 
-// export default function handler(req: NextRequest, res: NextApiResponse) {
-//     if (req.method === 'POST') {
-//         POST(req);
-//     } else if (req.method === 'GET') {
-//         GET(req);
-//     }
-//     else {
-//         res.status(405).json({ message: 'Method not allowed' }); // Handle other HTTP methods
-//     }
-// }
-
-
-
-// Get course info
 export const GET = async (req: NextRequest, { params }: {
     params: {
         id?: string;
     };
 }) => {
-    // return await fetch(`${process.env.NEXT_PUBLIC_API}/courses`)
+    const courseId = params.id;
     try {
-        const courseId = params.id;
-        const course = await prisma.course.findUnique({
-            where: {
-                courseId
-            }
-        });
-
-        if (!course) throw Error("Course not found");
-
-        return NextResponse.json({
-            success: true,
-            data: course,
-        }, { status: 200 });
-    } catch (error: any) {
-        return NextResponse.json({
-            success: false,
-            error: error.message,
-        }, { status: 500 });
-    }
-}
-
-// update course information
-export const POST = async (req: NextRequest, { params, body }: {
-    params: {
-        id?: string;
-    };
-    body: {
-        fieldName: string;
-        fieldValue: any;
-    };
-}) => {
-    try {
-        const courseId = params.id;
-        const { fieldName, fieldValue } = body;
-
-        const course = await prisma.course.findUnique({
-            where: {
-                courseId
-            }
-        });
-
-        if (!course) throw new Error("Course not found");
-
-        // Check if the specified field exists in the course
-        if (!(fieldName in course)) {
-            throw new Error(`Field '${fieldName}' does not exist in the course`);
+        if (!courseId) {
+            console.log('Course id not provided, courseId is required field ...')
+            return NextResponse.json({
+                status: 'ERROR',
+                success: false,
+                message: 'Course id not provided, courseId is required field ...'
+            }, { status: 400 })
         }
 
-        // Update the specified field for the course
-        const updatedCourse = await prisma.course.update({
+        const course = await db.course.findUnique({
             where: {
                 courseId
             },
-            data: {
-                [fieldName]: fieldValue
+            select: {
+                courseId: true,
+                courseTitle: true,
+                courseImage: true,
+                courseCreator: true,
+                courseDescription: true,
+                isFree: true,
+                coursePrice: true,
+                dealPrice: true,
+                discount: true,
+                instructorID: true,
+                isLive: true,
+                courseCategories: true,
+                instructorName: true,
+                isPublished: true,
+                avgStarRatings: true,
+                courseDuration: true,
+                technologiesYouAreGoingToLearn: true,
+                thisCourseIsFor: true,
+                prerequisits: true,
+                whatYouWillLearn: true,
+                categoryId: true,
+                createdAt: true,
+                updatedAt: true,
+                userId: true,
+                reviews: true,
+                enrollements: true,
+                payments: true,
+                purchases: true,
+                attachments: true,
+                courseSections: true,
+                categories: true,
+                chapters: true,
+                instructorEarningsFromThisCourse: true,
             }
         });
 
+        if (!course) {
+            console.log(`No course found with such courseId: ${courseId} ...`)
+            return NextResponse.json({
+                status: 'ERROR',
+                success: false,
+                message: `No course found with such courseId: ${courseId} ...`,
+            }, { status: 404 })
+        }
+
         return NextResponse.json({
+            status: 'OK',
             success: true,
-            data: updatedCourse,
-            message: `field ${fieldName} successfully updated ...`,
+            data: course,
+            message: `Course info for courseId:${courseId}, fetched successfully ✔️ ...`
         }, { status: 200 });
     } catch (error: any) {
+        console.log(`Failed to get course info for courseId:${courseId} ❌🚧 ...`);
         return NextResponse.json({
+            status: 'ERROR',
             success: false,
             error: error.message,
+            message: `Failed to get course info for courseId:${courseId} ❌🚧 ...`
         }, { status: 500 });
     }
 }

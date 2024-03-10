@@ -1,198 +1,125 @@
-'use client';
+"use client";
 
-import React from 'react'
+import { storeSubscriptionPlans } from "@/lib/subscriptions";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import React from "react";
+import { TiTick } from "react-icons/ti";
 
 function Subscription() {
-    return (
-        <div className='mt-16 md:mt-0'>
-            {/* <p className="pt-8 text-2xl lg:text-3xl font-bold text-center">Choose the best plan for you<br /></p>
-            <p className="text-blue-500 text-center text-xl lg:text-2xl font-semibold ">and start learning!</p>
-           */}
-            {/* <div className='mt-8 items-center flex justify-center'>
-                <SubscriptionItem
-                    subscriptionName='Free'
-                    price={0}
-                    features={
-                        [
-                            'Access to all courses',
-                            'Access to source code on limited courses',
-                            'Limited sessions and Basic Support'
-                        ]
-                    }
-                    subscriptionStatus='current'
-                />
-                <SubscriptionItem
-                    subscriptionName='Premium'
-                    price={25}
-                    features={
-                        [
-                            'Access to all courses',
-                            'Access to source code on all courses',
-                            'Complete Sessions access and 24x7 Support'
-                        ]
-                    }
-                />
-            </div> */}
+  const [selectedPlan, setSelectedPlan] = React.useState<string | null | any>(null);
 
-            <section className="bg-white dark:bg-gray-900 py-8">
-                <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-                    <div className="mx-auto max-w-screen-md text-center mb-8 lg:mb-12">
-                        <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Choose a plan for <span className='text-blue-600'>yourself!</span> </h2>
-                        {/* <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Designed for learners like yours</h2> */}
-                        <p className="mb-5 font-light text-gray-500 sm:text-xl dark:text-gray-400">Here at Courewave we are building a platform where technology, innovation, and capital can unlock long-term value and drive economic growth.</p>
-                    </div>
-                    <div className="space-y-8 lg:grid lg:grid-cols-3 sm:gap-6 xl:gap-10 lg:space-y-0 mx-[4rem]">
-                      
-                        <div className="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
-                            <h3 className="mb-4 text-2xl font-semibold">Starter</h3>
-                            <p className="font-light text-gray-500 sm:text-lg dark:text-gray-400">Best option for personal use & for your next project.</p>
-                            <div className="flex justify-center items-baseline my-8">
-                                <span className="mr-2 text-5xl font-extrabold">$29</span>
-                                <span className="text-gray-500 dark:text-gray-400">/month</span>
-                            </div>
-                          
-                            <ul role="list" className="mb-8 space-y-4 text-left">
-                                <li className="flex items-center space-x-3">
-                                  
-                                    <svg className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
-                                    <span>Individual configuration</span>
-                                </li>
-                                <li className="flex items-center space-x-3">
-                               
-                                    <svg className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
-                                    <span>No setup, or hidden fees</span>
-                                </li>
-                                <li className="flex items-center space-x-3">
-                               
-                                    <svg className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
-                                    <span>Team size: <span className="font-semibold">1 developer</span></span>
-                                </li>
-                                <li className="flex items-center space-x-3">
-                            
-                                    <svg className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
-                                    <span>Premium support: <span className="font-semibold">6 months</span></span>
-                                </li>
-                                <li className="flex items-center space-x-3">
-                                  
-                                    <svg className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
-                                    <span>Free updates: <span className="font-semibold">6 months</span></span>
-                                </li>
-                            </ul>
-                            <a href="#" className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:text-white  dark:focus:ring-blue-900">Get started</a>
-                        </div>
-                       
-                        <div className="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
-                            <h3 className="mb-4 text-2xl font-semibold">Company</h3>
-                            <p className="font-light text-gray-500 sm:text-lg dark:text-gray-400">Relevant for multiple users, extended & premium support.</p>
-                            <div className="flex justify-center items-baseline my-8">
-                                <span className="mr-2 text-5xl font-extrabold">$99</span>
-                                <span className="text-gray-500 dark:text-gray-400">/month</span>
-                            </div>
-                   
-                            <ul role="list" className="mb-8 space-y-4 text-left">
-                                <li className="flex items-center space-x-3">
-                                    
-                                    <svg className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
-                                    <span>Individual configuration</span>
-                                </li>
-                                <li className="flex items-center space-x-3">
-                                    
-                                    <svg className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
-                                    <span>No setup, or hidden fees</span>
-                                </li>
-                                <li className="flex items-center space-x-3">
-                                    
-                                    <svg className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
-                                    <span>Team size: <span className="font-semibold">10 developers</span></span>
-                                </li>
-                                <li className="flex items-center space-x-3">
-                                    
-                                    <svg className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
-                                    <span>Premium support: <span className="font-semibold">24 months</span></span>
-                                </li>
-                                <li className="flex items-center space-x-3">
-                                    
-                                    <svg className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
-                                    <span>Free updates: <span className="font-semibold">24 months</span></span>
-                                </li>
-                            </ul>
-                            <a href="#" className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:text-white  dark:focus:ring-blue-900">Get started</a>
-                        </div>
-                    
-                        <div className="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
-                            <h3 className="mb-4 text-2xl font-semibold">Enterprise</h3>
-                            <p className="font-light text-gray-500 sm:text-lg dark:text-gray-400">Best for large scale uses and extended redistribution rights.</p>
-                            <div className="flex justify-center items-baseline my-8">
-                                <span className="mr-2 text-5xl font-extrabold">$499</span>
-                                <span className="text-gray-500 dark:text-gray-400">/month</span>
-                            </div>
-                            
-                            <ul role="list" className="mb-8 space-y-4 text-left">
-                                <li className="flex items-center space-x-3">
-                                    
-                                    <svg className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
-                                    <span>Individual configuration</span>
-                                </li>
-                                <li className="flex items-center space-x-3">
-                                    
-                                    <svg className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
-                                    <span>No setup, or hidden fees</span>
-                                </li>
-                                <li className="flex items-center space-x-3">
-                                    
-                                    <svg className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
-                                    <span>Team size: <span className="font-semibold">100+ developers</span></span>
-                                </li>
-                                <li className="flex items-center space-x-3">
-                                    
-                                    <svg className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
-                                    <span>Premium support: <span className="font-semibold">36 months</span></span>
-                                </li>
-                                <li className="flex items-center space-x-3">
-                                    
-                                    <svg className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path></svg>
-                                    <span>Free updates: <span className="font-semibold">36 months</span></span>
-                                </li>
-                            </ul>
-                            <a href="#" className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:text-white  dark:focus:ring-blue-900">Get started</a>
-                        </div>
-                    </div>
-                </div>
-            </section>
+  return (
+    <div className="mt-16 md:mt-0">
+      <section className="bg-white dark:bg-zinc-900 py-8">
+        <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+          <div className="mx-auto max-w-screen-md text-center mb-8 lg:mb-12">
+            <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+              Choose a plan for <span className="text-blue-600">yourself!</span>{" "}
+            </h2>
+            {/* <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Designed for learners like yours</h2> */}
+            <p className="mb-5 font-light text-base text-gray-500 sm:text-xl dark:text-gray-400">
+              Here at Courewave we are building a platform where technology,
+              innovation, and capital can unlock long-term value and drive
+              economic growth.
+            </p>
+          </div>
+
+          <div className="space-y-8 lg:grid lg:grid-cols-3 gap-6  lg:space-y-0 mx-[1rem]">
+            {storeSubscriptionPlans.map((subscription) => {
+              const isSelected = subscription.id === selectedPlan;
+
+              return (
+                <SubscriptionCard
+                  key={subscription.id}
+                  name={subscription.name}
+                  description={subscription.description}
+                  whatIncludes={subscription.whatIncludes}
+                  price={subscription.price}
+                  isSelected={isSelected}
+                  onSelect={() => setSelectedPlan(subscription.id)}
+                />
+              );
+            })}
+          </div>
         </div>
-    )
-}
-
-export default Subscription
-
-interface SubscriptionProps{
-    subscriptionName: string;
-    price: number;
-    features: Array<string>
-    subscriptionStatus?: string 
-}
-
-function SubscriptionItem({ subscriptionName, price, features }: SubscriptionProps) {
-    const onTry = () => {}
-
-    return (
-      <div className='rounded-xl m-4 p-4 items-center h-auto w-60 shadow-2xl bg-white  text-center text-black'>
-          <p className='pt-6 text-xl font-medium'>{subscriptionName}</p>
-            <p className='pt-1 font-semibold text-2xl'>${price}</p>
-            <ul className="list-disc pl-4 pt-2">
-                {/* <li className='text-start text-sm'>Access to basic content</li> */}
-                <li className='text-start text-sm'>{features[0]}</li>
-                {/* <li className='text-start text-sm'>Limited time sessions access</li> */}
-                <li className='text-start text-sm'>{features[1]}</li>
-                {/* <li className='text-start text-sm'>No extra discount on any course</li> */}
-                <li className='text-start text-sm'>{features[2]}</li>
-               
-            </ul>
-            <button
-                onClick={onTry}
-                className='mt-8 bg-blue-500 mx-auto p-2 w-full rounded-md items-center text-center text-sm font-medium text-white'>
-                {undefined ? 'Current' : 'Try now' }
-            </button>
+      </section>
     </div>
-  )
+  );
 }
+
+export default Subscription;
+
+type SubscriptionProps = {
+  name: string;
+  description: string;
+  whatIncludes: string[];
+  price: number;
+  isSelected?: boolean;
+  onSelect?: any
+  // (planId: string) => void;
+};
+const SubscriptionCard = ({
+  name,
+  description,
+  whatIncludes,
+  price,
+  isSelected,
+  onSelect,
+}: SubscriptionProps) => {
+  const currentPlan = name === "Free";
+  return (
+    <div
+      className={cn(
+        `
+        flex flex-col cursor-pointer border border-stroke border-gray-100 dark:border-gray-600 hover:border-6 active:border-6 hover:border-blue-600 active:border-blue-600 rounded-2xl shadow-sm hover:shadow-xl p-6 xl:p-2 max-w-lg text-center text-gray-900 dark:text-white bg-white dark:bg-gray-800  border-gray - 100 hover:border-6 active:border-6`,
+        isSelected
+          ? "border border-6 border-blue-600 drop-shadow-xl bg-blue-600"
+          : "",
+        name === "Free"
+          ? "border border-6 border-blue-600 drop-shadow-xl bg-blue-600 "
+          : ""
+      )}
+      onClick={onSelect}
+    >
+      {/* name of subscription */}
+      <h3 className="my-4 text-2xl font-bold">{name}</h3>
+
+      {/* description */}
+      <p className="font-light text-gray-500 text-lg md:text-md md:text-base  dark:text-gray-400">
+        {description}
+      </p>
+
+      {/* subscription price */}
+      <div className="flex justify-center items-baseline my-8">
+        <span className="mr-2 text-5xl font-extrabold">
+          ${price}
+        </span>
+        <span className="text-gray-500 dark:text-gray-400">/month</span>
+      </div>
+
+      {/* What includes in this subscription  */}
+      <ul role="list" className="mb-8 space-y-4 text-left">
+        {whatIncludes.map((point: string) => {
+          return (
+            <li key={point} className="flex items-center space-x-3">
+              <TiTick className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" />
+              <span>{point}</span>
+            </li>
+          );
+        })}
+      </ul>
+
+      {/* button for [Upgtrade or Current Plan] */}
+      <Link
+        href="#"
+        className={cn(
+          "text-white bg-gray-600 hover:bg-blue-600 focus:ring-4 focus:ring-blue-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:text-white  dark:focus:ring-blue-900",
+          isSelected ? "bg-blue-600" : ""
+        )}
+      >
+        {name === "Free" ? "Current Plan" : "Upgrade"}
+      </Link>
+    </div>
+  );
+};

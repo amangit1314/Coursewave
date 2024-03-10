@@ -1,10 +1,9 @@
-import { PrismaClient } from "@prisma/client";
-
 import { NextRequest, NextResponse } from "next/server";
 export const dynamic = 'force-dynamic';
-const prisma = new PrismaClient();
 
-// get user data
+import { db } from "@/lib/db";
+
+//* GET user data
 export const GET = async (req: NextRequest, { params }: { params: { userId: string }; }) => {
     try {
         const uid = params.userId;
@@ -16,7 +15,7 @@ export const GET = async (req: NextRequest, { params }: { params: { userId: stri
                 }, { status: 400 });
         }
 
-        const user = await prisma.user.findUnique({
+        const user = await db.user.findUnique({
             where: {
                 id: uid,
             },
@@ -26,19 +25,17 @@ export const GET = async (req: NextRequest, { params }: { params: { userId: stri
             return NextResponse
                 .json({
                     status: false,
-                    message: "No user found with this id.",
+                    message: `No user found with this id: ${uid} ...`,
                 }, { status: 404 });
         }
 
-        return NextResponse
-            .json({
-                status: true,
-                data: {
-                    user,
-                },
-                message: "User details successfully accessed..",
-            }, { status: 200 });
-    } catch (error) {
+        return NextResponse.json({
+            status: true,
+            data: user,
+            message: "User details successfully accessed ✔️...",
+        }, { status: 200 });
+    } catch (error: any) {
+        console.log(`ERROR in api/profile/[id]: ${error.message} `)
         return NextResponse
             .json({
                 status: false,
@@ -48,10 +45,12 @@ export const GET = async (req: NextRequest, { params }: { params: { userId: stri
     }
 };
 
-// delete account
-export const DELETE = async (req: NextRequest, { params }: { params: { userId: string } }) => {
+//* PUT update user account data
+export const PUT = async (req: NextRequest, { params }: { params: { userId: string } }) => {
+    const uid = params.userId;
     try {
-        const uid = params.userId; // Use optional chaining to avoid errors
+        const reqBody = await req.json();
+        const { newUserName, newProfileImageUrl } = reqBody;
 
         if (!uid) {
             return NextResponse.json({
@@ -60,7 +59,14 @@ export const DELETE = async (req: NextRequest, { params }: { params: { userId: s
             }, { status: 400 });
         }
 
-        const user = await prisma.user.findUnique({
+        if (!newUserName || !newProfileImageUrl) {
+            return NextResponse.json({
+                status: false,
+                message: "No required fields (newUserName and newProfileImage) provided ...",
+            }, { status: 400 });
+        }
+
+        const user = await db.user.findUnique({
             where: {
                 id: uid,
             },
@@ -73,8 +79,57 @@ export const DELETE = async (req: NextRequest, { params }: { params: { userId: s
             }, { status: 404 });
         }
 
-        // Delete the user
-        await prisma.user.delete({
+        const updatedUser = await db.user.update({
+            where: {
+                id: uid,
+            },
+            data: {
+                name: newUserName,
+                profileImageUrl: newProfileImageUrl,
+            }
+        });
+
+        return NextResponse.json({
+            status: true,
+            data: updatedUser,
+            message: "Account successfully updated ✔️ ...",
+        }, { status: 200 });
+    } catch (error: any) {
+        console.log('ERROR in updating account: ', error.message);
+        return NextResponse.json({
+            status: false,
+            error: error.message,
+            message: "Internal server error ❌🚧 ...",
+        }, { status: 500 });
+    }
+};
+
+//* DELETE user account data
+export const DELETE = async (req: NextRequest, { params }: { params: { userId: string } }) => {
+    try {
+        const uid = params.userId;
+
+        if (!uid) {
+            return NextResponse.json({
+                status: false,
+                message: "No user ID provided ...",
+            }, { status: 400 });
+        }
+
+        const user = await db.user.findUnique({
+            where: {
+                id: uid,
+            },
+        });
+
+        if (!user) {
+            return NextResponse.json({
+                status: false,
+                message: "No user found with this user ID ...",
+            }, { status: 404 });
+        }
+
+        await db.user.delete({
             where: {
                 id: uid,
             },
@@ -85,7 +140,7 @@ export const DELETE = async (req: NextRequest, { params }: { params: { userId: s
             message: "Account successfully deleted ...",
         }, { status: 200 });
     } catch (error: any) {
-        console.log(error.message);
+        console.log('ERROR in deleting account: ', error.message);
         return NextResponse.json({
             status: false,
             error: error.message,
@@ -93,4 +148,3 @@ export const DELETE = async (req: NextRequest, { params }: { params: { userId: s
         }, { status: 500 });
     }
 };
-

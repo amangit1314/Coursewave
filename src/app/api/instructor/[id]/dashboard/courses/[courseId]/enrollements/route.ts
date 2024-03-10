@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+// import { PrismaClient } from "@prisma/client";
+// const prisma = new PrismaClient();
+
+import { db } from "@/lib/db";
+// import { PrismaClient } from "@prisma/client";
+// const prisma = new PrismaClient();
+
 export const dynamic = 'force-dynamic';
 // get enrolled students for courseId
 export const GET = async (req: NextRequest, { params }: {
@@ -12,9 +17,9 @@ export const GET = async (req: NextRequest, { params }: {
 
     const instructorId = params?.id;
     const courseId = params.courseId;
-    
+
     try {
-        const youAreInstructor = await prisma.course.findUnique({
+        const youAreInstructor = await db.course.findUnique({
             where: {
                 courseId: courseId,
                 instructorID: instructorId,
@@ -26,7 +31,7 @@ export const GET = async (req: NextRequest, { params }: {
 
         if (isInstructor) {
 
-            enrollements = await prisma.enrolledStudents.findUnique({
+            enrollements = await db.enrolledStudents.findUnique({
                 where: {
                     courseId,
                 }
