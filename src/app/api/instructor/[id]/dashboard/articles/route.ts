@@ -13,111 +13,98 @@ export const POST = async (req: NextRequest, { params }: {
   };
 }) => {
 
-  const instructorId = params?.id;
+  const authorId = params?.id;
 
   const reqBody = await req.json();
-  const { title, , courseCreatorName, coursePrice, courseDescription, courseCategories, instructorName, isPublished, courseDuration, technologiesYouWillLearn, thisCourseIsFor, prerequisits, whatYouWillLearn } = reqBody;
+  const { title, content, estimatedReadingTime } = reqBody;
 
   try {
     const articleId = `article_${generateUid().split("-")[0]}`;
 
-    if (!instructorId) {
+    if (!authorId) {
       return NextResponse.json({ success: false, message: "Invalid Instructor Id" }, { status: 400 });
     }
 
-    if (!courseTitle || !courseImage || !courseCreatorName) {
-      return NextResponse.json({ success: false, message: "Course title, image and creator name are required fields ..." }, { status: 422 });
+    if (!title || !content || !estimatedReadingTime) {
+      return NextResponse.json({ success: false, message: "Missing required fields ..." }, { status: 422 });
     }
 
-    //TODO in here need to handle the course image upload backend side
-
-    const createdCourse = await db.course.create({
+    const createdArticle = await db.blog.create({
       data: {
-        courseId: courseId,
-        courseTitle: courseTitle,
-        courseImage: courseImage,
-        courseCreator: courseCreatorName,
-        courseDescription: courseDescription,
-        isFree: coursePrice ? false : true,
-        coursePrice: coursePrice,
-        instructorID: instructorId,
-        courseCategories: courseCategories,
-        instructorName,
-        isPublished,
-        courseDuration,
-        technologiesYouAreGoingToLearn: technologiesYouWillLearn,
-        thisCourseIsFor,
-        prerequisits,
-        whatYouWillLearn,
+        id: articleId,
+        title,
+        content,
+        authorId: authorId,
+        estimatedReadingTime,
       }
     });
 
     return NextResponse.json({
       success: true,
-      data: createdCourse,
-      message: 'Course Successfully Created',
+      data: createdArticle,
+      message: 'Article Successfully Created ...',
     }, { status: 200 });
   } catch (error: any) {
-    console.error('ERROR inside instructor/id/dashboard/courses: ', error.message)
+    console.error('ERROR inside instructor/id/dashboard/articles: ', error.message)
     return NextResponse.json({
       success: false,
       error: error.message,
-      message: 'Internal Server Error, Failed to create a course ...',
+      message: 'Internal Server Error, Failed to create a article ...',
     }, { status: 500 });
   }
 }
 
-//* get all created courses by instructorId [WORKING]
+//* get all created articles by authorId [WORKING]
 export const GET = async (req: NextRequest, { params }: {
   params: {
     id?: string;
   };
 }) => {
-  const instructorId = params?.id;
+  const authorId = params?.id;
   try {
-    if (!instructorId) {
+    if (!authorId) {
       return NextResponse.json({
         success: false,
-        message: "Instructor Id not provided ...",
+        message: "Author Id not provided ...",
       }, { status: 400 });
     }
 
-    console.log(`InstructorID :-> ${instructorId}`)
+    console.log(`AuthorID :-> ${authorId}`)
 
-    const instructor = await db.instructor.findUnique({
+    const author = await db.user.findUnique({
       where: {
-        instructorID: instructorId
+        id: authorId
       },
       select: {
-        instructorID: true,
-        instructorName: true,
-        instructorEmail: true,
-        instructorTag: true,
-        instructorProfilePicUrl: true,
-        aboutInstructor: true,
-        createdCourses: true,
+        id: true,
+        email: true,
+        profileImageUrl: true,
+        isEmailVerified: true,
+        wishList: true,
+        Blog: true,
+        BlogComment: true,
       }
     });
 
-    if (!instructor) {
+    if (!author) {
       return NextResponse.json({
         success: false,
-        message: "No Instructor found with Provided Id ❌ ..."
+        message: "No Author found with Provided Id ❌ ..."
       }, { status: 404 });
     }
 
-    console.log(`Created courses by InstructorID:-> ${instructorId}: `, instructor.createdCourses);
+    console.log(`Created articles by authorId:-> ${authorId}: `, author.Blog);
     return NextResponse.json({
       success: true,
-      data: instructor.createdCourses,
-      message: 'Courses fetched successfully ...',
+      data: author.Blog,
+      message: 'Articles fetched successfully ...',
     }, { status: 200 });
   } catch (error: any) {
-    console.log('Internal Server error in instructor/[id]/courses: ', error.message);
+    console.log('Internal Server error in instructor/[id]/articles: ', error.message);
     return NextResponse.json({
       success: false,
       error: error.message,
-      message: `Internal Server Error, Failed to get created courses for this id: ${instructorId} ...`,
+      message: `Internal Server Error, Failed to get created articles for this id: ${authorId} ...`,
     }, { status: 500 });
   }
 };
