@@ -41,11 +41,11 @@ const ReviewCarousel = ({ reviews }: any) => {
           <SwiperSlide key={index}>
             <Reviewcard
               key={index}
-              name={review.name}
+              authorName={review.name}
               date={review.date}
               // showDetails={true}
-              // detailsVisible={false}
-              imgUrl={review.imgurl}
+              starRating={5.0}
+              authorImgUrl={review.imgurl}
               review={review.review}
             />
           </SwiperSlide>
