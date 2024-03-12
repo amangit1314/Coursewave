@@ -21,10 +21,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { formatPrice } from "@/lib/format";
-import { course } from "@prisma/client";
+import { Course } from "@prisma/client";
 
 interface PriceFormProps {
-  initialData: course;
+  initialData: Course;
   courseId: string;
 }
 
