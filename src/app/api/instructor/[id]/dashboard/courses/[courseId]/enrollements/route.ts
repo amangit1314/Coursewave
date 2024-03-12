@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-// import { PrismaClient } from "@prisma/client";
-// const prisma = new PrismaClient();
-
 import { db } from "@/lib/db";
-// import { PrismaClient } from "@prisma/client";
-// const prisma = new PrismaClient();
-
 export const dynamic = 'force-dynamic';
+
 // get enrolled students for courseId
 export const GET = async (req: NextRequest, { params }: {
     params: {
@@ -16,7 +11,7 @@ export const GET = async (req: NextRequest, { params }: {
 }) => {
 
     const instructorId = params?.id;
-    const courseId = params.courseId;
+    const courseId = params?.courseId;
 
     try {
         const youAreInstructor = await db.course.findUnique({
@@ -27,20 +22,19 @@ export const GET = async (req: NextRequest, { params }: {
         })
 
         let isInstructor = youAreInstructor ? true : false;
-        let enrollements;
 
         if (isInstructor) {
 
-            enrollements = await db.enrolledStudents.findUnique({
+            const enrollements = await db.enrollement.findMany({
                 where: {
-                    courseId,
+                    courseId: courseId,
                 }
             });
 
             //! if no enrollements
             if (!enrollements) {
                 return NextResponse.json(
-                    { message: `No enrollements found with courseId:${courseId}` },
+                    { message: `No enrollements found with courseId:${courseId} ...` },
                     { status: 404 }
                 );
             }
