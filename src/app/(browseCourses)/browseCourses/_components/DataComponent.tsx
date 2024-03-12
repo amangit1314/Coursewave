@@ -1,5 +1,5 @@
 import CourseWidget from "./course-widget";
-import { course } from '@prisma/client';
+import { Course } from '@prisma/client';
 
 const getCourses = async () => {
     try {
@@ -26,7 +26,7 @@ export default async function DataComponent() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 my-6 w-9/12 justify-start mx-auto">
             {
                 Array.isArray(courses.data) ? (
-                courses.data.map((course: course, index: number) => (
+                courses.data.map((course: Course, index: number) => (
                     <CourseWidget
                         key={index}
                         index={index.toString()}
