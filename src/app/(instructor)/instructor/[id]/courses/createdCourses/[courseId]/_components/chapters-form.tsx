@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { Loader2, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Chapter, Course } from "@prisma/client";
 
 import {
@@ -33,6 +33,8 @@ const formSchema = z.object({
 });
 
 export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
+  const params = useParams();
+  const instructorId = params.id;
   const [isCreating, setIsCreating] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -53,7 +55,11 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post(`/api/instructor/${instructorId}/dashboard/courses/${courseId}/sections/${sectionId}/chapters`, values);
+      // ${sectionId}
+      await axios.post(
+        `/api/instructor/${instructorId}/dashboard/courses/${courseId}/sections/chapters`,
+        values
+      );
       toast.success("Chapter created");
       toggleCreating();
       router.refresh();
