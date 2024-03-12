@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect } from 'react'
-import { category } from '@prisma/client';
+import { Category } from '@prisma/client';
 import { FilteredCoursesComponent } from '@/app/(course)/courses/_components/filtered-courses';
 import CategoriesComponent from '@/app/(course)/courses/_components/courses-categories-component';
 
@@ -12,7 +12,7 @@ interface BrowseEnrolledCoursesSectionProps {
 const BrowseEnrolledCoursesSection: React.FC<BrowseEnrolledCoursesSectionProps> = ({ children }) => {
     const [loading, setLoading] = React.useState(true);
     const [activeCategoryIndex, setActiveCategoryIndex] = React.useState<number>(0);
-    const [categories, setCategories] = React.useState<category[]>([]);
+    const [categories, setCategories] = React.useState<Category[]>([]);
 
     useEffect(() => {
         fetch('https://localhost:3000/api/categories/')
@@ -27,7 +27,7 @@ const BrowseEnrolledCoursesSection: React.FC<BrowseEnrolledCoursesSectionProps> 
                 console.log(data); // Check the data in the console
 
                 // Assuming your data.data is an array of courses
-                setCategories([{ categoryName: 'All' }, ...data.data]); // Add 'All' category
+                setCategories([{ categoryName: 'All' }, ...data.data]); // Add 'All' Category
                 setLoading(false);
             })
             .catch((error) => {
@@ -40,7 +40,7 @@ const BrowseEnrolledCoursesSection: React.FC<BrowseEnrolledCoursesSectionProps> 
         setActiveCategoryIndex(index);
     };
 
-    const activeCategory = categories[activeCategoryIndex]?.categoryName || 'All';
+    const activeCategory = categories[activeCategoryIndex]?.name || 'All';
 
     return (
         <div className="max-h-screen mt-[14rem] md:mt-[1rem] mb-12 max-w-7xl place-items-center items-center w-full h-full">
