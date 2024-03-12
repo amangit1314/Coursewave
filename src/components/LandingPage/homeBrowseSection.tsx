@@ -6,7 +6,7 @@ import { BsFillBookmarkStarFill } from "react-icons/bs";
 import { CiBookmark } from "react-icons/ci";
 import { Badge } from "../ui/badge";
 import { useRouter } from "next/navigation";
-import { course } from "@prisma/client";
+import { Course } from "@prisma/client";
 
 const style = { color: "blue", fontSize: "1.5em" };
 const starStyle = { color: "yellow" };
