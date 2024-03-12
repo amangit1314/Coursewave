@@ -2,7 +2,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { course } from "@prisma/client";
+import { Course } from "@prisma/client";
 import React, { useEffect } from "react";
 import { BsPersonVideo2 } from "react-icons/bs";
 import { FaCircleCheck } from "react-icons/fa6";
@@ -24,7 +24,7 @@ import Reviewcard from "@/app/(course)/courses/_components/sections/reviews/revi
 function CoursePreview({ params }: any) {
   const [loading, setLoading] = React.useState(true);
   const [isInCart, setIsInCart] = React.useState(false);
-  const [course, setCourse] = React.useState<course>();
+  const [course, setCourse] = React.useState<Course>();
   const style = { color: "blue", fontSize: "1.5em" };
 
   useEffect(() => {
@@ -920,11 +920,11 @@ function CourseRatings() {
           return (
             <Reviewcard
               key={index}
-              name={review.name}
+              authorName={review.name}
               date={review.date}
               // showDetails={true}
-              // detailsVisible={false}
-              imgUrl={review.imgurl}
+              starRating={5.0}
+              authorImgUrl={review.imgurl}
               review={review.review}
             />
           );
