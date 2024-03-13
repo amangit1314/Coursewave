@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 function TailwindDescription() {
   return (
     <div className="md:mt-4 p-6 md:p-0 max-w-3xl justify-start">

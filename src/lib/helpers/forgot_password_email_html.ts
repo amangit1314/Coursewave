@@ -2,7 +2,7 @@ export const forgotHtml = (siteUrl: string, resetPasswordUrl: string, email: str
 
     const forgotPasswordHtml = `
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-        
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -50,7 +50,7 @@ export const forgotHtml = (siteUrl: string, resetPasswordUrl: string, email: str
                             If you need help, or you have any other questions, feel free to email ${email}, or \n call CourseApp customer service toll-free at +91-7023953453.
                             <br/><br/>
                             CourseApp Customer Service
-                        
+
                     </td>
                 </tr>
             </table>
