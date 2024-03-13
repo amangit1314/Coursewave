@@ -28,7 +28,8 @@ function CoursePreview({ params }: any) {
   const style = { color: "blue", fontSize: "1.5em" };
 
   useEffect(() => {
-    fetch(`https://localhost:3000/api/courses/${params.id}`)
+    // https://localhost:3000
+    fetch(`/api/courses/${params.id}`)
       .then((res) => {
         if (res.ok) {
           return res.json();

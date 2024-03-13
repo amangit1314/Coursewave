@@ -4,7 +4,8 @@ import { useQuery } from "react-query";
 
 const getUserInfoById = async (userId: string): Promise<{user: User | null, error: Error | null} > => {
   try {
-    const url = `https://localhost:3000/api/profile/${userId}`;
+    // https://localhost:3000
+    const url = `/api/profile/${userId}`;
     const response = await fetch(url);
 
     if (!response.ok) {

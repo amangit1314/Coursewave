@@ -19,7 +19,8 @@ export function FilteredCoursesComponent({
   const searchQuery = searchParams.get("q") || ""; // Get the query string parameter "q"
 
   useEffect(() => {
-    fetch("https://localhost:3000/api/courses/")
+    // https://localhost:3000
+    fetch("/api/courses/")
       .then((res) => {
         if (res.ok) {
           return res.json();

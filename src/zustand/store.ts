@@ -13,7 +13,8 @@ export const useZustandStore = create((set) => ({
   fetchUserInfo: async () => {
     set({ isFetchingUserInfo: true, error: null });
     try {
-      const url = "https://localhost:3000/api/auth/me";
+      // https://localhost:3000
+      const url = "/api/auth/me";
       console.log("Fetching user info from:", url);
 
       const response = await fetch(url);

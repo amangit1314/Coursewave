@@ -38,7 +38,8 @@ export default function CreatedCourses() {
     const fetchCourses = async () => {
       try {
         const response = await fetch(
-          `https://localhost:3000/api/instructor/${user.user?.id}/dashboard/courses`
+          // https://localhost:3000
+          `/api/instructor/${user.user?.id}/dashboard/courses`
         );
 
         if (!response.ok) {

@@ -52,7 +52,7 @@ function CoursePreview({ params }: any) {
     const getCourseInfo = async (courseId: string) => {
       try {
         const response = await fetch(
-          `https://localhost:3000/api/courses/${courseId}`
+          `/api/courses/${courseId}`
         );
 
         if (!response.ok) {

@@ -3,15 +3,16 @@ import { Course } from '@prisma/client';
 
 const getCourses = async () => {
     try {
-        const res = await fetch('https://localhost:3000/api/courses');
+      // https://localhost:3000
+      const res = await fetch("/api/courses");
 
-        if (!res.ok) {
-            throw new Error('Could not retrieve courses');
-        }
+      if (!res.ok) {
+        throw new Error("Could not retrieve courses");
+      }
 
-        console.log(res.json.toString());
+      console.log(res.json.toString());
 
-        return res.json();
+      return res.json();
     } catch (error: any) {
         console.error('Error fetching courses:', error.message);
         throw error;

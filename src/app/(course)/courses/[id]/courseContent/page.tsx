@@ -81,7 +81,8 @@ function CourseContentPage({ params }: any) {
 
   // fetch course info where courseId is courseId
   useEffect(() => {
-    fetch(`https://localhost:3000/api/courses/${courseId}`)
+    // https://localhost:3000
+    fetch(`/api/courses/${courseId}`)
       .then((res) => {
         if (res.ok) {
           return res.json();

@@ -3,7 +3,8 @@ import { User } from "@prisma/client";
 
 const useUserInfo = () => {
   const { isLoading, error, data } = useQuery("user", async () => {
-    const url = "https://localhost:3000/api/auth/me";
+    // https://localhost:3000
+    const url = "/api/auth/me";
     const response = await fetch(url);
 
     if (!response.ok) {

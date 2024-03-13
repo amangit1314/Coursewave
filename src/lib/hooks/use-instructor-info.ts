@@ -25,7 +25,9 @@ const useInstructorInfo = (instructorId: string) => {
         // }
 
         // Fetch instructor info using the provided instructorId
-        const instructorUrl = `https://localhost:3000/api/instructor/${instructorId}`;
+
+        // https://localhost:3000
+        const instructorUrl = `/api/instructor/${instructorId}`;
         const instructorResponse = await fetch(instructorUrl);
         if (!instructorResponse.ok) {
           throw new Error(`Failed to get instructor info from ${instructorUrl}`);

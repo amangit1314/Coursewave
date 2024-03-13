@@ -31,7 +31,8 @@ export const GET = async (req: NextRequest, { params }: {
         }
 
         // Construct the correct URL based on the 'uid' parameter
-        const currentURL = `https://localhost:3000/api/profile/${uid}`;
+        // https://localhost:3000
+        const currentURL = `/api/profile/${uid}`;
 
         const enrolledCourses = await db.enrollement.findMany({
             where: {

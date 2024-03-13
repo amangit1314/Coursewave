@@ -117,7 +117,8 @@ const ReviewsMassionaryGrid = ({ courseId }: ReviewsGridProps) => {
       try {
         setLoading(true);
         const response = await fetch(
-          `https://localhost:3000/api/courses/${courseId}/reviews`
+          // https://localhost:3000
+          `/api/courses/${courseId}/reviews`
         );
 
         if (!response.ok) {

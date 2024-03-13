@@ -15,25 +15,26 @@ const BrowseEnrolledCoursesSection: React.FC<BrowseEnrolledCoursesSectionProps> 
     const [categories, setCategories] = React.useState<Category[]>([]);
 
     useEffect(() => {
-        fetch('https://localhost:3000/api/categories/')
-            .then((res) => {
-                if (res.ok) {
-                    return res.json();
-                } else {
-                    throw new Error('Failed to fetch categories');
-                }
-            })
-            .then((data) => {
-                console.log(data); // Check the data in the console
+      // https://localhost:3000
+      fetch("/api/categories/")
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          } else {
+            throw new Error("Failed to fetch categories");
+          }
+        })
+        .then((data) => {
+          console.log(data); // Check the data in the console
 
-                // Assuming your data.data is an array of courses
-                setCategories([{ categoryName: 'All' }, ...data.data]); // Add 'All' Category
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error('Error fetching categories:', error);
-                setLoading(false);
-            });
+          // Assuming your data.data is an array of courses
+          setCategories([{ categoryName: "All" }, ...data.data]); // Add 'All' Category
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Error fetching categories:", error);
+          setLoading(false);
+        });
     }, []);
 
     const handleClick = (index: number) => {
