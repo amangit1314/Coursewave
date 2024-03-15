@@ -4,6 +4,21 @@ import { Category, Course } from "@prisma/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams } from "next/navigation";
 
+const fetchCourses = async () => {
+  try {
+    const response = await fetch(`/api/courses`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch courses: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error("Error fetching courses:", error);
+    throw error; // Re-throw to allow React Query to handle the error
+  }
+};
+
 interface FilteredCoursesComponentProps {
   activeCategory: string | null;
   categories: Category[];
@@ -18,9 +33,11 @@ export function FilteredCoursesComponent({
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("q") || ""; // Get the query string parameter "q"
 
+
+
   useEffect(() => {
     // https://localhost:3000
-    fetch("/api/courses/")
+    fetch("/api/courses")
       .then((res) => {
         if (res.ok) {
           return res.json();

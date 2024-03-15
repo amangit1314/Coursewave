@@ -2,7 +2,7 @@
 
 import { Button } from "./ui/button";
 import UserAvatar from "./user-avatar";
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { redirect, useParams, usePathname, useRouter } from "next/navigation";
 import { Josefin_Sans } from "next/font/google";
@@ -50,34 +50,36 @@ function NavbarRoutes() {
   const isBrowseCoursesScreen = pathname.match("/browseCourses");
 
   return (
-    <div className="flex justify-between items-center w-full">
-      <div className="pl-64">
-        {isBrowseCoursesScreen ? <SearchButton /> : <div></div>}
+    <Suspense>
+      <div className="flex justify-between items-center w-full">
+        <div className="pl-64">
+          {isBrowseCoursesScreen ? <SearchButton /> : <div></div>}
+        </div>
+        <div className="ml-auto flex justify-end gap-x-2">
+          <Toaster />
+
+          {/* instructor button */}
+          <Button
+            onClick={switchToInstructorView}
+            className="cursor-pointer border-opacity-10 hover:bg-slate-50 dark:hover:border-opacity-100 dark:border-opacity-10 hover:border-opacity-100 dark:hover:bg-zinc-800 border px-4 border-black text-black text-xs dark:border-white dark:text-white bg-transparent rounded-md mx-auto transition-all duration-200 items-center"
+          >
+            {isInstructor ? "Instructor View" : "Become Instructor"}
+          </Button>
+
+          {/* theme toggle */}
+          <ThemeModeToggle />
+
+          {/* cart */}
+          <Cart />
+
+          {/* notifications */}
+          <Notifications />
+
+          {/* user profile */}
+          {<UserAvatar />}
+        </div>
       </div>
-      <div className="ml-auto flex justify-end gap-x-2">
-        <Toaster />
-
-        {/* instructor button */}
-        <Button
-          onClick={switchToInstructorView}
-          className="cursor-pointer border-opacity-10 hover:bg-slate-50 dark:hover:border-opacity-100 dark:border-opacity-10 hover:border-opacity-100 dark:hover:bg-zinc-800 border px-4 border-black text-black text-xs dark:border-white dark:text-white bg-transparent rounded-md mx-auto transition-all duration-200 items-center"
-        >
-          {isInstructor ? "Instructor View" : "Become Instructor"}
-        </Button>
-
-        {/* theme toggle */}
-        <ThemeModeToggle />
-
-        {/* cart */}
-        <Cart />
-
-        {/* notifications */}
-        <Notifications />
-
-        {/* user profile */}
-        {<UserAvatar />}
-      </div>
-    </div>
+    </Suspense>
   );
 }
 
