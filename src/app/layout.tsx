@@ -3,11 +3,11 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
-import { ThemeProvider } from "@/components/providers/theme-provider";
-import { ToastProvider } from "@/components/providers/toaster-provider";
 import { usePathname, useRouter } from "next/navigation";
 import LandingPageHeader from "@/components/LandingPage/header";
-import { GlobalQueryClientProvider } from "@/app/QueryClientProvider";
+import { GlobalQueryClientProvider } from "@/components/providers/query-client-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { ToastProvider } from "@/components/providers/toaster-provider";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800", "900"],

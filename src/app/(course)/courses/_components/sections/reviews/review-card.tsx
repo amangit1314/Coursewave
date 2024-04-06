@@ -19,7 +19,7 @@ const Reviewcard = ({
   starRating,
 }: ReviewProps) => {
   return (
-    <div className="flex-col hover:border hover:z-50 hover:shadow-xl items-center p-3 rounded-xl cursor-pointer max-w-1/3 w-full h-auto align-center dark:bg-slate-800 bg-slate-50 dark:bg-opacity-80 bg-clip-padding backdrop-filter-blur transition-all duration-300">
+    <div className="flex-col border dark:border-none hover:z-50 hover:shadow-xl items-center p-3 rounded-xl cursor-pointer w-full h-auto align-center dark:bg-zinc-800 bg-slate-50  bg-clip-padding backdrop-filter-blur transition-all duration-300">
       <blockquote className="mb-2">
         <p className="text-sm text-start tracking-normal w-full text-gray-800 dark:text-slate-200 line-clamp-6">
           {/* “{review}” */}
@@ -47,7 +47,7 @@ const Reviewcard = ({
         </div>
 
         <div className="flex flex-row justify-center item-center rounded-badge text-xs px-2 py-1 space-x-1 border border-stroke bg-zinc-900 text-white dark:bg-black dark:border dark:border-stroke">
-          <p>{starRating ? starRating : 4.0}</p>
+          <p>{starRating ? starRating.toFixed(1) : 4.0}</p>
           <FaStar className="text-yellow-400" />
         </div>
       </div>

@@ -1,14 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import dotenv from "dotenv";
 dotenv.config();
 import { db } from "@/lib/db";
-import { getUserIdFromToken } from "@/app/lib";
 import { decrypt, verifyToken } from "@/lib/helpers/jwt_helper";
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(req: NextRequest) {
+export async function GET(req: Request) {
     try {
         const token = cookies().get('token')?.value;
         if (!token) {

@@ -1,17 +1,16 @@
 'use client'; // required for {HeroSection} lottie-react because it use (useState) internally
 
 import React from "react";
-
 import About from "@/components/LandingPage/about";
 import Footer from "@/components/LandingPage/footer";
+import { usePathname, useRouter } from "next/navigation";
 import * as scrollAnimation from "./ScrollAnimation.json";
 import Offerings from "@/components/LandingPage/offerings";
+import LandingPageHeader from "@/components/LandingPage/header";
 import SessionsSection from "@/components/LandingPage/sessions";
 import HeroSection from "@/components/LandingPage/hero-section";
 import Testimonials from "@/components/LandingPage/testimonials";
 import HomeBrowseSection from "@/components/LandingPage/homeBrowseSection";
-import { usePathname, useRouter } from "next/navigation";
-import LandingPageHeader from "@/components/LandingPage/header";
 
 export default function Home() {
    const router = useRouter();
@@ -28,7 +27,7 @@ export default function Home() {
    const hideSidebar = pathname.match(
      /courses\/enrolledCourses\/(undefined|null)/
    );
-  
+
   return (
     <main className="flex dark:bg-black dark:bg-opacity-80 min-h-screen flex-col items-center justify-between  ">
       <LandingPageHeader handleLoginClick={handleLoginClick} />

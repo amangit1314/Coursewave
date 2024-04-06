@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-function Enrollements() {
+function Enrollments() {
   return (
     <div>
       <div className="flex items-center space-x-2 text-base">

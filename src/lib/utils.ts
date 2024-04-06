@@ -36,8 +36,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function absoluteUrl(path: string) {
-  return `${process.env.NEXT_PUBLIC_APP_URL || "https://localhost:3000/"
-    }${path}`;
+  return `${process.env.NEXT_PUBLIC_APP_URL}${path}`;
 }
 
 export function formatNumber(number: number) {

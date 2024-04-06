@@ -31,15 +31,32 @@ model User {
   resetTokenExpiry           String?
   resetTokenStatus           String?
 
+  // STRIPE
+  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
+  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
+  stripePriceId          String?   @map(name: "stripe_price_id")
+  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
+
   // relations
   wishList     WishList[]
   cart         Cart[]
-  enrollements Enrollement[]
+  enrollments Enrollment[]
   payments     Payment[]
   savedCourses Course[]
   BlogComment  BlogComment[]
   Blog         Blog[]
   Review       Review[]
+}
+
+model StripeCustomer {
+  stripeCustomerId       String    @id
+  userId                 String    @unique
+  stripeSubscriptionId   String?
+  stripePriceId          String?
+  stripeCurrentPeriodEnd DateTime?
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now())
 }
 
 //* CART MODELS
@@ -99,7 +116,7 @@ model Course {
   userId                         String?
 
   reviews                          Review[]
-  enrollements                     Enrollement[]
+  enrollments                     Enrollment[]
   payments                         Payment[]
   purchases                        Purchase[]
   attachments                      CourseAttachment[]
@@ -197,11 +214,11 @@ model ChapterNotes {
   Chapter   Chapter  @relation(fields: [chapterId], references: [id])
 }
 
-model Enrollement {
+model Enrollment {
   enrollmentId     String   @id
   userId           String
   courseId         String
-  enrollmentDate   DateTime @default(now())
+  enrollmentDate   String
   completionStatus String
   user             User?    @relation(fields: [userId], references: [id])
   course           Course?  @relation(fields: [courseId], references: [courseId])
@@ -225,16 +242,12 @@ model UserProgress {
 
 //! PAYMENT MODELS
 model Subscription {
-  id                           String    @id @unique
-  userId                       String
-  subscriptionId               String
-  subscriptionPriceId          String
-  stripeCurrentPeriodEnd       DateTime? @default(now())
-  subscriptionCurrentPeriodEnd DateTime? @default(now())
-
-  stripeCustomerId     String @unique
-  stripePriceId        String
-  stripeSubscriptionId String
+  id                     String    @id @unique
+  userId                 String
+  stripeCustomerId       String    @unique
+  stripeSubscriptionId   String
+  stripePriceId          String
+  stripeCurrentPeriodEnd DateTime? @default(now())
 
   createdAt DateTime? @default(now())
   updatedAt DateTime? @default(now())
@@ -261,23 +274,11 @@ model Purchase {
 
   course Course @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt()
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt()
 
   @@unique([userId, courseId])
   @@index([courseId])
-}
-
-model StripeCustomer {
-  id                     String    @id @default(uuid())
-  userId                 String    @unique
-  stripeCustomerId       String    @unique
-  stripePriceId          String
-  stripeSubscriptionId   String
-  stripeCurrentPeriodEnd DateTime? @default(now())
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Transaction {

@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 
 export function SessionCard({sessionName, sessionImage, instructor}: any) {
     return (
-      <div className="max-h-[20rem] h-full cursor-pointer shadow-md bg-white dark:bg-slate-800 w-[15rem] rounded-xl ">
+      <div className="max-h-[20rem] h-full cursor-pointer shadow-md bg-white dark:bg-zinc-900 dark:hover:border dark:hover:border-blue-500 hover:border-stoke transition-all duration-300 w-[15rem] rounded-xl ">
         <Image
           className="h-36 w-[15rem] bg-slate-700 rounded-tl-xl rounded-tr-xl relative"
           src={sessionImage}

@@ -19,6 +19,19 @@ export const GET = async (req: NextRequest, { params }: {
             }, { status: 400 });
         }
 
+        const user = await db.user.findUnique({
+            where: {
+                id: uid,
+            }
+        })
+
+        if (!user) {
+            return NextResponse.json({
+                success: false,
+                error: 'NOT FOUND, no user found with this uid ...',
+            }, { status: 404 });
+        }
+
         const enrolledCourses = await db.enrollement.findMany({
             where: {
                 userId: uid
@@ -33,6 +46,8 @@ export const GET = async (req: NextRequest, { params }: {
                 course: true,
             }
         });
+
+        console.log('Enrolled courses fetched successfully ...')
 
         return NextResponse.json({
             success: true,

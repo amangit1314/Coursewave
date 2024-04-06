@@ -70,3 +70,50 @@ export const reviews = [
       "Lorem ipsum dolor sit, amet consectetur adipisicing  ipsum dolor sit, amet consectetur adipisicing elit. elit. .",
   },
 ];
+
+export type Payment = {
+  id: string;
+  amount: number;
+  status: "not started" | "ongoing" | "completed";
+  name: string;
+  enrollementDate: Date | string;
+};
+
+export const data: Payment[] = [
+  {
+    id: "m5gr84i9",
+    amount: 316,
+    status: "completed",
+    name: "Version Control System with Git",
+    enrollementDate: "21 Feb 2024",
+  },
+  {
+    id: "3u1reuv4",
+    amount: 242,
+    status: "completed",
+    name: "UI/UX Master class",
+    enrollementDate: "21 Feb 2024",
+  },
+  {
+    id: "derv1ws0",
+    amount: 837,
+    status: "ongoing",
+    name: "Full Stack Development with Next.js",
+    enrollementDate: "21 Feb 2024",
+  },
+  {
+    id: "5kma53ae",
+    amount: 874,
+    status: "completed",
+    name: "Introduction to Docker and Containers ",
+    enrollementDate: "21 Feb 2024",
+  },
+  {
+    id: "bhqecj4p",
+    amount: 721,
+    status: "not started",
+    name: "Backend Development Bootcamp",
+    enrollementDate: "21 Feb 2024",
+  },
+];
+

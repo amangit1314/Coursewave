@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-
+import { IoMdAdd } from "react-icons/io";
 import React from "react";
 import BrowseEnrolledCoursesSection from "./_components/browse-enrolled-courses-section";
 import { IoNotificationsOutline } from "react-icons/io5";
@@ -43,45 +43,44 @@ import UserAvatar from "@/components/user-avatar";
 
 function DashboardPage() {
   return (
-    <div className="pb-16">
-      <div className="flex justify-between items-center h-full pt-4">
-        {/* Right Side */}
-        {/* <div className="mr-[2rem]">
-          <p className="text-xl pb-2 font-semibold text-gray-700 dark:text-gray-100">
-            Online Learning Dashboard
-          </p>
-
-          <LineChartForLearningActivity />
-        </div> */}
-
+    <div className="py-4">
+      {/* header */}
+      <div className="flex justify-between items-center h-full">
         <p className="text-xl pb-2 font-semibold text-gray-700 dark:text-gray-100">
           Online Learning Dashboard
         </p>
 
         <DashboardLeftHeader />
-
-        {/* Left Side */}
-        {/* <div className="w-[22rem] mr-[2rem]">
-          <DashboardLeftHeader />
-
-          <Divider>Course Progress</Divider>
-          <ChartThree />
-        </div> */}
       </div>
-      <LineChartForLearningActivity />
-      <Divider> Scheduled Sessions </Divider>
-      <ScheduledSessions />
-      {/* <Card className="flex justify-between mt-6"> */}
-      <Divider className="mt-8"> Enrolled Courses </Divider>
-      <EnrolledCoursesTable />
-      {/* <EnrolledCourses /> */}
-      {/* </Card> */}
+
+      {/* other content */}
+      <div className="space-y-12">
+        {/* line chart */}
+        <LineChartForLearningActivity />
+
+        {/* Sessions */}
+        <div>
+          <Divider> Scheduled Sessions </Divider>
+          <ScheduledSessions />
+        </div>
+
+        {/* enrolledCourses */}
+        <div>
+          <Divider> Enrolled Courses </Divider>
+          <EnrolledCoursesTable />
+        </div>
+
+        {/* Saved Articles */}
+
+        {/* Learning Goals */}
+      </div>
     </div>
   );
 }
 
 export default DashboardPage;
 
+// ------------------------------------------------------------------------------------------------
 //! ----------------- right side ---------------
 
 const chartdata = [
@@ -110,7 +109,6 @@ const chartdata = [
     "Courses Students": 1.88,
     "Sessions Students": 2.67,
   },
-  //...
 ];
 
 const valueFormatter = (number: number) =>
@@ -277,15 +275,13 @@ const DateRangeWidget = () => {
 // sessions
 function ScheduledSessionCard() {
   return (
-    <div className="w-[500px] mx-[2px] border border-none rounded-xl cursor-pointer p-4 flex justify-start  my-4 bg-zinc-950 hover:bg-blue-600 dark:hover:text-white transition-all duration-300">
+    <div className="w-[500px] mx-[2px] border border-stroke border-gray-300 rounded-xl cursor-pointer p-4 flex justify-start  my-4 dark:bg-zinc-950 hover:bg-blue-100 hover:bg-blend-saturation  hover:text-blue-800 dark:hover:text-white transition-all hover:ring-2 hover:ring-blue-600 duration-300">
       <div className={`bg-blue-500 h-15 w-1 rounded-full`}></div>
 
       <div className="ml-3  mr-1 justify-start items-start py-auto flex flex-col">
-        <p className="uppercase   text-xs">
-          Tuesday, jan 3 at 3:40 pm (pt)
-        </p>
+        <p className="uppercase   text-xs">Tuesday, jan 3 at 3:40 pm (pt)</p>
         <div className="flex flex-col justify-start">
-          <p className="max-w-[169px] w-full text-sm text-gray-700 dark:text-white font-medium tracking-tight line-clamp-1">
+          <p className="max-w-[169px] w-full text-sm font-medium tracking-tight line-clamp-1">
             One-on-One Session
           </p>
           <p className="text-xs tracking-tighter">40m</p>
@@ -312,12 +308,15 @@ const ScheduledSessions = () => {
           Scheduled Sessions
         </div>
 
-        <p className="text-sm cursor-pointer font-medium hover:text-blue-700 text-blue-500">
-          Show All
-        </p>
+        <div className="flex justify-center items-center bg-blue-500 text-white hover:bg-blue-700 text-sm cursor-pointer font-medium space-x-1 rounded-md px-4 py-2">
+          <IoMdAdd />
+          <p>Book a session</p>
+        </div>
       </div>
+
       {/* <Card> */}
       <DateRangeWidget />
+
       {/* <DatePickerDemo /> */}
       <ScrollArea className="flex p-1 justify-start items-center space-x-2 max-w-7xl w-full">
         <div className="flex space-x-2 max-w-7xl w-full">
@@ -328,6 +327,7 @@ const ScheduledSessions = () => {
         </div>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
+
       {/* </Card> */}
     </div>
   );

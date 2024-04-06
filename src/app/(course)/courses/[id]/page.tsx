@@ -38,6 +38,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-dropdown-menu";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 function CoursePreview({ params }: any) {
   const courseId = params?.id;
@@ -51,9 +53,7 @@ function CoursePreview({ params }: any) {
   useEffect(() => {
     const getCourseInfo = async (courseId: string) => {
       try {
-        const response = await fetch(
-          `/api/courses/${courseId}`
-        );
+        const response = await fetch(`/api/courses/${courseId}`);
 
         if (!response.ok) {
           console.log(
@@ -183,9 +183,10 @@ function CoursePreview({ params }: any) {
               ${course?.coursePrice}
             </p>
             <div className="flex flex-col justify-center items-center space-y-2">
-              <Button className="w-full dark:text-white font-semibold bg-blue-500 dark:bg-blue-600">
+              {/* <Button className="w-full dark:text-white font-semibold bg-blue-500 dark:bg-blue-600">
                 Buy now
-              </Button>
+              </Button> */}
+              <CourseEnrollButton courseId={course?.courseId!} />
               <p className="text-xs opacity-50">Apply coupon</p>
             </div>
           </div>
@@ -243,13 +244,13 @@ function CoursePreview({ params }: any) {
 export default CoursePreview;
 
 function CourseDetailsRightSection({ course }: any) {
+  const user = useUserInfo();
   const pathname = usePathname();
+  const cartItemId = generateUid();
+
   const [isInCart, setIsInCart] = React.useState(false);
   const notify = (content: string) => toast(`${content}`);
-  // const removeFromCart: any = useCartStore();
   const { add: handleAddToCart, remove: handleRemoveFromCart } = useCartStore();
-  const cartItemId = generateUid();
-  const user = useUserInfo();
 
   const cartItemToAdd = {
     id: `cart_${cartItemId}`,
@@ -265,9 +266,8 @@ function CourseDetailsRightSection({ course }: any) {
   };
 
   const toggleIsInCart = () => {
-    // If course is already in the cart, remove it
     if (isInCart) {
-      handleRemoveFromCart(cartItemToAdd.id); // Assuming you have a removeFromCart function in cartStore
+      handleRemoveFromCart(cartItemToAdd.id);
     } else {
       handleAddToCart(cartItemToAdd);
       setIsInCart(!isInCart);
@@ -279,12 +279,10 @@ function CourseDetailsRightSection({ course }: any) {
     navigator.clipboard.writeText(currentUrl).then(
       () => {
         console.log("URL copied to clipboard");
-        // Add a success message or notification if desired
         notify("✔ URL copied successfully!");
       },
       (err) => {
         console.error("Failed to copy URL:", err);
-        // Handle any errors gracefully
         notify("❌ Failed to copy URL!");
       }
     );
@@ -319,24 +317,22 @@ function CourseDetailsRightSection({ course }: any) {
             </p>
           </div>
 
-          <div className="flex justify-between">
-            {/* TODO: Integrate payment gateway */}
-            <Link
-              href={`${course?.courseId}/courseContent`}
-              className="mt-2 text-center bg-blue-500 w-[22rem] rounded-lg hover:bg-blue-700 text-sm text-white font-semibold p-2"
-            >
-              Buy Now
-            </Link>
+          <div className="flex justify-start space-x-2 items-center">
+            <CourseEnrollButton courseId={course?.courseId} />
 
             <button
               onClick={toggleIsInCart}
-              className={`mt-2 ml-2 border ${
+              className={`mt-2 border ${
                 isInCart
                   ? "bg-blue-500 border-none text-white"
                   : "bg-transparent border-blue-500 text-blue-500 hover:text-white"
-              } rounded-lg hover:bg-blue-700 text-sm  font-semibold py-2 px-4`}
+              } rounded-lg hover:bg-blue-700 text-sm font-semibold px-2 py-2`}
             >
-              {isInCart ? <HiShoppingCart /> : <HiOutlineShoppingCart />}
+              {isInCart ? (
+                <HiShoppingCart size={22} />
+              ) : (
+                <HiOutlineShoppingCart size={22} />
+              )}
             </button>
           </div>
 
@@ -411,6 +407,66 @@ function CourseDetailsRightSection({ course }: any) {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function CourseEnrollButton({ courseId }: { courseId: string }) {
+  const [isLoading, setIsLoading] = React.useState(false);
+  const user = useUserInfo();
+
+  const checkIsCoursePurchased = async () => {
+    const response = await axios.post(
+      `/api/courses/${courseId}/alreadyPurchased`,
+      { userId: user?.user?.id! }
+    );
+    return response.data.hasPurchased;
+  };
+
+  const { isLoading: isCoursePurchasedLoading, data } =
+    useQuery({
+      queryKey: ["coursePurchased"],
+      queryFn: checkIsCoursePurchased,
+      staleTime: 4, // Keep cached data even if stale
+    });
+
+  const enrollInCourse = async () => {
+    try {
+      setIsLoading(true);
+      console.log('Is course already purchased? : ', data?.success);
+      if (data) {
+        window.location.assign(
+          `https://localhost:3000/courses/${courseId}/courseContent`
+        );
+      } else {
+        const response = await axios.post(`/api/courses/${courseId}/checkout`, {
+          userId: user?.user?.id!,
+        });
+
+        window.location.assign(response.data.url);
+      }
+    } catch (error) {
+      toast.error("Something went wrong ...");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex justify-between">
+      <Button
+        onClick={enrollInCourse}
+        disabled={isLoading}
+        size="sm"
+        color="blue"
+        className="mt-2 text-center text-white bg-blue-500 w-[23rem] rounded-lg hover:bg-blue-700 text-sm  font-semibold p-2"
+      >
+        {isCoursePurchasedLoading
+          ? "Checking if course is purchased or not ..."
+          : data
+            ? "Resume Learning"
+            : "Buy Now"}
+      </Button>
     </div>
   );
 }

@@ -52,7 +52,7 @@ function NavbarRoutes() {
   return (
     <Suspense>
       <div className="flex justify-between items-center w-full">
-        <div className="pl-64">
+        <div className="md:pl-64">
           {isBrowseCoursesScreen ? <SearchButton /> : <div></div>}
         </div>
         <div className="ml-auto flex justify-end gap-x-2">
@@ -61,7 +61,7 @@ function NavbarRoutes() {
           {/* instructor button */}
           <Button
             onClick={switchToInstructorView}
-            className="cursor-pointer border-opacity-10 hover:bg-slate-50 dark:hover:border-opacity-100 dark:border-opacity-10 hover:border-opacity-100 dark:hover:bg-zinc-800 border px-4 border-black text-black text-xs dark:border-white dark:text-white bg-transparent rounded-md mx-auto transition-all duration-200 items-center"
+            className="hidden md:flex cursor-pointer border-opacity-10 hover:bg-slate-50 dark:hover:border-opacity-100 dark:border-opacity-10 hover:border-opacity-100 dark:hover:bg-zinc-800 border px-4 border-black text-black text-xs dark:border-white dark:text-white bg-transparent rounded-md mx-auto transition-all duration-200 items-center"
           >
             {isInstructor ? "Instructor View" : "Become Instructor"}
           </Button>

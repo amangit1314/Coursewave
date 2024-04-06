@@ -12,30 +12,50 @@ export const storeSubscriptionPlans: SubscriptionPlan[] = [
     id: 'subscription_plan_STARTER',
     name: 'Free',
     description: 'Default starter plan and Best option for personal use & for your next project.',
-    whatIncludes: ['Limited Analytics of Sessions, Courses', 'Limited Sessions', 'Can explore articles', 'Basic features', 'Assited Support'],
+    whatIncludes: [
+      'Limited Analytics of Sessions, Courses',
+      'Limited Sessions per day',
+      // 'Best for individual use & small teams',
+      'Assited Support & Query Resolution',
+      'Only Basic features available'
+    ],
     stripePriceId: '',
     price: 0
   },
+  // {
+  //   id: 'subscription_plan_TEAM',
+  //   name: 'Team',
+  //   description: ' Best for team uses for team upto 6 peoples and extended redistribution rights.',
+  //   whatIncludes: ['Complete Analytics of Sessions, Courses', 'Sessions Every Day', 'Team size: 6 developers', '24x7 Support with Premium', 'All features unlocked'],
+  //   stripePriceId: '',
+  //   price: 15
+  // },
   {
-    id: 'subscription_plan_TEAM',
-    name: 'Team',
-    description: ' Best for team uses for team upto 6 peoples and extended redistribution rights.',
-    whatIncludes: ['Complete Analytics of Sessions, Courses', 'Sessions Every Day', 'Team size: 6 developers', '24x7 Support with Premium', 'All features unlocked'],
-    stripePriceId: '',
-    price: 15
-  },
-  {
-    id: 'subscription_plan_ENTERPRISE',
-    name: 'Enterprise',
-    description: ' Best for large scale uses and extended redistribution rights.',
+    id: 'subscription_plan_PRO',
+    name: 'PRO',
+    description: ' Pro subscription Includes everything and with this all features will get unlocked',
     whatIncludes: [
-      "Enterprise use",
-      "No Limitation on Sessions",
-      "Dedicated Analytics for Articles, Sessions and Courses",
-      "24x7 Support with Premium",
-      "All Updates and features unlocked",
+      'Complete Analytics of Sessions, Courses',
+      'Unlimited Sessions Every Day',
+      // 'Team size: 6 peoples',
+      '24x7 Support with Premium',
+      'All features unlocked'
     ],
-    stripePriceId: '',
+    stripePriceId: 'stripe_subscription_pro',
     price: 25
-  }
+  },
+  // {
+  //   id: 'subscription_plan_ENTERPRISE',
+  //   name: 'Enterprise',
+  //   description: ' Best for large scale uses and extended redistribution rights.',
+  //   whatIncludes: [
+  //     "Enterprise use",
+  //     "No Limitation on Sessions",
+  //     "Dedicated Analytics for Articles, Sessions and Courses",
+  //     "24x7 Support with Premium",
+  //     "All Updates and features unlocked",
+  //   ],
+  //   stripePriceId: '',
+  //   price: 25
+  // }
 ]

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { FaStar } from "react-icons/fa6";
 
 import Reviewcard from "../reviews/review-card";
@@ -13,7 +13,7 @@ import getUserInfoById from "@/lib/helpers/getUserInfoById";
 type CourseRatingsProps = {
   courseId: string;
   avgStarRatings: number;
-  reviews: Review[]
+  reviews: Review[];
 };
 export default function CourseRatings({
   courseId,
@@ -50,22 +50,19 @@ type ReviewsAnalysisProps = {
   avgStarRatings: number;
   courseId: string;
 };
-const ReviewAnalysis = ({avgStarRatings, courseId }: ReviewsAnalysisProps) => {
-
+const ReviewAnalysis = ({ avgStarRatings, courseId }: ReviewsAnalysisProps) => {
   const [totalReviews, setTotalReviews] = React.useState(0);
 
   useEffect(() => {
     const getToatalReviewsCount = async () => {
       try {
         const response = await fetch(``);
-      } catch (error: any) {
-
-      }
-    }
+      } catch (error: any) {}
+    };
   }, []);
 
   return (
-    <div className="bg-zinc-800 rounded-xl px-6 py-4 grid grid-cols-1 items-start space-y-4 max-w-md w-full mb-4 mr-4">
+    <div className="bg-zinc-800 rounded-xl px-6 pt-4 pb-6 md:py-4 grid grid-cols-1 items-start space-y-4 max-w-md w-full mb-4 mr-4">
       <div>
         <p className="text-white text-xl font-bold">
           <strong className="text-2xl">{avgStarRatings.toFixed(1)}</strong>/5
@@ -86,10 +83,10 @@ const ReviewAnalysis = ({avgStarRatings, courseId }: ReviewsAnalysisProps) => {
             return (
               <li
                 key={index}
-                className="w-auto flex justify-start space-x-4 items-center"
+                className="w-auto md:flex justify-start md:space-x-4 md:items-center"
               >
                 <p className="text-[14px] text-gray-400">{rating.stars}</p>
-                <div className="max-w-xs w-full">
+                <div className="md:max-w-xs w-full">
                   <ProgressBar value={rating.percentage} color="yellow" />
                 </div>
               </li>
@@ -143,49 +140,53 @@ const ReviewsMassionaryGrid = ({ courseId }: ReviewsGridProps) => {
     fetchCourseReviews(courseId);
   }, [courseId]);
 
-  if (loading) {
-    return (
-      <ScrollArea className="w-full md:w-[1080px] whitespace-nowrap">
-        <div className="grid grid-cols-3 w-max space-x-4 pb-4">
-          <ReviewSkeleton />
-        </div>
+  // if (loading) {
+  //   return (
+  //     <ScrollArea className="w-full md:w-[1080px] whitespace-nowrap">
+  //       <div className="grid grid-cols-3 w-max space-x-4 pb-4">
+  //         <ReviewSkeleton />
+  //       </div>
 
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
-    );
-  }
+  //       <ScrollBar orientation="horizontal" />
+  //     </ScrollArea>
+  //   );
+  // }
 
   if (error) {
     return <div>ERROR: ${error}</div>;
   }
 
   return (
-    <div>
-      {reviews && reviews.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3  gap-4">
-          {reviews.map(async (review: Review) => {
-            const user = await getUserInfoById(review.userId);
-            return (
-              <Reviewcard
-                key={review.id}
-                authorName={user.user?.name ?? "Guest"}
-                date={review.createdAt?.toISOString() ?? "5 March 2024"}
-                authorImgUrl={
-                  user.user?.profileImageUrl ??
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsdFvyaADX8a3uk59a3k94LeX8WRJEqVy6BQ&usqp=CAU"
-                }
-                review={review.comment}
-                starRating={review.rating}
-              />
-            );
-          })}
-        </div>
-      ) : (
-        <div>
-          <p>There are no review till now on this course.</p>
-        </div>
-      )}
-    </div>
+    <Suspense fallback={<ReviewLoadingWidget />}>
+      <div>
+        {reviews && reviews.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3  gap-4">
+            {reviews.map(async (review: Review) => {
+              const user = await getUserInfoById(review.userId);
+              return (
+                <Reviewcard
+                  key={review.id}
+                  authorName={user.user?.name ?? "Guest"}
+                  date={`Reviewed on ${
+                    review.createdAt?.toString().split("T")[0] ?? "5 March 2024"
+                  } `}
+                  authorImgUrl={
+                    user.user?.profileImageUrl ??
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsdFvyaADX8a3uk59a3k94LeX8WRJEqVy6BQ&usqp=CAU"
+                  }
+                  review={review.comment}
+                  starRating={review.rating}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <div>
+            <p>There are no review till now on this course.</p>
+          </div>
+        )}
+      </div>
+    </Suspense>
   );
 };
 
@@ -218,6 +219,21 @@ export function RatingStarsWithoutText({
   );
 }
 
+// Reviews Loading WIdget
+function ReviewLoadingWidget() {
+  return (
+    <ScrollArea className="w-full md:w-[1080px] whitespace-nowrap">
+      <div className="grid grid-cols-3 w-max space-x-4 pb-4">
+        <ReviewSkeleton />
+        <ReviewSkeleton />
+        <ReviewSkeleton />
+      </div>
+
+      <ScrollBar orientation="horizontal" />
+    </ScrollArea>
+  );
+}
+
 //? --------------------------------------------------------------
 function ReviewSkeleton() {
   return (
@@ -230,42 +246,3 @@ function ReviewSkeleton() {
     </div>
   );
 }
-
-/**
- *
- *  import {
-//   Carousel,
-//   CarouselContent,
-//   CarouselItem,
-//   CarouselNext,
-//   CarouselPrevious,
-// } from "@/components/ui/carousel";
-
- * const ReviewCarousel = () => {
-  return (
-    <Carousel>
-      <div className="flex justify-between items-center max-w-3xl w-full">
-        <div className="flex justify-end items-center">
-          <CarouselPrevious />
-          <CarouselNext />
-        </div>
-      </div>
-      <CarouselContent>
-        {reviews.map((review: any, index: any) => (
-          <CarouselItem key={index} className="basis-2/5">
-            <Reviewcard
-              key={index}
-              name={review.name}
-              date={review.date}
-              // showDetails={true}
-              // detailsVisible={false}
-              imgUrl={review.imgurl}
-              review={review.review}
-            />
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-    </Carousel>
-  );
-};
- */

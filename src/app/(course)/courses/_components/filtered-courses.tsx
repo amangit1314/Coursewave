@@ -3,6 +3,7 @@ import { CourseItem } from "./course-item";
 import { Category, Course } from "@prisma/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams } from "next/navigation";
+import { CourseCard } from "./course-card";
 
 const fetchCourses = async () => {
   try {
@@ -109,9 +110,9 @@ export function FilteredCoursesComponent({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 max-w-7xl w-full gap-4 my-6 justify-center items-center mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-4 max-w-7xl w-full gap-4 my-6 justify-center items-center mx-auto">
       {filteredCourses.map((course: Course) => (
-        <CourseItem key={course.courseId} course={course} />
+        <CourseCard key={course.courseId} course={course} />
       ))}
     </div>
   );

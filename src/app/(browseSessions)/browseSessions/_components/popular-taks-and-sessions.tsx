@@ -10,8 +10,8 @@ import {
 
 export const PopularTalksAndSessions = () => {
   return (
-    <div>
-      <p className="text-xl  pb-4 font-semibold tracking-tight">
+    <div className="space-y-4">
+      <p className="text-2xl text-zinc-800 dark:text-white font-bold   pb-2">
         Today Popular Talks and Sessions
       </p>
       {/* <div className="grid grid-cols-1 max-w-5xl lg:grid-cols-4 gap-4 my-6 justify-center mx-auto">

@@ -5,7 +5,7 @@ export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
     const token = cookies().get('token')?.value;
 
-    // const isPublicPath = path === '/login' || path === '/register' || path === '/';
+    // const isPublicPath = path === '/login' || path === '/register' || path === '/' || path === '/api/webhooks/stripe;
 
     //! If there's no token and the path is not public, redirect to login
     if (!token

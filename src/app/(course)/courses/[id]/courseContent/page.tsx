@@ -1,7 +1,8 @@
 "use client";
 
 /* eslint-disable @next/next/no-img-element */
-import React, { useEffect } from "react";
+import React, { useState, Suspense, useEffect } from "react";
+import { useQuery } from "react-query"; // Import useQuery hook
 import Video from "next-video";
 import Footer from "@/components/LandingPage/footer";
 import Image from "next/image";
@@ -48,6 +49,9 @@ import { getChapters } from "@/app/_actions/get-chapters";
 import useInstructorInfo from "@/lib/hooks/use-instructor-info";
 import Link from "next/link";
 import { getCourseAttachments } from "@/app/_actions/get-attachments";
+import Error from "next/error";
+import error from "next/error";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const courseChapters = [
   "Introduction",
@@ -66,12 +70,18 @@ type CourseContentProps = {
   courseId: string;
 };
 
-function CourseContentPage({ params }: any) {
-  const courseId = params.id;
+function CourseContentPage({
+  params,
+}: {
+  params: {
+    id?: string;
+  };
+}) {
+  const courseId = params?.id;
 
   const [loading, setLoading] = React.useState(true);
-  const [course, setCourse] = React.useState<Course>();
-  const [chapters, setChapters] = React.useState<Chapter[]>([]);
+  // const [course, setCourse] = React.useState<Course>();
+  // const [chapters, setChapters] = React.useState<Chapter[]>([]);
   const [sections, setSections] = React.useState<CourseSection[]>([]);
   const [courseProgress, setCourseProgress] = React.useState<UserProgress>();
   const [showFullDescription, setShowFullDescription] = React.useState(false);
@@ -79,44 +89,70 @@ function CourseContentPage({ params }: any) {
 
   console.log("Course id in Course Content page.tsx:", courseId);
 
+  const {
+    isLoading,
+    error: Error,
+    data,
+  } = useQuery(
+    ["courseContent", courseId],
+    async () => {
+      const response = await fetch(`/api/courses/${courseId}`);
+      if (!response.ok) {
+        console.log("Failed to fetch course content ...");
+      }
+      return await response.json();
+    },
+    {
+      enabled: !!courseId, // Only fetch data if courseId is available
+      staleTime: 1000 * 60 * 10, // Cache for 10 minutes (optional)
+    }
+  );
+
   // fetch course info where courseId is courseId
-  useEffect(() => {
-    // https://localhost:3000
-    fetch(`/api/courses/${courseId}`)
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          throw new Error("Failed to fetch courses");
-        }
-      })
-      .then((data) => {
-        console.log(data);
-        // Assuming your data.data is an array of courses
-        setCourse(data.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching courses:", error);
-        setLoading(false);
-      });
-  }, [courseId]);
-
-
+  // useEffect(() => {
+  //   // https://localhost:3000
+  //   fetch(`/api/courses/${courseId}`)
+  //     .then((res) => {
+  //       if (res.ok) {
+  //         return res.json();
+  //       } else {
+  //         throw new Error("Failed to fetch courses");
+  //       }
+  //     })
+  //     .then((data) => {
+  //       console.log(data);
+  //       // Assuming your data.data is an array of courses
+  //       setCourse(data.data);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching courses:", error);
+  //       setLoading(false);
+  //     });
+  // }, [courseId]);
 
   // fetch chapters where courseId is courseId
-  useEffect(() => {
-    const fetchChapters = async (courseId: string) => {
-      await getChapters({ courseId, chapters })
-        .then((res) => setChapters(res.chapters))
-        .catch((err) => {
-          console.log("ERROR in fetching course chapters: ", err);
-          console.error(err);
-        });
-    };
+  // useEffect(() => {
+  //   const fetchChapters = async (courseId: string) => {
+  //     await getChapters({ courseId, chapters })
+  //       .then((res) => setChapters(res.chapters))
+  //       .catch((err) => {
+  //         console.log("ERROR in fetching course chapters: ", err);
+  //         console.error(err);
+  //       });
+  //   };
 
-    fetchChapters(courseId);
-  }, [chapters, courseId]);
+  //   fetchChapters(courseId!);
+  // }, [chapters, courseId]);
+
+  const course = data?.data; // Access course data from useQuery response
+  const chapters = course?.chapters ?? []; // Handle potential missing chapters
+
+// return <CourseContentScreenSkeleton />;
+
+
+  if (isLoading) return <CourseContentScreenSkeleton />;
+  // if (error) return <div>Error: {error}</div>;
 
   const activeChapter = chapters[activeChapterIndex];
   const aboutChapter = activeChapter
@@ -154,11 +190,11 @@ function CourseContentPage({ params }: any) {
       </div>
 
       {/* course details */}
-      <div className="h-full max-w-7xl w-full mx-auto py-4 px-8 md:px-[3rem] ">
+      <div className="flex justify-start items-center h-full max-w-7xl w-full mx-auto py-4 px-8 md:px-[3rem] space-x-8 ">
         {/* video and chapters list */}
-        <div className="flex justify-between">
+        <div className="mt-4">
           {/* video and mark as visited button */}
-          <div className="w-auto h-auto mt-4">
+          <div className="w-[45rem] h-[360px]">
             <div className="max-w-3xl h-auto w-full">
               <div className="flex justify-between items-center md:hidden pb-4">
                 <ShowChapters
@@ -183,6 +219,61 @@ function CourseContentPage({ params }: any) {
             </div>
           </div>
 
+          {/* about class, course resurces, class notes and instructor info */}
+          <div className="flex flex-col md:flex-row my-4">
+            <div className="max-w-[45rem] w-full">
+              {/* about this class */}
+              <div>
+                <p className="text-xl md:text-lg mt-4 text-gray-950 dark:text-gray-300 font-semibold tracking-tight">
+                  About This Class
+                </p>
+
+                {/* product description */}
+                <p
+                  className={`${
+                    showFullDescription ? "" : "line-clamp-4"
+                  } text-md text-base text-slate-700 dark:text-gray-400 py-4 md:py-2 md:text-md md:p-0 w-auto   ${
+                    showFullDescription ? "" : "overflow-hidden"
+                  }`}
+                >
+                  {aboutChapter}
+                </p>
+
+                {/* show more text button */}
+                {aboutChapter.length > 250 ? (
+                  <button
+                    className="text-sm tracking-tighter mt-2 font-medium hover:text-blue-600 dark:hover:text-blue-700 text-blue-500 dark:text-blue-600 underline .leading-relaxed"
+                    onClick={() => setShowFullDescription(!showFullDescription)}
+                  >
+                    Show More
+                  </button>
+                ) : (
+                  <div></div>
+                )}
+              </div>
+
+              {/* course notes */}
+              <div className="visible md:hidden">
+                <CourseNotes />
+              </div>
+
+              {/* About Instructor */}
+              <div>
+                <h3 className="text-xl md:text-lg mt-4 text-gray-950 dark:text-gray-300  font-semibold tracking-tight">
+                  About Instructor
+                </h3>
+                <InstructorCard instructorId={course?.instructorID} />
+              </div>
+            </div>
+
+            {/* course notes for large screens */}
+            <div className="hidden md:visible">
+              <CourseNotes />
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-8">
           {/* course sections and chapters */}
           <div className="hidden lg:visible">
             <CourseSectionsAndChapters
@@ -191,66 +282,13 @@ function CourseContentPage({ params }: any) {
               setActiveChapterIndex={setActiveChapterIndex}
             />
           </div>
-        </div>
 
-        {/* about class, course resurces, class notes and instructor info */}
-        <div className="flex flex-col md:flex-row my-4">
-          <div className="max-w-3xl w-full">
-            {/* about this class */}
-            <div>
-              <p className="text-xl md:text-lg mt-4 text-gray-950 dark:text-gray-300 font-semibold tracking-tight">
-                About This Class
-              </p>
-
-              {/* product description */}
-              <p
-                className={`${
-                  showFullDescription ? "" : "line-clamp-4"
-                } text-md text-base text-slate-700 dark:text-gray-400 py-4 md:py-2 md:text-md md:p-0 w-auto   ${
-                  showFullDescription ? "" : "overflow-hidden"
-                }`}
-              >
-                {aboutChapter}
-              </p>
-
-              {/* show more text button */}
-              {aboutChapter.length > 250 ? (
-                <button
-                  className="text-sm tracking-tighter mt-2 font-medium hover:text-blue-600 dark:hover:text-blue-700 text-blue-500 dark:text-blue-600 underline .leading-relaxed"
-                  onClick={() => setShowFullDescription(!showFullDescription)}
-                >
-                  Show More
-                </button>
-              ) : (
-                <div></div>
-              )}
-            </div>
-
-            {/* course resources */}
-            <div className="h-auto">
-              <p className="text-xl md:text-lg mt-4 text-gray-950 dark:text-gray-300  font-semibold tracking-tight">
-                Course Resources
-              </p>
-              <CourseAttachments courseId={course?.courseId} />
-            </div>
-
-            {/* course notes */}
-            <div className="visible md:hidden">
-              <CourseNotes />
-            </div>
-
-            {/* About Instructor */}
-            <div>
-              <h3 className="text-xl md:text-lg mt-4 text-gray-950 dark:text-gray-300  font-semibold tracking-tight">
-                About Instructor
-              </h3>
-              <InstructorCard instructorId={course?.instructorID} />
-            </div>
-          </div>
-
-          {/* course notes for large screens */}
-          <div className="hidden md:visible">
-            <CourseNotes />
+          {/* course resources */}
+          <div className="h-auto">
+            <p className="text-xl md:text-lg mt-4 text-gray-950 dark:text-gray-300  font-semibold tracking-tight">
+              Course Resources
+            </p>
+            {/* <CourseAttachments courseId={course?.courseId} /> */}
           </div>
         </div>
       </div>
@@ -264,6 +302,8 @@ function CourseContentPage({ params }: any) {
 }
 
 export default CourseContentPage;
+
+//* ------------------------------------- Components ---------------------------------------------
 
 function ShowChapters({
   chapters,
@@ -332,7 +372,7 @@ function CourseVideo({ activeChapter }: CourseVideoProps) {
   return (
     <Video
       accentColor="blue"
-      className="smooth-content w-xl h-xl md:h-[512px] overflow-hidden rounded-lg object-cover md:w-3xl bg-blue-200"
+      className="smooth-content w-xl h-xl md:h-[360px] overflow-hidden rounded-lg object-cover md:w-[45rem] bg-blue-200"
       src={
         activeChapter
           ? activeChapter.videoUrl ?? "/assets/videos/4k.mp4"
@@ -578,24 +618,26 @@ function CourseNotes() {
   );
 }
 
-function CourseAttachments({courseId}: any) {
+function CourseAttachments({ courseId }: any) {
   const [courseAttachments, setCourseAttachments] = React.useState<
     CourseAttachment[]
   >([]);
 
   useEffect(() => {
     const fetchCourseAttachments = async (courseId: string) => {
-      getCourseAttachments({ courseId, courseAttachments }).then((res) => {
-        setCourseAttachments(res.courseAttachments);
-      }).catch((err: any) => {
-        console.log('FAILED TO GET COURSE ATTACHMENTS, ERRO:', err.message)
-      })
-    }
+      getCourseAttachments({ courseId, courseAttachments })
+        .then((res) => {
+          setCourseAttachments(res.courseAttachments);
+        })
+        .catch((err: any) => {
+          console.log("FAILED TO GET COURSE ATTACHMENTS, ERRO:", err.message);
+        });
+    };
 
     fetchCourseAttachments(courseId);
   }, [courseId, courseAttachments]);
 
-  console.log('Course Attachments: ', courseAttachments);
+  console.log("Course Attachments: ", courseAttachments);
 
   return (
     <div>
@@ -686,6 +728,44 @@ function InstructorCard({ instructorId }: any) {
         odit nam quae repellat quis cumque reiciendis autem ab expedita
         Provident eos odit nam quae repellat`}
       </p>
+    </div>
+  );
+}
+//* -----------------------------------------------------------------------------------------------
+
+
+const CourseContentScreenSkeleton = () => {
+  return (
+    <div className="flex px-12 py-8 justify-between space-x-6 items-center max-w-7xl w-full overflow-x-hidden mx-auto">
+      <div className="space-y-6 max-w-[720px] w-full">
+        <Skeleton className="h-[360px] w-full rounded-xl" />
+
+        <div className="space-y-4 max-w-[720px]  w-full  rounded-xl">
+          <Skeleton className="h-[16px] w-[160px] rounded-xl" />
+          <div className="space-y-2">
+            <Skeleton className="h-[12px] w-[720px] rounded-xl" />
+            <Skeleton className="h-[12px] w-[720px] rounded-xl" />
+            <Skeleton className="h-[12px] w-[720px] rounded-xl" />
+            <Skeleton className="h-[12px] w-[720px] rounded-xl" />
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-[27rem] w-full border border-stroke p-2.5 h-full rounded-xl space-y-4">
+        <Skeleton className="h-[16px] w-[16rem] rounded-xl" />
+
+        <div className="space-y-2 w-full max-w-[25rem] ">
+          <Skeleton className="h-[48px] rounded-xl" />
+          <Skeleton className="h-[48px] rounded-xl" />
+          <Skeleton className="h-[48px] rounded-xl" />
+          <Skeleton className="h-[48px] rounded-xl" />
+          <Skeleton className="h-[48px] rounded-xl" />
+          <Skeleton className="h-[48px] rounded-xl" />
+          <Skeleton className="h-[48px] rounded-xl" />
+          <Skeleton className="h-[48px] rounded-xl" />
+
+        </div>
+      </div>
     </div>
   );
 }

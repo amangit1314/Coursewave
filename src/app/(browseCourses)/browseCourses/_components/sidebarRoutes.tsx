@@ -7,6 +7,9 @@ import { MdDashboard } from "react-icons/md";
 import { FaHandsHelping } from "react-icons/fa";
 import useUserInfo from "@/lib/hooks/use-user-info";
 import { AiFillSetting, AiOutlineTransaction } from "react-icons/ai";
+import { FaBloggerB } from "react-icons/fa";
+import { BiBroadcast } from "react-icons/bi";
+import { PiChatsTeardropFill } from "react-icons/pi";
 
 const SideBarRoutes = () => {
   const user = useUserInfo();
@@ -18,19 +21,24 @@ const SideBarRoutes = () => {
     },
     {
       icon: <FaCompass size={22} />,
-      label: "Browse",
+      label: "Browse Courses",
       href: `/browseCourses`,
     },
-    // {
-    //   icon: <BiBroadcast size={22} />,
-    //   label: "Sessions",
-    //   href: `/browseSessions`,
-    // },
-    // {
-    //   icon: <PiChatsTeardropFill size={22} />,
-    //   label: "Community Chat",
-    //   href: `/${123456}/communityChat`,
-    // },
+    {
+      icon: <FaBloggerB size={22} />,
+      label: "Articles",
+      href: `/articles`,
+    },
+    {
+      icon: <BiBroadcast size={22} />,
+      label: "Sessions",
+      href: `/browseSessions`,
+    },
+    {
+      icon: <PiChatsTeardropFill size={22} />,
+      label: "Community Chat",
+      href: `/${user.user?.id}/communityChat`,
+    },
     {
       icon: <AiOutlineTransaction size={22} />,
       label: "Subscription",

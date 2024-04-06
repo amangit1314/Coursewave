@@ -1,9 +1,8 @@
-// src/app/QueryClientProvider.tsx
 import {
   QueryClient,
   QueryClientProvider,
   QueryClientProviderProps,
-} from "react-query";
+} from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
 

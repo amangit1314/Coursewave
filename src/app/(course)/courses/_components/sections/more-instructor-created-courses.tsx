@@ -85,7 +85,7 @@ function MoreIntructorCreatedCourses({ instructorId, instructorName }: any) {
                     title={course.courseTitle}
                     avgRating={4.9}
                     instructorName={course.instructorName!}
-                    numberOfEnrollements={12}
+                    numberOfEnrollments={12}
                     price={course.coursePrice}
                   />
                 </div>
@@ -110,7 +110,7 @@ type CreatedCourseProps = {
   title: string;
   avgRating: number;
   instructorName: string;
-  numberOfEnrollements: number;
+  numberOfEnrollments: number;
   price: string;
 };
 
@@ -120,7 +120,7 @@ function MoreCreatedCourseItem({
   title,
   avgRating,
   instructorName,
-  numberOfEnrollements,
+  numberOfEnrollments,
   price,
 }: CreatedCourseProps) {
   return (
@@ -149,7 +149,7 @@ function MoreCreatedCourseItem({
               <p className="flex justify-start items-center text-xs">
                 <LuDot className="text-blue-500" size={20} />
                 <p>
-                  {numberOfEnrollements ? numberOfEnrollements : 20} enrolled
+                  {numberOfEnrollments ? numberOfEnrollments : 20} enrolled
                 </p>
               </p>
             </div>

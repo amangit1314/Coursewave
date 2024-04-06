@@ -10,20 +10,24 @@ export const POST = async (req: Request, { params }: {
   }
 }) => {
   const uuid4 = generateUid();
-  const courseId = params.id;
+  const courseId = params?.id;
 
   try {
     const reqBody = await req.json();
     const { userId } = reqBody;
 
+    if (!userId) {
+      return new NextResponse('MISSING REQUIRED FIELDS, userId is required', { status: 422 });
+    }
+
     const user = await db.user.findUnique({
       where: {
-        id: userId,
+        id: userId as string,
       }
     });
 
     if (!user) {
-      return new NextResponse('UNAUTHORIZED ACCESS, You are not authorized to buy course, authenticate first', { status: 401 })
+      return new NextResponse('UNAUTHORIZED ACCESS, No user found with this userId,You are not authorized to buy course, authenticate first', { status: 401 })
     }
 
     const course = await db.course.findUnique({
@@ -33,19 +37,19 @@ export const POST = async (req: Request, { params }: {
     });
 
     if (!course) {
-      return new NextResponse('No such course found', { status: 404 })
+      return new NextResponse('NOT FOUND, No such course found ...', { status: 404 })
     }
 
-    const purchase = await prisma?.purchase.findUnique({
+    const purchase = await db.purchase.findFirst({
       where: {
-        // id: `payment_${course?.courseId}_${uuid4}`,
-        courseId: course?.courseId,
-        userId: (user as { id: string }).id  // asseting user type here to prevent on {} id doesnot exist error
+        courseId: course.courseId,
+        userId: user.id,
       }
     })
 
     if (purchase) {
-      return new NextResponse('Course already purchased', { status: 400 })
+      console.log('Course already purchased ...')
+      return new NextResponse('Course already purchased ...', { status: 400 })
     }
 
     const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [{
@@ -57,7 +61,6 @@ export const POST = async (req: Request, { params }: {
           description: course.courseDescription!,
         },
         unit_amount: Math.round(parseInt(course.coursePrice!) * 100)
-
       }
     }]
 
@@ -65,6 +68,9 @@ export const POST = async (req: Request, { params }: {
       where: {
         userId: user.id,
       },
+      select: {
+        stripeCustomerId: true,
+      }
     });
 
     if (!stripeCustomer) {
@@ -74,11 +80,8 @@ export const POST = async (req: Request, { params }: {
 
       stripeCustomer = await db.stripeCustomer.create({
         data: {
-          id: customer.id,
           userId: user.id,
           stripeCustomerId: customer.id,
-          stripePriceId: '',
-          stripeSubscriptionId: ''
         }
       });
     }
@@ -94,6 +97,36 @@ export const POST = async (req: Request, { params }: {
         userId: user.id,
       }
     });
+
+    // * ------------------- Purchase of courseId by the userid ------------------------------
+    const purchaseId = `purchase_${courseId}_${uuid4.split('-')[0]}`;
+
+    const createdPurchase = await db.purchase.create({
+      data: {
+        id: purchaseId,
+        userId: userId,
+        courseId: course.courseId,
+        amount: course.coursePrice,
+      }
+    })
+
+    console.log('Created Purchase: ', createdPurchase);
+
+    // * ------------------- Enrollement for the userid with the courseid ---------------------
+    const enrollementId = `enrollement_${courseId}_${userId.split('-')[0]}`;
+
+    const createdEnrollement = await db.enrollment.create({
+      data: {
+        enrollmentId: enrollementId,
+        userId,
+        courseId: course.courseId,
+        enrollmentDate: Date.now().toString(),
+        completionStatus: 'Started',
+
+      }
+    })
+
+    console.log('Created Enrollement: ', createdEnrollement);
 
     return NextResponse.json({
       status: 'OK',
