@@ -7,6 +7,7 @@ import { Course } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import Notifications from "@/components/notification-button";
+import { absoluteUrl } from "@/lib/utils";
 
 const josefinSans = Josefin_Sans({
   weight: ["400", "500", "600", "700"],
@@ -16,11 +17,11 @@ const josefinSans = Josefin_Sans({
 function CourseContentNavbar({ course }: any) {
 
   return (
-    <div className="flex h-[64px] px-8 justify-between items-center w-full">
-      <div className="flex justify-start space-x-1 items-center">
+    <div className="flex md:h-[64px] px-4 md:px-8 justify-between items-center w-full">
+      <div className="hidden md:flex">
         <div className="text-sm breadcrumbs">
           <ul>
-            <li>
+            <li className="">
               <Link
                 href=""
                 className={`text-blue-500 font-bold text-xl ${josefinSans.className} underline-offset-0`}
@@ -45,10 +46,21 @@ function CourseContentNavbar({ course }: any) {
         </div>
       </div>
 
-      <div className="ml-auto flex justify-end gap-x-3">
-        {/* <Toaster /> */}
+      <Link
+        href={absoluteUrl(`/browseCourses`)}
+        className="visible md:hidden">
+        <Image
+          src="/assets/images/logo/coursewave-favicon-color.png"
+          alt="CourseWave Logo"
+          className=""
+          width={30}
+          height={8}
+          priority
+        />
+      </Link>
 
-        <div className="flex justify-center items-center space-x-2">
+      <div className="ml-auto flex items-center justify-end space-x-3 py-2">
+        <div className="flex flex-row justify-center items-center space-x-2">
           <ProgressCircle value={75} size="sm">
             <span className="text-[10px] font-medium text-slate-700 dark:text-slate-50">
               75%
@@ -57,13 +69,14 @@ function CourseContentNavbar({ course }: any) {
           <p className="text-xs">Your Progress</p>
         </div>
 
+        {/* theme toggle */}
         <ThemeModeToggle />
-
-        {/* notification */}
-        <Notifications />
 
         {/* user profile */}
         {<UserAvatar />}
+
+        {/* notification */}
+        <Notifications />
       </div>
     </div>
   );

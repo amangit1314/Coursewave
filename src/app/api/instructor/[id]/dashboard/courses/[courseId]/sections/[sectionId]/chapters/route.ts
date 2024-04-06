@@ -7,9 +7,9 @@ import { supabase } from "@/lib/supabase";
 //? Upload a chapter
 export const POST = async (req: NextRequest, { params }: {
     params: {
-        id?: string;
-        courseId?: string;
-        sectionId?: string;
+        id: string;
+        courseId: string;
+        sectionId: string;
     };
 }) => {
     const instructorId = params?.id;

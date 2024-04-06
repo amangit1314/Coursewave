@@ -8,12 +8,11 @@ import { ProgressBar } from "@tremor/react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Review } from "@prisma/client";
-import getUserInfoById from "@/lib/helpers/getUserInfoById";
+import getUserInfoById from "@/helpers/getUserInfoById";
 
 type CourseRatingsProps = {
   courseId: string;
   avgStarRatings: number;
-  reviews: Review[];
 };
 export default function CourseRatings({
   courseId,

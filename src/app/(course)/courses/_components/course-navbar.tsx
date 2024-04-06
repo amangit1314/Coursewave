@@ -6,11 +6,12 @@ import { useRouter } from "next/navigation";
 import { Josefin_Sans } from "next/font/google";
 import { ThemeModeToggle } from "@/components/themeModeToggle";
 import UserAvatar from "@/components/user-avatar";
-import useUserInfo from "@/lib/hooks/use-user-info";
+import useUserInfo from "@/hooks/use-user-info";
 import Notifications from "@/components/notification-button";
 import Link from "next/link";
 import Image from "next/image";
 import Cart from "@/components/cart-button";
+import InstructorButton from "@/components/instructor-button";
 
 const josefinSans = Josefin_Sans({
   weight: ["400", "500", "600", "700"],
@@ -24,8 +25,9 @@ function CourseNavbar({ courseName }: any) {
   const isUserAnInstructor = user.user?.isInstructor;
   console.log("Is user instructor: ", isUserAnInstructor);
 
-  const [isInstructor, setIsInstructor] =
-    React.useState<boolean>(isUserAnInstructor!);
+  const [isInstructor, setIsInstructor] = React.useState<boolean>(
+    isUserAnInstructor!
+  );
 
   const switchToInstructorView = () => {
     if (!userId) {
@@ -41,7 +43,7 @@ function CourseNavbar({ courseName }: any) {
   };
 
   return (
-    <div className="flex justify-between items-center w-full">
+    <div className="flex justify-between items-center w-full ">
       {/* breadcrumbs */}
       <div className="flex justify-start space-x-1 items-center">
         <div className="hidden md:flex text-sm breadcrumbs">
@@ -76,12 +78,7 @@ function CourseNavbar({ courseName }: any) {
         <Toaster />
 
         {/* instructor button */}
-        <button
-          onClick={switchToInstructorView}
-          className="cursor-pointer border-opacity-10 hover:bg-slate-50 dark:hover:border-opacity-100 dark:border-opacity-10 hover:border-opacity-100 dark:hover:bg-blue-600 border px-4 border-black text-black text-xs dark:border-white dark:text-white bg-transparent rounded-md mx-auto transition-all duration-200 items-center"
-        >
-          {isInstructor ? "Instructor View" : "Become Instructor"}
-        </button>
+        <InstructorButton />
 
         {/* These */}
         <ThemeModeToggle />

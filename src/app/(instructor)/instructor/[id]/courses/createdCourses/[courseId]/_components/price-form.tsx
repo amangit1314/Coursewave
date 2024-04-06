@@ -60,7 +60,7 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
   };
 
   return (
-    <div className="mt-6 border bg-slate-100 dark:bg-slate-700 rounded-md p-4">
+    <div className="mt-6 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4">
       <div className="font-medium flex items-center justify-between">
         Course price
         <Button onClick={toggleEdit} variant="ghost">
@@ -78,7 +78,8 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
         <p
           className={cn(
             "text-sm mt-2",
-            !Number(initialData?.coursePrice) && "text-slate-500 italic"
+            !Number(initialData?.coursePrice) &&
+              "text-gray-500 dark:text-gray-400 italic"
           )}
         >
           {Number(initialData?.coursePrice)
@@ -99,6 +100,7 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
                 <FormItem>
                   <FormControl>
                     <Input
+                      className="dark:bg-zinc-800"
                       type="number"
                       step="0.01"
                       disabled={isSubmitting}
@@ -111,7 +113,11 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
               )}
             />
             <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting} type="submit">
+              <Button
+                className="dark:bg-zinc-800 dark:text-white"
+                disabled={!isValid || isSubmitting}
+                type="submit"
+              >
                 Save
               </Button>
             </div>

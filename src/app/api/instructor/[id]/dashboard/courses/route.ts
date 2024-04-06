@@ -1,23 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateUid } from "@/lib/helpers/id_helper";
+import { generateUid } from "@/helpers/id_helper";
 import { db } from "@/lib/db";
-import dotenv from "dotenv";
-// import { uploadOnCloudinary } from "@/lib/utils";
-dotenv.config();
 
 export const dynamic = 'force-dynamic';
 
 //? create a course [PROBLEM With Image {URL & UPLOAD }]
 export const POST = async (req: NextRequest, { params }: {
     params: {
-        id?: string;
+        id: string;
     };
 }) => {
 
     const instructorId = params?.id;
 
     const reqBody = await req.json();
-    const { courseTitle, courseImage, courseCreatorName, coursePrice, courseDescription, courseCategories, isPublished } = reqBody;
+    const { courseTitle, coursePrice,
+        courseCreatorName,
+        courseImage,
+        courseDescription, courseCategories, isPublished
+    } = reqBody;
 
     try {
         const courseId = `course_${generateUid().split("-")[0]}`;
@@ -26,8 +27,18 @@ export const POST = async (req: NextRequest, { params }: {
             return NextResponse.json({ success: false, message: "Invalid Instructor Id" }, { status: 400 });
         }
 
-        if (!courseTitle || !courseImage || !courseCreatorName) {
-            return NextResponse.json({ success: false, message: "Course title, image and creator name are required fields ..." }, { status: 422 });
+        if (!courseTitle || !coursePrice ) {
+            return NextResponse.json({ success: false, message: "Course title and creator name are required fields ..." }, { status: 422 });
+        }
+
+        const instructor = await db.instructor.findUnique({
+            where: {
+                instructorID: instructorId
+            }
+        })
+
+        if (!instructor) {
+            return NextResponse.json({ success: false, message: `[NOT FOUND], Invalid Instructor Id, no instructor found with this instructorId: ${instructorId}` }, { status: 404 });
         }
 
         //TODO in here need to handle the course image upload backend side
@@ -46,15 +57,15 @@ export const POST = async (req: NextRequest, { params }: {
             data: {
                 courseId: courseId,
                 courseTitle: courseTitle,
-                courseImage: courseImage.url,
-                courseCreator: courseCreatorName,
-                courseDescription: courseDescription,
-                isFree: coursePrice ? false : true,
+                courseImage: courseImage,
+                // courseCreator: courseCreatorName,
+                // courseDescription: courseDescription,
+                // isFree: coursePrice ? false : true,
                 coursePrice: coursePrice,
                 instructorID: instructorId,
-                courseCategories: courseCategories,
-                instructorName: courseCreatorName,
-                isPublished,
+                // courseCategories: courseCategories,
+                // instructorName: courseCreatorName,
+                isPublished: true,
                 // courseDuration,
                 // technologiesYouAreGoingToLearn: technologiesYouWillLearn,
                 // thisCourseIsFor,

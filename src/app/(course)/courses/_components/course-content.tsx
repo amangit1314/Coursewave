@@ -1,81 +1,55 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { FaRegCirclePlay } from "react-icons/fa6";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { Chapter, CourseSection } from "@prisma/client";
+import { useQuery } from "@tanstack/react-query";
+import toast, { Toaster } from "react-hot-toast";
 
 type CourseContentProps = {
   courseId: string;
 };
 export default function CourseContent({ courseId }: CourseContentProps) {
-  const [courseSections, setCourseSections] = React.useState<CourseSection[]>(
-    []
-  );
-  const [courseChapters, setCourseChapters] = React.useState<Chapter[]>([]);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState<String | null>(null);
+  const fetchCourseSections = async () => {
+    const res = await fetch(`/api/courses/${courseId}/sections`);
 
-  useEffect(() => {
-    const fetchCourseSections = async (courseId: string) => {
-      try {
-        const res = await fetch(`/api/courses/${courseId}/sections`);
+    if (!res.ok) {
+      console.error("Failed to fetch sections ...");
+      // toast.error("Failed to fetch sections ...");
+    }
 
-        if (!res.ok) {
-          console.error("Failed to fetch sections from api:", res);
-          setError("Failed to fetch sections ...");
-        }
+    const data = await res.json();
+    console.log("Course Sections Data in course-content.tsx : ", data);
 
-        const data = await res.json();
-        console.log("Course Sections Data from api: ", JSON.stringify(data));
+    return data;
+  };
 
-        setCourseSections(data.data);
-      } catch (error: any) {
-        console.error("Error fetching course sections data:", error.message);
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const {
+    data: sections,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["courseSections"],
+    queryFn: fetchCourseSections,
+    staleTime: 4,
+  });
 
-    fetchCourseSections(courseId);
-  }, [courseId]);
-
-  useEffect(() => {
-    const fetchChaptersForSection = async (courseId: string) => {
-      try {
-        const res = await fetch(`/api/courses/${courseId}/chapterCount`);
-
-        if (!res.ok) {
-          console.log(
-            "ERROR, Failed to fetch chapters for a sectionId from api ..."
-          );
-        }
-
-        const data = await res.json();
-        // console.log("Data from api: ", JSON.stringify(data));
-        setCourseChapters(data.data);
-      } catch (error: any) {
-        console.log(
-          "ERROR, Failed to fetch chapters from api in catch ...",
-          error.message
-        );
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchChaptersForSection(courseId);
-  }, [courseId]);
+  const courseSections: CourseSection[] = sections?.data as CourseSection[];
+  console.log("Course Sections: ", courseSections);
 
   if (isLoading) {
     return <div>Loading course content...</div>;
   }
 
   if (error) {
-    console.log("ERROR: in sections and chapters", error);
-    return <p>Error: {error}</p>;
+    console.log("ERROR: in sections and chapters", error.message);
+    // toast.error(`ERROR: in sections and chapters: , ${error.message}`);
+    return (
+      <p className="mt-4 text-red-600 text-md text-base">
+        Error in loading sections & chapters: {error.message}
+      </p>
+    );
   }
 
   return (
@@ -86,39 +60,34 @@ export default function CourseContent({ courseId }: CourseContentProps) {
         </h3>
         <div className="flex justify-between pb-2">
           <ul className="flex pl-4 list-disc space-x-6 flex-wrap md:flex justify-evenly text-gray-700 dark:text-gray-400">
-            {/* sections */}
             <li className="text-sm">
               {courseSections ? courseSections.length : 0} sections
             </li>
-            {/* lections */}
+
             <li className="text-sm">
-              {courseChapters ? courseChapters.length : 0} lectures
+              {/* {sectionChapters ? sectionChapters.length : 0} lectures */}8
+              lectures
             </li>
-            {/* total length */}
+
             <li className="text-sm">3 min total length</li>
           </ul>
 
-          {/* Expand all sections */}
           {/* <div className="font-normal text-blue-500 text-sm">
             Expand all sections
           </div> */}
         </div>
       </div>
 
-      {/* accordion (collapse expand for sections and chapters) */}
-      <SectionsAndChaptersAccordion sections={courseSections!} />
+      <SectionsAndChaptersAccordion sections={courseSections} />
     </div>
   );
 }
 
-// --------------------------------------------------------------------------------------
-type SectionsAndChaptersAccordionProps = {
-  sections: CourseSection[];
-};
-
 const SectionsAndChaptersAccordion = ({
   sections,
-}: SectionsAndChaptersAccordionProps) => {
+}: {
+  sections: CourseSection[];
+}) => {
   const [expandedSections, setExpandedSections] = React.useState<number[]>([]);
 
   const handleSectionToggle = (sectionId: number) => {
@@ -161,51 +130,55 @@ const SectionsAndChaptersAccordion = ({
   );
 };
 
-// Widget to display and open close the accordion (representing sections & on open you can see the chapters inside this section)
-type AccordionSectionItemProps = {
-  // section: CourseSection | (CourseSection & Chapter[]);
-  section: CourseSection;
-  item: { active: number }; // Explicitly define the state type
-  setItem: any;
-};
-
 const AccordionSectionItem = ({
   section,
   item,
   setItem,
-}: AccordionSectionItemProps) => {
+}: {
+  section: CourseSection;
+  item: { active: number };
+  setItem: (any: any) => void;
+}) => {
   const toggleActiveItem = () => {
     let newActive = item.active === 1 ? 0 : 1;
     setItem({ ...item, active: newActive });
   };
 
-  const [chapters, setChapters] = React.useState<Chapter[]>([]);
-
   const courseId = section.courseId;
   const courseSectionId = section.courseSectionId;
 
-  useEffect(() => {
-    const fetchChaptersForSection = async () => {
-      const res = await fetch(
-        `/api/courses/${courseId}/sections/${courseSectionId}/chapters`
-      );
+  const fetchChaptersForSection = async () => {
+    const res = await fetch(
+      `/api/courses/${courseId}/sections/${courseSectionId}/chapters`
+    );
 
-      if (!res.ok) {
-        console.log(
-          "ERROR, Failed to fetch chapters for a sectionId from api ..."
-        );
-      }
-
-      const data = await res.json();
+    if (!res.ok) {
       console.log(
-        `Chapters for a particualr sectionId: ${courseSectionId} :`,
-        data
+        "ERROR, Failed to fetch chapters for a sectionId from api ..."
       );
-      setChapters(data.data);
-    };
+      // toast.error(
+      //   `Error: Failed to fetch chapters for section: ${courseSectionId}`
+      // );
+    }
 
-    fetchChaptersForSection();
-  }, [courseId, courseSectionId]);
+    const data = await res.json();
+    console.log(`Chapters for sectionId: ${courseSectionId} :`, data);
+
+    return data;
+  };
+
+  const {
+    data,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["sectionChapters"],
+    queryFn: fetchChaptersForSection,
+    staleTime: 4,
+  });
+
+  const chapters: Chapter[] = data?.data as Chapter[];
+  console.log(`Section Chapters for sectionId: ${courseSectionId}`, chapters);
 
   return (
     <div
@@ -213,6 +186,8 @@ const AccordionSectionItem = ({
         item.active === 1 ? "activated" : ""
       }`}
     >
+      {/* <Toaster /> */}
+
       <div className="flex items-center py-auto justify-between">
         <div className="flex items-center py-auto" onClick={toggleActiveItem}>
           <div className="px-1 cursor-pointer group-[.activated]:rotate-180">
@@ -222,7 +197,6 @@ const AccordionSectionItem = ({
             {section.courseSectionTitle}
           </div>
         </div>
-
         <ul className="hidden list-disc md:flex md:visible space-x-6 items-center justify-end">
           {/* lections */}
           <li className="text-sm text-gray-600 dark:text-gray-400">
@@ -231,7 +205,11 @@ const AccordionSectionItem = ({
           {/* total length */}
           <li className="text-sm text-gray-600 dark:text-gray-400">3 min</li>
         </ul>
+
+
+        <p className="text-xs">{chapters && chapters.length} {chapters.length === 1 ? "chapter" : "chapters"}</p>
       </div>
+
       <div className="overflow-hidden group-[.activated]:max-h-[120px] max-h-0 text-sm">
         {chapters ? (
           <div className="mt-2 ml-8">
@@ -254,16 +232,13 @@ const AccordionSectionItem = ({
   );
 };
 
-// Widget to display the chapter name and duration
-type AccordionItemDescriptionItemProps = {
-  name: string;
-  duration: string;
-};
-
 const AccordionItemDescriptionItem = ({
   name,
   duration,
-}: AccordionItemDescriptionItemProps) => {
+}: {
+  name: string;
+  duration: string;
+}) => {
   return (
     <div className="flex justify-between items-center py-1">
       <div className="flex justify-start items-center space-x-2">

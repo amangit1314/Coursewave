@@ -3,7 +3,7 @@
 import Link from "next/link";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import useUserInfo from "@/lib/hooks/use-user-info";
+import useUserInfo from "@/hooks/use-user-info";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -34,6 +34,7 @@ export function UserAvatar() {
                 : "https://github.com/shadcn.png"
             }
             alt="username"
+            className="object-cover"
           />
           <AvatarFallback>{user.user?.name}</AvatarFallback>
         </Avatar>
@@ -47,20 +48,24 @@ export function UserAvatar() {
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuItem className="transition-all">
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="transition-all">
-            Settings
+            Subscription
             <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem className="transition-all">
+          {/* <DropdownMenuItem className="transition-all">
+            Billing
+            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+          </DropdownMenuItem> */}
+          {/* <DropdownMenuItem className="transition-all">
+            Settings
+            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+          </DropdownMenuItem> */}
+          {/* <DropdownMenuItem className="transition-all">
             Keyboard shortcuts
             <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
+        {/* <DropdownMenuGroup>
           <DropdownMenuItem>Team</DropdownMenuItem>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
@@ -77,9 +82,9 @@ export function UserAvatar() {
             New Team
             <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
           </DropdownMenuItem>
-        </DropdownMenuGroup>
+        </DropdownMenuGroup> */}
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="transition-all">Support</DropdownMenuItem>
+        {/* <DropdownMenuItem className="transition-all">Support</DropdownMenuItem> */}
         <DropdownMenuSeparator />
         <DropdownMenuItem className="transition-all">
           Log out

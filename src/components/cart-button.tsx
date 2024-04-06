@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { RiCoupon3Line, RiDeleteBin7Line } from "react-icons/ri";
+import React from "react";
 import Image from "next/image";
 import {
   Sheet,
@@ -17,7 +16,6 @@ import { ScrollArea } from "./ui/scroll-area";
 import { Button } from "./ui/button";
 import { FiShoppingCart } from "react-icons/fi";
 import Link from "next/link";
-import { CartItem as cartItem } from "@prisma/client";
 import { useCartStore } from "@/zustand/cartStore";
 import { RatingStars } from "@/app/(course)/courses/_components/rating-stars";
 import {
@@ -29,35 +27,24 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
 import { Label } from "@radix-ui/react-dropdown-menu";
-
 import { Input } from "./ui/input";
 
+interface CartItem {
+  id: string; // Unique identifier for cart item
+  userId: string;
+  courseId: string; // Reference to the Course model
+  courseName: string;
+  courseInstructorName?: string; // Optional instructor name
+  courseImageUrl?: string; // Optional image URL
+  coursePrice: string; // String representation of price
+  quantity: number; // Quantity of the item in the cart
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 const Cart = () => {
-  const { cartItems, remove } = useCartStore();
-
-  // const [uniqueCartItems, setUniqueCartItems] = React.useState<cartItem[]>([
-  //   ...cart.cartItems,
-  // ]);
-
-  // let cartItems = uniqueCartItems;
-
-  const totalItemCount = cartItems
-    ? cartItems.reduce(
-        (totalQuantitySoFar: number, item: cartItem) =>
-          totalQuantitySoFar + item.quantity,
-        0
-      )
-    : 0;
-
-  const totalCartPrice = cartItems
-    ? cartItems.reduce(
-        (totalQuantitySoFar: number, item: cartItem) =>
-          totalQuantitySoFar + Number(item.coursePrice) * item.quantity,
-        0
-      )
-    : 0;
+  const { cartItems, removeFromCart, totalPrice, totalItems } = useCartStore();
 
   return (
     <Sheet>
@@ -76,29 +63,30 @@ const Cart = () => {
           </span>
         </button>
       </SheetTrigger>
+
       <ScrollArea>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>My Cart</SheetTitle>
+            <SheetTitle>My Orders</SheetTitle>
             {/* <SheetDescription>
               All your cart items will appear here.
             </SheetDescription> */}
           </SheetHeader>
 
           {/* Cart items list */}
-          <div className="space-y-4 md:pr-4 h-auto ">
+          <div className="space-y-4 md:pr-4 pt-6 h-auto ">
             {cartItems && cartItems.length > 0 ? (
-              cartItems.map((item: cartItem) => (
+              cartItems.map((item: CartItem) => (
                 <CartItem
-                  key={item.id}
-                  id={item.id}
+                  key={item.courseId}
+                  id={item.courseId}
                   image={item.courseImageUrl!}
                   name={item.courseName!}
                   price={item.coursePrice!}
-                  instructorName={item.courseInstructorName}
+                  instructorName={item.courseInstructorName!}
                   quantity={item.quantity}
                   removeFromCart={() => {
-                    remove(item.id);
+                    removeFromCart(item.courseId);
                   }}
                 />
               ))
@@ -115,14 +103,15 @@ const Cart = () => {
           <div className=" py-3 px-6 md:px-0">
             {/* subtotal, items count and total price */}
             <div className="flex justify-between text-base font-medium text-gray-900">
-              <p>
+              <p className="dark:text-white">
                 Subtotal
                 <span className="text-sm ml-1 font-thin text-blue-400">
-                  {/* [{cartItems ? cartItems.length : 0} items] */}[
-                  {totalItemCount} items]
+                  [{totalItems} items]
                 </span>
               </p>
-              <p>${totalCartPrice}</p>
+
+              {/* total price */}
+              <p className="dark:text-blue-500">${totalPrice}</p>
             </div>
 
             {/* text (shipping and taxes calculated on checkout ) */}
@@ -138,7 +127,7 @@ const Cart = () => {
             {/* checkout button */}
             <Link
               href="#"
-              className="flex mt-3 items-center justify-center rounded-md border border-transparent bg-blue-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-700"
+              className="flex mt-3 items-center justify-center rounded-md border border-transparent bg-blue-600 px-6 text-base font-medium text-white shadow-sm hover:bg-blue-700"
             >
               Checkout
             </Link>
@@ -173,21 +162,6 @@ const Cart = () => {
 
 export default Cart;
 
-// function CartItem({ title, icon, color, content }: any) {
-//   return (
-//     <Callout
-//       className="mt-4"
-//       title={title ? title : "No critical system data"}
-//       icon={icon ? icon : RiCheckboxCircleLine}
-//       color={color ? color : "teal"}
-//     >
-//       {content
-//         ? content
-//         : "All systems are currently within their default operating ranges."}
-//     </Callout>
-//   );
-// }
-
 type CartItemProps = {
   id: string;
   image: string;
@@ -210,7 +184,7 @@ const CartItem = ({
   const totalPrice = quantity * price;
 
   return (
-    <div key={id} className="flex justify-start items-center py-auto">
+    <div key={id} className="flex justify-start items-center py-auto ">
       {/* image */}
       <Image
         className="h-[4.5rem] md:h-[4.5rem] w-[4.5rem] md:w-[4.5rem] object-cover rounded-md"
@@ -224,7 +198,7 @@ const CartItem = ({
       {/* other data */}
       <div className="ml-4">
         {/* by */}
-        <div className="flex justify-start space-x-12 items-center">
+        <div className="flex justify-between items-center">
           {/* product name */}
           <p className="text-base text-md line-clamp-2 font-semibold tracking-tight leading-5 rounded-sm overflow-clip text-gray-800 dark:text-white">
             {name}
@@ -235,13 +209,13 @@ const CartItem = ({
           </p>
         </div>
 
-        <div className="flex justify-start items-center text-sm">
+        {/* <div className="flex justify-start items-center text-sm">
           <RatingStars courseStarRatings={4.6} />
-        </div>
+        </div> */}
 
-        <p className="text-xs font-thin tracking-tight rounded-sm overflow-clip">
+        {/* <p className="text-xs font-thin tracking-tight rounded-sm overflow-clip">
           By: {instructorName}
-        </p>
+        </p> */}
 
         {/* quantity and delete from cart stuff */}
         <div className="flex">
@@ -264,32 +238,6 @@ const CartItem = ({
     </div>
   );
 };
-
-//  <div className="flex justify-around items-center py-auto">
-//    {/* button to decrease quantity */}
-//    <Button
-//      className="border p-[6px] cursor-pointer hover:shadow-2xl border-slate-300  hover:border-transparent  rounded-none text-slate-600 hover:text-slate-100 bg-transparent"
-//      onClick={onDecreaseQuantity}
-//      color="blue"
-//    >
-//      <RiSubtractFill />
-//    </Button>
-
-//    {/* quantity */}
-//    <p className="px-3">
-//      {/* {currentQuantity} */}
-//      {quantity}
-//    </p>
-
-//    {/* button to increase quantity */}
-//    <Button
-//      className="border p-[6px] hover:shadow-2xl cursor-pointer border-slate-300  hover:border-transparent rounded-none text-slate-600 hover:text-slate-100 bg-transparent"
-//      onClick={onIncreaseQuantity}
-//      color="blue"
-//    >
-//      <IoMdAdd />
-//    </Button>
-//  </div>;
 
 function AppyCouponCode() {
     const [isCouponInputVisible, setIsCouponInputVisible] =
@@ -351,7 +299,6 @@ function AppyCouponCode() {
   );
 }
 
-
 function CouponCode() {
   const [isCouponInputVisible, setIsCouponInputVisible] = React.useState(false);
   const [enteredCode, setEnteredCode] = React.useState("");
@@ -377,7 +324,7 @@ function CouponCode() {
       {!isCouponInputVisible && (
         <button
           onClick={handleAddCouponClick}
-          className="text-blue-500 font-medium text-sm opacity-50 hover:no-underline  cursor-pointer hover:opacity-100 transition-all duration-100"
+          className="text-blue-500 font-medium text-sm opacity-50 dark:opacity-80 hover:no-underline  cursor-pointer hover:opacity-100 transition-all duration-100"
         >
           Add a coupon
         </button>

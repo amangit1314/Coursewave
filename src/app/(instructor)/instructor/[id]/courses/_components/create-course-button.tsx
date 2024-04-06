@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import React from 'react'
 import { useRouter } from 'next/navigation';
 import { IoAddCircleOutline } from 'react-icons/io5';
-import useUserInfo from '@/lib/hooks/use-user-info';
+import useUserInfo from '@/hooks/use-user-info';
 
 function CreateCourseButton(printCourses: any) {
   const router = useRouter();

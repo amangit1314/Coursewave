@@ -4,10 +4,10 @@ export const dynamic = 'force-dynamic';
 
 export const GET = async (req: NextRequest, { params }: {
     params: {
-        id?: string;
+        id: string;
     };
 }) => {
-    const courseId = params.id;
+    const courseId = params?.id;
     try {
         if (!courseId) {
             console.log('Course id not provided, courseId is required field ...')
@@ -48,7 +48,7 @@ export const GET = async (req: NextRequest, { params }: {
                 updatedAt: true,
                 userId: true,
                 reviews: true,
-                enrollements: true,
+                enrollments: true,
                 payments: true,
                 purchases: true,
                 attachments: true,

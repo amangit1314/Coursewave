@@ -12,18 +12,13 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/file-upload";
 
-interface ImageFormProps {
-  initialData: Course;
-  courseId: string;
-}
-
 const formSchema = z.object({
   imageUrl: z.string().min(1, {
     message: "Image is required",
   }),
 });
 
-export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
+export const ImageForm = ({ course }: {course: Course}) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -32,7 +27,7 @@ export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${courseId}`, values);
+      await axios.patch(`/api/courses/${course?.courseId!}`, values);
       toast.success("Course updated");
       toggleEdit();
       router.refresh();
@@ -42,18 +37,18 @@ export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
   };
 
   return (
-    <div className="mt-6 border bg-slate-100 dark:bg-slate-700 rounded-md p-4">
+    <div className="mt-6 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4">
       <div className="font-medium flex items-center justify-between">
         Course image
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing && <>Cancel</>}
-          {!isEditing && !initialData?.courseImage && (
+          {!isEditing && !course?.courseImage && (
             <>
               <PlusCircle className="h-4 w-4 mr-2" />
               Add an image
             </>
           )}
-          {!isEditing && initialData?.courseImage && (
+          {!isEditing && course?.courseImage && (
             <>
               <Pencil className="h-4 w-4 mr-2" />
               Edit image
@@ -62,24 +57,24 @@ export const ImageForm = ({ initialData, courseId }: ImageFormProps) => {
         </Button>
       </div>
       {!isEditing &&
-        (!initialData?.courseImage ? (
-          <div className="flex items-center justify-center h-60 bg-slate-200 rounded-md">
-            <ImageIcon className="h-10 w-10 text-slate-500" />
+        (!course?.courseImage ? (
+          <div className="flex items-center justify-center h-60 bg-slate-200 mt-4 dark:bg-zinc-800 rounded-2xl">
+            <ImageIcon className="h-10 w-10 text-gray-500 dark:text-gray-400" />
           </div>
         ) : (
           <div className="relative aspect-video mt-2">
             <Image
               alt="Upload"
               fill
-              className="object-cover rounded-md"
-              src={initialData?.courseImage}
+              className="object-cover rounded-2xl"
+              src={course?.courseImage}
             />
           </div>
         ))}
       {isEditing && (
         <div>
           <FileUpload
-            endpoint="courseImage"
+            endpoint="imageUploader"
             onChange={(url) => {
               if (url) {
                 onSubmit({ imageUrl: url });

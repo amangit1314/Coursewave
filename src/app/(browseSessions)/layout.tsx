@@ -36,7 +36,7 @@ function SessionsNavbar() {
 import React from "react";
 import UserAvatar from "@/components/user-avatar";
 import { ThemeModeToggle } from "@/components/themeModeToggle";
-import useUserInfo from "@/lib/hooks/use-user-info";
+import useUserInfo from "@/hooks/use-user-info";
 import Notifications from "@/components/notification-button";
 
 function SessionsNavbarRoutes({ name }: any) {

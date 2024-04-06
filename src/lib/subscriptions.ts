@@ -19,7 +19,7 @@ export const storeSubscriptionPlans: SubscriptionPlan[] = [
       'Assited Support & Query Resolution',
       'Only Basic features available'
     ],
-    stripePriceId: '',
+    stripePriceId: 'stripe_subscription_FREE',
     price: 0
   },
   // {
@@ -41,7 +41,7 @@ export const storeSubscriptionPlans: SubscriptionPlan[] = [
       '24x7 Support with Premium',
       'All features unlocked'
     ],
-    stripePriceId: 'stripe_subscription_pro',
+    stripePriceId: 'stripe_subscription_PRO',
     price: 25
   },
   // {

@@ -11,9 +11,16 @@ import { VscFeedback } from "react-icons/vsc";
 import { FaHandsHelping } from "react-icons/fa";
 import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import useUserInfo from "@/hooks/use-user-info";
+import useInstructorInfo from "@/hooks/use-instructor-info";
 
 function InstructorSideBarRoutes() {
-  let instructorId = "123456";
+  const user = useUserInfo();
+  const userId = user.user?.id;
+
+  const instructor = useInstructorInfo(userId);
+
+  let instructorId = instructor.data?.data.instructorID! as string;
 
   const routes = [
     {
@@ -21,11 +28,11 @@ function InstructorSideBarRoutes() {
       label: "Analytics",
       href: `/instructor/${instructorId}/analytics`,
     },
-    {
-        icon: <BiBroadcast size={22} />,
-        label: 'Sessions',
-        href: `/instructor/${instructorId}/createdSessions`,
-    },
+    // {
+    //     icon: <BiBroadcast size={22} />,
+    //     label: 'Sessions',
+    //     href: `/instructor/${instructorId}/createdSessions`,
+    // },
     {
       icon: <BsPersonVideo2 size={22} />,
       label: "Courses",
@@ -103,7 +110,7 @@ function InstructorSidebarItem({ href, icon, label }: SidebarItemProps) {
       onClick={onClick}
       type="button"
       className={cn(
-        "flex items-center w-full rounded-md text-gray-900 dark:text-white transition-all hover:bg-gray-100 dark:hover:bg-gray-700 group",
+        "flex items-center w-full rounded-md text-gray-900 dark:text-white transition-all hover:bg-gray-100 dark:hover:bg-zinc-700 group",
         isActive &&
           "text-blue-500 bg-blue-200/20 hover:bg-blue-200/20 hover:text-blue-500"
       )}

@@ -57,7 +57,7 @@ export default function RootLayout({
             <ToastProvider />
 
             {/* <Provider store={store}> */}
-            <div className="dark:bg-black">
+            <div className="dark:bg-zinc-800">
               {hideSidebar && (
                 <LandingPageHeader handleLoginClick={handleLoginClick} />
               )}

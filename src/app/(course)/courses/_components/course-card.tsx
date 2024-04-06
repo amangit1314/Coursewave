@@ -4,6 +4,7 @@ import { FaStar } from "react-icons/fa";
 import { Course } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 type CourseCardProps = {
   course: Course;
@@ -25,7 +26,8 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
   };
 
   return (
-    <div
+    <Link
+      href={`/courses/${course.courseId}`}
       key={course.courseId}
       onClick={onViewDetails}
       className={`group cursor-pointer border border-stroke hover:border-zinc-700 dark:border-none rounded-3xl max-h-[13rem] h-full md:max-w-[15rem] w-full dark:hover:bg-zinc-800 transition-colors  hover:bg-white hover:dark:border-neutral-700 dark:bg-neutral-800/30`}
@@ -82,6 +84,6 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };

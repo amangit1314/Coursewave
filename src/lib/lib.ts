@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCookies } from "cookies-next";
 import { SignJWT, jwtVerify } from "jose";
 import { db } from "@/lib/db";
-import { verifyToken } from "@/lib/helpers/jwt_helper";
+import { verifyToken } from "@/helpers/jwt_helper";
 
 const secretKey = process.env.JWT_SECRET!;
 const key = new TextEncoder().encode(secretKey);

@@ -6,10 +6,10 @@ export const dynamic = 'force-dynamic';
 // Get all course sections
 export const GET = async (req: NextRequest, { params }: {
   params: {
-    id?: string;
+    id: string;
   };
 }) => {
-  const courseId = params.id;
+  const courseId = params?.id!;
 
   try {
     if (!courseId) {
@@ -28,7 +28,7 @@ export const GET = async (req: NextRequest, { params }: {
     });
 
     if (!course) {
-      console.log(`No course found with such courseId: ${courseId} ...`)
+      console.log(`No course found with such courseId in the courses/id/sections: ${courseId} ...`)
       return NextResponse.json({
         status: 'ERROR',
         success: false,

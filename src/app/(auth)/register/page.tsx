@@ -62,7 +62,7 @@ function RegisterPage() {
           </div>
 
           {/* Right Section */}
-          <div className="flex flex-col m-14 py-8 px-8 bg-white rounded-lg">
+          <div className="flex flex-col m-14 py-8 px-8 bg-white rounded-3xl">
             <Button variant="outline" className="border-blue-500">
               <FcGoogle size={26} />{" "}
               <div className="pl-2">Continue with Google</div>
@@ -88,25 +88,6 @@ function RegisterPage() {
               placeholder="email"
             />
 
-            {/* <div className="password-input-container border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black">
-                            <input
-                                type={showPassword ? 'text' : 'password'}
-                                className='bg-transparent outline-none p-2 mr-2'
-                                value={user.password}
-                                onChange={(e) => {
-                                    setUser({ ...user, password: e.target.value });
-                                }}
-                                placeholder="Enter password"
-                            />
-                            <button
-                                type="button"
-                                className="password-toggle-button mr-2"
-                                onClick={togglePasswordVisibility}
-                            >
-                                {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
-                            </button>
-                        </div> */}
-
             <PasswordInput
               id="current_password"
               value={user.password}
@@ -117,6 +98,7 @@ function RegisterPage() {
             />
 
             <br className="py-2" />
+
             <button
               onClick={onRegister}
               type="submit"
@@ -129,6 +111,7 @@ function RegisterPage() {
                   ? "Cant Register"
                   : "Register"}
             </button>
+
             <Toaster />
 
             <p className="pt-3 text-sm dark:text-gray-900">

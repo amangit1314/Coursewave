@@ -1,34 +1,19 @@
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import Image from "next/image";
 import { Course } from "@prisma/client";
 import React, { useEffect } from "react";
-import { Badge } from "@/components/ui/badge";
-import { TbCertificate } from "react-icons/tb";
-import { BsPersonVideo2 } from "react-icons/bs";
-import { FaCircleCheck } from "react-icons/fa6";
-import { GoProjectTemplate } from "react-icons/go";
-import { FaDownload, FaShare, FaStar } from "react-icons/fa";
-import {
-  HiOutlineGift,
-  HiOutlineShoppingCart,
-  HiShoppingCart,
-} from "react-icons/hi";
-import { MdOutlineRateReview } from "react-icons/md";
-import { PiStudentBold } from "react-icons/pi";
 import "swiper/css";
-import { Controller, EffectFade, Navigation, Pagination } from "swiper/modules";
-import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
-import Video from "next-video";
-import CourseRatings from "./ratings/course-ratings";
-import useInstructorInfo from "@/lib/hooks/use-instructor-info";
+import useInstructorInfo from "@/hooks/use-instructor-info";
 import { Separator } from "@/components/ui/separator";
 import { Divider } from "@tremor/react";
 
-export default function InstructorCard({ instructorId }: any) {
-  const insStyle = { color: "white" };
+export default function InstructorCard({
+  instructorId,
+}: {
+  instructorId: string;
+  }) {
+  console.log(`Instructor id in the instructor-info.tsx: ${instructorId} `)
   const instructor = useInstructorInfo(instructorId);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<String | null>(null);
@@ -66,6 +51,10 @@ export default function InstructorCard({ instructorId }: any) {
     fetchInstructorCreatedCourses();
   }, [instructorId]);
 
+  if (loading) {
+    return <div>...Loading</div>
+  }
+
   if (error) {
     return <div>ERROR: {error}</div>;
   }
@@ -76,8 +65,8 @@ export default function InstructorCard({ instructorId }: any) {
         <div className="flex flex-col space-y-2">
           <Image
             src={
-              instructor.instructor
-                ? instructor.instructor.instructorProfilePicUrl
+              instructor.data
+                ? instructor.data.instructorProfilePicUrl
                 : "/assets/images/cards/cards-01.png"
             }
             alt={`Image`}
@@ -89,13 +78,11 @@ export default function InstructorCard({ instructorId }: any) {
 
           <div className="flex flex-col items-start text-start text-base">
             <p className="text-lg text-gray-800 dark:text-slate-200 line-clamp-1 tracking-tight font-semibold">
-              {instructor.instructor
-                ? instructor.instructor.instructorName
-                : "Aman Soni"}
+              {instructor.data ? instructor.data.instructorName : "Aman Soni"}
             </p>
             <p className="text-sm line-clamp-2 tracking-tight text-gray-700 dark:text-gray-400 font-thin ">
-              {instructor.instructor
-                ? instructor.instructor.instructorTag
+              {instructor.data
+                ? instructor.data.instructorTag
                 : "Full Stack Engineer"}
             </p>
           </div>
@@ -107,8 +94,8 @@ export default function InstructorCard({ instructorId }: any) {
           </p>
           {/* hidden md:visible */}
           <p className="text-sm md:text-md text-start md:text-base md:text-md max-w-3xl w-full line-clamp-3 md:line-clamp-4 font-noraml text-gray-700 dark:text-gray-400">
-            {instructor.instructor
-              ? instructor.instructor.aboutInstructor
+            {instructor.data
+              ? instructor.data.aboutInstructor
               : `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Provident
           eos odit nam quae repellat quis cumque reiciendis autem ab expedita
           Provident eos odit nam quae repellat. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Provident
@@ -124,7 +111,9 @@ export default function InstructorCard({ instructorId }: any) {
               <div>
                 <p className="uppercase text-sm font-medium ">Courses</p>
                 <p className="text-xl font-bold text-black dark:text-white">
-                  {instructorCreatedCourses ? instructorCreatedCourses.length : 0}
+                  {instructorCreatedCourses
+                    ? instructorCreatedCourses.length
+                    : 0}
                 </p>
               </div>
               <Separator orientation="vertical" />
@@ -145,50 +134,6 @@ export default function InstructorCard({ instructorId }: any) {
           </div>
         </div>
       </div>
-
-      {/* <div className="stats stats-vertical md:stats-horizontal shadow my-4 dark:bg-slate-800">
-        <div className="stat">
-          <div className="stat-figure text-primary">
-            <MdOutlineRateReview size={36} style={insStyle} />
-          </div>
-          <div className="stat-title">Total Reviews</div>
-          <div className="stat-value">25.6K</div>
-          <div className="stat-desc">21% more than last month</div>
-        </div>
-
-        <div className="stat">
-          <div className="stat-figure text-secondary">
-            <PiStudentBold size={36} style={insStyle} />
-          </div>
-          <div className="stat-title">Students</div>
-          <div className="stat-value text-white">2.6M</div>
-          <div className="stat-desc">21% more than last month</div>
-        </div>
-
-        <div className="stat">
-          <div className="stat-figure text-secondary">
-            <div className="avatar online">
-              <div className="w-16 rounded-full">
-                <img
-                  src={
-                    instructor.instructor
-                      ? instructor.instructor.instructorProfilePicUrl
-                      : "/assets/images/user/user-01.png"
-                  }
-                />
-              </div>
-            </div>
-          </div>
-          <div className="stat-value">
-            {
-              // instructor.instructor ? instructor.instructor.createdCourses.length() :
-              2
-            }
-          </div>
-          <div className="stat-title">Created Courses</div>
-          <div className="stat-desc ">Full Stack Enginner</div>
-        </div>
-      </div> */}
     </div>
   );
 }

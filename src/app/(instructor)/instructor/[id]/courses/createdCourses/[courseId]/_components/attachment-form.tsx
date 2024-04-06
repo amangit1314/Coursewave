@@ -1,81 +1,69 @@
 "use client";
 
+import React from "react";
+
 import * as z from "zod";
 import axios from "axios";
-import { Pencil, PlusCircle, ImageIcon, File, Loader2, X } from "lucide-react";
+import { Pencil, PlusCircle, Loader2, X } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { CourseAttachment, Course } from "@prisma/client";
-import Image from "next/image";
-
 import { Button } from "@/components/ui/button";
-import { FileUpload } from "@/components/file-upload";
+import { Course, CourseAttachment } from "@prisma/client";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Combobox } from "./category-form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 
-// interface AttachmentFormProps {
-//   initialData: Course & { attachments: CourseAttachment[] };
-//   courseId: string;
-// }
-
-/**
- *   id   String @id @default(uuid())
-  name String
-  url  String @db.Text
-
-  courseId String
-  course   Course @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
- */
-const attachments: CourseAttachment[] = [
-  {
-    id: "20234",
-    name: "First Attachment",
-    url: "https://localhost:3000",
-    courseId: "course_6b1ff931",
-    createdAt: Date() as unknown as Date,
-    updatedAt: Date() as unknown as Date,
-  },
-  {
-    id: "20434",
-    name: "Second Attachment",
-    url: "https://localhost:3000",
-    courseId: "course_6b1ff931",
-    createdAt: Date() as unknown as Date,
-    updatedAt: Date() as unknown as Date,
-  },
-  {
-    id: "20334",
-    name: "Third Attachment",
-    url: "https://localhost:3000",
-    courseId: "course_6b1ff931",
-    createdAt: Date() as unknown as Date,
-    updatedAt: Date() as unknown as Date,
-  },
+const sampleCourseAttachments = [
+  "Who wants to learn.",
+  "Want to understand concepts of this topic.",
+  "If you are a enthusiast of subject.",
 ];
 
 const formSchema = z.object({
-  url: z.string().min(1),
+  courseAttachments: z.string().array(),
 });
 
 export const AttachmentForm = ({
-  initialData,
-  courseId,
-} : any
-  // : AttachmentFormProps
-) => {
+  course,
+  courseAttachmentsPoints,
+}: {
+  course: Course;
+  courseAttachmentsPoints: CourseAttachment[];
+}) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [points, setPoints] = useState();
+
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
   const router = useRouter();
 
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      courseAttachments: points,
+    },
+  });
+
+  const { isSubmitting, isValid } = form.formState;
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post(`/api/instructor/[id]/dashboard/courses/${courseId}/attachments`, values);
-      toast.success("Course updated");
+      await axios.post(
+        `/api/instructor/${course?.instructorID}/dashboard/courses/${course?.courseId}/attachments`,
+        { newWhatYouWillLearnPoints: values.courseAttachments }
+      );
+      toast.success("Course courseAttachments updated ...");
       toggleEdit();
       router.refresh();
     } catch {
@@ -83,85 +71,98 @@ export const AttachmentForm = ({
     }
   };
 
-  const onDelete = async (id: string) => {
-    try {
-      setDeletingId(id);
-      await axios.delete(`/api/courses/${courseId}/attachments/${id}`);
-      toast.success("Attachment deleted");
-      router.refresh();
-    } catch {
-      toast.error("Something went wrong");
-    } finally {
-      setDeletingId(null);
-    }
+  const onDelete = (index: any) => {
+    // const updatedPoints = [...points]; // Create a copy of the array
+    // updatedPoints.splice(index, 1); // Remove the point at the specified index
+    // setPoints(updatedPoints);
   };
 
   return (
-    <div className="mt-6 border bg-slate-100 dark:bg-slate-700  rounded-md p-4">
+    <div className="mt-6 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4">
       <div className="font-medium flex items-center justify-between mb-2">
-        Course attachments
+        What you will learn?
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing && <>Cancel</>}
           {!isEditing && (
             <>
               <PlusCircle className="h-4 w-4 mr-2" />
-              Add a file
+              Add a point
             </>
           )}
         </Button>
       </div>
       {!isEditing && (
         <>
-          {/* initialData?.attachments  */}
-          {attachments!.length === 0 && (
-            <p className="text-sm mt-2 text-slate-500 italic">
-              No attachments yet
+          {courseAttachmentsPoints.length === 0 && (
+            <p className="text-sm mt-2 text-gray-500 dark:text-gray-400 italic">
+              No points yet
             </p>
           )}
-          {/* initialData?.attachments  */}
-          {attachments!.length > 0 && (
+
+          {courseAttachmentsPoints.length > 0 && (
             <div className="space-y-2">
               {/* initialData?.attachments  */}
-              {attachments!.map((attachment: CourseAttachment) => (
-                <div
-                  key={attachment.id}
-                  className="flex items-center p-3 w-full bg-sky-100 dark:bg-gray-500 border-sky-200 dark:border-gray-600 border text-sky-700 dark:text-gray-100 rounded-md"
-                >
-                  <File className="h-4 w-4 mr-2 flex-shrink-0" />
-                  <p className="text-xs line-clamp-1">{attachment.name}</p>
-                  {deletingId === attachment.id && (
-                    <div>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    </div>
-                  )}
-                  {deletingId !== attachment.id && (
-                    <button
-                      onClick={() => onDelete(attachment.id)}
-                      className="ml-auto hover:opacity-75 transition"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  )}
-                </div>
-              ))}
+              {courseAttachmentsPoints.map(
+                (attachment: CourseAttachment, index: any) => (
+                  <div
+                    key={index}
+                    className="flex items-center p-3 w-full bg-sky-100 dark:bg-zinc-800 border-sky-200 dark:border-none border text-sky-700 dark:text-gray-100 rounded-xl"
+                  >
+                    <Pencil className="h-4 w-4 mr-2 flex-shrink-0" />
+                    <Link
+                      href={attachment.url}
+                      className="text-[12px] line-clamp-1">{attachment.name}
+                    </Link>
+                    {deletingId === index && (
+                      <div>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      </div>
+                    )}
+                    {deletingId !== index && (
+                      <button
+                        onClick={() => onDelete(index)}
+                        className="ml-auto hover:opacity-75 transition"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    )}
+                  </div>
+                )
+              )}
             </div>
           )}
         </>
       )}
+
       {isEditing && (
-        <div>
-          <FileUpload
-            endpoint="courseAttachment"
-            onChange={(url) => {
-              if (url) {
-                onSubmit({ url: url });
-              }
-            }}
-          />
-          <div className="text-xs text-muted-foreground mt-4">
-            Add anything your students might need to complete the course.
-          </div>
-        </div>
+        <Form {...form}>
+          <form
+            onSubmit={() => form.handleSubmit(onSubmit)}
+            className="space-y-4 mt-4"
+          >
+            <FormField
+              control={form.control}
+              name="courseAttachments"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Combobox className="dark:bg-zinc-800" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex items-center gap-x-2">
+              <Button
+                className="dark:bg-zinc-800 dark:text-white"
+                disabled={!isValid || isSubmitting}
+                type="submit"
+              >
+                Save
+              </Button>
+            </div>
+          </form>
+        </Form>
       )}
     </div>
   );

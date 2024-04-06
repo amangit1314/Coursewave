@@ -1,13 +1,13 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
-// Get all course sections
+// Get all course chapters
 export const GET = async (req: NextRequest, { params }: {
   params: {
     id?: string;
   };
 }) => {
-  const courseId = params.id;
+  const courseId = params?.id!;
 
   try {
     if (!courseId) {

@@ -7,6 +7,9 @@ export const dynamic = 'force-dynamic';
 export const POST = async (req: NextRequest, { params }: { params: { userId: string }; }) => {
 
     const uid = params.userId;
+    // const reqBody = await req.json();
+    // const { instructorTag } = reqBody;
+
     try {
         if (!uid) {
             return NextResponse.json({
@@ -28,7 +31,7 @@ export const POST = async (req: NextRequest, { params }: { params: { userId: str
             }, { status: 404 });
         }
 
-        if (user.isInstructor) {
+        if (!!user.isInstructor!) {
             return NextResponse.json({
                 status: false,
                 message: "You are already an instructor ...",
@@ -47,10 +50,12 @@ export const POST = async (req: NextRequest, { params }: { params: { userId: str
                 instructorID: uid,
                 instructorName: updatedUser.name ?? updatedUser.email.split('@')[0],
                 instructorEmail: updatedUser.email,
-                instructorTag: "Full Stack Engineer",
+                instructorTag:  "Full Stack Engineer",
                 instructorProfilePicUrl: updatedUser.profileImageUrl ?? "",
             },
         });
+
+        console.log('Created Instructor: ', createdInstructor);
 
         return NextResponse.json({
             status: true,
@@ -58,11 +63,11 @@ export const POST = async (req: NextRequest, { params }: { params: { userId: str
             message: "You are an instructor now ✔️ ...",
         }, { status: 200 });
 
-    } catch (error) {
-        console.log('ERROR in becoming instructor ...', error);
+    } catch (error: any) {
+        console.log('ERROR in becoming instructor, ERROR: ', error.message);
         return NextResponse.json({
             status: false,
-            error: error,
+            error: error.message,
             message: "Failed to become instructor ❌🚧...",
         }, { status: 500 });
     }

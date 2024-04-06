@@ -3,8 +3,7 @@ import Image from 'next/image'
 import { CgMenuRightAlt } from 'react-icons/cg';
 import { ThemeModeToggle } from '../themeModeToggle';
 import Link from 'next/link';
-import { Button } from '@tremor/react';
-
+import { Button } from "@/components/ui/button";
 interface TestimonialItemProps {
     handleLoginClick: any;
 }
@@ -14,17 +13,17 @@ const LandingPageHeader: React.FC<TestimonialItemProps> = ({
 }) => {
 
     return (
-      <div className="bg-transparent border-b sticky z-10 top-0 backdrop-blur-xl  p-[1rem] max-w-7xl h-[64px] w-full mx-auto flex justify-between items-center py-auto ">
+      <div className="bg-transparent border-b sticky z-10 top-0 backdrop-blur-xl  p-[2rem] max-w-7xl h-[64px] w-full mx-auto flex justify-between items-center py-auto ">
         {/* coursewave logo and text */}
         <div className="flex cursor-pointer items-center py-auto">
           <Image
-            src="/courseWaveFaviconColored.png"
+            src="/assets/images/logo/coursewave-favicon-color.png"
             alt="CourseWave Logo"
             width={30}
             height={8}
             priority
           />
-          <p className="pl-2 text-blue-500 tracking-tight font-bold capitalize text-[1rem]">
+          <p className="pl-2 text-blue-500 font-mono tracking-tight font-extrabold capitalize text-[1rem]">
             Coursewave
           </p>
         </div>
@@ -48,15 +47,15 @@ const LandingPageHeader: React.FC<TestimonialItemProps> = ({
             className="text-[1rem] text-gray-400 hover:text-blue-500 cursor-point font-medium"
           >
             Articles
-          </Link> */}
+          </Link>
           <Link
             href="/browseSessions"
             className="text-[14px] text-gray-400 hover:text-blue-500 cursor-point font-medium"
           >
             Sessions
-          </Link>
+          </Link> */}
           <Link
-            href=""
+            href="/contact"
             className="text-[14px] text-gray-400 hover:text-blue-500 cursor-point font-medium"
           >
             Contact
@@ -72,9 +71,11 @@ const LandingPageHeader: React.FC<TestimonialItemProps> = ({
             href="/login"
           >
             <Button
-            // onClick={handleLoginClick}
-            className="hover:bg-blue-600 text-zinc-700 hover:text-white dark:hover:text-blue-600  text-base dark:border-none bg-transparent dark:text-white dark:bg-zinc-900 hover:shadow-xl font-medium"
-            color="gray"
+              variant="outline"
+              size="sm"
+              onClick={handleLoginClick}
+              className="flex justify-center items-center text-zinc-700 h-10 hover:text-white dark:hover:text-white text-[14px] bg-transparent dark:text-white dark:bg-transparent hover:shadow-xl font-medium dark:hover:bg-zinc-800 transition-all duration-200"
+              color="gray"
             >
               Login
             </Button>

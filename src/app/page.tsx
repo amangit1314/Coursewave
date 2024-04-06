@@ -29,8 +29,9 @@ export default function Home() {
    );
 
   return (
-    <main className="flex dark:bg-black dark:bg-opacity-80 min-h-screen flex-col items-center justify-between  ">
+    <main className="flex dark:bg-black dark:bg-opacity-80 h-full flex-col items-center justify-between  ">
       <LandingPageHeader handleLoginClick={handleLoginClick} />
+
       <div className="p-10">
         <HeroSection scrollAnimation={scrollAnimation} />
 

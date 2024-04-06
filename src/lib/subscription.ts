@@ -1,11 +1,8 @@
-// @ts-nocheck
-// TODO: Fix this when we turn strict mode on.
-import { UserSubscriptionPlan } from "types"
+import { storeSubscriptionPlans } from "./subscriptions"
+import { stripe } from "./stripe"
 import { db } from "@/lib/db"
 
-export async function getUserSubscriptionPlan(
-  userId: string
-): Promise<UserSubscriptionPlan> {
+export async function getUserSubscriptionPlan(userId: string) {
   const user = await db.user.findFirst({
     where: {
       id: userId,
@@ -21,26 +18,49 @@ export async function getUserSubscriptionPlan(
   })
 
   if (!user) {
-    throw new Error("User not found")
+    throw new Error("User not found ...")
   }
 
-  const data = db.subscription.findFirst({
+  const stripeCustomer = await db.stripeCustomer.findFirst({
     where: {
-      userId: user.id!,
+      userId: user?.id!,
+    }
+  })
+
+  if (!stripeCustomer) {
+    throw new Error("No customer found with this id ...")
+  }
+
+  const subscription = await db.subscription.findFirst({
+    where: {
+      userId: stripeCustomer?.userId!,
     }
   });
 
-  if (!data) return null;
+  if (!subscription) return null;
 
   // Check if user is on a pro plan.
   const isPro =
-    user.stripePriceId &&
-    user.stripeCurrentPeriodEnd?.getTime()! + 86_400_000 > Date.now()
+    stripeCustomer?.stripePriceId! &&
+    stripeCustomer?.stripeCurrentPeriodEnd?.getTime()! + 86_400_000 > Date.now()
+
+  // -------------------
+  const plan = isPro ? storeSubscriptionPlans.find((p) => p.stripePriceId === stripeCustomer.stripePriceId) : null;
+
+  let isCanceled = false;
+  if (isPro && stripeCustomer.stripeSubscriptionId) {
+    const stripePlan = await stripe.subscriptions.retrieve(stripeCustomer.stripeSubscriptionId);
+    isCanceled = stripePlan.cancel_at_period_end;
+  }
 
   return {
-    ...user,
-    ...data,
-    stripeCurrentPeriodEnd: user.stripeCurrentPeriodEnd?.getTime(),
+    ...plan,
+    ...subscription,
+    stripeSubscriptionId: stripeCustomer.stripeSubscriptionId,
+    stripeCurrentPeriodEnd: stripeCustomer?.stripeCurrentPeriodEnd?.getTime(),
+    stripeCustomerId: stripeCustomer.stripeCustomerId,
     isPro: !!isPro,
+    isSubscribed: !!isPro,
+    isCanceled: isCanceled,
   }
 }

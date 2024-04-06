@@ -1,26 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateUid } from "@/lib/helpers/id_helper";
+import { generateUid } from "@/helpers/id_helper";
 import { db } from "@/lib/db";
 import dotenv from "dotenv";
 dotenv.config();
 export const dynamic = 'force-dynamic';
 
-//* get all course Section
+//* get all course Sections
 export const GET = async (req: NextRequest, { params }: {
     params: {
-        id?: string;
-        courseId?: string;
+        id: string;
+        courseId: string;
     };
 }) => {
+    const instructorId = params?.id;
+    const courseId = params?.courseId;
+
+    const reqBody = await req.json();
+    const { courseSectionNumber, courseSectionTitle, courseSectionDescription } = reqBody;
+
+    const courseSectionId = `course_${courseId}_${generateUid().split("-")[0]}`;
 
     try {
-        const instructorId = params?.id;
-        const courseId = params?.courseId;
 
-        const reqBody = await req.json();
-        const { courseSectionNumber, courseSectionTitle, courseSectionDescription } = reqBody;
-
-        const courseSectionId = `course_${courseId}_${generateUid().split("-")[0]}`;
 
         if (!instructorId || !courseId) {
             return NextResponse.json({ success: false, message: "Invalid Instructor/course Id" }, { status: 400 });
@@ -72,20 +73,19 @@ export const GET = async (req: NextRequest, { params }: {
 //* create a course Section
 export const POST = async (req: NextRequest, { params }: {
     params: {
-        id?: string;
-        courseId?: string;
+        id: string;
+        courseId: string;
     };
 }) => {
+    const instructorId = params?.id;
+    const courseId = params?.courseId;
+
+    const reqBody = await req.json();
+    const { courseSectionNumber, courseSectionTitle, courseSectionDescription } = reqBody;
+
+    const courseSectionId = `course_${courseId}_${generateUid().split("-")[0]}`;
 
     try {
-        const instructorId = params?.id;
-        const courseId = params?.courseId;
-
-        const reqBody = await req.json();
-        const { courseSectionNumber, courseSectionTitle, courseSectionDescription } = reqBody;
-
-        const courseSectionId = `course_${courseId}_${generateUid().split("-")[0]}`;
-
         if (!instructorId || !courseId) {
             return NextResponse.json({ success: false, message: "Invalid Instructor/course Id" }, { status: 400 });
         }
@@ -115,10 +115,9 @@ export const POST = async (req: NextRequest, { params }: {
             return NextResponse.json({ success: false, message: `No course found with this courseid: ${courseId} ...` }, { status: 404 });
         }
 
-        const courseSection = await db.courseSection.findUnique({
+        const courseSection = await db.courseSection.findFirst({
             where: {
                 courseId,
-                courseSectionNumber,
                 courseSectionTitle,
             }
         })
@@ -126,7 +125,7 @@ export const POST = async (req: NextRequest, { params }: {
         if (courseSection) {
             return NextResponse.json({
                 success: false,
-                message: `A section with this sectionNumber: ${courseSectionNumber} and sectionTitle: ${courseSectionTitle},  already exists ...`
+                message: `A section with this sectionTitle: ${courseSectionTitle},  already exists ...`
             }, { status: 400 });
         }
 

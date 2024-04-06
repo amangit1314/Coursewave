@@ -1,24 +1,11 @@
-import React, { useEffect } from "react";
-import { CourseItem } from "./course-item";
+"use client";
+
+import React from "react";
 import { Category, Course } from "@prisma/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams } from "next/navigation";
 import { CourseCard } from "./course-card";
-
-const fetchCourses = async () => {
-  try {
-    const response = await fetch(`/api/courses`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch courses: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    return data.data;
-  } catch (error) {
-    console.error("Error fetching courses:", error);
-    throw error; // Re-throw to allow React Query to handle the error
-  }
-};
+import useCourses from "@/hooks/use-courses";
 
 interface FilteredCoursesComponentProps {
   activeCategory: string | null;
@@ -29,48 +16,27 @@ export function FilteredCoursesComponent({
   activeCategory,
   categories,
 }: FilteredCoursesComponentProps) {
-  const [loading, setLoading] = React.useState(true);
-  const [courses, setCourses] = React.useState<Course[]>([]);
   const searchParams = useSearchParams();
-  const searchQuery = searchParams.get("q") || ""; // Get the query string parameter "q"
+  const searchQuery = searchParams.get("q") || "";
 
+  const courses = useCourses();
+  console.log("Courses from api: ", courses);
 
-
-  useEffect(() => {
-    // https://localhost:3000
-    fetch("/api/courses")
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          throw new Error("Failed to fetch courses");
-        }
-      })
-      .then((data) => {
-        setCourses(data.data); // Assuming your data.data is an array of courses
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching courses:", error);
-        setLoading(false);
-      });
-  }, []); // Empty dependency array to ensure useEffect runs only once
-
-  // const filteredCourses = activeCategory
-  //   ? activeCategory === "All"
-  //     ? courses
-  //     : courses.filter(
-  //         (course: Course) =>
-  //           course.courseTitle.includes(activeCategory) ||
-  //           (course.courseCategories &&
-  //             course.courseCategories.includes(activeCategory))
-  //       )
-  //   : courses;
-
-  const filteredCourses = activeCategory
+  const coursesFilteredByCategories = activeCategory
     ? activeCategory === "All"
-      ? courses.filter(
-          (course) =>
+      ? courses?.courses
+      : courses?.courses?.filter(
+          (course: Course) =>
+            course.courseTitle.includes(activeCategory) ||
+            (course.courseCategories &&
+              course.courseCategories.includes(activeCategory))
+        )
+    : courses?.courses;
+
+  const coursesFilteredOnSearchInput = activeCategory
+    ? activeCategory === "All"
+      ? courses?.courses?.filter(
+          (course: Course) =>
             course.courseTitle
               .toLowerCase()
               .includes(searchQuery.toLowerCase()) ||
@@ -79,8 +45,8 @@ export function FilteredCoursesComponent({
                 cat.toLowerCase().includes(searchQuery.toLowerCase())
               ))
         )
-      : courses.filter(
-          (course) =>
+      : courses?.courses?.filter(
+          (course: Course) =>
             course.courseTitle
               .toLowerCase()
               .includes(searchQuery.toLowerCase()) ||
@@ -90,8 +56,8 @@ export function FilteredCoursesComponent({
               ) &&
               course.courseCategories.includes(activeCategory))
         )
-    : courses.filter(
-        (course) =>
+    : courses?.courses?.filter(
+        (course: Course) =>
           course.courseTitle
             .toLowerCase()
             .includes(searchQuery.toLowerCase()) ||
@@ -101,7 +67,11 @@ export function FilteredCoursesComponent({
             ))
       );
 
-  if (loading) {
+  const filteredCourses = searchQuery
+    ? coursesFilteredOnSearchInput
+    : coursesFilteredByCategories;
+
+  if (courses.isLoading) {
     return (
       <div className="flex flex-wrap justify-center my-6 p-6 mx-auto ">
         <FilteredCoursesSkeleton />
@@ -110,7 +80,7 @@ export function FilteredCoursesComponent({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 max-w-7xl w-full gap-4 my-6 justify-center items-center mx-auto">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 max-w-7xl w-full gap-4 my-6 justify-center items-center mx-auto">
       {filteredCourses.map((course: Course) => (
         <CourseCard key={course.courseId} course={course} />
       ))}
@@ -120,7 +90,7 @@ export function FilteredCoursesComponent({
 
 function FilteredCoursesSkeleton() {
   return (
-    <div className="max-w-7xl w-full justify-center mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="max-w-7xl w-full justify-center mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <FilteredCourseSkeleton />
       <FilteredCourseSkeleton />
       <FilteredCourseSkeleton />

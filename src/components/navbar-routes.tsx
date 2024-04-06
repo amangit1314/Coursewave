@@ -7,10 +7,11 @@ import toast, { Toaster } from "react-hot-toast";
 import { redirect, useParams, usePathname, useRouter } from "next/navigation";
 import { Josefin_Sans } from "next/font/google";
 import { ThemeModeToggle } from "./themeModeToggle";
-import useUserInfo from "@/lib/hooks/use-user-info";
+import useUserInfo from "@/hooks/use-user-info";
 import Notifications from "@/components/notification-button";
 import SearchButton from "@/components/search-button";
 import Cart from "@/components/cart-button";
+import InstructorButton from "./instructor-button";
 
 const josefinSans = Josefin_Sans({
   weight: ["400", "500", "600", "700"],
@@ -22,7 +23,7 @@ function NavbarRoutes() {
   const pathname = usePathname();
 
   const user = useUserInfo();
-  const userId = user.user?.id;
+  const userId = user.user?.id!;
   const isUserAnInstructor = user.user?.isInstructor;
   console.log("Is user instructor: ", isUserAnInstructor);
 
@@ -59,12 +60,7 @@ function NavbarRoutes() {
           <Toaster />
 
           {/* instructor button */}
-          <Button
-            onClick={switchToInstructorView}
-            className="hidden md:flex cursor-pointer border-opacity-10 hover:bg-slate-50 dark:hover:border-opacity-100 dark:border-opacity-10 hover:border-opacity-100 dark:hover:bg-zinc-800 border px-4 border-black text-black text-xs dark:border-white dark:text-white bg-transparent rounded-md mx-auto transition-all duration-200 items-center"
-          >
-            {isInstructor ? "Instructor View" : "Become Instructor"}
-          </Button>
+          <InstructorButton />
 
           {/* theme toggle */}
           <ThemeModeToggle />

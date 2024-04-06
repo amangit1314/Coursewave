@@ -117,3 +117,77 @@ export const data: Payment[] = [
   },
 ];
 
+export const courseChapters = [
+  {
+    title: "Introduction",
+    chapterDuration: '',
+    isFree: false,
+    position: 0,
+  },
+  {
+    title: "Chapter 1",
+    chapterDuration: '',
+    isFree: false,
+    position: 0,
+  },
+  {
+    title: "Chapter 2",
+    chapterDuration: '',
+    isFree: false,
+    position: 0,
+  },
+  {
+    title: "Chapter 3",
+    chapterDuration: '',
+    isFree: false,
+    position: 0,
+  },
+  {
+    title: "Chapter 4",
+    chapterDuration: '',
+    isFree: false,
+    position: 0,
+  },
+  {
+    title: "Chapter 5",
+    chapterDuration: '',
+    isFree: false,
+    position: 0,
+  },
+  {
+    title: "Chapter 6",
+    chapterDuration: '',
+    isFree: false,
+    position: 0,
+  },
+  {
+    title: "Chapter 7",
+    chapterDuration: '',
+    isFree: false,
+    position: 0,
+  },
+  {
+    title: "Chapter 8",
+    chapterDuration: '',
+    isFree: false,
+    position: 0,
+  }, {
+    title: "Outro",
+    chapterDuration: '',
+    isFree: false,
+    position: 0,
+  },
+];
+
+export const sampleText = `Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                Provident eos odit nam quae repellat quis cumque reiciendis
+                autem ab expedita Provident eos odit nam quae repellat amet
+                consectetur adipisicing elit. Provident eos odit nam quae
+                repellat quis amet consectetur adipisicing elit. Provident eos
+                odit nam quae repellat quis Provident eos odit nam quae repellat
+                repellat quis amet consectetur adipisicing elit. Provident eos
+                amet consectetur adipisicing elit. Provident eos odit nam quae
+                repellat quis cumque reiciendis autem ab expedita Provident eos
+                odit nam quae repellat amet consectetur adipisicing elit.
+                Provident eos odit nam quae repellat quis amet consectetur
+                adipisicing elit. Provident eos odit nam quae repellat quis`;

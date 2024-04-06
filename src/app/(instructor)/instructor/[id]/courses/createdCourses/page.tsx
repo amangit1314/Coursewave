@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect } from "react";
 import { Course } from "@prisma/client";
-import useUserInfo from "@/lib/hooks/use-user-info";
+import useUserInfo from "@/hooks/use-user-info";
 import toast, { Toaster } from "react-hot-toast";
 import CreateCourseButton from "../_components/create-course-button";
 import {
@@ -22,7 +22,9 @@ import {
   Badge,
 } from "@tremor/react";
 
-export default function CreatedCourses() {
+export default function CreatedCourses({ params }: { params: { id: string } }) {
+  const instructorId = params?.id!;
+
   const [selectedNames, setSelectedNames] = React.useState<string[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -38,8 +40,7 @@ export default function CreatedCourses() {
     const fetchCourses = async () => {
       try {
         const response = await fetch(
-          // https://localhost:3000
-          `/api/instructor/${user.user?.id}/dashboard/courses`
+          `/api/instructor/${instructorId}/dashboard/courses`
         );
 
         if (!response.ok) {
@@ -60,17 +61,17 @@ export default function CreatedCourses() {
     };
 
     fetchCourses();
-  }, [user.user?.id]);
+  }, [instructorId]);
 
   return (
-    <div className="pt-[80px] px-[2rem] h-full">
-      <Card className="">
+    <div className="pt-[80px] px-[2rem] h-full dark:bg-zinc-900 pb-6">
+      <div className="rounded-3xl my-4 dark:bg-zinc-800 overflow-hidden dark:border-none">
         <Toaster />
-        <Flex>
+        <Flex className="px-5 pt-4">
           <MultiSelect
             onValueChange={setSelectedNames}
             placeholder="Select Course..."
-            className="max-w-xs"
+            className="max-w-xs dark:bg-zinc-800"
           >
             {createdCourses.map((item) => (
               <MultiSelectItem key={item.courseTitle} value={item.courseTitle}>
@@ -81,7 +82,8 @@ export default function CreatedCourses() {
 
           <CreateCourseButton />
         </Flex>
-        <Table className="mt-6">
+
+        <Table className="mt-6 dark:bg-zinc-800 rounded-3xl p-2">
           <TableHead>
             <TableRow>
               <TableHeaderCell>Image</TableHeaderCell>
@@ -109,9 +111,9 @@ export default function CreatedCourses() {
                       href={`/instructor/${user.user?.id}/courses/createdCourses/${item.courseId}`}
                     >
                       <Image
-                        className="h-[40px] w-[40px] rounded-lg cursor-pointer"
+                        className="h-[40px] w-[40px] rounded-lg cursor-pointer object-cover"
                         alt={item.courseTitle}
-                        src={item.courseImage}
+                        src={item.courseImage!}
                         height={40}
                         width={40}
                       />
@@ -141,7 +143,7 @@ export default function CreatedCourses() {
               ))}
           </TableBody>
         </Table>
-      </Card>
+      </div>
     </div>
   );
 }

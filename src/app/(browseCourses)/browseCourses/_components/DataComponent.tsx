@@ -24,7 +24,7 @@ export default async function DataComponent() {
     console.log(courses.data);
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 my-6 w-9/12 justify-start mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 my-6 w-9/12 justify-start mx-auto">
             {
                 Array.isArray(courses.data) ? (
                 courses.data.map((course: Course, index: number) => (

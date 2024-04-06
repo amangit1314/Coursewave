@@ -32,7 +32,7 @@ export const GET = async (req: NextRequest, { params }: {
             }, { status: 404 });
         }
 
-        const enrolledCourses = await db.enrollement.findMany({
+        const enrolledCourses = await db.enrollment.findMany({
             where: {
                 userId: uid
             },

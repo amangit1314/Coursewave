@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { generateUid } from "@/lib/helpers/id_helper";
+import { generateUid } from "@/helpers/id_helper";
 import { NextRequest, NextResponse } from "next/server";
 export const dynamic = 'force-dynamic';
 

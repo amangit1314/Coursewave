@@ -1,27 +1,33 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
-import React, { useState, Suspense, useEffect } from "react";
-import { useQuery } from "react-query"; // Import useQuery hook
-import Video from "next-video";
-import Footer from "@/components/LandingPage/footer";
+// import { CaretSortIcon } from "@radix-ui/react-icons";
+// import {
+//   Collapsible,
+//   CollapsibleContent,
+//   CollapsibleTrigger,
+// } from "@/components/ui/collapsible";
+import React from "react";
+import Link from "next/link";
 import Image from "next/image";
+import Video from "next-video";
 import { CgWebsite } from "react-icons/cg";
 import { FaGithub, FaLinkedin, FaLock, FaNoteSticky } from "react-icons/fa6";
 import { BsInstagram } from "react-icons/bs";
-import { Button, Divider } from "@tremor/react";
+import { Button } from "@tremor/react";
 import CourseContentNavbar from "./_components/course-content-navbar";
 import {
   Chapter,
   Course,
   CourseAttachment,
   CourseSection,
+  Instructor,
   UserProgress,
 } from "@prisma/client";
 import { FaPauseCircle, FaPlayCircle } from "react-icons/fa";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { MdModeEditOutline } from "react-icons/md";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import Footer from "@/components/LandingPage/footer";
 import {
   Dialog,
   DialogContent,
@@ -34,7 +40,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { IoNotificationsOutline } from "react-icons/io5";
 import {
   Sheet,
   SheetClose,
@@ -45,255 +50,96 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { getChapters } from "@/app/_actions/get-chapters";
-import useInstructorInfo from "@/lib/hooks/use-instructor-info";
-import Link from "next/link";
-import { getCourseAttachments } from "@/app/_actions/get-attachments";
-import Error from "next/error";
-import error from "next/error";
-import { Skeleton } from "@/components/ui/skeleton";
 
-const courseChapters = [
-  "Introduction",
-  "Chapter 1",
-  "Chapter 2",
-  "Chapter 3",
-  "Chapter 4",
-  "Chapter 5",
-  "Chapter 6",
-  "Chapter 7",
-  "Chapter 8",
-  "Outro",
-];
+import { useQuery } from "@tanstack/react-query";
+import { courseChapters, sampleText } from "@/lib/mockData";
+import useInstructorInfo from "@/hooks/use-instructor-info";
+// import { Skeleton } from "@/components/ui/skeleton";
+import CourseContentScreenSkeleton from "./_components/course-content-screen-skeleton";
+import CourseChaptersSkeleton from "./_components/course-chapters-skeleton";
+import CourseResourcesSkeleton from "./_components/course-resources-skeleton";
+import { absoluteUrl } from "@/lib/utils";
+import MuxPlayer from "@mux/mux-player-react";
 
-type CourseContentProps = {
-  courseId: string;
-};
+function CourseContentPage({ params }: { params: { id: string } }) {
+  const courseId = params?.id!;
 
-function CourseContentPage({
-  params,
-}: {
-  params: {
-    id?: string;
-  };
-}) {
-  const courseId = params?.id;
+  const fetchCourseInfo = async () => {
+    console.log("Course id in Course Content page.tsx:", courseId);
+    const response = await fetch(`/api/courses/${courseId}`);
 
-  const [loading, setLoading] = React.useState(true);
-  // const [course, setCourse] = React.useState<Course>();
-  // const [chapters, setChapters] = React.useState<Chapter[]>([]);
-  const [sections, setSections] = React.useState<CourseSection[]>([]);
-  const [courseProgress, setCourseProgress] = React.useState<UserProgress>();
-  const [showFullDescription, setShowFullDescription] = React.useState(false);
-  const [activeChapterIndex, setActiveChapterIndex] = React.useState<number>(0);
-
-  console.log("Course id in Course Content page.tsx:", courseId);
-
-  const {
-    isLoading,
-    error: Error,
-    data,
-  } = useQuery(
-    ["courseContent", courseId],
-    async () => {
-      const response = await fetch(`/api/courses/${courseId}`);
-      if (!response.ok) {
-        console.log("Failed to fetch course content ...");
-      }
-      return await response.json();
-    },
-    {
-      enabled: !!courseId, // Only fetch data if courseId is available
-      staleTime: 1000 * 60 * 10, // Cache for 10 minutes (optional)
+    if (!response.ok) {
+      console.log("Failed to fetch course content ...");
     }
-  );
 
-  // fetch course info where courseId is courseId
-  // useEffect(() => {
-  //   // https://localhost:3000
-  //   fetch(`/api/courses/${courseId}`)
-  //     .then((res) => {
-  //       if (res.ok) {
-  //         return res.json();
-  //       } else {
-  //         throw new Error("Failed to fetch courses");
-  //       }
-  //     })
-  //     .then((data) => {
-  //       console.log(data);
-  //       // Assuming your data.data is an array of courses
-  //       setCourse(data.data);
-  //       setLoading(false);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching courses:", error);
-  //       setLoading(false);
-  //     });
-  // }, [courseId]);
+    console.log(
+      "Course id in courses/[courseId]/courseContent/page.tsx file:",
+      courseId
+    );
+    return await response.json();
+  };
 
-  // fetch chapters where courseId is courseId
-  // useEffect(() => {
-  //   const fetchChapters = async (courseId: string) => {
-  //     await getChapters({ courseId, chapters })
-  //       .then((res) => setChapters(res.chapters))
-  //       .catch((err) => {
-  //         console.log("ERROR in fetching course chapters: ", err);
-  //         console.error(err);
-  //       });
-  //   };
+  //* fetching course info
+  const { isLoading, error, data } = useQuery({
+    queryKey: ["courseContent", courseId],
+    queryFn: fetchCourseInfo,
+    staleTime: 1000 * 60 * 10,
+  });
 
-  //   fetchChapters(courseId!);
-  // }, [chapters, courseId]);
+  const course: Course = data?.data!;
 
-  const course = data?.data; // Access course data from useQuery response
-  const chapters = course?.chapters ?? []; // Handle potential missing chapters
+  const fetchCourseChapters = async () => {
+    console.log("Course id in Course Content page.tsx:", courseId);
 
-// return <CourseContentScreenSkeleton />;
+    const response = await fetch(
+      absoluteUrl(`/api/courses/${courseId}/chapters`)
+    );
 
+    if (!response.ok) {
+      console.log("Failed to fetch course chapters ...");
+    }
+
+    console.log(
+      `Course id in courses/${courseId}/courseContent/page.tsx file: `,
+      courseId
+    );
+
+    return await response.json();
+  };
+
+  //* fetching course chapters
+  const {
+    isLoading: isChaptersLoading,
+    error: chaptersError,
+    data: chaptersData,
+  } = useQuery({
+    queryKey: ["courseContent", courseId],
+    queryFn: fetchCourseChapters,
+    staleTime: 1000 * 60 * 10,
+  });
+
+  const chapters = chaptersData?.data!;
 
   if (isLoading) return <CourseContentScreenSkeleton />;
-  // if (error) return <div>Error: {error}</div>;
-
-  const activeChapter = chapters[activeChapterIndex];
-  const aboutChapter = activeChapter
-    ? activeChapter.description ??
-      `Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                Provident eos odit nam quae repellat quis cumque reiciendis
-                autem ab expedita Provident eos odit nam quae repellat amet
-                consectetur adipisicing elit. Provident eos odit nam quae
-                repellat quis amet consectetur adipisicing elit. Provident eos
-                odit nam quae repellat quis Provident eos odit nam quae repellat
-                repellat quis amet consectetur adipisicing elit. Provident eos
-                amet consectetur adipisicing elit. Provident eos odit nam quae
-                repellat quis cumque reiciendis autem ab expedita Provident eos
-                odit nam quae repellat amet consectetur adipisicing elit.
-                Provident eos odit nam quae repellat quis amet consectetur
-                adipisicing elit. Provident eos odit nam quae repellat quis`
-    : `Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                Provident eos odit nam quae repellat quis cumque reiciendis
-                autem ab expedita Provident eos odit nam quae repellat amet
-                consectetur adipisicing elit. Provident eos odit nam quae
-                repellat quis amet consectetur adipisicing elit. Provident eos
-                odit nam quae repellat quis Provident eos odit nam quae repellat
-                repellat quis amet consectetur adipisicing elit. Provident eos
-                amet consectetur adipisicing elit. Provident eos odit nam quae
-                repellat quis cumque reiciendis autem ab expedita Provident eos
-                odit nam quae repellat amet consectetur adipisicing elit.
-                Provident eos odit nam quae repellat quis amet consectetur
-                adipisicing elit. Provident eos odit nam quae repellat quis`;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="overflow-x-hidden h-auto">
       {/* navbar */}
       <div className="inset-y-0 w-full z-50 ">
         <CourseContentNavbar course={course} />
       </div>
 
       {/* course details */}
-      <div className="flex justify-start items-center h-full max-w-7xl w-full mx-auto py-4 px-8 md:px-[3rem] space-x-8 ">
-        {/* video and chapters list */}
-        <div className="mt-4">
-          {/* video and mark as visited button */}
-          <div className="w-[45rem] h-[360px]">
-            <div className="max-w-3xl h-auto w-full">
-              <div className="flex justify-between items-center md:hidden pb-4">
-                <ShowChapters
-                  chapters={chapters}
-                  activeChapterIndex={activeChapterIndex}
-                  setActiveChapterIndex={setActiveChapterIndex}
-                />
-                <p
-                  // color="green"
-                  className=" text-green-600 text-xs"
-                >
-                  ✔ Mark as completed
-                </p>
-              </div>
+      <CourseDetails
+        chapters={chapters}
+        instructorId={course?.instructorID ?? ""}
+        courseId={courseId}
+        isChaptersLoading={isChaptersLoading}
+        chaptersError={chaptersError}
+      />
 
-              {/* video component */}
-              <CourseVideo activeChapter={activeChapter} />
-
-              <Button color="green" className="hidden md:visible mt-4 ml-auto">
-                ✔ Mark as completed
-              </Button>
-            </div>
-          </div>
-
-          {/* about class, course resurces, class notes and instructor info */}
-          <div className="flex flex-col md:flex-row my-4">
-            <div className="max-w-[45rem] w-full">
-              {/* about this class */}
-              <div>
-                <p className="text-xl md:text-lg mt-4 text-gray-950 dark:text-gray-300 font-semibold tracking-tight">
-                  About This Class
-                </p>
-
-                {/* product description */}
-                <p
-                  className={`${
-                    showFullDescription ? "" : "line-clamp-4"
-                  } text-md text-base text-slate-700 dark:text-gray-400 py-4 md:py-2 md:text-md md:p-0 w-auto   ${
-                    showFullDescription ? "" : "overflow-hidden"
-                  }`}
-                >
-                  {aboutChapter}
-                </p>
-
-                {/* show more text button */}
-                {aboutChapter.length > 250 ? (
-                  <button
-                    className="text-sm tracking-tighter mt-2 font-medium hover:text-blue-600 dark:hover:text-blue-700 text-blue-500 dark:text-blue-600 underline .leading-relaxed"
-                    onClick={() => setShowFullDescription(!showFullDescription)}
-                  >
-                    Show More
-                  </button>
-                ) : (
-                  <div></div>
-                )}
-              </div>
-
-              {/* course notes */}
-              <div className="visible md:hidden">
-                <CourseNotes />
-              </div>
-
-              {/* About Instructor */}
-              <div>
-                <h3 className="text-xl md:text-lg mt-4 text-gray-950 dark:text-gray-300  font-semibold tracking-tight">
-                  About Instructor
-                </h3>
-                <InstructorCard instructorId={course?.instructorID} />
-              </div>
-            </div>
-
-            {/* course notes for large screens */}
-            <div className="hidden md:visible">
-              <CourseNotes />
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-8">
-          {/* course sections and chapters */}
-          <div className="hidden lg:visible">
-            <CourseSectionsAndChapters
-              chapters={chapters}
-              activeChapterIndex={activeChapterIndex}
-              setActiveChapterIndex={setActiveChapterIndex}
-            />
-          </div>
-
-          {/* course resources */}
-          <div className="h-auto">
-            <p className="text-xl md:text-lg mt-4 text-gray-950 dark:text-gray-300  font-semibold tracking-tight">
-              Course Resources
-            </p>
-            {/* <CourseAttachments courseId={course?.courseId} /> */}
-          </div>
-        </div>
-      </div>
-
-      <Divider />
+      <div className="h-12 w-2" />
 
       {/* footer */}
       <Footer />
@@ -303,7 +149,144 @@ function CourseContentPage({
 
 export default CourseContentPage;
 
-//* ------------------------------------- Components ---------------------------------------------
+//! .............................. Utility to saperate the details code ....................
+
+type CourseDetailsProps = {
+  chapters: Chapter[];
+  instructorId: string;
+  courseId: string;
+  isChaptersLoading: boolean;
+  chaptersError: Error | null;
+};
+
+const CourseDetails: React.FC<CourseDetailsProps> = ({
+  chapters,
+  instructorId,
+  courseId,
+  isChaptersLoading,
+  chaptersError,
+}) => {
+  const [activeChapterIndex, setActiveChapterIndex] = React.useState<number>(0);
+  const [courseProgress, setCourseProgress] = React.useState<UserProgress>();
+  const [showFullDescription, setShowFullDescription] = React.useState(false);
+
+  const activeChapter = chapters[activeChapterIndex];
+
+  const aboutChapter = activeChapter
+    ? activeChapter.description ?? sampleText
+    : sampleText;
+
+  return (
+    <div className="flex flex-col md:flex-row justify-start items-center md:items-start h-full max-w-7xl w-full mx-auto px-8 md:px-[3rem] space-x-8 overflow-x-hidden">
+      {/* {COLUMN 1} with [Video And Course Metadata] */}
+      <div className="mt-6 md:max-w-[45rem] w-full space-y-4">
+        {/* video and mark as visited button */}
+        <div className="max-w-xl md:max-w-[45rem] w-full h-auto">
+          <div className="space-y-4 flex flex-col items-start justify-between">
+            {/* [ONLY FOR MOBILE SCREENS] show chapters button & Mark as Completed btn  */}
+            <div className="flex justify-between items-center md:hidden md:pb-0">
+              {/* <Button color="green" className="text-xs text-white md:hidden ">
+                ✔ Mark as completed
+              </Button> */}
+
+              <div>
+                <ShowChapters
+                  chapters={chapters}
+                  activeChapterIndex={activeChapterIndex}
+                  setActiveChapterIndex={setActiveChapterIndex}
+                />
+              </div>
+            </div>
+
+            {/* video component */}
+            <div className="w-xl md:w-[45rem] h-auto md:h-[360px]">
+              <CourseVideo activeChapter={activeChapter} />
+            </div>
+
+            {/* [NOT FOR MOBILE] Mark as Completed btn */}
+            <div className="cursor-pointer hidden border border-stroke md:flex md:items-center md:justify-center h-10 w-10 rounded-full mt-4 text-zinc-800 hover:text-white hover:bg-green-600 transition-all duration-300 hover:border-none">
+              ✔
+            </div>
+          </div>
+        </div>
+
+        {/* {COLUMN} WITH [about class, class notes and about instructor] */}
+        <div className="max-w-[45rem] w-full space-y-6">
+          {/* about this class with show more btn */}
+          <div>
+            <p className="text-xl md:text-lg mt-4 text-gray-950 dark:text-gray-300 font-semibold tracking-tight">
+              About This Class
+            </p>
+
+            {/* class description */}
+            <p
+              className={`${
+                showFullDescription ? "" : "line-clamp-4"
+              } text-md text-base text-slate-700 dark:text-gray-400 py-4 md:py-2 md:text-md md:p-0 w-auto   ${
+                showFullDescription ? "" : "overflow-hidden"
+              }`}
+            >
+              {aboutChapter}
+            </p>
+
+            {/* show more text button */}
+            {aboutChapter.length > 250 ? (
+              <button
+                className="text-sm tracking-tighter mt-2 font-medium hover:text-blue-600 dark:hover:text-blue-700 text-blue-500 dark:text-blue-600 underline .leading-relaxed"
+                onClick={() => setShowFullDescription(!showFullDescription)}
+              >
+                Show More
+              </button>
+            ) : (
+              <div></div>
+            )}
+          </div>
+
+          {/* course notes  */}
+          <div className="md:hidden">
+            <CourseNotes />
+          </div>
+
+          {/* About Instructor */}
+          <div>
+            <h3 className="text-xl md:text-lg mt-4 text-gray-950 dark:text-gray-300  font-semibold tracking-tight">
+              About Instructor
+            </h3>
+            <InstructorCard
+              instructorId={
+                instructorId ? instructorId : "No instructor id provided ..."
+              }
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* {COLUMN 2} with [Course Sections/Chapters, Course Resources ] */}
+      <div className="mt-8 md:max-w-[27rem] w-full md:ml-[1rem] md:space-y-12">
+        {/* course sections and chapters */}
+        <div className="hidden md:flex md:flex-col">
+          <CourseSectionsAndChapters
+            chapters={chapters}
+            activeChapterIndex={activeChapterIndex}
+            setActiveChapterIndex={setActiveChapterIndex}
+            isChaptersLoading={isChaptersLoading}
+            chaptersError={chaptersError}
+          />
+        </div>
+
+        {/* course resources */}
+        <div className="h-auto">
+          <h3 className="text-xl md:text-lg md:mt-4 text-gray-950 dark:text-gray-300  font-semibold tracking-tight">
+            Course Resources
+          </h3>
+          <CourseAttachments courseId={courseId} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+//* ------------------------------- Components ---------------------------
 
 function ShowChapters({
   chapters,
@@ -313,10 +296,12 @@ function ShowChapters({
   return (
     <Sheet key={"left"}>
       <SheetTrigger asChild>
-        <p className=" w-auto text-xs text-blue-600">Show Chapters</p>
+        <p className="w-auto text-sm font-medium text-blue-500">
+          Show Chapters
+        </p>
       </SheetTrigger>
       <ScrollArea>
-        <SheetContent side={"left"} className="text-left">
+        <SheetContent side={"right"} className=" h-full w-auto text-left">
           <SheetHeader>
             <SheetTitle>Chapters</SheetTitle>
             <SheetDescription>
@@ -324,8 +309,10 @@ function ShowChapters({
               its content.
             </SheetDescription>
           </SheetHeader>
-          <div className="space-y-4">
-            {chapters?.length > 0 && (
+
+          {/* chapters list */}
+          <div className="space-y-4 mt-6">
+            {chapters && chapters.length > 0 ? (
               <ul className="space-y-2">
                 {chapters?.map((chapter: Chapter, index: any) => {
                   return (
@@ -344,11 +331,40 @@ function ShowChapters({
                   );
                 })}
               </ul>
+            ) : (
+              <ul className="space-y-2">
+                {courseChapters?.map(
+                  (
+                    chapter: {
+                      title: string;
+                      chapterDuration: string;
+                      isFree: boolean;
+                      position: number;
+                    },
+                    index: any
+                  ) => {
+                    return (
+                      <li
+                        onClick={() => setActiveChapterIndex(index)}
+                        key={chapter.position}
+                      >
+                        <ChapterItem
+                          title={chapter?.title}
+                          duration={chapter?.chapterDuration}
+                          isChapterFree={chapter?.isFree}
+                          activeChapterIndex={activeChapterIndex}
+                          index={index}
+                        />
+                      </li>
+                    );
+                  }
+                )}
+              </ul>
             )}
           </div>
 
-          <SheetFooter>
-            {/* <SheetClose asChild>
+          {/* <SheetFooter> */}
+          {/* <SheetClose asChild>
               <Button
                 type="submit"
                 color="red"
@@ -357,27 +373,33 @@ function ShowChapters({
                 Clear Notifications
               </Button>
             </SheetClose> */}
-          </SheetFooter>
+          {/* </SheetFooter> */}
         </SheetContent>
       </ScrollArea>
     </Sheet>
   );
 }
 
-type CourseVideoProps = {
-  activeChapter: Chapter;
-};
-
-function CourseVideo({ activeChapter }: CourseVideoProps) {
+function CourseVideo({ activeChapter }: { activeChapter: Chapter }) {
   return (
-    <Video
+    // <Video
+    //   accentColor="blue"
+    //   className="smooth-content w-xl h-xl md:h-[360px] overflow-hidden rounded-lg object-cover md:w-[45rem] bg-blue-200"
+    //   src={
+    //     activeChapter
+    //       ? activeChapter.videoUrl ?? "/assets/videos/4k.mp4"
+    //       : "/assets/videos/4k.mp4"
+    //   }
+    // />
+    <MuxPlayer
+      playbackId="EcHgOK9coz5K4rjSwOkoE7Y7O01201YMIC200RI6lNxnhs"
       accentColor="blue"
       className="smooth-content w-xl h-xl md:h-[360px] overflow-hidden rounded-lg object-cover md:w-[45rem] bg-blue-200"
-      src={
-        activeChapter
-          ? activeChapter.videoUrl ?? "/assets/videos/4k.mp4"
-          : "/assets/videos/4k.mp4"
-      }
+      metadata={{
+        video_id: "video-id-54321",
+        video_title: "Test video title",
+        viewer_user_id: "user-id-007",
+      }}
     />
   );
 }
@@ -386,13 +408,81 @@ function CourseSectionsAndChapters({
   chapters,
   activeChapterIndex,
   setActiveChapterIndex,
+  isChaptersLoading,
+  chaptersError,
 }: any) {
-  var today = new Date();
-  var time =
-    today.getHours() + " : " + today.getMinutes() + " : " + today.getSeconds();
+  if (isChaptersLoading) return <CourseChaptersSkeleton />;
+  if (chaptersError)
+    return <div>Error in loading chapters: {chaptersError.message}</div>;
+
   return (
-    <div className="ml-[1rem] max-w-xl w-full ">
-      <ScrollArea className="max-w-xl w-full mt-4 max-h-[512px] h-full p-4 rounded-xl border border-stroke">
+    <div>
+      {chapters && chapters.length > 0 ? (
+        <div className="max-w-xl w-full h-full ">
+          <ScrollArea className="max-w-xl w-full max-h-[512px] h-full p-4 rounded-xl border border-stroke">
+            <div>
+              {/* course chapters text & total chapters count */}
+              <div className="flex justify-between items-center">
+                <p className="text-lg font-semibold text-gray-900 dark:text-gray-200 ">
+                  Course Chapters
+                </p>
+
+                <p className="text-sm dark:text-gray-300">
+                  <span className="text-blue-500">
+                    {chapters ? chapters.length : courseChapters.length}
+                  </span>{" "}
+                  chapters
+                </p>
+              </div>
+              <p className="mb-4 text-sm">
+                These are all the chapters in this course{" "}
+              </p>
+
+              {/* chapters list */}
+              {chapters && chapters?.length > 0 ? (
+                <ul className="space-y-2">
+                  {chapters?.map((chapter: Chapter, index: any) => {
+                    return (
+                      <li
+                        onClick={() => setActiveChapterIndex(index)}
+                        key={chapter.position}
+                      >
+                        <ChapterItem
+                          title={chapter?.title}
+                          duration={chapter?.chapterDuration}
+                          isChapterFree={chapter?.isFree}
+                          activeChapterIndex={activeChapterIndex}
+                          index={index}
+                        />
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <ul className="space-y-2">
+                  {courseChapters?.map((chapter: any, index: any) => {
+                    return (
+                      <li
+                        onClick={() => setActiveChapterIndex(index)}
+                        key={chapter.position}
+                      >
+                        <ChapterItem
+                          title={chapter?.title}
+                          duration={chapter?.chapterDuration}
+                          isChapterFree={chapter?.isFree}
+                          activeChapterIndex={activeChapterIndex}
+                          index={index}
+                        />
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+              {/* chapters list */}
+            </div>
+          </ScrollArea>
+        </div>
+      ) : (
         <div>
           {/* course chapters text & total chapters count */}
           <div className="flex justify-between items-center">
@@ -400,9 +490,16 @@ function CourseSectionsAndChapters({
               Course Chapters
             </p>
 
+            {/* <CoursesCollapsible
+              chapters={chapters}
+              activeChapterIndex={activeChapterIndex}
+              setActiveChapterIndex={setActiveChapterIndex}
+            /> */}
             <p className="text-sm dark:text-gray-300">
               <span className="text-blue-500">
-                {chapters ? chapters.length : courseChapters.length}
+                {chapters && chapters.length > 0
+                  ? chapters.length
+                  : courseChapters.length}
               </span>{" "}
               chapters
             </p>
@@ -411,30 +508,26 @@ function CourseSectionsAndChapters({
             These are all the chapters in this course{" "}
           </p>
 
-          {/* chapters list */}
-          {chapters?.length > 0 && (
-            <ul className="space-y-2">
-              {chapters?.map((chapter: Chapter, index: any) => {
-                return (
-                  <li
-                    onClick={() => setActiveChapterIndex(index)}
-                    key={chapter.position}
-                  >
-                    <ChapterItem
-                      title={chapter?.title}
-                      duration={chapter?.chapterDuration}
-                      isChapterFree={chapter?.isFree}
-                      activeChapterIndex={activeChapterIndex}
-                      index={index}
-                    />
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-          {/* chapters list */}
+          <ul className="space-y-2">
+            {courseChapters?.map((chapter: any, index: any) => {
+              return (
+                <li
+                  onClick={() => setActiveChapterIndex(index)}
+                  key={chapter.position}
+                >
+                  <ChapterItem
+                    title={chapter?.title}
+                    duration={chapter?.chapterDuration}
+                    isChapterFree={chapter?.isFree}
+                    activeChapterIndex={activeChapterIndex}
+                    index={index}
+                  />
+                </li>
+              );
+            })}
+          </ul>
         </div>
-      </ScrollArea>
+      )}
     </div>
   );
 }
@@ -454,7 +547,7 @@ function ChapterItem({
 
   return (
     <div
-      className={`flex cursor-pointer hover:border-blue-500 justify-between hover:bg-blue-500 items-center py-2 px-4 text-base text-md tracking-tight hover:text-white rounded-md border transition-all duration-300 ${
+      className={`flex cursor-pointer hover:border-blue-500 justify-between hover:bg-blue-500 items-center py-2 px-2 text-base text-md tracking-tight hover:text-white rounded-badge border transition-all duration-300 ${
         activeChapterIndex === index ? "text-white bg-blue-500" : ""
       } `}
     >
@@ -463,12 +556,12 @@ function ChapterItem({
           {videoPlaying ? (
             <FaPauseCircle
               className="cursor-pointer hover:bg-blue-700 p-1 rounded-full"
-              size={20}
+              size={24}
             />
           ) : (
             <FaPlayCircle
               className="cursor-pointer hover:bg-blue-700 p-1 rounded-full"
-              size={20}
+              size={24}
             />
           )}
         </div>
@@ -478,8 +571,8 @@ function ChapterItem({
       </div>
 
       <div className="flex justify-start items-center space-x-2">
-        {isChapterFree ? <div></div> : <FaLock />}
-        <p className="text-xs rounded-badge px-2 py-1 text-center bg-blue-500 text-white font-normal">
+        {/* {isChapterFree ? <div></div> : <FaLock />} */}
+        <p className="text-xs rounded-badge px-2 py-1 mr-1 text-center bg-white text-black font-normal">
           {duration ? duration : time}
         </p>
       </div>
@@ -493,7 +586,7 @@ function CourseNotes() {
     "Node.js Installation Steps",
   ]);
   return (
-    <ScrollArea className="max-w-[380px] max-h-[300px] h-full  overflow-hidden w-full md:ml-[1rem] md:mt-4 p-4 rounded-xl border border-storke">
+    <ScrollArea className="max-w-[45rem] max-h-[300px] h-full  overflow-hidden w-full  md:mt-4 p-4 rounded-xl border border-storke">
       <div className="flex justify-between items-center ">
         <p className="text-lg text-gray-950 dark:text-gray-300 font-semibold tracking-tight">
           Your Notes
@@ -618,31 +711,32 @@ function CourseNotes() {
   );
 }
 
-function CourseAttachments({ courseId }: any) {
-  const [courseAttachments, setCourseAttachments] = React.useState<
-    CourseAttachment[]
-  >([]);
+function CourseAttachments({ courseId }: { courseId: string }) {
+  const fetchCourseAttachments = async () => {
+    const response = await fetch(`/api/courses/${courseId}/attachments`);
+    if (!response.ok) {
+      console.log("Failed to fetch course attachments ...");
+    }
+    return await response.json();
+  };
 
-  useEffect(() => {
-    const fetchCourseAttachments = async (courseId: string) => {
-      getCourseAttachments({ courseId, courseAttachments })
-        .then((res) => {
-          setCourseAttachments(res.courseAttachments);
-        })
-        .catch((err: any) => {
-          console.log("FAILED TO GET COURSE ATTACHMENTS, ERRO:", err.message);
-        });
-    };
+  const {
+    isLoading,
+    error,
+    data: courseAttachments,
+  } = useQuery({
+    queryKey: ["courseAttachments", courseId],
+    queryFn: fetchCourseAttachments,
+    staleTime: 1000 * 60 * 10,
+  });
 
-    fetchCourseAttachments(courseId);
-  }, [courseId, courseAttachments]);
-
-  console.log("Course Attachments: ", courseAttachments);
+  if (isLoading) return <CourseResourcesSkeleton />;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div>
       {courseAttachments && courseAttachments.length > 0 ? (
-        <ul className=" ml-4 list-disc py-4 md:py-2 md:p-0 w-auto font-noraml">
+        <ul className=" md:ml-4 list-disc py-4 md:py-2 md:p-0 w-full font-normal">
           {courseAttachments.map((attachment: CourseAttachment) => (
             <li
               className="pb-1 text-md text-base text-gray-700  dark:text-gray-400 hover:text-blue-500 cursor-pointer transition-all duration-200"
@@ -676,36 +770,35 @@ function CourseAttachments({ courseId }: any) {
   );
 }
 
-function InstructorCard({ instructorId }: any) {
-  const insStyle = { color: "white" };
-  const instructor = useInstructorInfo(instructorId);
+function InstructorCard({ instructorId }: { instructorId: string }) {
+  const instructor: Instructor = useInstructorInfo(instructorId).data;
 
   return (
-    <div className="max-w-3xl mt-4  w-full flex flex-col justify-start items-start  rounded-xl space-y-4">
+    <div className="max-w-3xl py-4 md:py-2  w-full flex flex-col justify-start items-start  rounded-xl space-y-4">
       <div className="flex space-x-4 justify-start items-center">
         <Image
           src={
-            instructor.instructor
-              ? instructor.instructor.instructorProfilePicUrl ??
+            instructor
+              ? instructor.instructorProfilePicUrl ??
                 "/assets/images/user/user-01.png"
               : "/assets/images/user/user-01.png"
           }
           alt={`Image`}
-          height={60}
-          width={60}
+          height={50}
+          width={50}
           objectFit="cover"
-          className="rounded-full flex items-center justify-center h-[60px] w-[60px] ring-1 ring-white"
+          className="rounded-full flex items-center justify-center h-[50px] w-[50px] ring-1 ring-white"
         />
 
         <div className="flex flex-col justify-start items-start mr-auto text-base">
           <p className="text-lg text-gray-800 dark:text-slate-200 tracking-tight font-semibold">
-            {instructor.instructor
-              ? instructor.instructor.instructorName ?? "CourseWave"
+            {instructor
+              ? instructor.instructorName ?? "CourseWave"
               : "CourseWave"}
           </p>
           <p className="text-md text-base line-clamp-2 tracking-tight text-gray-700 dark:text-gray-400 font-thin ">
-            {instructor.instructor
-              ? instructor.instructor.instructorTag ?? "Full Stack Engineer"
+            {instructor
+              ? instructor.instructorTag ?? "Full Stack Engineer"
               : "Full Stack Engineer"}
           </p>
         </div>
@@ -719,8 +812,8 @@ function InstructorCard({ instructorId }: any) {
       </div>
 
       <p className="text-md  text-start text-base  md:text-md md:p-0  w-auto line-clamp-3 font-noraml text-gray-700 dark:text-gray-400">
-        {instructor.instructor
-          ? instructor.instructor.aboutInstructor ??
+        {instructor
+          ? instructor.aboutInstructor ??
             `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Provident eos
         odit nam quae repellat quis cumque reiciendis autem ab expedita
         Provident eos odit nam quae repellat`
@@ -731,41 +824,154 @@ function InstructorCard({ instructorId }: any) {
     </div>
   );
 }
-//* -----------------------------------------------------------------------------------------------
 
+// function CoursesCollapsible({
+//   chapters,
+//   activeChapterIndex,
+//   setActiveChapterIndex,
+//   isChaptersLoading,
+//   chaptersError,
+// }: any) {
+//   const [isOpen, setIsOpen] = React.useState(false);
 
-const CourseContentScreenSkeleton = () => {
-  return (
-    <div className="flex px-12 py-8 justify-between space-x-6 items-center max-w-7xl w-full overflow-x-hidden mx-auto">
-      <div className="space-y-6 max-w-[720px] w-full">
-        <Skeleton className="h-[360px] w-full rounded-xl" />
+//   return (
+//     <Collapsible
+//       open={isOpen}
+//       onOpenChange={setIsOpen}
+//       className="w-[350px] space-y-2"
+//     >
+//       <div className="flex items-center justify-between space-x-4 px-4">
+//         <h4 className="text-sm font-semibold">
+//           @peduarte starred 3 repositories
+//         </h4>
+//         <CollapsibleTrigger asChild>
+//           <p className="text-sm dark:text-gray-300">
+//             <span className="text-blue-500">
+//               {chapters && chapters.length > 0
+//                 ? chapters.length
+//                 : courseChapters.length}
+//             </span>{" "}
+//             chapters
+//           </p>
+//         </CollapsibleTrigger>
+//       </div>
+//       <div className="rounded-md border px-4 py-2 font-mono text-sm shadow-sm">
+//         @radix-ui/primitives
+//       </div>
+//       <CollapsibleContent className="space-y-2">
+//         {/* <div className="rounded-md border px-4 py-2 font-mono text-sm shadow-sm">
+//           @radix-ui/colors
+//         </div>
+//         <div className="rounded-md border px-4 py-2 font-mono text-sm shadow-sm">
+//           @stitches/react
+//         </div> */}
+//         {chapters && chapters.length > 0 ? (
+//           <div className="max-w-xl w-full h-full ">
+//             <ScrollArea className="max-w-xl w-full max-h-[512px] h-full p-4 rounded-xl border border-stroke">
+//               <div>
+//                 {/* course chapters text & total chapters count */}
+//                 <div className="flex justify-between items-center">
+//                   <p className="text-lg font-semibold text-gray-900 dark:text-gray-200 ">
+//                     Course Chapters
+//                   </p>
 
-        <div className="space-y-4 max-w-[720px]  w-full  rounded-xl">
-          <Skeleton className="h-[16px] w-[160px] rounded-xl" />
-          <div className="space-y-2">
-            <Skeleton className="h-[12px] w-[720px] rounded-xl" />
-            <Skeleton className="h-[12px] w-[720px] rounded-xl" />
-            <Skeleton className="h-[12px] w-[720px] rounded-xl" />
-            <Skeleton className="h-[12px] w-[720px] rounded-xl" />
-          </div>
-        </div>
-      </div>
+//                   <p className="text-sm dark:text-gray-300">
+//                     <span className="text-blue-500">
+//                       {chapters ? chapters.length : courseChapters.length}
+//                     </span>{" "}
+//                     chapters
+//                   </p>
+//                 </div>
+//                 <p className="mb-4 text-sm">
+//                   These are all the chapters in this course{" "}
+//                 </p>
 
-      <div className="max-w-[27rem] w-full border border-stroke p-2.5 h-full rounded-xl space-y-4">
-        <Skeleton className="h-[16px] w-[16rem] rounded-xl" />
+//                 {/* chapters list */}
+//                 {chapters && chapters?.length > 0 ? (
+//                   <ul className="space-y-2">
+//                     {chapters?.map((chapter: Chapter, index: any) => {
+//                       return (
+//                         <li
+//                           onClick={() => setActiveChapterIndex(index)}
+//                           key={chapter.position}
+//                         >
+//                           <ChapterItem
+//                             title={chapter?.title}
+//                             duration={chapter?.chapterDuration}
+//                             isChapterFree={chapter?.isFree}
+//                             activeChapterIndex={activeChapterIndex}
+//                             index={index}
+//                           />
+//                         </li>
+//                       );
+//                     })}
+//                   </ul>
+//                 ) : (
+//                   <ul className="space-y-2">
+//                     {courseChapters?.map((chapter: any, index: any) => {
+//                       return (
+//                         <li
+//                           onClick={() => setActiveChapterIndex(index)}
+//                           key={chapter.position}
+//                         >
+//                           <ChapterItem
+//                             title={chapter?.title}
+//                             duration={chapter?.chapterDuration}
+//                             isChapterFree={chapter?.isFree}
+//                             activeChapterIndex={activeChapterIndex}
+//                             index={index}
+//                           />
+//                         </li>
+//                       );
+//                     })}
+//                   </ul>
+//                 )}
+//                 {/* chapters list */}
+//               </div>
+//             </ScrollArea>
+//           </div>
+//         ) : (
+//           <div>
+//             {/* course chapters text & total chapters count */}
+//             <div className="flex justify-between items-center">
+//               <p className="text-lg font-semibold text-gray-900 dark:text-gray-200 ">
+//                 Course Chapters
+//               </p>
 
-        <div className="space-y-2 w-full max-w-[25rem] ">
-          <Skeleton className="h-[48px] rounded-xl" />
-          <Skeleton className="h-[48px] rounded-xl" />
-          <Skeleton className="h-[48px] rounded-xl" />
-          <Skeleton className="h-[48px] rounded-xl" />
-          <Skeleton className="h-[48px] rounded-xl" />
-          <Skeleton className="h-[48px] rounded-xl" />
-          <Skeleton className="h-[48px] rounded-xl" />
-          <Skeleton className="h-[48px] rounded-xl" />
+//               <p className="text-sm dark:text-gray-300">
+//                 <span className="text-blue-500">
+//                   {chapters && chapters.length > 0
+//                     ? chapters.length
+//                     : courseChapters.length}
+//                 </span>{" "}
+//                 chapters
+//               </p>
+//             </div>
+//             <p className="mb-4 text-sm">
+//               These are all the chapters in this course{" "}
+//             </p>
 
-        </div>
-      </div>
-    </div>
-  );
-}
+//             <ul className="space-y-2">
+//               {courseChapters?.map((chapter: any, index: any) => {
+//                 return (
+//                   <li
+//                     onClick={() => setActiveChapterIndex(index)}
+//                     key={chapter.position}
+//                   >
+//                     <ChapterItem
+//                       title={chapter?.title}
+//                       duration={chapter?.chapterDuration}
+//                       isChapterFree={chapter?.isFree}
+//                       activeChapterIndex={activeChapterIndex}
+//                       index={index}
+//                     />
+//                   </li>
+//                 );
+//               })}
+//             </ul>
+//           </div>
+//         )}
+//       </CollapsibleContent>
+//     </Collapsible>
+//   );
+// }

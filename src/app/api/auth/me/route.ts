@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import dotenv from "dotenv";
 dotenv.config();
 import { db } from "@/lib/db";
-import { decrypt, verifyToken } from "@/lib/helpers/jwt_helper";
+import { decrypt, verifyToken } from "@/helpers/jwt_helper";
 
 export const dynamic = 'force-dynamic';
 

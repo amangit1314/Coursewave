@@ -1,12 +1,8 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
+
 import { IoMdAdd } from "react-icons/io";
 import React from "react";
-import BrowseEnrolledCoursesSection from "./_components/browse-enrolled-courses-section";
-import { IoNotificationsOutline } from "react-icons/io5";
-import { RiRadioButtonLine } from "react-icons/ri";
-import { BsPersonVideo2 } from "react-icons/bs";
-import { TbMoneybag } from "react-icons/tb";
+import { DatePickerDemo } from "./_components/date-picker-widget";
 import {
   LineChart,
   Flex,
@@ -24,24 +20,52 @@ import {
   Grid,
   Divider,
 } from "@tremor/react";
-import { AiOutlineDollarCircle } from "react-icons/ai";
-import { FaSort, FaPlay } from "react-icons/fa";
-import { IoIosTimer, IoMdAddCircleOutline } from "react-icons/io";
-import { ThemeModeToggle } from "@/components/themeModeToggle";
-import { MdAssignment } from "react-icons/md";
-import { UpcommingSessionsCard } from "@/app/(browseSessions)/browseSessions/_components/upcomming-session-card";
-import Image from "next/image";
-import ChartFour from "@/components/Charts/ChartFour";
-import ChartThree from "@/app/(instructor)/instructor/[id]/analytics/_components/apex-chart";
-import { useRouter } from "next/navigation";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { EnrolledCoursesTable } from "./_components/enrolled-courses-table";
-import { DatePickerDemo } from "./_components/date-picker-widget";
+import { IoMdAddCircleOutline } from "react-icons/io";
 import Notifications from "@/components/notification-button";
-import useUserInfo from "@/lib/hooks/use-user-info";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ThemeModeToggle } from "@/components/themeModeToggle";
+import { useRouter } from "next/navigation";
+import useUserInfo from "@/hooks/use-user-info";
 import UserAvatar from "@/components/user-avatar";
+import { columns } from "./_components/enrolled-courses-tables/columns";
+import { useQuery } from "@tanstack/react-query";
+import { Course, User } from "@prisma/client";
+import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
+import { EnrolledCoursesTable } from "./_components/enrolled-courses-tables/enrolled-courses-table";
+import { EnrolledCoursesTremorTable } from "./_components/enrolled-courses-tremor-table";
 
-function DashboardPage() {
+function DashboardPage({
+  params,
+}: {
+  params: {
+    userId: string;
+  };
+}) {
+  const userId = params?.userId!;
+
+  const fetchUserEnrolledCourses = async () => {
+    const response = await fetch(`/api/profile/${userId}/enrolledCourses`);
+
+    if (!response.ok) {
+      console.log("Failed to fetch user enrolled courses ...");
+    }
+
+    return await response.json();
+  };
+
+  const {
+    data: enrolledCourses,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["enrolledCourses"],
+    queryFn: fetchUserEnrolledCourses,
+    staleTime: 4,
+  });
+
+  // const enrollementsData = [...enrolledCourses?.data];
+
   return (
     <div className="py-4">
       {/* header */}
@@ -55,19 +79,39 @@ function DashboardPage() {
 
       {/* other content */}
       <div className="space-y-12">
-        {/* line chart */}
-        <LineChartForLearningActivity />
+        {/* line chart for learning activity */}
+        {/* <LineChartForLearningActivity /> */}
 
         {/* Sessions */}
-        <div>
+        {/* <div>
           <Divider> Scheduled Sessions </Divider>
           <ScheduledSessions />
-        </div>
+        </div> */}
 
         {/* enrolledCourses */}
-        <div>
+        <div className="mb-8">
           <Divider> Enrolled Courses </Divider>
-          <EnrolledCoursesTable />
+          {isLoading ? (
+            <div className="space-y-2">
+              <Skeleton className="h-16 w-full rounded-md" />
+              <Skeleton className="h-16 w-full rounded-md" />
+              <Skeleton className="h-16 w-full rounded-md" />
+              <Skeleton className="h-16 w-full rounded-md" />
+            </div>
+          ) : error ? (
+            <div>Error fetching enrolled courses</div>
+          ) : (
+            <div>
+              {enrolledCourses?.data?.length > 0 ? (
+                <EnrolledCoursesTremorTable
+                  // columns={columns}
+                  data={enrolledCourses?.data}
+                />
+              ) : (
+                <div>You haven't enrolled in any courses yet.</div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Saved Articles */}
@@ -80,8 +124,108 @@ function DashboardPage() {
 
 export default DashboardPage;
 
-// ------------------------------------------------------------------------------------------------
-//! ----------------- right side ---------------
+type EnrolledCourseProps = {
+  enrollmentId: string;
+  userId: string;
+  courseId: string;
+  enrollmentDate: string;
+  completionStatus: string;
+  user: User;
+  course: Course;
+};
+
+const EnrolledCoursesWidget = ({enrolledCourses} :{enrolledCourses: EnrolledCourseProps[]}) => {
+  return (
+    <ul className="space-y-4 rounded-xl px-4 border border-stroke mx-4  ">
+      {enrolledCourses.map((enrolledCourse) => {
+        return (
+          <div
+            key={enrolledCourse.enrollmentId}
+            className="flex justify-between items-center py-2 text-sm border-b-2"
+          >
+            <div>{enrolledCourse?.enrollmentId ?? "Course Id Unavailable"}</div>
+
+            <Link href={`/courses/${enrolledCourse?.course?.courseId}`} className="hover:text-blue-500 cursor-pointer transition-all duration-300">
+              {enrolledCourse?.course?.courseTitle ??
+                "Course Title Unavailable"}
+            </Link>
+
+
+            <div>
+              {enrolledCourse?.enrollmentDate ?? "Course Title Unavailable"}
+            </div>
+
+            <div>
+              {enrolledCourse?.completionStatus ??
+                "Course completion status Unavailable"}
+            </div>
+          </div>
+        );
+      })}
+    </ul>
+  );
+};
+
+//* ---------------------------------------- COMPONENTS -----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//! ------------------------- Learning Activity Chart -----------------------------------
 
 const chartdata = [
   {
@@ -131,6 +275,8 @@ const LineChartForLearningActivity = () => {
     </Card>
   );
 };
+
+//! --------------------------------- Enrolled Courses -----------------------------------
 
 const EnrolledCourses = () => {
   return (
@@ -225,54 +371,7 @@ const EnrolledCoursesCard = ({
   );
 };
 
-//! -------------- left side -------------------
-
-const DashboardLeftHeader = () => {
-  const user = useUserInfo();
-  return (
-    <div className="flex justify-end space-x-6">
-      {/* image and text */}
-      {/* <div className="flex justify-start">
-        <img
-          className="h-10 w-10 rounded-full"
-          src={
-            user
-              ? user?.user?.profileImageUrl ?? "/assets/images/images1.jpg"
-              : "/assets/images/images1.jpg"
-          }
-          alt="yo"
-        />
-        <div className="ml-3">
-          <p className="text-sm text-gray-800 dark:text-gray-200 font-semibold">
-            {user ? user?.user?.name ?? "Guest" : "Guest"}
-          </p>
-          <p className="text-xs text-gray-500">
-            {" "}
-            {user ? user?.user?.email ?? "guest@gmail.com" : "guest@gmail.com"}
-          </p>
-        </div>
-      </div> */}
-
-      <div className="flex justify-end items-center space-x-2">
-        <ThemeModeToggle />
-        <Notifications />
-        <UserAvatar />
-      </div>
-    </div>
-  );
-};
-
-const DateRangeWidget = () => {
-  return (
-    <div className="flex items-center" data-rangepicker>
-      <DatePickerDemo />
-      <span className="mx-4 text-gray-500">to</span>
-      <DatePickerDemo />
-    </div>
-  );
-};
-
-// sessions
+//! ----------------------------------------- Sessions -----------------------------------
 function ScheduledSessionCard() {
   return (
     <div className="w-[500px] mx-[2px] border border-stroke border-gray-300 rounded-xl cursor-pointer p-4 flex justify-start  my-4 dark:bg-zinc-950 hover:bg-blue-100 hover:bg-blend-saturation  hover:text-blue-800 dark:hover:text-white transition-all hover:ring-2 hover:ring-blue-600 duration-300">
@@ -333,7 +432,7 @@ const ScheduledSessions = () => {
   );
 };
 
-// others
+//! ----------------------------------- Learning Goals -----------------------------------
 const LearningGoalCard = () => {
   return <div></div>;
 };
@@ -355,6 +454,53 @@ const LearningGoals = () => {
         <LearningGoalCard />
         <LearningGoalCard />
       </div>
+    </div>
+  );
+};
+
+//! ----------------------------------------- left header -----------------------------------
+
+const DashboardLeftHeader = () => {
+  const user = useUserInfo();
+  return (
+    <div className="flex justify-end space-x-6">
+      {/* image and text */}
+      {/* <div className="flex justify-start">
+        <img
+          className="h-10 w-10 rounded-full"
+          src={
+            user
+              ? user?.user?.profileImageUrl ?? "/assets/images/images1.jpg"
+              : "/assets/images/images1.jpg"
+          }
+          alt="yo"
+        />
+        <div className="ml-3">
+          <p className="text-sm text-gray-800 dark:text-gray-200 font-semibold">
+            {user ? user?.user?.name ?? "Guest" : "Guest"}
+          </p>
+          <p className="text-xs text-gray-500">
+            {" "}
+            {user ? user?.user?.email ?? "guest@gmail.com" : "guest@gmail.com"}
+          </p>
+        </div>
+      </div> */}
+
+      <div className="flex justify-end items-center space-x-2">
+        <ThemeModeToggle />
+        <Notifications />
+        <UserAvatar />
+      </div>
+    </div>
+  );
+};
+
+const DateRangeWidget = () => {
+  return (
+    <div className="flex items-center" data-rangepicker>
+      <DatePickerDemo />
+      <span className="mx-4 text-gray-500">to</span>
+      <DatePickerDemo />
     </div>
   );
 };

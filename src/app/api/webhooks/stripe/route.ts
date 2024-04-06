@@ -23,6 +23,7 @@ export async function POST(req: Request) {
   }
 
   const session = event.data.object as Stripe.Checkout.Session;
+
   // For course payment 👇
   const userId = session?.metadata?.userId;
   const courseId = session?.metadata?.courseId;
@@ -52,7 +53,7 @@ export async function POST(req: Request) {
     console.log('Created Subscription in checkout session completed event: ', createdSubscription);
 
     // --------------- for course payment --------------------
-    if (!userId||!courseId) {
+    if (!userId || !courseId) {
       return new NextResponse("MISSING REQUIRED FIELDS, please provide userId and courseId to buy the course", { status: 400 });
     }
 
@@ -83,7 +84,7 @@ export async function POST(req: Request) {
     const updatedSubscription = await db.subscription.update({
       where: {
         id: subscription.id,
-        userId: session?.metadata?.userId,
+        userId: session?.metadata?.userId!,
       },
       data: {
         stripePriceId: subscription.items.data[0].price.id,

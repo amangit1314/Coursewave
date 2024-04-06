@@ -2,7 +2,7 @@ import Stripe from "stripe";
 import { db } from "@/lib/db";
 import { stripe } from "@/lib/stripe";
 import { NextResponse } from "next/server";
-import { generateUid } from "@/lib/helpers/id_helper";
+import { generateUid } from "@/helpers/id_helper";
 
 export const POST = async (req: Request, { params }: {
   params: {
@@ -20,7 +20,7 @@ export const POST = async (req: Request, { params }: {
       return new NextResponse('MISSING REQUIRED FIELDS, userId is required', { status: 422 });
     }
 
-    const user = await db.user.findUnique({
+    const user = await db.user.findFirst({
       where: {
         id: userId as string,
       }
@@ -30,7 +30,7 @@ export const POST = async (req: Request, { params }: {
       return new NextResponse('UNAUTHORIZED ACCESS, No user found with this userId,You are not authorized to buy course, authenticate first', { status: 401 })
     }
 
-    const course = await db.course.findUnique({
+    const course = await db.course.findFirst({
       where: {
         courseId,
       }
@@ -64,7 +64,7 @@ export const POST = async (req: Request, { params }: {
       }
     }]
 
-    let stripeCustomer = await db.stripeCustomer.findUnique({
+    let stripeCustomer = await db.stripeCustomer.findFirst({
       where: {
         userId: user.id,
       },
@@ -103,10 +103,10 @@ export const POST = async (req: Request, { params }: {
 
     const createdPurchase = await db.purchase.create({
       data: {
-        id: purchaseId,
-        userId: userId,
-        courseId: course.courseId,
-        amount: course.coursePrice,
+        id: purchaseId as string,
+        userId: userId as string,
+        courseId: course?.courseId,
+        amount: course?.coursePrice!,
       }
     })
 
@@ -120,7 +120,7 @@ export const POST = async (req: Request, { params }: {
         enrollmentId: enrollementId,
         userId,
         courseId: course.courseId,
-        enrollmentDate: Date.now().toString(),
+        enrollmentDate: Date().toString(),
         completionStatus: 'Started',
 
       }

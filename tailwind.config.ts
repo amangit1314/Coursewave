@@ -3,57 +3,6 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 const {
   default: flattenColorPalette,
 } = require("tailwindcss/lib/util/flattenColorPalette");
-// import { withUt } from "uploadthing/tw";
-
-// export default withUt({
-//   darkMode: 'class',
-//   // Your existing Tailwind config
-//   content: [
-//     './pages/**/*.{ts,tsx}',
-//     './components/**/*.{ts,tsx}',
-//     './app/**/*.{ts,tsx}',
-//     './src/**/*.{ts,tsx}',
-//     "./node_modules/@tremor/**/*.{js,ts,jsx,tsx}", // Tremor modules
-//   ],
-//   safelist: [
-//     {
-//       pattern:
-//         /^(bg-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
-//       variants: ["hover", "ui-selected"],
-//     },
-//     {
-//       pattern:
-//         /^(text-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
-//       variants: ["hover", "ui-selected"],
-//     },
-//     {
-//       pattern:
-//         /^(border-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
-//       variants: ["hover", "ui-selected"],
-//     },
-//     {
-//       pattern:
-//         /^(ring-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
-//     },
-//     {
-//       pattern:
-//         /^(stroke-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
-//     },
-//     {
-//       pattern:
-//         /^(fill-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
-//     },
-//   ],
-//   plugins: [
-//     addVariablesForColors,
-//     require("daisyui"),
-//     require("@headlessui/tailwindcss"),
-//     require("daisyui"),
-//     require("tailwindcss-animate"),
-//     require('tailwind-scrollbar'),
-//   ],
-
-// });
 
 module.exports = {
   darkMode: 'class',
@@ -63,7 +12,7 @@ module.exports = {
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
     "./node_modules/@tremor/**/*.{js,ts,jsx,tsx}", // Tremor modules
-
+    "./src/**/*.{ts,tsx,mdx}"
   ],
   theme: {
     container: {

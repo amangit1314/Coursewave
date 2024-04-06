@@ -15,7 +15,7 @@ export default function CourseLayout({ children }: CourseLayoutProps) {
   const hideFooter = pathname.includes("courseContent");
 
   return (
-    <div className="min-h-screen h-full dark:bg-zinc-900">
+    <div className="min-h-screen h-full dark:bg-zinc-950">
 
       <div className="h-full">{children}</div>
       {hideFooter ? <div></div> : <Footer />}

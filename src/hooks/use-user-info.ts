@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { User } from "@prisma/client";
+import { absoluteUrl } from "../lib/utils";
 
 const fetchUser = async () => {
-  // https://localhost:3000
-  const url = "/api/auth/me";
+  const url = absoluteUrl("/api/auth/me");
   const response = await fetch(url);
 
   if (!response.ok) {
@@ -17,10 +17,10 @@ const useUserInfo = () => {
   const { isLoading, error, data } = useQuery({
     queryKey: ["user"],
     queryFn: fetchUser,
-    staleTime: 4, // Keep cached data even if stale
+    staleTime: 4,
   });
 
-  const user: User = data?.data; // Extract the user data or set as null if no data
+  const user: User = data?.data;
 
   return { user, isLoading, error };
 };

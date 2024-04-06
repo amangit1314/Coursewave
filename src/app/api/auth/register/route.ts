@@ -1,9 +1,9 @@
 import bcrypt from "bcrypt";
 import { db } from "@/lib/db";
-import { generateUid } from "@/lib/helpers/id_helper";
-import { sendEmail } from "@/lib/helpers/send_email_helper";
+import { generateUid } from "@/helpers/id_helper";
+import { sendEmail } from "@/helpers/send_email_helper";
 import { NextRequest, NextResponse } from "next/server";
-import { generateVerificationToken } from "@/lib/helpers/jwt_helper";
+import { generateVerificationToken } from "@/helpers/jwt_helper";
 
 export const dynamic = 'force-dynamic';
 

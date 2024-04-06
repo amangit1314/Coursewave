@@ -7,7 +7,7 @@ import { IoNotificationsOutline } from "react-icons/io5";
 import UserAvatar from "@/components/user-avatar";
 import { Button } from "@/components/ui/button";
 import { ThemeModeToggle } from "@/components/themeModeToggle";
-import useUserInfo from "@/lib/hooks/use-user-info";
+import useUserInfo from "@/hooks/use-user-info";
 import Notifications from "@/components/notification-button";
 // import Notifications from "@/app/(dashboard)/(routes)/notifications/page";
 
@@ -29,7 +29,7 @@ function InstructorNavbarRoutes() {
       <div className="ml-auto flex justify-end items-center gap-x-2">
         <Button
           onClick={switchBack}
-          className="cursor-pointer border-opacity-10 hover:bg-slate-50 dark:hover:border-opacity-100 dark:border-opacity-10 hover:border-opacity-100 dark:hover:bg-slate-700 border px-4 border-black text-black text-xs dark:border-white dark:text-white bg-transparent rounded-lg mx-auto items-center"
+          className="cursor-pointer border-opacity-10 hover:bg-slate-50 dark:hover:border-opacity-100 dark:border-opacity-10 hover:border-opacity-100 dark:hover:bg-zinc-700 border px-4 border-black text-black text-xs dark:border-white dark:text-white bg-transparent rounded-lg mx-auto items-center"
         >
           {"Go back"}
         </Button>

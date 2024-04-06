@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React from "react";
 import Image from "next/image";
@@ -6,10 +6,8 @@ import { BsFillBookmarkStarFill } from "react-icons/bs";
 import { CiBookmark } from "react-icons/ci";
 import { Badge } from "../ui/badge";
 import { useRouter } from "next/navigation";
-import { Course } from "@prisma/client";
-
-const style = { color: "blue", fontSize: "1.5em" };
-const starStyle = { color: "yellow" };
+import { FaStar } from "react-icons/fa6";
+import Link from "next/link";
 
 const courseCategories = [
   {
@@ -31,32 +29,40 @@ const courseCategories = [
 
 const courses = [
   {
-    courseImage: "/course_illus.png",
+    courseImage: "assets/illustrations/course_illus.png",
     courseId: "course_0xx1",
     isFree: false,
     coursePrice: "₹300",
     courseTitle: "Become React Hero",
+    avgStarRatings: 4.8,
+    instructorName: "Aman Soni",
   },
   {
-    courseImage: "/images1.jpg",
+    courseImage: "assets/images/images1.jpg",
     courseId: "course_0xx2",
     isFree: false,
     coursePrice: "₹200",
     courseTitle: "Full Stack Bootcamp",
+    avgStarRatings: 4.8,
+    instructorName: "Aman Soni",
   },
   {
-    courseImage: "/images2.jpg",
+    courseImage: "assets/images/images2.jpg",
     courseId: "course_0xx3",
     isFree: false,
     coursePrice: "₹270",
     courseTitle: "Git & Github Master Class",
+    avgStarRatings: 4.8,
+    instructorName: "Aman Soni",
   },
   {
-    courseImage: "/images3.jpg",
+    courseImage: "assets/images/images3.jpg",
     courseId: "course_0xx4",
     isFree: false,
     coursePrice: "₹470",
     courseTitle: "API Testing with Postman",
+    avgStarRatings: 4.8,
+    instructorName: "Aman Soni",
   },
   {
     courseImage: "/nextjs.png",
@@ -64,6 +70,8 @@ const courses = [
     isFree: false,
     coursePrice: "₹27",
     courseTitle: "Intro to Data Science",
+    avgStarRatings: 4.8,
+    instructorName: "Aman Soni",
   },
 ];
 
@@ -103,7 +111,14 @@ const HomeBrowseSection = () => {
       {/* courses  section */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-y-4 my-6 w-9/12 justify-center mx-auto">
         {courses.map((course, index) => (
-          <CourseItem key={index} course={course} />
+          <CourseCard
+            key={index}
+            courseId={course.courseId}
+            courseTitle={course.courseTitle}
+            courseImage={course.courseImage}
+            avgStarRatings={course.avgStarRatings}
+            coursePrice={course.coursePrice}
+            instructorName={course.instructorName} />
         ))}
       </div>
 
@@ -118,12 +133,12 @@ const HomeBrowseSection = () => {
 export default HomeBrowseSection;
 
 type CourseItemProps = {
-    course: {
-        courseImage: string,
-        courseId: string,
-        isFree: boolean,
-        coursePrice: string,
-        courseTitle: string,
+  course: {
+    courseImage: string;
+    courseId: string;
+    isFree: boolean;
+    coursePrice: string;
+    courseTitle: string;
   };
 };
 
@@ -211,5 +226,92 @@ const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
         </div>
       </div>
     </div>
+  );
+};
+
+type CourseCardProps = {
+  courseId: string;
+  courseTitle: string;
+  courseImage: string;
+  avgStarRatings: number;
+  coursePrice: string;
+  instructorName: string;
+};
+
+export const CourseCard = ({
+  courseId,
+  courseTitle,
+  courseImage,
+  avgStarRatings,
+  coursePrice,
+  instructorName,
+}: CourseCardProps) => {
+  // const router = useRouter();
+
+  const onViewDetails = () => {
+    // router.push(`/courses/${courseId}`);
+  };
+
+  return (
+    <Link
+      // href={`/courses/${courseId}`}
+      href={""}
+      key={courseId}
+      onClick={onViewDetails}
+      className={`group cursor-pointer border border-stroke hover:border-zinc-700 dark:border-none rounded-3xl max-h-[13rem] h-full md:max-w-[15rem] w-full dark:hover:bg-zinc-800 transition-colors  hover:bg-white hover:dark:border-neutral-700 dark:bg-neutral-800/30`}
+    >
+      {/* Course Image */}
+      <div className="relative">
+        <Image
+          className="max-h-[8.5rem] h-full md:max-w-[15rem] w-full bg-slate-700 rounded-t-3xl relative left-0 right-0"
+          src={courseImage}
+          alt="Next.js Logo"
+          width={250}
+          height={35}
+          style={{
+            objectFit: "cover",
+          }}
+        />
+
+        <div className="flex justify-between items-center absolute bottom-2 right-0 left-0 md:w-[14rem] px-2">
+          <div className="flex flex-row justify-center item-center rounded-badge text-xs px-2 py-1 border border-stroke bg-zinc-900 text-white dark:border dark:border-stroke space-x-[2px]">
+            <FaStar className="text-yellow-400 mt-[1px]" />
+            <p className="font-medium">
+              {avgStarRatings ? avgStarRatings.toFixed(1) : 5.0}
+            </p>
+          </div>
+          <Badge className="dark:bg-zinc-900 dark:text-white">
+            {!coursePrice ? (
+              "Free"
+            ) : (
+              <div className="flex justify-start items-center">
+                <span className="font-semibold text-yellow-400 text-sm">$</span>
+                <p className="text-xs font-medium">{coursePrice}</p>
+              </div>
+            )}
+          </Badge>
+        </div>
+      </div>
+
+      <div className="p-2.5">
+        {/* Course Title */}
+        <p className="text-md text-[#333333] dark:text-white tracking-tight mt-1 mr-3 font-semibold line-clamp-1">
+          {courseTitle ? courseTitle : "Aman Soni"}
+        </p>
+
+        <div className="flex justify-between items-center">
+          <div className="flex items-center py-auto">
+            <div className="flex justify-start items-center space-x-1">
+              <p className="text-xs text-gray-600 tracking-tight dark:text-gray-400">
+                By
+              </p>
+              <p className="text-xs font-medium hover:underline text-gray-600  tracking-tight dark:text-gray-400">
+                {instructorName ? instructorName : "Aman Soni"}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Link>
   );
 };

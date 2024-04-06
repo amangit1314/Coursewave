@@ -12,6 +12,7 @@ export async function GET(req: NextRequest, { params }: {
 
     try {
         if (!instructorId) {
+            console.log("No Instructor Id Provided ⚠ ...");
             return NextResponse.json({
                 success: false,
                 data: false,
@@ -35,11 +36,14 @@ export async function GET(req: NextRequest, { params }: {
         });
 
         if (!foundedInstructor) {
+            console.log("No Instructor found with Provided Id ❌ ...");
             return NextResponse.json({
                 success: false,
                 message: "No Instructor found with Provided Id ❌ ..."
             }, { status: 404 });
         }
+
+        console.log("Provided Instructor Id is correct ✔...")
 
         return NextResponse.json({
             success: true,

@@ -6,7 +6,7 @@ import { db } from "@/lib/db";
 //* GET user data
 export const GET = async (req: NextRequest, { params }: { params: { userId: string }; }) => {
     try {
-        const uid = params.userId;
+        const uid = params?.userId!;
         if (!uid) {
             return NextResponse
                 .json({
@@ -47,7 +47,7 @@ export const GET = async (req: NextRequest, { params }: { params: { userId: stri
 
 //* PUT update user account data
 export const PUT = async (req: NextRequest, { params }: { params: { userId: string } }) => {
-    const uid = params.userId;
+    const uid = params?.userId!;
     try {
         const reqBody = await req.json();
         const { newUserName, newProfileImageUrl } = reqBody;

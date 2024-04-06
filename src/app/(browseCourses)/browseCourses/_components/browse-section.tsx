@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { Category } from "@prisma/client";
 import CategoriesComponent from "@/app/(course)/courses/_components/courses-categories-component";
 import { FilteredCoursesComponent } from "@/app/(course)/courses/_components/filtered-courses";
-import useUserInfo from "@/lib/hooks/use-user-info";
+import useUserInfo from "@/hooks/use-user-info";
 import { useZustandStore } from "@/zustand/store";
 
 interface BrowseSectionProps {

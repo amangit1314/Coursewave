@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateUid } from "@/lib/helpers/id_helper";
+import { generateUid } from "@/helpers/id_helper";
 import { db } from "@/lib/db";
 
 export const dynamic = 'force-dynamic';
 
 export const POST = async (req: NextRequest, { params }: {
     params: {
-        id?: string;
-        courseId?: string;
+        id: string;
+        courseId: string;
     }
 }) => {
     const instructorId = params?.id;
-    const courseId = params.courseId;
+    const courseId = params?.courseId;
 
     try {
         const reqBody = await req.json();
@@ -38,10 +38,11 @@ export const POST = async (req: NextRequest, { params }: {
             }, { status: 403 });
         }
 
-        const courseExistingAttachment = await db.courseAttachment.findUnique({
+        const courseExistingAttachment = await db.courseAttachment.findFirst({
             where: {
+                // id: attachmentId,
                 name: resourceName,
-                courseId,
+                courseId: courseId,
             }
         })
 
@@ -57,7 +58,8 @@ export const POST = async (req: NextRequest, { params }: {
                 id: attachmentId,
                 name: resourceName,
                 url: resourceUrl,
-                courseId,
+                instructorId: instructorId,
+                courseId: courseId,
             }
         });
 

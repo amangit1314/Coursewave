@@ -21,10 +21,6 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Textarea } from "@/components/ui/textarea";
 
-interface DescriptionFormProps {
-  initialData: Course;
-  courseId: string;
-}
 
 const formSchema = z.object({
   description: z.string().min(1, {
@@ -33,9 +29,8 @@ const formSchema = z.object({
 });
 
 export const DescriptionForm = ({
-  initialData,
-  courseId,
-}: DescriptionFormProps) => {
+  course,
+}: {course: Course}) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -45,7 +40,7 @@ export const DescriptionForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      description: initialData?.courseDescription || "",
+      description: course?.courseDescription || "",
     },
   });
 
@@ -53,17 +48,17 @@ export const DescriptionForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${courseId}`, values);
-      toast.success("course updated");
+      await axios.patch(`/api/courses/${course.courseId}`, {"newCourseDescription": values.description});
+      toast.success("course updated successfully ...");
       toggleEdit();
       router.refresh();
     } catch {
-      toast.error("Something went wrong");
+      toast.error("Something went wrong ...");
     }
   };
 
   return (
-    <div className="mt-6 border bg-slate-100 dark:bg-slate-700 rounded-md p-4">
+    <div className="mt-6 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4">
       <div className="font-medium flex items-center justify-between">
         Course description
         <Button onClick={toggleEdit} variant="ghost">
@@ -80,12 +75,13 @@ export const DescriptionForm = ({
       {!isEditing && (
         <p
           className={cn(
-            "text-sm mt-2",
-            // !initialData.courseDescription &&
-            "text-slate-500 italic"
+            "text-sm mt-2 line-clamp-6",
+            !course.courseDescription &&
+            "text-gray-500 dark:text-gray-400 italic"
+            //  : "text-md text-base font-semibold"
           )}
         >
-          {initialData?.courseDescription || "No description"}
+          {course?.courseDescription || "No description"}
         </p>
       )}
       {isEditing && (
@@ -101,6 +97,7 @@ export const DescriptionForm = ({
                 <FormItem>
                   <FormControl>
                     <Textarea
+                      className="dark:bg-zinc-800"
                       disabled={isSubmitting}
                       placeholder="e.g. 'This course is about...'"
                       {...field}
@@ -111,7 +108,11 @@ export const DescriptionForm = ({
               )}
             />
             <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting} type="submit">
+              <Button
+                className="dark:bg-zinc-800 dark:text-white"
+                disabled={!isValid || isSubmitting}
+                type="submit"
+              >
                 Save
               </Button>
             </div>

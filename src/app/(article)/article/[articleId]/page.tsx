@@ -17,7 +17,7 @@ const ArticleContentPage = ({
   params,
 }: {
   params: {
-    articleId?: string;
+    articleId: string;
   };
 }) => {
   const articleId = params?.articleId;

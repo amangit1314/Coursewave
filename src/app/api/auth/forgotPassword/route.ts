@@ -1,9 +1,9 @@
 import bcrypt from "bcrypt";
 
-import { generateResetToken } from "@/lib/helpers/jwt_helper";
-import { sendEmail } from "@/lib/helpers/send_email_helper";
+import { generateResetToken } from "@/helpers/jwt_helper";
+import { sendEmail } from "@/helpers/send_email_helper";
 import { NextRequest, NextResponse } from "next/server";
-import { forgotHtml } from "@/lib/helpers/forgot_password_email_html";
+import { forgotHtml } from "@/helpers/forgot_password_email_html";
 import { NextApiResponse } from "next";
 
 import { db } from "@/lib/db";

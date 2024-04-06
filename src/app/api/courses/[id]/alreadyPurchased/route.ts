@@ -3,10 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest, { params }: {
   params: {
-    id?: string;
+    id: string;
   };
 }) => {
-  const courseId = params.id;
+  const courseId = params?.id;
   const reqBody = await req.json();
   const { userId } = reqBody;
   try {
@@ -61,31 +61,40 @@ export const POST = async (req: NextRequest, { params }: {
     });
 
     if (!course) {
-      console.log(`No course found with such courseId: ${courseId} ...`)
+      console.log(`No course found with such courseId in already purchased: ${courseId} ...`)
       return NextResponse.json({
         status: 'ERROR',
         success: false,
-        message: `No course found with such courseId: ${courseId} ...`,
+        message: `No course found with such courseId in already purchased: ${courseId} ...`,
       }, { status: 404 })
     }
 
-    const purchase = await db.purchase.findUnique({
+    const enrollment = await db.enrollment.findFirst({
       where: {
         courseId: course.courseId,
-        userId,
+        userId: userId as string,
       }
     })
+
+    const purchase = await db.purchase.findFirst({
+      where: {
+        courseId: course.courseId,
+        userId: userId as string,
+      }
+    })
+
+    const hasPurchased = !!(purchase && enrollment);
+
+    console.log('course is already purchased ...')
 
     return NextResponse.json({
       status: 'OK',
       success: true,
-      data: {
-        hasPurchased: !!purchase
-      },
-      message: `Course info for courseId:${courseId}, fetched successfully ✔️ ...`
+      data: { hasPurchased, enrollment: enrollment, purchase: purchase },
+      message: `Course with courseId:${courseId}, is already purchased by userId: ${userId} ? -> : ${hasPurchased} ✔️ ...`
     }, { status: 200 });
   } catch (error: any) {
-    console.log(`Failed to get course info for courseId:${courseId} ❌🚧 ...`);
+    console.log(`Failed to get course info for courseId:${courseId} in already purchased ❌🚧 ...`);
     return NextResponse.json({
       status: 'ERROR',
       success: false,

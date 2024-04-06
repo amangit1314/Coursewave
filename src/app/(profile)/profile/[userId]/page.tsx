@@ -4,45 +4,57 @@ import React from "react";
 import Image from "next/image";
 import { Divider } from "@tremor/react";
 import { FcGoogle } from "react-icons/fc";
-import useUserInfo from "@/lib/hooks/use-user-info";
+import useUserInfo from "@/hooks/use-user-info";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import Link from "next/link";
 import { RiInstagramFill } from "react-icons/ri";
 import { FaGithub, FaSquareXTwitter, FaLinkedinIn } from "react-icons/fa6";
+import { SiGmail } from "react-icons/si";
+import axios from "axios";
+import { ThemeModeToggle } from "@/components/themeModeToggle";
+import toast from "react-hot-toast";
 
 const Profile = () => {
-  const user = useUserInfo();
+  const user = useUserInfo().user;
+
   return (
     <div className="p-4">
-      <div className="overflow-hidden rounded-2xl border border-stroke border-gray-600 bg-slate-900 shadow-default dark:border-strokedark dark:bg-slate-900 ">
+      <div className="overflow-hidden rounded-3xl border border-stroke border-gray-600 shadow-default dark:border-strokedark dark:bg-slate-900 shadow z-20 ">
         {/*  profile image with background */}
         {/* <ProfileWithBackground /> */}
 
-        {/* text and other options */}
         <div className="px-4 pb-6 text-center lg:pb-8 xl:pb-11.5">
           <div className="mt-4">
-            {/* profile image */}
+            <div className="flex justify-between items-center">
+              <div className="flex items-center border border-red-500 font-medium justify-center text-sm text-red-500 px-2 py-1 rounded-md bg-transparent hover:bg-red-600 hover:text-white cursor-pointer transition-all duration-300">Logout</div>
+              <div className="flex items-end justify-end ml-auto">
+                <ThemeModeToggle />
+              </div>
+            </div>
+
             <ProfileImage />
-            {/* name */}
-            <h3 className="mt-4 mb-1 text-2xl font-semibold text-black dark:text-white">
-              {user ? user.user?.name! : "Aman Soni"}
+
+            <h3 className="mt-4 text-2xl tracking-tight font-bold text-black dark:text-white">
+              {user ? user.name : "Aman Soni"}
             </h3>
-            {/* google icon and email */}
-            <div className="flex justify-center items-center pt-auto">
-              <FcGoogle size={20} />
+
+            <div className="flex text-black dark:text-gray-200 justify-center items-center pt-auto">
+              <SiGmail size={20} />
               <p className="pl-1.5 text-sm font-normal">
-                {user ? user.user?.email! : "amansoni@gmail.com"}
+                {user ? user.email : "amansoni@gmail.com"}
               </p>
             </div>
-            {/* switch to instructor view */}
+
             <SwitchToInstructorButton />
+
             <Divider />
-            {/* account settings section */}
+
             <AccountSettingsSection />
+
             <Divider />
-            {/* help and support section */}
+
             <HelpAndSupportSection />
-            {/* follow coursewave on */}
+
             <FollowCoursewaveOn />
           </div>
         </div>
@@ -159,37 +171,53 @@ function ProfileImage() {
 }
 
 function SwitchToInstructorButton() {
+  const user = useUserInfo().user;
+
+  const isInstructor = user?.isInstructor!;
+
+  const setInstructor = async () => {
+    try {
+      await axios.post(`/api/profile/${user?.id}/becomeInstructor`);
+      toast.success("You are now instructor ✔️ ");
+    } catch (error: any) {
+      toast.error(`Error: ${error.message}`);
+    }
+  };
+
   return (
-    <button className="my-3 cursor-pointer font-bold text-blue-500 hover:bg-blue-700 hover:rounded-lg hover:p-2 hover:bg-opacity-50 rounded-lg hover:text-white transition-all duration-200">
-      Switch to instructor view
+    <button
+      onClick={setInstructor}
+      className="my-3 p-2 cursor-pointer font-bold text-blue-500 hover:bg-blue-700 hover:rounded-lg hover:p-2  rounded-lg hover:text-white transition-all duration-200"
+    >
+      {isInstructor ? "Switch to instructor view" : "Become Instructor"}
     </button>
   );
 }
 
 function AccountSettingsSection() {
   return (
-    <div className="flex mt-4 flex-col items-start">
-      <p className="text-sm font-semibold py-1 dark:text-white">
+    <div className="flex mt-4 space-y-5 flex-col items-start">
+      <p className="text-md text-base font-semibold px-1 text-black  dark:text-white">
         Account Settings
       </p>
 
-      <div className="flex flex-col mt-6 space-y-4 max-w-7xl w-full">
-        <div className="flex justify-between items-center cursor-pointer hover:bg-blue-600 hover:bg-opacity-20 hover:rounded-lg hover:p-2 transition-all duration-200">
+      <div className="flex group flex-col  space-y-2 max-w-7xl w-full  ">
+        <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-blue-400 dark:hover:from-blue-600 hover:via-indigo-400 hover:to-sky-400 dark:hover:bg-blue-600 hover:text-white hover:rounded-lg p-2 transition-all duration-200 text-gray-800 dark:text-gray-200">
           <p className="text-sm">Career Goals</p>
           <MdOutlineKeyboardArrowRight />
         </div>
-        <div className="flex justify-between items-center cursor-pointer hover:bg-blue-600 hover:bg-opacity-20 hover:rounded-lg hover:p-2 transition-all duration-200">
+        <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-blue-400 dark:hover:from-blue-600 hover:via-indigo-400 hover:to-sky-400 hover:bg-blue-600 hover:text-white hover:rounded-lg p-2 transition-all duration-200 text-gray-800 dark:text-gray-200">
           <p className="text-sm">Learning Reminders</p>
           <MdOutlineKeyboardArrowRight />
         </div>
-        <div className="flex justify-between items-center cursor-pointer hover:bg-blue-600 hover:bg-opacity-20 hover:rounded-lg hover:p-2 transition-all duration-200">
+        <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-blue-400 dark:hover:from-blue-600 hover:via-indigo-400 hover:to-sky-400 hover:bg-blue-600  hover:rounded-lg p-2 hover:text-white transition-all duration-200 text-gray-800 dark:text-gray-200">
           <p className="text-sm">Notifications</p>
           <MdOutlineKeyboardArrowRight />
         </div>
-        <div className="flex justify-between items-center cursor-pointer hover:bg-blue-600 hover:bg-opacity-20 hover:rounded-lg hover:p-2 transition-all duration-200">
+        {/* <div className="flex justify-between items-center cursor-pointer hover:bg-blue-600 hover:bg-opacity-20 hover:rounded-lg p-2 transition-all duration-200">
           <p className="text-sm">Email Notifications</p>
           <MdOutlineKeyboardArrowRight />
-        </div>
+        </div> */}
       </div>
     </div>
   );
@@ -197,14 +225,16 @@ function AccountSettingsSection() {
 
 function HelpAndSupportSection() {
   return (
-    <div className="mt-4 flex flex-col items-start">
-      <p className="text-sm font-semibold dark:text-white">Help and Support</p>
-      <div className="flex flex-col mt-6 space-y-4 max-w-7xl w-full">
-        <div className="flex justify-between items-center cursor-pointer hover:bg-blue-600 hover:bg-opacity-20 hover:rounded-lg hover:p-2 transition-all duration-200">
+    <div className="mt-4 flex flex-col space-y-5 items-start">
+      <p className="text-md text-base font-semibold dark:text-white px-1">
+        Help and Support
+      </p>
+      <div className="flex flex-col space-y-2 max-w-7xl w-full">
+        <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-blue-400 dark:hover:from-blue-600 hover:via-indigo-400 hover:to-sky-400 hover:bg-blue-600 hover:text-white  hover:rounded-lg p-2 transition-all duration-200 text-gray-800 dark:text-gray-200">
           <p className="text-sm">About CourseWave</p>
           <MdOutlineKeyboardArrowRight />
         </div>
-        <div className="flex justify-between items-center cursor-pointer hover:bg-blue-600 hover:bg-opacity-20 hover:rounded-lg hover:p-2 transition-all duration-200">
+        <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-blue-400 dark:hover:from-blue-600 hover:via-indigo-400 hover:to-sky-400 hover:bg-blue-600 hover:text-white  hover:rounded-lg p-2 transition-all duration-200 text-gray-800 dark:text-gray-200">
           <p className="text-sm">Share App </p>
           <MdOutlineKeyboardArrowRight />
         </div>

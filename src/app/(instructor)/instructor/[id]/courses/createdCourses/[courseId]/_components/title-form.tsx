@@ -18,15 +18,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import useUserInfo from "@/lib/hooks/use-user-info";
 import { cn } from "@/lib/utils";
-
-interface TitleFormProps {
-  initialData: {
-    title: string;
-  };
-  courseId: string;
-}
+import { Course } from "@prisma/client";
 
 const formSchema = z.object({
   title: z.string().min(1, {
@@ -34,33 +27,39 @@ const formSchema = z.object({
   }),
 });
 
-export const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
+export const TitleForm = ({ course}: {
+  course: Course
+}) => {
   const [isEditing, setIsEditing] = useState(false);
-  const user = useUserInfo();
   const toggleEdit = () => setIsEditing((current) => !current);
 
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData,
+    defaultValues: { title: course?.courseTitle as string },
   });
 
   const { isSubmitting, isValid } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/instructor/${user.user?.id}/dashboard/courses/${courseId}`, values);
-      toast.success("Course updated");
+      await axios.patch(
+        `/api/instructor/${course.instructorID}/dashboard/courses/${course.courseId}`,
+        {"newCourseTitle": values.title}
+      );
+      toast.success("Course updated ...");
       toggleEdit();
       router.refresh();
     } catch {
-      toast.error("Something went wrong");
+      toast.error("Something went wrong ...");
     }
   };
 
+  // console.log(`Course title in title form:`, course);
+
   return (
-    <div className="mt-6 border bg-slate-100 dark:bg-slate-700 rounded-md p-4">
+    <div className="mt-6 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4">
       <div className="font-medium flex items-center justify-between">
         Course title
         <Button onClick={toggleEdit} variant="ghost">
@@ -75,15 +74,15 @@ export const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
         </Button>
       </div>
       {!isEditing && (
-        // <p className="text-sm mt-2">{initialData.title}</p>
+
         <p
           className={cn(
             "text-sm mt-2",
-            // !initialData.courseDescription &&
-            "text-slate-500 italic"
+            !course.courseTitle ?
+            "text-gray-500 dark:text-gray-400 italic" : "font-semibold text-md text-base"
           )}
         >
-          {initialData?.title || "No title"}
+          {course?.courseTitle! || "No title"}
         </p>
       )}
       {isEditing && (
@@ -100,6 +99,7 @@ export const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
+                      className="dark:bg-zinc-800"
                       placeholder="e.g. 'Advanced web development'"
                       {...field}
                     />
@@ -109,7 +109,9 @@ export const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
               )}
             />
             <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting} type="submit">
+              <Button
+                className="dark:bg-zinc-800 dark:text-white"
+                disabled={!isValid || isSubmitting} type="submit">
                 Save
               </Button>
             </div>
