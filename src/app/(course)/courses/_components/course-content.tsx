@@ -10,6 +10,7 @@ import toast, { Toaster } from "react-hot-toast";
 type CourseContentProps = {
   courseId: string;
 };
+
 export default function CourseContent({ courseId }: CourseContentProps) {
   const fetchCourseSections = async () => {
     const res = await fetch(`/api/courses/${courseId}/sections`);
@@ -44,7 +45,6 @@ export default function CourseContent({ courseId }: CourseContentProps) {
 
   if (error) {
     console.log("ERROR: in sections and chapters", error.message);
-    // toast.error(`ERROR: in sections and chapters: , ${error.message}`);
     return (
       <p className="mt-4 text-red-600 text-md text-base">
         Error in loading sections & chapters: {error.message}
@@ -167,11 +167,7 @@ const AccordionSectionItem = ({
     return data;
   };
 
-  const {
-    data,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["sectionChapters"],
     queryFn: fetchChaptersForSection,
     staleTime: 4,
@@ -197,17 +193,20 @@ const AccordionSectionItem = ({
             {section.courseSectionTitle}
           </div>
         </div>
+
         <ul className="hidden list-disc md:flex md:visible space-x-6 items-center justify-end">
           {/* lections */}
-          <li className="text-sm text-gray-600 dark:text-gray-400">
+          <li className="text-xs text-gray-600 dark:text-gray-400">
             1 lecture
           </li>
           {/* total length */}
-          <li className="text-sm text-gray-600 dark:text-gray-400">3 min</li>
+          <li className="text-xs text-gray-600 dark:text-gray-400">3 min</li>
         </ul>
 
-
-        <p className="text-xs">{chapters && chapters.length} {chapters.length === 1 ? "chapter" : "chapters"}</p>
+        <p className="text-xs visible md:hidden">
+          {chapters && chapters.length}{" "}
+          {chapters ? (chapters.length === 1 ? "chapter" : "chapters") : ""}
+        </p>
       </div>
 
       <div className="overflow-hidden group-[.activated]:max-h-[120px] max-h-0 text-sm">

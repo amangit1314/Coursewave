@@ -52,7 +52,7 @@ function CoursePreview({ params }: {params: {id: string}}) {
   const courseData = useCourseInfo(courseId);
   const course: Course = courseData.data?.data;
 
-  console.log('Course data in the course detail page: ', course);
+  // console.log('Course data in the course detail page: ', course);
 
   if (courseData.isLoading) return <Skeleton />;
 
@@ -156,6 +156,7 @@ function CoursePreview({ params }: {params: {id: string}}) {
             <p className="font-bold text-2xl text-gray-800 dark:text-white tracking-tight">
               ${course.coursePrice!}
             </p>
+
             <div className="flex flex-col justify-center items-center space-y-2">
               <CourseEnrollButton courseId={course.courseId} />
               <p className="text-xs opacity-50">Apply coupon</p>
@@ -278,7 +279,7 @@ function CourseDetailsRightSection({ course }: { course: Course }) {
           {/* TODO: what you will get in this course */}
           <div className="space-y-2">
             <h3 className=" tracking-tight text-lg dark:text-xl text-gray-900 dark:text-gray-200 font-semibold">
-              What you will get:
+              What you will get?
             </h3>
             <ul className="pl-4 flex flex-col text-gray-700 dark:text-gray-400 text-sm justify-between pb-2 list-disc space-y-2">
               <li>
@@ -330,12 +331,7 @@ function CourseDetailsRightSection({ course }: { course: Course }) {
                 Share
               </p>
             </button>
-            {/* <div className=" flex justify-center items-center">
-              <HiOutlineGift />
-              <p className="pl-2 hover:cursor-pointer text-xs text-gray-400 hover:text-blue-500  hover:underline">
-                Gift this course
-              </p>
-            </div> */}
+
             <ApplyCouponCode />
           </div>
         </div>

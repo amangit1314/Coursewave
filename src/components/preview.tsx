@@ -18,6 +18,7 @@ export const Preview = ({
     <ReactQuill
       theme="bubble"
       value={value}
+      className="bg-white dark:bg-zinc-900 p-1 rounded-xl font-serif"
       readOnly
     />
   );

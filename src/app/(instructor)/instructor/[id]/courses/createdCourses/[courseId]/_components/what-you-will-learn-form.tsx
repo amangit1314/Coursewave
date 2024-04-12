@@ -17,9 +17,10 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Combobox } from "./category-form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Combobox } from "@/components/ui/combobox";
+// import Combobox from "@/components/ui/combobox";
 
 const whatYouWillLearn = [
   "Who wants to learn.",
@@ -135,8 +136,8 @@ export const WhatYouWillLearnForm = ({ course }: { course: Course }) => {
               name="whatYouWillLearn"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <Combobox className="dark:bg-zinc-800" {...field} />
+                  <FormControl className="dark:bg-zinc-800">
+                    <Combobox {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

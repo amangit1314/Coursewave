@@ -1,21 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-
+import Mux from "@mux/mux-node";
 export const dynamic = 'force-dynamic';
+
+const mux = new Mux({
+    tokenId: process.env.MUX_TOKEN_ID!,
+    tokenSecret: process.env.MUX_TOKEN_SECRET!
+});
 
 //* get chapter information for provided videoId
 export async function GET(req: NextRequest, { params }: {
     params: {
-        id?: string;
-        courseId?: string;
-        sectionId?: string;
-        chapterId?: string;
+        id: string;
+        courseId: string;
+        sectionId: string;
+        chapterId: string;
     }
 }) {
-    const instructorId = params.id;
-    const courseId = params.courseId;
-    const sectionId = params.sectionId;
-    const chapterId = params.chapterId;
+    const instructorId = params?.id;
+    const courseId = params?.courseId;
+    const sectionId = params?.sectionId;
+    const chapterId = params?.chapterId;
 
     try {
         if (!chapterId) {
@@ -40,7 +45,7 @@ export async function GET(req: NextRequest, { params }: {
             where: {
                 id: chapterId,
                 courseId,
-                courseSectionCourseSectionId: sectionId,
+                courseSectionId: sectionId,
             },
         })
 
@@ -59,7 +64,186 @@ export async function GET(req: NextRequest, { params }: {
     }
 }
 
-// //* update the videoUrl with provided newVideoUrl for provided videoId
+//* delete the chapter with the provided videoId
+export async function DELETE(
+    req: Request,
+    { params }: {
+        params: {
+            id: string;
+            courseId: string;
+            sectionId?: string;
+            chapterId: string
+        }
+    }
+) {
+    try {
+        const instructorId = params?.id;
+        const courseId = params?.courseId;
+        const sectionId = params?.sectionId;
+        const chapterId = params?.chapterId;
+
+        if (!instructorId) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const ownCourse = await db.course.findUnique({
+            where: {
+                courseId: courseId,
+                instructorID: instructorId,
+            }
+        });
+
+        if (!ownCourse) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const chapter = await db.chapter.findUnique({
+            where: {
+                id: chapterId,
+                courseId: courseId,
+                courseSectionId: sectionId,
+            }
+        });
+
+        if (!chapter) {
+            return new NextResponse("Not Found", { status: 404 });
+        }
+
+        if (chapter.videoUrl) {
+            const existingMuxData = await db.muxData.findFirst({
+                where: {
+                    chapterId: chapterId,
+                }
+            });
+
+            if (existingMuxData) {
+                await mux.video.assets.delete(existingMuxData.assetId);
+                await db.muxData.delete({
+                    where: {
+                        id: existingMuxData.id,
+                    }
+                });
+            }
+        }
+
+        const deletedChapter = await db.chapter.delete({
+            where: {
+                id: chapterId
+            }
+        });
+
+        const publishedChaptersInCourse = await db.chapter.findMany({
+            where: {
+                courseId: courseId,
+                isPublished: true,
+                courseSectionId: sectionId,
+            }
+        });
+
+        if (!publishedChaptersInCourse.length) {
+            await db.course.update({
+                where: {
+                    courseId: courseId,
+                },
+                data: {
+                    isPublished: false,
+                }
+            });
+        }
+
+        return NextResponse.json(deletedChapter);
+    } catch (error) {
+        console.log("[CHAPTER_ID_DELETE]", error);
+        return new NextResponse("Internal Error", { status: 500 });
+    }
+}
+
+// * route to update chapter (video with MUX)
+export async function PATCH(
+    req: Request,
+    { params }: {
+        params: {
+            id: string;
+            courseId: string;
+            sectionId?: string;
+            chapterId: string
+        }
+    }
+) {
+    const instructorId = params?.id;
+    const courseId = params?.courseId;
+    const sectionId = params?.sectionId;
+    const chapterId = params?.chapterId;
+
+    try {
+        const { isPublished, ...values } = await req.json();
+
+        if (!instructorId) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const ownCourse = await db.course.findUnique({
+            where: {
+                courseId: params.courseId,
+                instructorID: instructorId,
+            }
+        });
+
+        if (!ownCourse) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const chapter = await db.chapter.update({
+            where: {
+                id: params.chapterId,
+                courseId: params.courseId,
+            },
+            data: {
+                ...values,
+            }
+        });
+
+        if (values.videoUrl) {
+            const existingMuxData = await db.muxData.findFirst({
+                where: {
+                    chapterId: params.chapterId,
+                }
+            });
+
+            if (existingMuxData) {
+                await mux.video.assets.delete(existingMuxData.assetId);
+                await db.muxData.delete({
+                    where: {
+                        id: existingMuxData.id,
+                    }
+                });
+            }
+
+            const asset = await mux.video.assets.create({
+                input: values.videoUrl,
+                playback_policy: ['public'],
+                test: false,
+            });
+
+            console.log('Mux created video asset id: ', asset.id);
+
+            await db.muxData.create({
+                data: {
+                    chapterId: params.chapterId,
+                    assetId: asset.id,
+                    playbackId: asset.playback_ids?.[0]?.id,
+                }
+            });
+        }
+
+        return NextResponse.json(chapter);
+    } catch (error) {
+        console.log("[COURSES_CHAPTER_ID]", error);
+        return new NextResponse("Internal Error", { status: 500 });
+    }
+}
+
+//! update the videoUrl with provided newVideoUrl for provided videoId [NOT SURE]
 export async function PUT(req: NextRequest, { params }: { params: { id?: string; courseId?: string; sectionId?: string; chapterId?: string; } }) {
     const instructorId = params.id;
     const courseId = params.courseId;
@@ -78,7 +262,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id?: string;
             where: {
                 id: chapterId,
                 courseId,
-                courseSectionCourseSectionId: sectionId,
+                courseSectionId: sectionId,
             },
         });
 
@@ -100,79 +284,5 @@ export async function PUT(req: NextRequest, { params }: { params: { id?: string;
     } catch (error: any) {
         console.error(`Failed to update chapter with id ${chapterId}:`, error);
         return NextResponse.json({ status: false, error: error.message, message: `Failed to update chapter ❗` }, { status: 500 });
-    }
-}
-
-//* delete the chapter with the provided videoId
-export async function DELETE(req: NextRequest, { params }: {
-    params: {
-        id?: string;
-        courseId?: string;
-        sectionId?: string;
-        chapterId: string;
-    }
-}) {
-    const instructorId = params.id;
-    const courseId = params.courseId;
-    const sectionId = params.sectionId;
-    const chapterId = params.chapterId;
-
-    try {
-
-        if (!chapterId) {
-            return NextResponse.json({
-                message: `No instructor id given 😐 ...`
-            }, { status: 400 });
-        }
-
-        const instructor = await db.instructor.findUnique({
-            where: {
-                instructorID: instructorId,
-            }
-        })
-
-        if (!instructor) {
-            return NextResponse.json({
-                message: `INVALID INSTRUCTOR ID, No instructor found with id ${instructorId} 😐 ...`
-            }, { status: 404 });
-        }
-
-        if (!chapterId) {
-            return NextResponse.json({
-                message: `No chapter id given 😐 ...`
-            }, { status: 400 });
-        }
-
-        const chapter = await db.chapter.findUnique({
-            where: {
-                id: chapterId,
-            },
-        })
-
-        if (!chapter) {
-            return NextResponse.json({
-                message: `No chapter found with this chapterId: ${chapterId} 😐 ...`
-            }, { status: 404 });
-        }
-
-        await db.chapter.delete({
-            where: {
-                id: chapterId,
-                courseId,
-                courseSectionCourseSectionId: sectionId,
-            },
-        })
-
-        return NextResponse.json({
-            status: true,
-            message: `chapter deleted successfully ...`
-        }, { status: 200 })
-    } catch (error: any) {
-        console.log(`Failed to delete chapter ...`);
-        return NextResponse.json({
-            status: false,
-            error: error.message,
-            message: `Failed to access chapter info for chapterId:${chapterId} ❗`
-        }, { status: 500 })
     }
 }

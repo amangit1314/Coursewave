@@ -1,11 +1,5 @@
 "use client";
 
-// import { CaretSortIcon } from "@radix-ui/react-icons";
-// import {
-//   Collapsible,
-//   CollapsibleContent,
-//   CollapsibleTrigger,
-// } from "@/components/ui/collapsible";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -21,7 +15,7 @@ import {
   CourseAttachment,
   CourseSection,
   Instructor,
-  UserProgress,
+  CourseProgress,
 } from "@prisma/client";
 import { FaPauseCircle, FaPlayCircle } from "react-icons/fa";
 import { IoMdAddCircleOutline } from "react-icons/io";
@@ -60,8 +54,14 @@ import CourseChaptersSkeleton from "./_components/course-chapters-skeleton";
 import CourseResourcesSkeleton from "./_components/course-resources-skeleton";
 import { absoluteUrl } from "@/lib/utils";
 import MuxPlayer from "@mux/mux-player-react";
+import { VideoPlayer } from "./_components/video-player";
+import { redirect } from "next/navigation";
+import CourseVideo from "./_components/course-video";
+import useUserInfo from "@/hooks/use-user-info";
+import { User } from "lucide-react";
 
 function CourseContentPage({ params }: { params: { id: string } }) {
+
   const courseId = params?.id!;
 
   const fetchCourseInfo = async () => {
@@ -118,7 +118,10 @@ function CourseContentPage({ params }: { params: { id: string } }) {
     staleTime: 1000 * 60 * 10,
   });
 
-  const chapters = chaptersData?.data!;
+  const chapters = chaptersData?.data;
+
+  console.log(`Course: ${courseId}, Chapters: ${chaptersData}`)
+  console.log('Chapters data', chapters);
 
   if (isLoading) return <CourseContentScreenSkeleton />;
   if (error) return <div>Error: {error.message}</div>;
@@ -132,7 +135,7 @@ function CourseContentPage({ params }: { params: { id: string } }) {
 
       {/* course details */}
       <CourseDetails
-        chapters={chapters}
+        chapters={chapters.chapters}
         instructorId={course?.instructorID ?? ""}
         courseId={courseId}
         isChaptersLoading={isChaptersLoading}
@@ -166,8 +169,10 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
   isChaptersLoading,
   chaptersError,
 }) => {
+  const user = useUserInfo();
+
   const [activeChapterIndex, setActiveChapterIndex] = React.useState<number>(0);
-  const [courseProgress, setCourseProgress] = React.useState<UserProgress>();
+  const [courseProgress, setCourseProgress] = React.useState<CourseProgress>();
   const [showFullDescription, setShowFullDescription] = React.useState(false);
 
   const activeChapter = chapters[activeChapterIndex];
@@ -175,6 +180,8 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
   const aboutChapter = activeChapter
     ? activeChapter.description ?? sampleText
     : sampleText;
+
+  console.log('Chapters inside course details: ', chapters)
 
   return (
     <div className="flex flex-col md:flex-row justify-start items-center md:items-start h-full max-w-7xl w-full mx-auto px-8 md:px-[3rem] space-x-8 overflow-x-hidden">
@@ -200,7 +207,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
 
             {/* video component */}
             <div className="w-xl md:w-[45rem] h-auto md:h-[360px]">
-              <CourseVideo activeChapter={activeChapter} />
+              <CourseVideo activeChapter={activeChapter} userId={user.user?.id} />
             </div>
 
             {/* [NOT FOR MOBILE] Mark as Completed btn */}
@@ -380,29 +387,7 @@ function ShowChapters({
   );
 }
 
-function CourseVideo({ activeChapter }: { activeChapter: Chapter }) {
-  return (
-    // <Video
-    //   accentColor="blue"
-    //   className="smooth-content w-xl h-xl md:h-[360px] overflow-hidden rounded-lg object-cover md:w-[45rem] bg-blue-200"
-    //   src={
-    //     activeChapter
-    //       ? activeChapter.videoUrl ?? "/assets/videos/4k.mp4"
-    //       : "/assets/videos/4k.mp4"
-    //   }
-    // />
-    <MuxPlayer
-      playbackId="EcHgOK9coz5K4rjSwOkoE7Y7O01201YMIC200RI6lNxnhs"
-      accentColor="blue"
-      className="smooth-content w-xl h-xl md:h-[360px] overflow-hidden rounded-lg object-cover md:w-[45rem] bg-blue-200"
-      metadata={{
-        video_id: "video-id-54321",
-        video_title: "Test video title",
-        viewer_user_id: "user-id-007",
-      }}
-    />
-  );
-}
+
 
 function CourseSectionsAndChapters({
   chapters,

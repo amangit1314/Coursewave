@@ -29,6 +29,7 @@ export const ChaptersList = ({
 }: ChaptersListProps) => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [chapters, setChapters] = useState(items);
 
   useEffect(() => {
@@ -61,7 +62,13 @@ export const ChaptersList = ({
     onReorder(bulkUpdateData);
   };
 
-  const onEdit = (instructorId: string, courseId: string, sectionId: string, id: string) => {
+  const onEdit = (
+    instructorId: string,
+    courseId: string,
+    sectionId: string,
+    id: string
+  ) => {
+    setIsEditing(true);
     router.push(
       `/instructor/${instructorId}/courses/createdCourses/${courseId}/sections/${sectionId}/chapters/${id}`
     );
@@ -70,8 +77,6 @@ export const ChaptersList = ({
   if (!isMounted) {
     return null;
   }
-
-
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -84,60 +89,64 @@ export const ChaptersList = ({
                 draggableId={chapter.id}
                 index={index}
               >
-
                 {(provided) => (
-                  <div
-                    className={cn(
-                      "flex items-center gap-x-2 bg-slate-200 border-slate-200 border text-slate-700 dark:text-gray-400 dark:bg-zinc-800 dark:border-none rounded-md mb-4 text-sm",
-                      chapter.isPublished &&
-                        "bg-sky-100 border-sky-200 text-sky-700"
-                    )}
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                  >
-                    {/* grip icon */}
-                    <div
-                      className={cn(
-                        "px-2 py-3 border-r border-r-slate-200 hover:bg-slate-300 rounded-l-md transition",
-                        chapter.isPublished &&
-                          "border-r-sky-200 hover:bg-sky-200"
-                      )}
-                      {...provided.dragHandleProps}
-                    >
-                      <Grip className="h-5 w-5" />
-                    </div>
-
-                    {/* chapter title */}
-                    {chapter.title}
-
-                    {/* isFree badge, published or in draft badge, pencil icon */}
-                    <div className="ml-auto pr-2 flex items-center gap-x-2">
-                      {/* isFree badge */}
-                      {chapter.isFree && <Badge>Free</Badge>}
-
-                      {/* published or in draft badge */}
-                      <Badge
+                  <div>
+                    {!isEditing ? (
+                      <div
                         className={cn(
-                          "bg-slate-500 dark:text-gray-400",
-                          chapter.isPublished && "bg-sky-700"
+                          "flex items-center gap-x-2 bg-slate-200 border-slate-200 border text-slate-700 dark:text-gray-400 dark:bg-zinc-800 dark:border-none rounded-md mb-4 text-sm",
+                          chapter.isPublished &&
+                            "bg-sky-100 border-sky-200 text-sky-700"
                         )}
+                        ref={provided.innerRef}{...provided.draggableProps}
                       >
-                        {chapter.isPublished ? "Published" : "Draft"}
-                      </Badge>
+                        {/* grip icon */}
+                        <div
+                          className={cn(
+                            "px-2 py-3 border-r border-r-slate-200 hover:bg-slate-300 rounded-l-md transition",
+                            chapter.isPublished &&
+                              "border-r-sky-200 hover:bg-sky-200"
+                          )}
+                          {...provided.dragHandleProps}
+                        >
+                          <Grip className="h-5 w-5" />
+                        </div>
 
-                      {/* pencil icon */}
-                      <Pencil
-                        onClick={() =>
-                          onEdit(
-                            instructorId,
-                            chapter.courseId,
-                            chapter.courseSectionId!,
-                            chapter.id
-                          )
-                        }
-                        className="w-4 h-4 cursor-pointer hover:opacity-75 transition"
-                      />
-                    </div>
+                        {/* chapter title */}
+                        {chapter.title}
+
+                        {/* isFree badge, published or in draft badge, pencil icon */}
+                        <div className="ml-auto pr-2 flex items-center gap-x-2">
+                          {/* isFree badge */}
+                          {chapter.isFree && <Badge>Free</Badge>}
+
+                          {/* published or in draft badge */}
+                          <Badge
+                            className={cn(
+                              "bg-slate-500 dark:text-gray-400",
+                              chapter.isPublished && "bg-sky-700"
+                            )}
+                          >
+                            {chapter.isPublished ? "Published" : "Draft"}
+                          </Badge>
+
+                          {/* pencil icon */}
+                          <Pencil
+                            onClick={() =>
+                              onEdit(
+                                instructorId,
+                                chapter.courseId,
+                                chapter.courseSectionId!,
+                                chapter.id
+                              )
+                            }
+                            className="w-4 h-4 cursor-pointer hover:opacity-75 transition"
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div></div>
+                    )}
                   </div>
                 )}
               </Draggable>

@@ -14,7 +14,7 @@ const useInstructorInfo = (instructorId: string) => {
   }
 
   return useQuery({
-    queryKey: ["instructor", instructorId],
+    queryKey: ["instructor"],
     queryFn: fetchInstructorInfo,
     staleTime: 4,
   });

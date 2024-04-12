@@ -95,7 +95,6 @@ export const ChaptersForm = ({
     }
   };
 
-
   return (
     <div className="relative mt-2 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4">
       {isUpdating && (
@@ -165,7 +164,7 @@ export const ChaptersForm = ({
           <ChaptersList
             instructorId={course.instructorID!}
             onReorder={onReorder}
-            items={chapters || []}
+            items={chapters ?? []}
           />
         </div>
       )}
