@@ -34,7 +34,7 @@ export const GET = async (req: NextRequest, { params }: {
         // https://localhost:3000
         const currentURL = `/api/profile/${uid}`;
 
-        const enrolledCourses = await db.enrollement.findMany({
+        const enrolledCourses = await db.enrollment.findMany({
             where: {
                 userId: uid, // Provide the 'uid' here
             }

@@ -36,7 +36,7 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
       <div className="relative">
         <Image
           className="max-h-[8.5rem] h-full md:max-w-[15rem] w-full bg-slate-700 rounded-t-3xl relative left-0 right-0"
-          src={course.courseImage}
+          src={course.courseImage ?? './assets/images/android-jetpack.jpg'}
           alt="Next.js Logo"
           width={250}
           height={35}

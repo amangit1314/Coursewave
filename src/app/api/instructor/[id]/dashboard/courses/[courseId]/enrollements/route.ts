@@ -25,7 +25,7 @@ export const GET = async (req: NextRequest, { params }: {
 
         if (isInstructor) {
 
-            const enrollements = await db.enrollement.findMany({
+            const enrollements = await db.enrollment.findMany({
                 where: {
                     courseId: courseId,
                 }
