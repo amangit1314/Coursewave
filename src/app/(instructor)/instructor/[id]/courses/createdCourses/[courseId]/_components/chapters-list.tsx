@@ -98,7 +98,7 @@ export const ChaptersList = ({
                           chapter.isPublished &&
                             "bg-sky-100 border-sky-200 text-sky-700"
                         )}
-                        ref={provided.innerRef}{...provided.draggableProps}
+                        // ref={provided.innerRef}{...provided.draggableProps}
                       >
                         {/* grip icon */}
                         <div
