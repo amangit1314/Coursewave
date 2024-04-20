@@ -115,10 +115,11 @@ const HomeBrowseSection = () => {
             key={index}
             courseId={course.courseId}
             courseTitle={course.courseTitle}
-            courseImage={course.courseImage}
+            courseImage={course.courseImage ?? "./assets/images/images1.jpg"}
             avgStarRatings={course.avgStarRatings}
             coursePrice={course.coursePrice}
-            instructorName={course.instructorName} />
+            instructorName={course.instructorName}
+          />
         ))}
       </div>
 
@@ -166,7 +167,7 @@ const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
       <div className="relative">
         <Image
           className="h-40 w-[15rem] bg-slate-700 rounded-lg relative left-0 right-0"
-          src={course.courseImage}
+          src={course.courseImage ?? "./assets/images/images1.jpg"}
           alt="Next.js Logo"
           width={250}
           height={35}

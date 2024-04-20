@@ -82,7 +82,7 @@ function CoursePreview({ params }: {params: {id: string}}) {
             <Image
               className="visible md:hidden h-60 w-full bg-slate-700 rounded-xl shadow-md"
               src={
-                course.courseImage ||
+                course.courseImage ??
                 "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210301154221/System-Design-Live-Course-By-GeeksforGeeks.png"
               }
               alt={course.courseTitle || "Alt"}
@@ -388,7 +388,7 @@ function AddToCartButton({ course }: { course: Course }) {
     courseId: course.courseId,
     courseName: course.courseTitle,
     courseInstructorName: course.instructorName ?? "",
-    courseImageUrl: course.courseImage,
+    courseImageUrl: course.courseImage ?? "./assets/images/images1.jpg",
     coursePrice: course.coursePrice!,
     quantity: 1,
     createdAt: null,

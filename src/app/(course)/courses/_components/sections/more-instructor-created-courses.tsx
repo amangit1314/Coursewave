@@ -81,12 +81,12 @@ function MoreIntructorCreatedCourses({ instructorId, instructorName }: any) {
                 <div key={course.courseId}>
                   <MoreCreatedCourseItem
                     courseId={course.courseId}
-                    image={course.courseImage}
+                    image={course.courseImage!}
                     title={course.courseTitle}
                     avgRating={4.9}
                     instructorName={course.instructorName!}
                     numberOfEnrollments={12}
-                    price={course.coursePrice}
+                    price={course.coursePrice!}
                   />
                 </div>
               );
