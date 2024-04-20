@@ -50,8 +50,8 @@ export const POST = async (req: NextRequest) => {
                     userId: userId,
                     courseId: courseId,
                     courseName: course.courseTitle,
-                    courseInstructorName: course.courseCreator,
-                    coursePrice: course.coursePrice,
+                    courseInstructorName: course.courseCreator!,
+                    coursePrice: course.coursePrice!,
                     quantity: quantity,
                 },
             });
