@@ -137,7 +137,8 @@ export const WhatYouWillLearnForm = ({ course }: { course: Course }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl className="dark:bg-zinc-800">
-                    <Combobox {...field} />
+                    {/* TODO: implement this like the course attachments */}
+                    {/* <Combobox {...field} /> */}
                   </FormControl>
                   <FormMessage />
                 </FormItem>
