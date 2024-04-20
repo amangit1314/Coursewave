@@ -40,7 +40,7 @@ export const useUserStore = create((set) => ({
 
   // Check if user is an instructor
   isInstructor: () => {
-    return Boolean(initialState.user?.isInstructor);
+    // return Boolean(initialState.user?.isInstructor);
   },
 
   // Make user an instructor (if not already)
@@ -50,10 +50,10 @@ export const useUserStore = create((set) => ({
       return;
     }
 
-    if (initialState.user.isInstructor) {
-      onSuccess?.('User is already an instructor');
-      return;
-    }
+    // if (initialState.user.isInstructor) {
+    //   onSuccess?.('User is already an instructor');
+    //   return;
+    // }
 
     set({ loading: true, error: null });
     try {
@@ -61,7 +61,7 @@ export const useUserStore = create((set) => ({
       const response = await fetch('/api/make-instructor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: initialState.user.id }),
+        // body: JSON.stringify({ userId: initialState.user.id }),
       });
 
       if (!response.ok) {
