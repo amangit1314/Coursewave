@@ -79,7 +79,7 @@ function About() {
               </div>
             </div>
 
-            <div className="flex items-start justify-end flex-col w-full">
+            <div className="flex items-start pt-8 justify-end flex-col w-full">
               <p className="font-semibold text-sm text-blue-500">200+</p>
               <p className="text-xs font-medium text-zinc-800 dark:text-gray-200">
                 Happy Customers

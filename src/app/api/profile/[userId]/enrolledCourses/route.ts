@@ -41,7 +41,7 @@ export const GET = async (req: NextRequest, { params }: {
                 userId: true,
                 courseId: true,
                 enrollmentDate: true,
-                completionStatus: true,
+                enrollmentStatus: true,
                 user: true,
                 course: true,
             }

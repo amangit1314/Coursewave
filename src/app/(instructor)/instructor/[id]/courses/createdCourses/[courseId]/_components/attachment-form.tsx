@@ -1,26 +1,53 @@
 "use client";
 
 import React from "react";
-
+import { Combobox } from "./category-form";
+import Link from "next/link";
+import { HiDotsVertical } from "react-icons/hi";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import * as z from "zod";
 import axios from "axios";
-import { Pencil, PlusCircle, Loader2, X } from "lucide-react";
-import { useState } from "react";
-import toast from "react-hot-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useEffect, useRef, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Course, CourseAttachment } from "@prisma/client";
+import { Category, Course, CourseAttachment } from "@prisma/client";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Combobox } from "./category-form";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Pencil, PlusCircle, Loader2, X, File, Tag } from "lucide-react";
+import { TbCategory2 } from "react-icons/tb";
+import { RxCross2 } from "react-icons/rx";
+import { Input } from "@/components/ui/input";
+import { absoluteUrl } from "@/lib/utils";
 
 const sampleCourseAttachments = [
   "Who wants to learn.",
@@ -29,16 +56,20 @@ const sampleCourseAttachments = [
 ];
 
 const formSchema = z.object({
-  courseAttachments: z.string().array(),
+  attachmentName: z.string(),
+  attachmentUrl: z.string(),
+  // courseAttachments: z.object({ name: z.string(), url: z.string() }).array(),
 });
+
+type AttachmentFormProps = {
+  course: Course;
+  courseAttachmentsPoints: CourseAttachment[];
+};
 
 export const AttachmentForm = ({
   course,
   courseAttachmentsPoints,
-}: {
-  course: Course;
-  courseAttachmentsPoints: CourseAttachment[];
-}) => {
+}: AttachmentFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [points, setPoints] = useState();
 
@@ -51,7 +82,8 @@ export const AttachmentForm = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      courseAttachments: points,
+      attachmentName: "",
+      attachmentUrl: "",
     },
   });
 
@@ -59,9 +91,21 @@ export const AttachmentForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      // const newAttachments = values.courseAttachments.map((attachment) => ({
+      //   name: attachment.name,
+      //   url: attachment.url || "", // Set empty string for optional URL
+      //   instructorId: course?.instructorID,
+      //   courseId: course?.courseId,
+      // }));
+
       await axios.post(
-        `/api/instructor/${course?.instructorID}/dashboard/courses/${course?.courseId}/attachments`,
-        { newWhatYouWillLearnPoints: values.courseAttachments }
+        absoluteUrl(
+          `/api/instructor/${course?.instructorID}/dashboard/courses/${course?.courseId}/attachments`
+        ),
+        {
+          resourceName: values.attachmentName,
+          resourceUrl: values.attachmentUrl,
+        }
       );
       toast.success("Course courseAttachments updated ...");
       toggleEdit();
@@ -72,15 +116,15 @@ export const AttachmentForm = ({
   };
 
   const onDelete = (index: any) => {
-    // const updatedPoints = [...points]; // Create a copy of the array
-    // updatedPoints.splice(index, 1); // Remove the point at the specified index
+    // const updatedPoints = [...points];
+    // updatedPoints.splice(index, 1);
     // setPoints(updatedPoints);
   };
 
   return (
     <div className="mt-6 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4">
       <div className="font-medium flex items-center justify-between mb-2">
-        What you will learn?
+        Course Attachments
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing && <>Cancel</>}
           {!isEditing && (
@@ -91,11 +135,12 @@ export const AttachmentForm = ({
           )}
         </Button>
       </div>
+
       {!isEditing && (
         <>
           {courseAttachmentsPoints.length === 0 && (
             <p className="text-sm mt-2 text-gray-500 dark:text-gray-400 italic">
-              No points yet
+              No attachments yet
             </p>
           )}
 
@@ -111,7 +156,9 @@ export const AttachmentForm = ({
                     <Pencil className="h-4 w-4 mr-2 flex-shrink-0" />
                     <Link
                       href={attachment.url}
-                      className="text-[12px] line-clamp-1">{attachment.name}
+                      className="text-[12px] line-clamp-1"
+                    >
+                      {attachment.name}
                     </Link>
                     {deletingId === index && (
                       <div>
@@ -140,18 +187,95 @@ export const AttachmentForm = ({
             onSubmit={() => form.handleSubmit(onSubmit)}
             className="space-y-4 mt-4"
           >
+            {/* <FormField
+              control={form.control}
+              name="attachmentName"
+              render={({ field }) => (
+                // <FormItem>
+                //   <FormControl>
+
+                //     <Input
+                //       className="dark:bg-transparent w-full border-gray-700 dark:border-gray-400  "
+                //       type="text"
+                //       placeholder="i.e. Next.js, Flutter etc ..."
+
+                //       {...field}
+                //     />
+                //   </FormControl>
+                //   <FormDescription>
+                //     Add course categories here, Saperate categories with ,
+                //   </FormDescription>
+                // </FormItem>
+
+                // <>
+                //   {field.value.map((attachment, index) => (
+                //     <FormItem key={index}>
+                //       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                //         <FormControl>
+                //           <Input
+                //             className="dark:bg-transparent w-full border-gray-700 dark:border-gray-400"
+                //             type="text"
+                //             placeholder="Attachment Name"
+                //             {...field.at(index).field("name")}
+                //           />
+                //         </FormControl>
+                //         <FormControl>
+                //           <Input
+                //             className="dark:bg-transparent w-full border-gray-700 dark:border-gray-400"
+                //             type="url"
+                //             placeholder="Attachment URL (optional)"
+                //             {...field.at(index).field("url")}
+                //           />
+                //         </FormControl>
+                //       </div>
+                //     </FormItem>
+                //   ))}
+
+                //   <Button
+                //     onClick={() => field.push({ name: "", url: "" })}
+                //     variant="ghost"
+                //   >
+                //     <PlusCircle className="h-4 w-4 mr-2" /> Add Another
+                //     Attachment
+                //   </Button>
+                // </>
+              )}
+            /> */}
+
             <FormField
               control={form.control}
-              name="courseAttachments"
+              name="attachmentName"
               render={({ field }) => (
-                <FormItem>
+                <div>
                   <FormControl>
-                    <Combobox className="dark:bg-zinc-800" {...field} />
+                    <Input
+                      className="dark:bg-transparent w-full border-gray-700 dark:border-gray-400"
+                      type="text"
+                      placeholder="Attachment Name"
+                      {...field}
+                    />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
+                </div>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="attachmentUrl"
+              render={({ field }) => (
+                <div>
+                  <FormControl>
+                    <Input
+                      className="dark:bg-transparent w-full border-gray-700 dark:border-gray-400"
+                      type="text"
+                      placeholder="Attachment url"
+                      {...field}
+                    />
+                  </FormControl>
+                </div>
+              )}
+            />
+
             <div className="flex items-center gap-x-2">
               <Button
                 className="dark:bg-zinc-800 dark:text-white"

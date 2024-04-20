@@ -66,7 +66,7 @@ function NavbarRoutes() {
           <ThemeModeToggle />
 
           {/* cart */}
-          <Cart />
+          {/* <Cart /> */}
 
           {/* notifications */}
           <Notifications />

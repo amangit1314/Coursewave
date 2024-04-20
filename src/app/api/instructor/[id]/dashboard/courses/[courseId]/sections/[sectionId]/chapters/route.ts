@@ -23,7 +23,11 @@ export const POST = async (req: NextRequest, { params }: {
     let videoUrl = chapterVideoUrl;
 
     try {
-        if (!chapterDescription || !chapterTitle || !videoUrl || !videoThumbnailUrl || !chapterDuration) {
+        if (
+            // !chapterDescription ||
+            !chapterTitle
+            // || !chapterDuration
+        ) {
             return NextResponse.json({
                 success: false,
                 message: 'Required parameters are missing ..., required parameters(chapterDescription, chapterTitle, videoUrl, videoThumbnailUrl, chapterDuration)',
@@ -97,14 +101,14 @@ export const POST = async (req: NextRequest, { params }: {
             data: {
                 id: chapterId,
                 title: chapterTitle,
-                description: chapterDescription,
+                description: chapterDescription ?? "This is a sample chapter",
                 videoUrl: videoUrl,
-                position: position,
-                isPublished: isPublished,
-                chapterDuration: chapterDuration,
-                isFree: isFree,
+                position: position ?? Math.random(),
+                isPublished: isPublished ?? true,
+                chapterDuration: chapterDuration ?? '3 min',
+                isFree: isFree ?? false,
                 courseId: courseId!,
-                courseSectionCourseSectionId: sectionId!,
+                courseSectionId: sectionId!,
             },
         });
 

@@ -48,12 +48,18 @@ export const DescriptionForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${course.courseId}`, {"newCourseDescription": values.description});
-      toast.success("course updated successfully ...");
+      await axios.patch(
+        `/api/instructor/${course.instructorID}/dashboard/courses/${course.courseId}`,
+        {
+          newCourseDescription: values.description,
+        }
+      );
+      toast.success("course description updated successfully ...");
       toggleEdit();
       router.refresh();
-    } catch {
-      toast.error("Something went wrong ...");
+    } catch (err: any) {
+      console.log('Error in updating description: ', err.message)
+      toast.error(`Something went wrong, ERROR: ${err.message} ...`);
     }
   };
 

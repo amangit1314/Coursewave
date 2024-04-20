@@ -1,11 +1,20 @@
 "use client";
 
-import React from "react";
+import React, { useCallback } from "react";
 import { Category, Course } from "@prisma/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSearchParams } from "next/navigation";
 import { CourseCard } from "./course-card";
 import useCourses from "@/hooks/use-courses";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface FilteredCoursesComponentProps {
   activeCategory: string | null;
@@ -21,6 +30,10 @@ export function FilteredCoursesComponent({
 
   const courses = useCourses();
   console.log("Courses from api: ", courses);
+
+  const [currentPage, setCurrentPage] = React.useState(1); // Track current page
+
+  const coursesPerPage = 12; // Number of courses per page
 
   const coursesFilteredByCategories = activeCategory
     ? activeCategory === "All"
@@ -71,26 +84,96 @@ export function FilteredCoursesComponent({
     ? coursesFilteredOnSearchInput
     : coursesFilteredByCategories;
 
+  const totalPages =
+    Math.ceil(coursesFilteredByCategories?.length / coursesPerPage) || 1;
+
+  const coursesToDisplay = filteredCourses?.slice(
+    (currentPage - 1) * coursesPerPage,
+    currentPage * coursesPerPage
+  );
+
   if (courses.isLoading) {
     return (
-      <div className="flex flex-wrap justify-center my-6 p-6 mx-auto ">
+      <div className="flex flex-wrap justify-center my-6 md:p-6 md:mx-auto ">
         <FilteredCoursesSkeleton />
       </div>
     );
   }
 
+  const createQueryString = (name: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set(name, value);
+
+    return params.toString();
+  };
+
+  const handlePageChange = (pageNumber: number) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+      createQueryString("page", `${pageNumber}`);
+    }
+  };
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 max-w-7xl w-full gap-4 my-6 justify-center items-center mx-auto">
-      {filteredCourses.map((course: Course) => (
-        <CourseCard key={course.courseId} course={course} />
-      ))}
+    <div className="max-w-7xl w-full my-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 max-w-7xl w-full gap-4 my-6 justify-center items-center mx-auto">
+        {filteredCourses &&
+          filteredCourses.map((course: Course) => (
+            <CourseCard key={course.courseId} course={course} />
+          ))}
+      </div>
+      {totalPages > 1 && (
+        <CoursesPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
     </div>
+  );
+}
+
+function CoursesPagination({ currentPage, totalPages, onPageChange }: any) {
+  const handlePrevious = () => onPageChange(currentPage - 1);
+  const handleNext = () => onPageChange(currentPage + 1);
+  return (
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious
+            href="#"
+            // disabled={currentPage === 1}
+            onClick={handlePrevious}
+          />
+        </PaginationItem>
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+          (pageNumber) => (
+            <PaginationItem key={pageNumber}>
+              <PaginationLink
+                href="#"
+                isActive={currentPage === pageNumber}
+                onClick={() => onPageChange(pageNumber)}
+              >
+                {pageNumber}
+              </PaginationLink>
+            </PaginationItem>
+          )
+        )}
+        <PaginationItem>
+          <PaginationNext
+            href="#"
+            // disabled={currentPage === totalPages}
+            onClick={handleNext}
+          ></PaginationNext>
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
   );
 }
 
 function FilteredCoursesSkeleton() {
   return (
-    <div className="max-w-7xl w-full justify-center mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="md:max-w-7xl w-full justify-center md:mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-4">
       <FilteredCourseSkeleton />
       <FilteredCourseSkeleton />
       <FilteredCourseSkeleton />
@@ -104,10 +187,10 @@ function FilteredCoursesSkeleton() {
 function FilteredCourseSkeleton() {
   return (
     <div className="flex flex-col space-y-3 mb-6">
-      <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+      <Skeleton className="h-[125px] md:max-w-[250px] w-full rounded-xl" />
       <div className="space-y-2">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-4 w-[200px]" />
+        <Skeleton className="h-4 md:max-w-[250px] w-full" />
+        <Skeleton className="h-4 md:max-w-[200px] w-full " />
       </div>
     </div>
   );

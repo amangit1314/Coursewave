@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Course } from "@prisma/client";
 import Image from "next/image";
-
+import "@uploadthing/react/styles.css";
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/file-upload";
 
@@ -27,12 +27,15 @@ export const ImageForm = ({ course }: {course: Course}) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${course?.courseId!}`, values);
-      toast.success("Course updated");
+      await axios.patch(
+        `/api/instructor/${course.instructorID}/dashboard/courses/${course.courseId}`,
+        { newCourseImage : values.imageUrl}
+      );
+      toast.success("Course image updated ✔️ ...");
       toggleEdit();
       router.refresh();
     } catch {
-      toast.error("Something went wrong");
+      toast.error("Something went wrong ❌ ...");
     }
   };
 
@@ -74,7 +77,7 @@ export const ImageForm = ({ course }: {course: Course}) => {
       {isEditing && (
         <div>
           <FileUpload
-            endpoint="imageUploader"
+            endpoint="courseImageUpdater"
             onChange={(url) => {
               if (url) {
                 onSubmit({ imageUrl: url });

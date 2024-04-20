@@ -13,14 +13,17 @@ import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import useUserInfo from "@/hooks/use-user-info";
 import useInstructorInfo from "@/hooks/use-instructor-info";
+import { Instructor } from "@prisma/client";
 
 function InstructorSideBarRoutes() {
   const user = useUserInfo();
   const userId = user.user?.id;
 
-  const instructor = useInstructorInfo(userId);
+  const instructorData = useInstructorInfo(userId);
 
-  let instructorId = instructor.data?.data.instructorID! as string;
+  // let instructorId = instructor.data?.data.instructorID! as string;
+  let instructor: Instructor = instructorData?.instructor!;
+  let instructorId = instructor?.instructorID!;
 
   const routes = [
     {
@@ -28,11 +31,6 @@ function InstructorSideBarRoutes() {
       label: "Analytics",
       href: `/instructor/${instructorId}/analytics`,
     },
-    // {
-    //     icon: <BiBroadcast size={22} />,
-    //     label: 'Sessions',
-    //     href: `/instructor/${instructorId}/createdSessions`,
-    // },
     {
       icon: <BsPersonVideo2 size={22} />,
       label: "Courses",

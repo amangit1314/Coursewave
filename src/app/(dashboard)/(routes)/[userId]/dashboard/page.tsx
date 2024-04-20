@@ -70,15 +70,14 @@ function DashboardPage({
     <div className="py-4">
       {/* header */}
       <div className="flex justify-between items-center h-full">
-        <p className="text-xl pb-2 font-semibold text-gray-700 dark:text-gray-100">
-          Online Learning Dashboard
-        </p>
-
-        <DashboardLeftHeader />
+        {/* <p className="text-xl pt-8 hidden md:flex font-semibold text-gray-700 dark:text-gray-100">
+          User Dashboard
+        </p> */}
+        <DashboardHeader />
       </div>
 
       {/* other content */}
-      <div className="space-y-12">
+      <div className="space-y-4 md:space-y-12">
         {/* line chart for learning activity */}
         {/* <LineChartForLearningActivity /> */}
 
@@ -87,6 +86,10 @@ function DashboardPage({
           <Divider> Scheduled Sessions </Divider>
           <ScheduledSessions />
         </div> */}
+
+        <p className="text-xl pt-8   font-semibold text-gray-700 dark:text-gray-100">
+          User Dashboard
+        </p>
 
         {/* enrolledCourses */}
         <div className="mb-8">
@@ -134,7 +137,11 @@ type EnrolledCourseProps = {
   course: Course;
 };
 
-const EnrolledCoursesWidget = ({enrolledCourses} :{enrolledCourses: EnrolledCourseProps[]}) => {
+const EnrolledCoursesWidget = ({
+  enrolledCourses,
+}: {
+  enrolledCourses: EnrolledCourseProps[];
+}) => {
   return (
     <ul className="space-y-4 rounded-xl px-4 border border-stroke mx-4  ">
       {enrolledCourses.map((enrolledCourse) => {
@@ -145,11 +152,13 @@ const EnrolledCoursesWidget = ({enrolledCourses} :{enrolledCourses: EnrolledCour
           >
             <div>{enrolledCourse?.enrollmentId ?? "Course Id Unavailable"}</div>
 
-            <Link href={`/courses/${enrolledCourse?.course?.courseId}`} className="hover:text-blue-500 cursor-pointer transition-all duration-300">
+            <Link
+              href={`/courses/${enrolledCourse?.course?.courseId}`}
+              className="hover:text-blue-500 cursor-pointer transition-all duration-300"
+            >
               {enrolledCourse?.course?.courseTitle ??
                 "Course Title Unavailable"}
             </Link>
-
 
             <div>
               {enrolledCourse?.enrollmentDate ?? "Course Title Unavailable"}
@@ -167,63 +176,6 @@ const EnrolledCoursesWidget = ({enrolledCourses} :{enrolledCourses: EnrolledCour
 };
 
 //* ---------------------------------------- COMPONENTS -----------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //! ------------------------- Learning Activity Chart -----------------------------------
 
@@ -460,12 +412,27 @@ const LearningGoals = () => {
 
 //! ----------------------------------------- left header -----------------------------------
 
-const DashboardLeftHeader = () => {
-  const user = useUserInfo();
+const DashboardHeader = () => {
   return (
-    <div className="flex justify-end space-x-6">
-      {/* image and text */}
-      {/* <div className="flex justify-start">
+    <div className="flex justify-between items-center max-w-7xl w-full md:mx-8">
+      <div className="hidden md:pl-72 md:flex text-black dark:text-white text-md text-base font-semibold tracking-tight bg-red-800">
+        User Dashboard
+      </div>
+
+      <div className="ml-auto flex justify-end items-center gap-x-2">
+        <ThemeModeToggle />
+        <Notifications />
+        <UserAvatar />
+      </div>
+    </div>
+  );
+};
+
+{
+  /* image and text */
+}
+{
+  /* <div className="flex justify-start">
         <img
           className="h-10 w-10 rounded-full"
           src={
@@ -484,16 +451,8 @@ const DashboardLeftHeader = () => {
             {user ? user?.user?.email ?? "guest@gmail.com" : "guest@gmail.com"}
           </p>
         </div>
-      </div> */}
-
-      <div className="flex justify-end items-center space-x-2">
-        <ThemeModeToggle />
-        <Notifications />
-        <UserAvatar />
-      </div>
-    </div>
-  );
-};
+      </div> */
+}
 
 const DateRangeWidget = () => {
   return (

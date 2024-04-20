@@ -79,57 +79,8 @@ export const DELETE = async (req: NextRequest, { params }: {
     }
 }
 
-// edit a course-details [TODO]
-// export const POST = async (req: NextRequest, { params }: {
-//     params: {
-//         id: string;
-//         courseId: string;
-//     };
-// }) => {
-//     const instructorId = params?.id!;
-//     const courseId = params?.courseId!;
-
-//     const reqBody = await req.json();
-//     const {
-//         newCourseTitle,
-//         newCourseDescription,
-//         newCourseImage,
-//         newCoursePrice,
-//         newDealPrice,
-//         newDiscount,
-//         newCourseCategories,
-
-//     } = reqBody;
-
-//     try {
-//         if (!instructorId || !courseId) {
-//             return NextResponse.json({
-//                 success: false,
-//                 message: "Invalid Instructor and/or course Id"
-//             }, { status: 400 });
-//         }
-
-//         const createdCourses = db.courseSection.findMany({
-//             where: { instructorId: instructorId },
-//         });
-
-//         return NextResponse.json({
-//             success: true,
-//             data: createdCourses,
-//             message: 'Course fetched successfully',
-//         }, { status: 200 });
-//     } catch (error: any) {
-//         console.log('ERROR IN updating course inside instructor/id/dashboard/courses/courseId :', error.message);
-//         return NextResponse.json({
-//             success: false,
-//             error: error.message,
-//             message: 'Internal Server Error, Failed to update course ...',
-//         }, { status: 500 });
-//     }
-// };
-
 // edit a course-details
-export const POST = async (req: NextRequest, { params }: { params: { id: string; courseId: string; } }) => {
+export const PATCH = async (req: NextRequest, { params }: { params: { id: string; courseId: string; } }) => {
     const instructorId = params?.id!;
     const courseId = params?.courseId!;
 
@@ -172,6 +123,7 @@ export const POST = async (req: NextRequest, { params }: { params: { id: string;
                 courseCreator: newInstructorName,
                 courseCategories: newCourseCategories,
                 courseDuration: newCourseDuration,
+                instructorName: newInstructorName,
                 technologiesYouAreGoingToLearn: newTechnologies,
                 thisCourseIsFor: newThisCourseIsForPoints,
                 prerequisits: newPrerequisits,

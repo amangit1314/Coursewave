@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Pencil } from "lucide-react";
 import { useState } from "react";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 // import { Course } from "@prisma/client";
 
@@ -50,17 +50,22 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${courseId}`, values);
-      toast.success("Course updated");
+      await axios.patch(
+        `/api/instructor/${initialData.instructorID}/dashboard/courses/${initialData.courseId}`,
+        { newCoursePrice : values.price}
+      );
+      toast.success("Course price updated ...");
       toggleEdit();
       router.refresh();
-    } catch {
+    } catch (err: any) {
+      console.log('Error in updating price: ', err.message);
       toast.error("Something went wrong");
     }
   };
 
   return (
     <div className="mt-6 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4">
+      <Toaster />
       <div className="font-medium flex items-center justify-between">
         Course price
         <Button onClick={toggleEdit} variant="ghost">

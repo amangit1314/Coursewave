@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import CourseContent from "./_components/course-content";
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
 
 const CourseIdPage = async ({
   params,
@@ -24,7 +24,8 @@ const CourseIdPage = async ({
   });
 
   if (!course) {
-    toast.error("No course found with these ids ...");
+    console.log('No course found with this id in createdCourse/[courseId] page ...')
+    // toast.error("No course found with these ids ...");
   }
 
   const courseAttachments = await db.courseAttachment.findMany({
@@ -34,7 +35,7 @@ const CourseIdPage = async ({
   });
 
   if (!courseAttachments) {
-    toast.error("No course attachments found for this course ...");
+    // toast.error("No course attachments found for this course ...");
   }
 
   const sections = await db.courseSection.findMany({
@@ -45,7 +46,7 @@ const CourseIdPage = async ({
 
   if (!sections) {
     console.log("No course sections found for this course ...");
-    toast.error("No course sections found for this course ...");
+    // toast.error("No course sections found for this course ...");
   }
 
   const chapters = await db.chapter.findMany({
@@ -56,7 +57,7 @@ const CourseIdPage = async ({
 
   if (!chapters) {
     console.log("No course chapters found for this course ...");
-    toast.error("No course chapters found for this course ...");
+    // toast.error("No course chapters found for this course ...");
   }
 
   return (

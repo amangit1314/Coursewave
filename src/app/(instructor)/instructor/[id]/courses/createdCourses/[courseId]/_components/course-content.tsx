@@ -36,20 +36,35 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { SectionsForm } from "./sections-form";
 import { CourseChaptersSkeleton } from "@/app/(course)/courses/[id]/courseContent/skeletons";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { IconBadge } from "./icon-badge";
+import PublishCourseForm from "./course-publish-form";
+// import PublisCourseForm from "./_components/course-publish-form";
+
+type CourseContentProps = {
+  course: Course;
+  courseAttachments: CourseAttachment[];
+  sections: CourseSection[];
+  chapters: Chapter[];
+};
 
 export default function CourseContent({
   course,
   sections,
   chapters,
   courseAttachments,
-}: {
-  course: Course;
-  courseAttachments: CourseAttachment[];
-  sections: CourseSection[];
-  chapters: Chapter[];
-  }) {
-
-  console.log('Course sections in couse content: ', sections);
+}: CourseContentProps) {
+  console.log("Course sections in couse content: ", sections);
   console.log("Course sections in couse content: ", chapters);
 
   return (
@@ -68,7 +83,7 @@ export default function CourseContent({
             Edit course details or add a new course section & chapter
           </p>
         </div>
-        <PublishCourseSwitch course={course} />
+        <PublishCourseForm course={course} />
       </div>
 
       {/* forms grid */}
@@ -173,20 +188,10 @@ export default function CourseContent({
   );
 }
 
-// -------------------------------------- components ---------------------------------------------
-function PublishCourseSwitch({ course }: { course: Course }) {
-  return (
-    <div className="flex flex-col space-y-2  md:space-y-0 md:flex-row justify-start md:justify-end items-start md:items-center space-x-2">
-      <Switch id="course-published" />
-      <Label htmlFor="course-published">Publish Course</Label>
-    </div>
-  );
-}
-
-const IconBadge = ({ icon }: any) => {
-  return (
-    <div className="flex justify-center items-center rounded-full bg-transparent dark:bg-zinc-800 border border-stroke border-blue-500 dark:border-white">
-      <Icon icon={icon} size="xs" className="text-blue-500 dark:text-white" />
-    </div>
-  );
-};
+// const IconBadge = ({ icon }: any) => {
+//   return (
+//     <div className="flex justify-center items-center rounded-full bg-transparent dark:bg-zinc-800 border border-stroke border-blue-500 dark:border-white">
+//       <Icon icon={icon} size="xs" className="text-blue-500 dark:text-white" />
+//     </div>
+//   );
+// };

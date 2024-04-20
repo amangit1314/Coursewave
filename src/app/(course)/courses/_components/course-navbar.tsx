@@ -84,7 +84,7 @@ function CourseNavbar({ courseName }: any) {
         <ThemeModeToggle />
 
         {/* cart */}
-        <Cart />
+        {/* <Cart /> */}
 
         {/* notification */}
         <Notifications />

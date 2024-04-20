@@ -7,6 +7,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Divider } from "@tremor/react";
 
 const CourseFooter = () => {
   return (
@@ -140,20 +141,19 @@ const CourseFooter = () => {
   );
 };
 
-
 const Footer = () => {
   return (
-    <footer className="w-full h-auto p-4 bg-zinc-900  text-slate-700">
+    <footer className="w-full h-auto md:p-4 bg-zinc-900  text-slate-700">
       {/* options */}
       <div className="flex w-full flex-col md:flex-row justify-start md:justify-between items-center">
         {/* other options */}
-        <div className="flex flex-col md:flex-row p-4 justify-start">
+        <div className="flex flex-col md:flex-row md:p-4 justify-start">
           {/* become member, send feedback */}
-          <div className="space-y-4 mt-6 md:mt-0 mr-2 md:mr-8">
-            <p className="uppercase font-bold text-xs cursor-pointer text-slate-100">
+          <div className="space-y-4 mt-6 md:mt-0  md:mr-8">
+            <p className="font-medium  md:font-bold text-md text-base md:text-xs cursor-pointer text-slate-100">
               Become A Member
             </p>
-            <p className="uppercase font-bold text-xs cursor-pointer text-slate-100">
+            <p className=" font-medium md:font-bold text-md text-base md:text-xs cursor-pointer text-slate-100">
               Send us feedback
             </p>
           </div>
@@ -194,6 +194,8 @@ const Footer = () => {
               </p>
             </div>
           </div>
+
+          {/* <Divider className="h-[1px] bg-zinc-700 overflow-hidden" /> */}
 
           <div className="visible md:hidden">
             <MobileFooterAccordionSection />
@@ -289,10 +291,7 @@ const Footer = () => {
 
         {/* changelog, privacy policy */}
         <div className="justify-end mt-1 md:mt-0  flex items-center ">
-          <Link
-            href=""
-            className="text-xs  hover:text-blue-500 text-slate-400"
-          >
+          <Link href="" className="text-xs  hover:text-blue-500 text-slate-400">
             Changelog
           </Link>
 
@@ -321,22 +320,30 @@ const CopyRightText = () => {
 };
 
 const MobileFooterAccordionSection = () => {
+  const points = [
+    "Courses",
+    "Community Articles",
+    "Sessions",
+    "Payment Options",
+    "Contact us on gitaman8481@gmail.com",
+  ];
   return (
     <Accordion type="single" collapsible className="">
       <AccordionItem value="item-1">
         <AccordionTrigger>
-          <p className="text-slate-100  mr-[12rem]">Get Help</p>
+          <p className="text-slate-100 md:mr-[12rem]">Get Help</p>
         </AccordionTrigger>
-        <AccordionContent className="space-y-1 text-zinc-400">
-          <p className=" hover:text-slate-100 cursor-pointer">Courses</p>
-          <p className=" hover:text-slate-100 cursor-pointer">Community Articles</p>
-          <p className=" hover:text-slate-100 cursor-pointer">Sessions</p>
-          <p className=" hover:text-slate-100 cursor-pointer">
-            Payment Options
-          </p>
-          <p className=" hover:text-slate-100 cursor-pointer">
-            Contact Us on gitaman818@gmail.com
-          </p>
+        <AccordionContent className="space-y-2 text-zinc-400">
+          {points.map((point, index) => {
+            return (
+              <div
+                key={index}
+                className="text-sm  hover:text-slate-100 cursor-pointer"
+              >
+                {point}
+              </div>
+            );
+          })}
         </AccordionContent>
       </AccordionItem>
 
@@ -345,8 +352,12 @@ const MobileFooterAccordionSection = () => {
           <p className="text-slate-100 mr-[10rem]">About Coursewave </p>
         </AccordionTrigger>
         <AccordionContent className="space-y-2 text-zinc-400">
-          <p className=" hover:text-slate-100 cursor-pointer">About Page</p>
-          <p className=" hover:text-slate-100 cursor-pointer">Newsletter</p>
+          <p className="text-sm hover:text-slate-100 cursor-pointer">
+            About Page
+          </p>
+          <p className="text-sm hover:text-slate-100 cursor-pointer">
+            Newsletter
+          </p>
         </AccordionContent>
       </AccordionItem>
     </Accordion>

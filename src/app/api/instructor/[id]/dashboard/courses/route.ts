@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateUid } from "@/helpers/id_helper";
 import { db } from "@/lib/db";
+import { Category } from "@prisma/client";
 
 export const dynamic = 'force-dynamic';
 
-//? create a course [PROBLEM With Image {URL & UPLOAD }]
+//* create a course [WORKING]
 export const POST = async (req: NextRequest, { params }: {
     params: {
         id: string;
@@ -14,10 +15,18 @@ export const POST = async (req: NextRequest, { params }: {
     const instructorId = params?.id;
 
     const reqBody = await req.json();
-    const { courseTitle, coursePrice,
+    const {
+        courseTitle,
+        coursePrice,
         courseCreatorName,
         courseImage,
-        courseDescription, courseCategories, isPublished
+        courseDescription,
+        courseCategories,
+        isPublished,
+        courseTechnologies,
+        courseThisCourseIsFor,
+        coursePrerequisits,
+        courseWhatYouWillLearn,
     } = reqBody;
 
     try {
@@ -27,7 +36,7 @@ export const POST = async (req: NextRequest, { params }: {
             return NextResponse.json({ success: false, message: "Invalid Instructor Id" }, { status: 400 });
         }
 
-        if (!courseTitle || !coursePrice ) {
+        if (!courseTitle || !coursePrice) {
             return NextResponse.json({ success: false, message: "Course title and creator name are required fields ..." }, { status: 422 });
         }
 
@@ -38,45 +47,49 @@ export const POST = async (req: NextRequest, { params }: {
         })
 
         if (!instructor) {
-            return NextResponse.json({ success: false, message: `[NOT FOUND], Invalid Instructor Id, no instructor found with this instructorId: ${instructorId}` }, { status: 404 });
+            return NextResponse.json({
+                success: false,
+                message: `[NOT FOUND], Invalid Instructor Id, no instructor found with this instructorId: ${instructorId}`
+            }, { status: 404 });
         }
 
-        //TODO in here need to handle the course image upload backend side
-        // const uploadedImage = await uploadOnCloudinary(courseImage);
 
-        // console.log('Uploaded Image Data: ', uploadedImage);
-
-        // if (!uploadedImage || !uploadedImage!.url) {
-        //     return NextResponse.json({
-        //         success: false,
-        //         message: "Error while uploading courseImage ..."
-        //     }, { status: 400 })
-        // }
+        let courseCategoryData = null;
+        let addedToDbCategories;
+        if (courseCategories && courseCategories.length > 0) {
+            courseCategoryData = courseCategories.map((category: Category) => ({
+                name: category,
+            }));
+            addedToDbCategories = await db.category.createMany({
+                data: courseCategoryData,
+            });
+            console.log('Added categories in the create course route: ', addedToDbCategories);
+        }
 
         const createdCourse = await db.course.create({
             data: {
                 courseId: courseId,
                 courseTitle: courseTitle,
                 courseImage: courseImage,
-                // courseCreator: courseCreatorName,
-                // courseDescription: courseDescription,
-                // isFree: coursePrice ? false : true,
+                courseCreator: courseCreatorName,
+                courseDescription: courseDescription,
+                isFree: coursePrice ? false : true,
                 coursePrice: coursePrice,
                 instructorID: instructorId,
-                // courseCategories: courseCategories,
-                // instructorName: courseCreatorName,
-                isPublished: true,
-                // courseDuration,
-                // technologiesYouAreGoingToLearn: technologiesYouWillLearn,
-                // thisCourseIsFor,
-                // prerequisits,
-                // whatYouWillLearn,
+                courseCategories: courseCategories,
+                instructorName: courseCreatorName,
+                isPublished: isPublished ?? true,
+                technologiesYouAreGoingToLearn: courseTechnologies,
+                thisCourseIsFor: courseThisCourseIsFor,
+                prerequisits: coursePrerequisits,
+                whatYouWillLearn: courseWhatYouWillLearn,
             }
         });
 
         return NextResponse.json({
             success: true,
             data: createdCourse,
+            createdCategories: addedToDbCategories,
             message: 'Course Successfully Created',
         }, { status: 200 });
     } catch (error: any) {

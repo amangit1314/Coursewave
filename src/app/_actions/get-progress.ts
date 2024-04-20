@@ -17,12 +17,12 @@ export const getProgress = async (
 
     const publishedChapterIds = publishedChapters.map((chapter) => chapter.id);
 
-    const validCompletedChapters = await db.userProgress.count({
+    const validCompletedChapters = await db.courseProgress.count({
       where: {
         userId: userId,
-        chapterId: {
-          in: publishedChapterIds,
-        },
+        // chapterId: {
+        //   in: publishedChapterIds,
+        // },
         isCompleted: true,
       }
     });
@@ -31,7 +31,7 @@ export const getProgress = async (
 
     return progressPercentage;
   } catch (error) {
-    console.log("[GET_PROGRESS]", error);
+    console.log("[GET_PROGRESS_ERROR]", error);
     return 0;
   }
 }

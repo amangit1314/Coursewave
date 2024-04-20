@@ -28,12 +28,13 @@ import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Category, Course } from "@prisma/client";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -50,40 +51,52 @@ interface CategoryFormProps {
 }
 
 const formSchema = z.object({
-  categories: z.string().array().min(1, "Please select at least one category"),
+  // categories: z.string().array().min(1, "Please select at least one category"),
+  categories: z.string(),
 });
 
-// || ["Next.js", "Full Stack Dev", "Front-end Dev"]
 export const CategoryForm = ({ course }: CategoryFormProps) => {
+  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
-  const [points, setPoints] = useState(
-    [...course?.courseCategories]
-  );
+  const [points, setPoints] = useState([...course?.courseCategories]);
 
   const toggleEdit = () => setIsEditing((current) => !current);
-
-  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      categories: course?.courseCategories || ["Next.js", "Full Stack Dev", "Front-end Dev"],
+      // categories: course?.courseCategories ?? [
+      //   "Next.js",
+      //   "Full Stack Dev",
+      //   "Front-end Dev",
+      // ],
+      categories: course?.courseCategories.toString() ?? "",
     },
   });
 
   const { isSubmitting, isValid } = form.formState;
 
+  let categories = form.getValues("categories");
+  const categoriesArray = categories
+    .split(",")
+    .map((item: string) => item.trim());
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post(
-        `/api/instructor/${course?.instructorID}/dashboard/courses/${course.courseId}/attachments`,
-        { newCourseCategories: points }
+      // const categoriesArray = values.categories
+      //   .split(",")
+      //   .map((item: string) => item.trim());
+
+      await axios.patch(
+        `/api/instructor/${course?.instructorID}/dashboard/courses/${course.courseId}/editCategories`,
+        { categories: categoriesArray }
       );
       toast.success("Course categories updated ...");
       toggleEdit();
       router.refresh();
-    } catch {
-      toast.error("Something went wrong");
+    } catch (err: any) {
+      console.log(`Something went wrong, ERROR: ${err.message}`);
+      toast.error(`Something went wrong, ERROR: ${err.message}`);
     }
   };
 
@@ -93,30 +106,21 @@ export const CategoryForm = ({ course }: CategoryFormProps) => {
     setPoints(updatedPoints);
   };
 
-  const [inputValue, setInputValue] = React.useState<string>("");
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "," || event.key ==="Enter" && inputValue.trim() !== "") {
-      event.preventDefault();
-      setPoints([...points, inputValue.trim()]);
-      setInputValue("");
-      inputRef.current?.focus();
-    }
-  };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
-  };
-
   const handleDeleteCategory = (category: string) => {
-    setPoints(points.filter((c) => c !== category));
+    const categoriesArray = form
+      .getValues("categories")
+      .split(",")
+      .map((item: string) => item.trim());
+    setPoints(categoriesArray.filter((c) => c !== category));
   };
+
+  console.log("categories in categories form: ", course?.courseCategories);
+  console.log(`Form values: `, form.getValues("categories"));
 
   return (
     <div className="mt-6 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4">
       <div className="font-medium flex items-center justify-between">
-        Course category
+        Course categories
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Cancel</>
@@ -128,17 +132,18 @@ export const CategoryForm = ({ course }: CategoryFormProps) => {
           )}
         </Button>
       </div>
+
       {!isEditing && (
         <>
-          {course?.courseCategories!.length === 0 && (
+          {categoriesArray.length === 0 && (
             <p className="text-sm mt-2 text-gray-500 dark:text-gray-400 italic">
               No attachments yet
             </p>
           )}
 
-          {course?.courseCategories!.length > 0 && (
+          {categoriesArray.length > 0 && (
             <div className="flex space-x-2 max-w-[408px] w-full pb-1 overflow-x-scroll overflow-y-hidden mt-2">
-              {course?.courseCategories.map((category, index) => (
+              {categoriesArray.map((category, index) => (
                 <div
                   key={index}
                   className="flex w-full items-center p-3 bg-sky-100 dark:bg-zinc-800 border-sky-200 dark:border-none border text-sky-700 dark:text-gray-100 rounded-full"
@@ -177,7 +182,7 @@ export const CategoryForm = ({ course }: CategoryFormProps) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
+                    {/* <Input
                       ref={inputRef}
                       className="dark:bg-transparent w-full  "
                       type="text"
@@ -185,8 +190,18 @@ export const CategoryForm = ({ course }: CategoryFormProps) => {
                       value={inputValue}
                       onChange={handleInputChange}
                       onKeyDown={handleKeyDown}
+                    /> */}
+                    <Input
+                      className="dark:bg-transparent w-full border-gray-700 dark:border-gray-400  "
+                      type="text"
+                      placeholder="i.e. Next.js, Flutter etc ..."
+                      // value={inputValue}
+                      {...field}
                     />
                   </FormControl>
+                  <FormDescription>
+                    Add course categories here, Saperate categories with ,
+                  </FormDescription>
 
                   <div className="my-3 flex flex-wrap -m-1">
                     {points.map((point, index) => (
@@ -203,7 +218,6 @@ export const CategoryForm = ({ course }: CategoryFormProps) => {
                           fill="currentColor"
                           onClick={() => handleDeleteCategory(point)}
                         >
-                          {/* Add the icon here */}
                           <RxCross2 size={22} />
                         </svg>
                       </span>

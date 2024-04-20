@@ -79,7 +79,7 @@ export const TitleForm = ({ course}: {
           className={cn(
             "text-sm mt-2",
             !course.courseTitle ?
-            "text-gray-500 dark:text-gray-400 italic" : "font-semibold text-md text-base"
+            "text-gray-500 dark:text-gray-400 italic" : " text-md text-base"
           )}
         >
           {course?.courseTitle! || "No title"}

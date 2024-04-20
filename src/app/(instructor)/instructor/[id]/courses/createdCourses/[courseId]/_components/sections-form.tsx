@@ -30,9 +30,9 @@ interface SectionsFormProps {
 }
 
 const formSchema = z.object({
-  title: z.string().min(1),
-  sectionNumber: z.number().optional(),
-  sectionDescription: z.string().optional(),
+  sectionNumber: z.string(),
+  title: z.string(),
+  sectionDescription: z.string(),
 });
 
 export const SectionsForm = ({ initialData, course, sections, chapters }: SectionsFormProps) => {
@@ -52,8 +52,8 @@ export const SectionsForm = ({ initialData, course, sections, chapters }: Sectio
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      sectionNumber: 0,
-      sectionDescription: "This is sample ..."
+      sectionNumber: "",
+      sectionDescription: ""
     },
   });
 
@@ -61,18 +61,20 @@ export const SectionsForm = ({ initialData, course, sections, chapters }: Sectio
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      const sectionNumber = Number(values.sectionNumber);
       await axios.post(
         `/api/instructor/${course.instructorID}/dashboard/courses/${courseId}/sections`,
         {
           courseSectionTitle: values.title,
-          courseSectionNumber: values.sectionNumber,
+          courseSectionNumber: sectionNumber,
           courseSectionDescription: values.sectionDescription,
         }
       );
       toast.success("Section created successfully ...");
       toggleCreating();
       router.refresh();
-    } catch {
+    } catch (err: any) {
+      console.log('Error: ', err.message);
       toast.error("Something went wrong");
     }
   };
@@ -136,8 +138,9 @@ export const SectionsForm = ({ initialData, course, sections, chapters }: Sectio
                 <FormItem>
                   <FormControl>
                     <Input
+                      // type="number"
                       disabled={isSubmitting}
-                      placeholder="e.g. '1'"
+                      placeholder="e.g. 1"
                       {...field}
                     />
                   </FormControl>
@@ -182,7 +185,7 @@ export const SectionsForm = ({ initialData, course, sections, chapters }: Sectio
 
             <Button
               className="dark:bg-zinc-800"
-              disabled={!isValid || isSubmitting}
+              // disabled={!isSubmitting}
               type="submit"
             >
               Create

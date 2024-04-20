@@ -43,12 +43,13 @@ function Offerings() {
       <div className="mx-auto mt-8 mb-16 grid gap-x-5 text-center grid-cols-2 lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
         {offerings.map((offering, index) => {
           return (
-            <OfferingsLinkItem
-              key={index}
-              link={offering.link}
-              title={offering.title}
-              description={offering.description}
-            />
+            <div key={index}>
+              <OfferingsLinkItem
+                link={offering.link}
+                title={offering.title}
+                description={offering.description}
+              />
+            </div>
           );
         })}
       </div>
@@ -59,19 +60,16 @@ function Offerings() {
 export default Offerings;
 
 const OfferingsLinkItem = ({
-  key,
   link,
   title,
   description,
 }: {
-    key: any;
   link: string;
   title: string;
   description: string;
 }) => {
   return (
     <Link
-      key={key}
       href={
         link
           ? link

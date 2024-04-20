@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { absoluteUrl } from "../lib/utils";
+import { Instructor } from "@prisma/client";
 
 const useInstructorInfo = (instructorId: string) => {
   const fetchInstructorInfo = async () => {
@@ -13,11 +14,16 @@ const useInstructorInfo = (instructorId: string) => {
     return await instructorResponse.json();
   }
 
-  return useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["instructor"],
     queryFn: fetchInstructorInfo,
     staleTime: 4,
   });
+
+  const instructor: Instructor = data?.data!;
+  console.log('Instructor Info in the useInstructorInfo hook', instructor);
+
+  return { instructor, isLoading, error };
 };
 
 export default useInstructorInfo;

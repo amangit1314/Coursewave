@@ -37,24 +37,34 @@ const handleAuth = async () => {
 export const ourFileRouter = {
   imageUploader: f({ image: { maxFileSize: "4MB" } })
     .middleware(async () => await handleAuth())
-    .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Upload complete for userId:", metadata.userId);
-      console.log("file url", file.url);
-      return { uploadedBy: metadata.userId };
-    }),
+    .onUploadComplete((data) => console.log(`data on image upload: ${data}`)),
+  // .onUploadComplete(async ({ metadata, file }) => {
+  //   console.log("Upload complete for userId:", metadata.userId);
+  //   console.log("file url", file.url);
+  //   return { uploadedBy: metadata.userId, metadata };
+  // }),
+  courseImageUpdater: f({ image: { maxFileSize: "4MB" } })
+    .middleware(async () => await handleAuth())
+    .onUploadComplete((data) => console.log(`data on profile image update: ${data}`)),
+  // .onUploadComplete(async ({ metadata, file }) => {
+  //   console.log("Upload complete for userId:", metadata.userId);
+  //   console.log("file url after updating image", file.url);
+  //   return { uploadedBy: metadata.userId, metadata };
+  // }),
   profileImageUpdater: f({ image: { maxFileSize: "4MB" } })
     .middleware(async () => await handleAuth())
-    .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Upload complete for userId:", metadata.userId);
-      console.log("file url after updating image", file.url);
-      return { uploadedBy: metadata.userId };
-    }),
+    .onUploadComplete((data) => console.log(`data on profile image upload: ${data}`)),
+  // .onUploadComplete(async ({ metadata, file }) => {
+  //   console.log("Upload complete for userId:", metadata.userId);
+  //   console.log("file url after updating image", file.url);
+  //   return { uploadedBy: metadata.userId, metadata };
+  // }),
   courseAttachment: f(["text", "image", "video", "audio", "pdf"])
     .middleware(() => handleAuth())
-    .onUploadComplete(() => { }),
+    .onUploadComplete((data) => console.log(`data on profile attachment upload: ${data}`)),
   chapterVideo: f({ video: { maxFileCount: 1, maxFileSize: "512GB" } })
     .middleware(() => handleAuth())
-    .onUploadComplete(() => { })
+    .onUploadComplete((data) => console.log(`data on profile image upload: ${data}`))
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

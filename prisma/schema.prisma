@@ -31,89 +31,99 @@ model User {
   resetTokenExpiry           String?
   resetTokenStatus           String?
 
-  // STRIPE
-  stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
-  stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
-  stripePriceId          String?   @map(name: "stripe_price_id")
-  stripeCurrentPeriodEnd DateTime? @map(name: "stripe_current_period_end")
-
-  // relations
+  // RELATIONS
   wishList       WishList[]
   cart           Cart[]
   enrollments    Enrollment[]
   payments       Payment[]
-  savedCourses   Course[]
   BlogComment    BlogComment[]
   Blog           Blog[]
   Review         Review[]
   CourseProgress CourseProgress[]
+  Subscription   Subscription[]
+  StripeCustomer StripeCustomer?
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
+// * STRIPE CUSTOMER MODEL
 model StripeCustomer {
   stripeCustomerId       String    @id
   userId                 String    @unique
-  stripeSubscriptionId   String?
+  stripeSubscriptionId   String?   @unique
   stripePriceId          String?
   stripeCurrentPeriodEnd DateTime?
 
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @default(now())
+  user User? @relation(fields: [userId], references: [id])
+
+  createdAt    DateTime?     @default(now())
+  updatedAt    DateTime?     @updatedAt
+  Subscription Subscription?
 }
 
 //* CART MODELS
 model Cart {
-  id        String     @id
-  userId    String
-  user      User       @relation(fields: [userId], references: [id])
+  id     String @id
+  userId String
+
+  user      User?      @relation(fields: [userId], references: [id])
   cartItems CartItem[]
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model CartItem {
-  id                   String    @id @unique
-  userId               String
-  courseId             String
+  id                   String  @id @unique
+  userId               String  @unique
+  courseId             String  @unique
   courseName           String
   courseInstructorName String
   courseImageUrl       String?
   coursePrice          String
-  quantity             Int       @default(1)
-  createdAt            DateTime? @default(now())
-  updatedAt            DateTime? @default(now()) @updatedAt
-  cart                 Cart?     @relation(fields: [id], references: [id])
+  quantity             Int     @default(1)
+
+  cart Cart? @relation(fields: [id], references: [id])
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 //* WISHLIST MODEL
 model WishList {
-  userId          String   @id
-  wishListedItems String[]
-  user            User?    @relation(fields: [userId], references: [id])
+  userId String @id
+
+  courses Course[]
+  user    User?    @relation(fields: [userId], references: [id])
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
-//? COURSE MODELS
+//* COURSE MODELS
 model Course {
-  courseId                       String    @id
+  courseId                       String   @id
   courseTitle                    String
   courseImage                    String?
   courseCreator                  String?
   courseDescription              String?
-  isFree                         Boolean   @default(false)
+  isFree                         Boolean  @default(false)
   coursePrice                    String?
   dealPrice                      String?
   discount                       String?
   instructorID                   String?
-  isLive                         Boolean?  @default(false)
-  courseCategories               String[]  @default([])
+  isLive                         Boolean? @default(false)
+  courseCategories               String[] @default(["Full Stack, Next.js"])
   instructorName                 String?
-  isPublished                    Boolean?  @default(false)
-  avgStarRatings                 Float?    @default(5.0)
-  courseDuration                 String?   @default("1 hour 50 minutes")
-  technologiesYouAreGoingToLearn String[]  @default(["Flutter", "Node.js", "Next.js"])
-  thisCourseIsFor                String[]  @default(["Who wants to learn.", "Want to understand concepts of this topic.", "If you are a enthusiast of subject."])
-  prerequisits                   String[]  @default(["Must have a good internet connection.", "Laptop is a must.", "And if you Want to learn & gain knowledge"])
-  whatYouWillLearn               String[]  @default(["How to configure and setup open source project", "How to maintain open source codebase"])
+  isPublished                    Boolean? @default(false)
+  avgStarRatings                 Float?   @default(5.0)
+  courseDuration                 String?  @default("1 hour 50 minutes")
+  technologiesYouAreGoingToLearn String[] @default(["Flutter", "Node.js", "Next.js"])
+  thisCourseIsFor                String[] @default(["Who wants to learn.", "Want to understand concepts of this topic.", "If you are a enthusiast of subject."])
+  prerequisits                   String[] @default(["Must have a good internet connection.", "Laptop is a must.", "And if you Want to learn & gain knowledge"])
+  whatYouWillLearn               String[] @default(["How to configure and setup open source project", "How to maintain open source codebase"])
   categoryId                     String?
-  createdAt                      DateTime? @default(now())
-  updatedAt                      DateTime? @updatedAt
   userId                         String?
 
   reviews                          Review[]
@@ -125,32 +135,23 @@ model Course {
   categories                       Category[]
   chapters                         Chapter[]
   instructorEarningsFromThisCourse InstructorEarning[]
+  CourseProgress                   CourseProgress[]
+  MuxData                          MuxData[]
 
-  Instructor     Instructor?      @relation(fields: [instructorID], references: [instructorID])
-  User           User?            @relation(fields: [userId], references: [id])
-  CourseProgress CourseProgress[]
-}
+  Instructor Instructor? @relation(fields: [instructorID], references: [instructorID])
+  WishList   WishList?   @relation(fields: [userId], references: [userId])
 
-model Review {
-  id        String    @id @unique
-  rating    Float
-  comment   String
-  userId    String
-  courseId  String
   createdAt DateTime? @default(now())
-  updatedAt DateTime? @default(now())
-
-  Course Course? @relation(fields: [courseId], references: [courseId])
-  User   User?   @relation(fields: [userId], references: [id])
+  updatedAt DateTime? @updatedAt
 }
 
 model CourseAttachment {
-  id           String @id @default(uuid())
+  id           String  @id @default(uuid())
   name         String
   url          String
   instructorId String
   courseId     String
-  course       Course @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
+  course       Course? @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -158,24 +159,19 @@ model CourseAttachment {
   @@index([courseId])
 }
 
-model MuxData {
-  id         String  @id @default(uuid())
-  assetId    String
-  playbackId String?
-
-  chapterId String  @unique
-  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-}
-
 model CourseSection {
-  courseSectionId          String    @id @unique
+  courseSectionId          String  @id @unique
   courseId                 String
   instructorId             String
   courseSectionNumber      Int
   courseSectionTitle       String
   courseSectionDescription String?
-  course                   Course?   @relation(fields: [courseId], references: [courseId])
-  chapters                 Chapter[]
+
+  chapters Chapter[]
+  course   Course?   @relation(fields: [courseId], references: [courseId])
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model Chapter {
@@ -187,21 +183,58 @@ model Chapter {
   isPublished     Boolean @default(false)
   isFree          Boolean @default(false)
   chapterDuration String? @default("03:00")
+  courseId        String
+  isCompleted     Boolean @default(false)
+  // try to make courseSectionId required and update the related code accordingly
+  courseSectionId String?
 
-  muxData MuxData?
-
-  courseId String
-  course   Course @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
-
-  chapterNotes ChapterNotes[]
+  chapterNotes  ChapterNotes[]
+  muxData       MuxData?
+  course        Course?        @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
+  courseSection CourseSection? @relation(fields: [courseSectionId], references: [courseSectionId])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  courseSectionId String?
-  courseSection   CourseSection? @relation(fields: [courseSectionId], references: [courseSectionId])
-
   @@index([courseId])
+}
+
+model ChapterProgress {
+  id               String         @id @default(uuid())
+  courseProgress   CourseProgress? @relation(fields: [courseProgressId], references: [id])
+  chapterId        String
+  courseProgressId String
+  isCompleted      Boolean        @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id        String    @id @unique
+  rating    Float
+  comment   String
+  userId    String    @unique
+  courseId  String    @unique
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  Course Course? @relation(fields: [courseId], references: [courseId])
+  User   User?   @relation(fields: [userId], references: [id])
+}
+
+model MuxData {
+  id         String @id @default(uuid())
+  assetId    String
+  playbackId String
+  courseId   String
+  chapterId  String @unique
+
+  chapter Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  course  Course?  @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model ChapterNotes {
@@ -212,40 +245,55 @@ model ChapterNotes {
   note      String
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  Chapter   Chapter  @relation(fields: [chapterId], references: [id])
-}
+  updatedAt DateTime @updatedAt
 
-// enum EnrollmentStatus {
-//   STARTED
-//   IN_PROGRESS
-//   COMPLETED
-// }
-model Enrollment {
-  enrollmentId     String  @id
-  userId           String
-  courseId         String
-  enrollmentDate   String
-  completionStatus String
-  user             User?   @relation(fields: [userId], references: [id])
-  course           Course? @relation(fields: [courseId], references: [courseId])
+  chapter Chapter? @relation(fields: [chapterId], references: [id])
 }
 
 model CourseProgress {
-  id          String  @id @default(uuid())
-  userId      String
-  courseId    String
-  progress    Float   @default(0.0)
-  isCompleted Boolean @default(false)
+  id                  String  @id @default(uuid())
+  userId              String
+  courseId            String
+  progress            Float   @default(0.0)
+  completedPercentage Int     @default(0)
+  enrollmentId        String  @unique
+  isCompleted         Boolean @default(false)
 
-  user   User   @relation(fields: [userId], references: [id])
-  course Course @relation(fields: [courseId], references: [courseId])
+  user        User?        @relation(fields: [userId], references: [id])
+  course      Course?      @relation(fields: [courseId], references: [courseId])
+  enrollments Enrollment[]
+
+  createdAt       DateTime?         @default(now())
+  updatedAt       DateTime?         @updatedAt
+  ChapterProgress ChapterProgress[]
 
   @@unique([userId, courseId])
   @@index([courseId])
 }
 
-//! PAYMENT MODELS
+//* ENROLLMENT MODELS
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  DROPPED
+}
+
+model Enrollment {
+  enrollmentId     String           @id
+  userId           String
+  courseId         String
+  enrollmentDate   String
+  courseProgressId String
+  enrollmentStatus EnrollmentStatus @default(ACTIVE)
+  user             User?            @relation(fields: [userId], references: [id])
+  course           Course?          @relation(fields: [courseId], references: [courseId])
+  courseProgress   CourseProgress?  @relation(fields: [enrollmentId], references: [enrollmentId])
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+// * SUBSCRIPTION MODEL
 model Subscription {
   id                     String    @id @unique
   userId                 String
@@ -254,31 +302,21 @@ model Subscription {
   stripePriceId          String
   stripeCurrentPeriodEnd DateTime? @default(now())
 
+  stripeCustmoer StripeCustomer? @relation(fields: [stripeCustomerId], references: [stripeCustomerId])
+  user           User?           @relation(fields: [userId], references: [id])
+
   createdAt DateTime? @default(now())
-  updatedAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
-model Payment {
-  paymentId     String        @id @unique // Primaru Key
-  userId        String        @unique // UserID (Foreign Key to User)
-  courseId      String        @unique // CourseID (Foreign Key to Course)
-  paymentDate   DateTime      @default(now())
-  amount        String
-  paymentMethod String?
-  transactionId String?       @unique
-  user          User?         @relation(fields: [userId], references: [id])
-  course        Course?       @relation(fields: [courseId], references: [courseId])
-  transaction   Transaction[]
-}
-
+//* PURCHASE MODEL
 model Purchase {
   id       String @id @unique @default(uuid())
   userId   String
   courseId String
   amount   String
 
-  course Course @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
-
+  course    Course?   @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt()
 
@@ -286,68 +324,102 @@ model Purchase {
   @@index([courseId])
 }
 
-model Transaction {
-  transactionId     String   @id // (Primary Key)
-  paymentId         String // (Foreign Key to Payment)
-  transactionDate   DateTime @default(now())
-  transactionAmount String
-  transactionStatus String
-  payment           Payment? @relation(fields: [paymentId], references: [paymentId])
-}
-
-//? Category MODEL
+//* Category MODEL
 model Category {
   name    String   @id
   courses Course[]
   blogs   Blog[]
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 //* BLOG MODELS
 model Blog {
-  id                   String        @id @unique
+  id                   String  @id @unique
   title                String
   content              Json
   estimatedReadingTime String
-  clapsCount           BigInt?       @default(0)
-  comments             BlogComment[]
-  categoryName         String?
-  category             Category?     @relation(fields: [categoryName], references: [name])
+  clapsCount           BigInt? @default(0)
   authorId             String
-  author               User?         @relation(fields: [authorId], references: [id])
+  categoryName         String?
+
+  comments BlogComment[]
+  category Category?     @relation(fields: [categoryName], references: [name])
+  author   User?         @relation(fields: [authorId], references: [id])
 
   createdAt DateTime? @default(now())
-  updatedAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model BlogComment {
-  id        String    @id @default(cuid())
-  blogId    String
-  content   String
-  authorId  String
-  blog      Blog      @relation(fields: [blogId], references: [id])
-  author    User?     @relation(fields: [authorId], references: [id])
+  id       String @id @default(cuid())
+  blogId   String
+  content  String
+  authorId String
+  blog     Blog?  @relation(fields: [blogId], references: [id])
+  author   User?  @relation(fields: [authorId], references: [id])
+
   writtenOn DateTime? @default(now())
-  editedOn  DateTime? @default(now())
+  editedOn  DateTime? @updatedAt
 }
 
 //* INSTRUCTOR MODELS
 model Instructor {
-  instructorID            String              @id
+  instructorID            String  @id
   instructorName          String
   instructorEmail         String
   instructorTag           String
   instructorProfilePicUrl String
   aboutInstructor         String?
-  createdCourses          Course[]
-  earnings                InstructorEarning[]
+
+  createdCourses Course[]
+  earnings       InstructorEarning[]
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model InstructorEarning {
-  earningId     String      @id
+  earningId     String @id
   instructorId  String
   courseId      String
   earningDate   String
   earningAmount String
-  instructor    Instructor? @relation(fields: [instructorId], references: [instructorID])
-  course        Course?     @relation(fields: [courseId], references: [courseId])
+
+  instructor Instructor? @relation(fields: [instructorId], references: [instructorID])
+  course     Course?     @relation(fields: [courseId], references: [courseId])
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+// ! PAYMENT MODELS
+model Payment {
+  paymentId     String        @id @unique
+  userId        String        @unique
+  courseId      String        @unique
+  paymentDate   DateTime      @default(now())
+  amount        String
+  paymentMethod String?
+  transactionId String?       @unique
+  user          User?         @relation(fields: [userId], references: [id])
+  course        Course?       @relation(fields: [courseId], references: [courseId])
+  transactions  Transaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Transaction {
+  transactionId     String   @id
+  paymentId         String
+  transactionDate   DateTime @default(now())
+  transactionAmount String
+  transactionStatus String
+
+  payment Payment? @relation(fields: [paymentId], references: [paymentId])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

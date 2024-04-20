@@ -1,20 +1,42 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Josefin_Sans } from "next/font/google";
 import { ThemeModeToggle } from "@/components/themeModeToggle";
 import { ProgressCircle } from "@tremor/react";
 import UserAvatar from "@/components/user-avatar";
-import { Course } from "@prisma/client";
+import { Course, CourseProgress, Enrollment } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import Notifications from "@/components/notification-button";
 import { absoluteUrl } from "@/lib/utils";
+import { db } from "@/lib/db";
+import toast from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
+import useCourseProgressStore from "@/zustand/courseProgressStore";
+import useUserInfo from "@/hooks/use-user-info";
 
 const josefinSans = Josefin_Sans({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
 });
 
-function CourseContentNavbar({ course }: any) {
+async function CourseContentNavbar({ course }: any) {
+  console.log("Course in the course content navbar: ", course);
+
+  const { courseProgress, fetchCourseProgress } = useCourseProgressStore();
+  const user = useUserInfo();
+  const userId = user.user?.id;
+  const courseId = course?.courseId!;
+
+  useEffect(() => {
+    fetchCourseProgress(userId, courseId);
+  }, [fetchCourseProgress, userId, courseId]);
+
+  if (!courseProgress) {
+    return <p>Loading course progress ...</p>;
+  }
+
+  console.log("Course Progress Data: ", courseProgress);
 
   return (
     <div className="flex md:h-[64px] px-4 md:px-8 justify-between items-center w-full">
@@ -46,9 +68,7 @@ function CourseContentNavbar({ course }: any) {
         </div>
       </div>
 
-      <Link
-        href={absoluteUrl(`/browseCourses`)}
-        className="visible md:hidden">
+      <Link href={absoluteUrl(`/browseCourses`)} className="visible md:hidden">
         <Image
           src="/assets/images/logo/coursewave-favicon-color.png"
           alt="CourseWave Logo"
@@ -61,12 +81,12 @@ function CourseContentNavbar({ course }: any) {
 
       <div className="ml-auto flex items-center justify-end space-x-3 py-2">
         <div className="flex flex-row justify-center items-center space-x-2">
-          <ProgressCircle value={75} size="sm">
+          <ProgressCircle value={courseProgress.progress ?? 0} size="sm">
             <span className="text-[10px] font-medium text-slate-700 dark:text-slate-50">
-              75%
+              {courseProgress.progress ?? 0}%
             </span>
           </ProgressCircle>
-          <p className="text-xs">Your Progress</p>
+          <p className="text-xs">Completed</p>
         </div>
 
         {/* theme toggle */}

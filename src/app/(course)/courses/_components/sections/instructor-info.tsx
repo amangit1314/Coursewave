@@ -14,7 +14,7 @@ export default function InstructorCard({
   instructorId: string;
   }) {
   console.log(`Instructor id in the instructor-info.tsx: ${instructorId} `)
-  const instructor = useInstructorInfo(instructorId);
+  const instructor = useInstructorInfo(instructorId).instructor;
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<String | null>(null);
   const [instructorCreatedCourses, setInstructorCreatedCourses] =
@@ -65,8 +65,8 @@ export default function InstructorCard({
         <div className="flex flex-col space-y-2">
           <Image
             src={
-              instructor.data
-                ? instructor.data.instructorProfilePicUrl
+              instructor
+                ? instructor.instructorProfilePicUrl
                 : "/assets/images/cards/cards-01.png"
             }
             alt={`Image`}
@@ -78,11 +78,11 @@ export default function InstructorCard({
 
           <div className="flex flex-col items-start text-start text-base">
             <p className="text-lg text-gray-800 dark:text-slate-200 line-clamp-1 tracking-tight font-semibold">
-              {instructor.data ? instructor.data.instructorName : "Aman Soni"}
+              {instructor ? instructor.instructorName : "Aman Soni"}
             </p>
             <p className="text-sm line-clamp-2 tracking-tight text-gray-700 dark:text-gray-400 font-thin ">
-              {instructor.data
-                ? instructor.data.instructorTag
+              {instructor
+                ? instructor.instructorTag
                 : "Full Stack Engineer"}
             </p>
           </div>
@@ -94,8 +94,8 @@ export default function InstructorCard({
           </p>
           {/* hidden md:visible */}
           <p className="text-sm md:text-md text-start md:text-base md:text-md max-w-3xl w-full line-clamp-3 md:line-clamp-4 font-noraml text-gray-700 dark:text-gray-400">
-            {instructor.data
-              ? instructor.data.aboutInstructor
+            {instructor
+              ? instructor.aboutInstructor
               : `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Provident
           eos odit nam quae repellat quis cumque reiciendis autem ab expedita
           Provident eos odit nam quae repellat. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Provident

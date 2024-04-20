@@ -4,29 +4,23 @@ import Link from "next/link";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import useUserInfo from "@/hooks/use-user-info";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export function UserAvatar() {
+const UserAvatar = () => {
   const user = useUserInfo();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        {/* <Button variant="outline">Open</Button> */}
-        <Avatar className="rounded-lg cursor-pointer transition-all">
+        <Avatar className="rounded-lg cursor-pointer transition-all duration-300">
           <AvatarImage
             src={
               user.user?.profileImageUrl
@@ -43,56 +37,27 @@ export function UserAvatar() {
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem className="transition-all">
+          <DropdownMenuItem className="transition-all duration-300">
             <Link href={`/profile/${user.user?.id}/`}>Profile</Link>
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            <DropdownMenuShortcut>
+              <Link href={`/profile/${user.user?.id}/`}>⌘P</Link>
+            </DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem className="transition-all">
-            Subscription
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+          <DropdownMenuItem className="transition-all duration-300">
+            <Link href={`/subscription`}>Subscription</Link>
+            <DropdownMenuShortcut>
+              <Link href={`/profile/${user.user?.id}/`}>⌘S</Link>
+            </DropdownMenuShortcut>
           </DropdownMenuItem>
-          {/* <DropdownMenuItem className="transition-all">
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem> */}
-          {/* <DropdownMenuItem className="transition-all">
-            Settings
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem> */}
-          {/* <DropdownMenuItem className="transition-all">
-            Keyboard shortcuts
-            <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-          </DropdownMenuItem> */}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        {/* <DropdownMenuGroup>
-          <DropdownMenuItem>Team</DropdownMenuItem>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem>Email</DropdownMenuItem>
-                <DropdownMenuItem>Message</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>More...</DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-          <DropdownMenuItem>
-            New Team
-            <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuGroup> */}
-        <DropdownMenuSeparator />
-        {/* <DropdownMenuItem className="transition-all">Support</DropdownMenuItem> */}
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="transition-all">
+        <DropdownMenuItem className="transition-all duration-300">
           Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+          <DropdownMenuShortcut>⌘L</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};
 
 export default UserAvatar;

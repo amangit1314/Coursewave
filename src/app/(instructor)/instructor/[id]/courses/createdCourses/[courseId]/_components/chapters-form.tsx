@@ -46,9 +46,9 @@ export const ChaptersForm = ({
 
   const toggleCreating = (sectionId: string) => {
     setIsCreating((current) => !current);
-    router.push(
-      `/instructor/${course.instructorID}/courses/createdCourses/${course.courseId}/sections/${sectionId}/chapters/createChapter`
-    );
+    // router.push(
+    //   `/instructor/${course.instructorID}/courses/createdCourses/${course.courseId}/sections/${sectionId}/chapters/createChapter`
+    // );
   };
 
   const router = useRouter();
@@ -64,15 +64,16 @@ export const ChaptersForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.put(
+      await axios.post(
         `/api/instructor/${instructorId}/dashboard/courses/${courseId}/sections/${section.courseSectionId}/chapters`,
-        values
+        { chapterTitle: values.title }
       );
       toast.success("Chapter created");
       toggleCreating(section.courseSectionId);
       router.refresh();
-    } catch {
-      toast.error("Something went wrong");
+    } catch (err: any) {
+      console.log('Error in creating chapter: ', err.message)
+      toast.error(`Something went wrong, ${err.message}`);
     }
   };
 

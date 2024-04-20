@@ -69,7 +69,7 @@ export const TechnologiesForm = ({ course }: { course: Course }) => {
     updatedPoints.splice(index, 1); // Remove the point at the specified index
     setPoints(updatedPoints);
   };
-
+2
   return (
     <div className="mt-6 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4">
       <div className="font-medium flex items-center justify-between mb-2">

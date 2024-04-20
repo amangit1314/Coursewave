@@ -1,5 +1,6 @@
 "use client";
 
+import "@uploadthing/react/styles.css";
 import { usePathname } from "next/navigation";
 import InstructorNavbar from "./_components/instructor-navbar";
 import InstructorSidebar from "./_components/instructor-sidebar";

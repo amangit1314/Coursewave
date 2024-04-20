@@ -49,7 +49,7 @@ const BrowseSection: React.FC<BrowseSectionProps> = ({ children }) => {
   const activeCategory = categories[activeCategoryIndex]?.name || "All";
 
   const user = useUserInfo();
-  console.log('User: ', user);
+  console.log("User: ", user);
 
   return (
     <div className="py-12 w-full px-12 overflow-x-hidden">

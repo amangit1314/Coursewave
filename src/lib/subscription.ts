@@ -7,14 +7,6 @@ export async function getUserSubscriptionPlan(userId: string) {
     where: {
       id: userId,
     },
-    select: {
-      id: true,
-      email: true,
-      stripeSubscriptionId: true,
-      stripeCurrentPeriodEnd: true,
-      stripeCustomerId: true,
-      stripePriceId: true,
-    },
   })
 
   if (!user) {
@@ -23,7 +15,7 @@ export async function getUserSubscriptionPlan(userId: string) {
 
   const stripeCustomer = await db.stripeCustomer.findFirst({
     where: {
-      userId: user?.id!,
+      userId: user.id,
     }
   })
 
@@ -33,7 +25,7 @@ export async function getUserSubscriptionPlan(userId: string) {
 
   const subscription = await db.subscription.findFirst({
     where: {
-      userId: stripeCustomer?.userId!,
+      userId: stripeCustomer.userId,
     }
   });
 

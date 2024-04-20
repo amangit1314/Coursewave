@@ -8,6 +8,7 @@ import LandingPageHeader from "@/components/LandingPage/header";
 import { GlobalQueryClientProvider } from "@/components/providers/query-client-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ToastProvider } from "@/components/providers/toaster-provider";
+import { CookiesProvider } from "next-client-cookies/server";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -46,30 +47,33 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={poppins.className}>
-        <GlobalQueryClientProvider>
-          {/* <Provider store={store}> */}
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <ToastProvider />
-
+        {/* <CookiesProvider> */}
+          <GlobalQueryClientProvider>
             {/* <Provider store={store}> */}
-            <div className="dark:bg-zinc-800">
-              {hideSidebar && (
-                <LandingPageHeader handleLoginClick={handleLoginClick} />
-              )}
 
-              {/* <LandingPageHeader handleLoginClick={handleLoginClick} /> */}
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <ToastProvider />
 
-              {children}
-            </div>
-          </ThemeProvider>
+              {/* <Provider store={store}> */}
+              <div className="dark:bg-zinc-800">
+                {hideSidebar && (
+                  <LandingPageHeader handleLoginClick={handleLoginClick} />
+                )}
 
-          {/* </Provider> */}
-        </GlobalQueryClientProvider>
+                {/* <LandingPageHeader handleLoginClick={handleLoginClick} /> */}
+
+                {children}
+              </div>
+            </ThemeProvider>
+
+            {/* </Provider> */}
+          </GlobalQueryClientProvider>
+        {/* </CookiesProvider> */}
       </body>
     </html>
   );

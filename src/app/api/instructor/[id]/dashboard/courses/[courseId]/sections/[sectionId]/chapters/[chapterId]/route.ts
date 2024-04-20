@@ -165,38 +165,58 @@ export async function PATCH(
         params: {
             id: string;
             courseId: string;
-            sectionId?: string;
+            sectionId: string;
             chapterId: string
         }
     }
 ) {
-    const instructorId = params?.id;
-    const courseId = params?.courseId;
-    const sectionId = params?.sectionId;
-    const chapterId = params?.chapterId;
+    const instructorId = params?.id!;
+    const courseId = params?.courseId!;
+    const sectionId = params?.sectionId!;
+    const chapterId = params?.chapterId!;
 
     try {
         const { isPublished, ...values } = await req.json();
 
-        if (!instructorId) {
-            return new NextResponse("Unauthorized", { status: 401 });
+        if (!instructorId || !courseId || !sectionId || !chapterId) {
+            return new NextResponse("MISSING_REQUIRED_FIELDS", { status: 401 });
+        }
+
+        const course = await db.course.findUnique({
+            where: {
+                courseId: courseId,
+            }
+        })
+
+        if (!course) {
+            return new NextResponse("NOT_FOUND, course with this courseId not found ...", { status: 404 });
         }
 
         const ownCourse = await db.course.findUnique({
             where: {
-                courseId: params.courseId,
+                courseId: courseId,
                 instructorID: instructorId,
             }
         });
 
         if (!ownCourse) {
-            return new NextResponse("Unauthorized", { status: 401 });
+            return new NextResponse("UNAUTHORIZED, this is not your course ...", { status: 401 });
+        }
+
+        const section = await db.courseSection.findUnique({
+            where: {
+                courseSectionId: sectionId,
+            }
+        })
+
+        if (!section) {
+            return new NextResponse("NOT_FOUND, section with this sectionId not found ...", { status: 404 });
         }
 
         const chapter = await db.chapter.update({
             where: {
-                id: params.chapterId,
-                courseId: params.courseId,
+                id: chapterId,
+                courseId: courseId,
             },
             data: {
                 ...values,
@@ -206,7 +226,7 @@ export async function PATCH(
         if (values.videoUrl) {
             const existingMuxData = await db.muxData.findFirst({
                 where: {
-                    chapterId: params.chapterId,
+                    chapterId: chapterId,
                 }
             });
 
@@ -229,16 +249,17 @@ export async function PATCH(
 
             await db.muxData.create({
                 data: {
-                    chapterId: params.chapterId,
                     assetId: asset.id,
-                    playbackId: asset.playback_ids?.[0]?.id,
+                    playbackId: asset.playback_ids?.[0]?.id!,
+                    courseId,
+                    chapterId,
                 }
             });
         }
 
         return NextResponse.json(chapter);
     } catch (error) {
-        console.log("[COURSES_CHAPTER_ID]", error);
+        console.log("[COURSES_CHAPTER_ID_ERROR]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

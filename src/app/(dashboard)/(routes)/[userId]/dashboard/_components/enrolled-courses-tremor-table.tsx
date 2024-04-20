@@ -2,6 +2,7 @@
 import {
   Badge,
   Card,
+  Legend,
   Table,
   TableBody,
   TableCell,
@@ -38,16 +39,18 @@ export function EnrolledCoursesTremorTable({
       <Table className="p-5 rounded-3xl">
         <TableHead>
           <TableRow>
-            <TableHeaderCell>Enrollment Id</TableHeaderCell>
             <TableHeaderCell>Course Name</TableHeaderCell>
             <TableHeaderCell>Enrollment Date</TableHeaderCell>
-            <TableHeaderCell>Completion Status</TableHeaderCell>
+            <TableHeaderCell>Progress</TableHeaderCell>
+            <TableHeaderCell>Certificate</TableHeaderCell>
+            <TableHeaderCell>Status</TableHeaderCell>
+            <TableHeaderCell>Validity</TableHeaderCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {data.map((item) => (
             <TableRow key={item.enrollmentId}>
-              <TableCell>
+              {/* <TableCell>
                 <div className="h-8 w-8 cursor-pointer hover:bg-zinc-950 dark:hover:bg-zinc-600 hover:text-white p-2 hover:rounded-full hover:flex hover:justify-center hover:items-center transition-all duration-300">
                   <CopyToClipboard
                     text={copiedText}
@@ -59,7 +62,7 @@ export function EnrolledCoursesTremorTable({
                     />
                   </CopyToClipboard>
                 </div>
-              </TableCell>
+              </TableCell> */}
               <TableCell>
                 <Link
                   className="hover:text-blue-500 transition-all duration-300 cursor-pointer"
@@ -68,14 +71,38 @@ export function EnrolledCoursesTremorTable({
                   {item.course.courseTitle}
                 </Link>
               </TableCell>
-              <TableCell>{item.enrollmentDate}</TableCell>
+              <TableCell>{item.enrollmentDate.substring(0, 16)}</TableCell>
               <TableCell>
-                <ColoredBadgeComponent item={item} />
+                <CourseProgressItem item={item} />
+              </TableCell>
+              <TableCell>
+                <Link
+                  className="hover:text-blue-500 transition-all duration-300 cursor-pointer"
+                  href={""}
+                >
+                  Certificate
+                </Link>
+              </TableCell>
+              <TableCell>
+                <Legend categories={["Active"]} colors={["green", "indigo"]}>
+                  Active
+                </Legend>
+              </TableCell>
+              <TableCell>
+                <p>Life Time</p>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+    </div>
+  );
+}
+
+const CourseProgressItem = ({item, progress}: any) => {
+  return (
+    <div>
+      {75}%
     </div>
   );
 }

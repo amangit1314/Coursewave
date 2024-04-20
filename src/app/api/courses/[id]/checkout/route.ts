@@ -115,14 +115,24 @@ export const POST = async (req: Request, { params }: {
     // * ------------------- Enrollement for the userid with the courseid ---------------------
     const enrollementId = `enrollement_${courseId}_${userId.split('-')[0]}`;
 
+    const courseProgress = await db.courseProgress.create({
+      data: {
+        userId: userId! as string,
+        courseId: courseId!,
+        enrollmentId: enrollementId,
+        progress: 0.0,
+        completedPercentage: 0,
+      }
+    });
+
     const createdEnrollement = await db.enrollment.create({
       data: {
         enrollmentId: enrollementId,
         userId,
         courseId: course.courseId,
         enrollmentDate: Date().toString(),
-        completionStatus: 'Started',
-
+        enrollmentStatus: "ACTIVE",
+        courseProgressId: courseProgress.id,
       }
     })
 

@@ -24,10 +24,6 @@ export async function POST(req: Request) {
 
   const session = event.data.object as Stripe.Checkout.Session;
 
-  // For course payment 👇
-  const userId = session?.metadata?.userId;
-  const courseId = session?.metadata?.courseId;
-
   if (event.type === "checkout.session.completed") {
     const subscription = await stripe.subscriptions.retrieve(
       session.subscription as string
@@ -52,7 +48,9 @@ export async function POST(req: Request) {
 
     console.log('Created Subscription in checkout session completed event: ', createdSubscription);
 
-    // --------------- for course payment --------------------
+    // --------------- for course payment 👇 --------------------
+    const userId = session?.metadata?.userId;
+    const courseId = session?.metadata?.courseId;
     if (!userId || !courseId) {
       return new NextResponse("MISSING REQUIRED FIELDS, please provide userId and courseId to buy the course", { status: 400 });
     }

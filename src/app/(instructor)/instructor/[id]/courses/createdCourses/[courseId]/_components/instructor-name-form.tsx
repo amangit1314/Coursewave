@@ -27,7 +27,7 @@ interface InstructorNameFormProps {
 }
 
 const formSchema = z.object({
-  courseCreator: z.string().min(1, {
+  instructorName: z.string().min(1, {
     message: "Instructor Name is required ...",
   }),
 });
@@ -36,7 +36,7 @@ export const InstructorNameForm = ({
   course,
 }: InstructorNameFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
-  const user = useUserInfo();
+  // const user = useUserInfo();
   const toggleEdit = () => setIsEditing((current) => !current);
 
   const router = useRouter();
@@ -51,7 +51,7 @@ export const InstructorNameForm = ({
     try {
       await axios.patch(
         `/api/instructor/${course.instructorID}/dashboard/courses/${course.courseId}`,
-        { newInstructorName: values.courseCreator }
+        { newInstructorName: values.instructorName }
       );
       toast.success("Course instructor name updated ...");
       toggleEdit();
@@ -76,17 +76,19 @@ export const InstructorNameForm = ({
           )}
         </Button>
       </div>
+
       {!isEditing && (
         <p
           className={cn(
             "text-sm mt-2",
-            !course?.instructorName &&
+            !course?.courseCreator &&
             "text-gray-500 dark:text-gray-400 italic"
           )}
         >
-          {course?.instructorName || "No istructor name"}
+          {course?.courseCreator || "No istructor name"}
         </p>
       )}
+
       {isEditing && (
         <Form {...form}>
           <form
@@ -95,7 +97,7 @@ export const InstructorNameForm = ({
           >
             <FormField
               control={form.control}
-              name="courseCreator"
+              name="instructorName"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>

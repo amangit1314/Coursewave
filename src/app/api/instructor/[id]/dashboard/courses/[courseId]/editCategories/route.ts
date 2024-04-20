@@ -3,24 +3,26 @@ import { db } from "@/lib/db";
 
 export const dynamic = 'force-dynamic';
 
-export const POST = async (req: NextRequest, { params }: {
+export const PATCH = async (req: NextRequest, { params }: {
     params: {
-        id?: string;
+        id: string;
         courseId: string;
     };
 }) => {
-    const instructorId = params?.id;
-    const courseId = params.courseId;
+    const instructorId = params?.id!;
+    const courseId = params?.courseId!;
 
     const reqBody = await req.json();
     const { categories } = reqBody;
 
     try {
         if (!instructorId || !courseId) {
+            console.log('Invalid Instructor/course Id in editCategories api');
             return NextResponse.json({ success: false, message: "Invalid Instructor/course Id" }, { status: 400 });
         }
 
         if (!categories) {
+            console.log('NO_CATEGORIES, Please provide some categories to update ..');
             return NextResponse.json({ success: false, message: "Please provide some categories to update ..." }, { status: 400 });
         }
 
@@ -29,6 +31,7 @@ export const POST = async (req: NextRequest, { params }: {
         })
 
         if (!course) {
+            console.log('Invalid course Id, no course found with this id');
             return NextResponse.json({
                 success: false, message: "Invalid course Id, no course found with this id"
             }, { status: 404 });
@@ -40,10 +43,11 @@ export const POST = async (req: NextRequest, { params }: {
                 courseId: courseId,
             },
             data: {
-                categories: categories,
+                courseCategories: categories,
             },
         });
 
+        console.log('Update course after updating categories: ', updatedCourse);
         return NextResponse.json({
             success: true,
             data: {
