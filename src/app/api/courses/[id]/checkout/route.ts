@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { stripe } from "@/lib/stripe";
 import { NextResponse } from "next/server";
 import { generateUid } from "@/helpers/id_helper";
+export const dynamic = 'force-dynamic';
 
 export const POST = async (req: Request, { params }: {
   params: {
