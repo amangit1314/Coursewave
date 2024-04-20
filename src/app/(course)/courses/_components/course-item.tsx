@@ -38,7 +38,7 @@ export const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
       <div className="relative">
         <Image
           className="h-40 w-[15rem] bg-slate-700 rounded-xl relative left-0 right-0"
-          src={course.courseImage}
+          src={course.courseImage ?? './assets/images/images1.jpg'}
           alt="Next.js Logo"
           width={250}
           height={35}
