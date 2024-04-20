@@ -95,10 +95,9 @@ export const getAnalytics = async (userId: string) => {
       },
     });
 
-    // Directly access course information from the joined purchases
-    // (No need to fetch enrollments separately as course data is already available)
-
-    const groupedEarnings = groupByCourse(purchases);
+    const groupedEarnings = groupByCourse(
+      purchases.filter((purchase) => purchase.course !== null) as PurchaseWithCourse[]
+    );
     const data = Object.entries(groupedEarnings).map(([courseTitle, total]) => ({
       name: courseTitle,
       total: total,
@@ -113,7 +112,7 @@ export const getAnalytics = async (userId: string) => {
       totalSales,
     };
   } catch (error) {
-    console.log("[GET_ANALYTICS]", error);
+    console.log("[GET_ANALYTICS_ERROR]", error);
     return {
       data: [],
       totalRevenue: 0,
