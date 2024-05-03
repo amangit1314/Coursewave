@@ -18,7 +18,7 @@ export const createStripeUrl = async (userId: string) => {
     throw new Error('Unauthorized');
   }
 
-  const userSubscriptionPlan = await getUserSubscriptionPlan(userId);
+  const userSubscriptionPlan = await getUserSubscriptionPlan();
 
   if (userSubscriptionPlan && userSubscriptionPlan.stripeCustomerId) {
     const stripeSession = await stripe.billingPortal.sessions.create({
