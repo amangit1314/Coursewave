@@ -200,11 +200,11 @@ model Chapter {
 }
 
 model ChapterProgress {
-  id               String         @id @default(uuid())
+  id               String          @id @default(uuid())
   courseProgress   CourseProgress? @relation(fields: [courseProgressId], references: [id])
   chapterId        String
   courseProgressId String
-  isCompleted      Boolean        @default(false)
+  isCompleted      Boolean         @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -284,6 +284,7 @@ model Enrollment {
   courseId         String
   enrollmentDate   String
   courseProgressId String
+  courseTitle      String?
   enrollmentStatus EnrollmentStatus @default(ACTIVE)
   user             User?            @relation(fields: [userId], references: [id])
   course           Course?          @relation(fields: [courseId], references: [courseId])
@@ -385,7 +386,7 @@ model InstructorEarning {
   instructorId  String
   courseId      String
   earningDate   String
-  earningAmount String
+  earningAmount Float?
 
   instructor Instructor? @relation(fields: [instructorId], references: [instructorID])
   course     Course?     @relation(fields: [courseId], references: [courseId])

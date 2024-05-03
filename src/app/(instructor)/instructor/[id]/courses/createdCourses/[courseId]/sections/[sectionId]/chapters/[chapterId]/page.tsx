@@ -87,7 +87,9 @@ const ChapterEditPage = async ({
               </Link>
               <div className="flex items-center justify-between w-full">
                 <div className="flex flex-col gap-y-2">
-                  <h1 className="text-2xl font-medium">Chapter Creation</h1>
+                  <h1 className="text-2xl font-semibold tracking-tight text-zinc-800 dark:text-white">
+                    Chapter Creation
+                  </h1>
                   <span className="text-sm text-slate-700 dark:text-gray-300">
                     Complete all fields {completionText}
                   </span>
@@ -107,7 +109,7 @@ const ChapterEditPage = async ({
               <div className="space-y-4">
                 <div className="flex items-center gap-x-2">
                   {/* <IconBadge icon={LayoutDashboard} /> */}
-                  <h2 className="text-xl tracking-tight font-medium">
+                  <h2 className="text-xl font-semibold tracking-tight text-zinc-800 dark:text-white">
                     Customize your chapter
                   </h2>
                 </div>
@@ -120,6 +122,7 @@ const ChapterEditPage = async ({
 
                 <ChapterDescriptionForm
                   initialData={chapter}
+                  instructorId={instructorId}
                   courseId={params.courseId}
                   chapterId={params.chapterId}
                 />
@@ -127,7 +130,7 @@ const ChapterEditPage = async ({
               <div className="space-y-4">
                 <div className="flex items-center gap-x-2">
                   {/* <IconBadge icon={Eye} /> */}
-                  <h2 className="text-xl tracking-tight font-medium">
+                  <h2 className="text-xl font-semibold tracking-tight text-zinc-800 dark:text-white">
                     Access Settings
                   </h2>
                 </div>
@@ -141,7 +144,7 @@ const ChapterEditPage = async ({
             <div className="space-y-4">
               <div className="flex items-center gap-x-2">
                 {/* <IconBadge icon={Video} /> */}
-                <h2 className="text-xl tracking-tight font-medium">
+                <h2 className="text-xl font-semibold tracking-tight  text-zinc-800 dark:text-white">
                   Add a video
                 </h2>
               </div>

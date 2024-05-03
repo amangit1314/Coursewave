@@ -42,6 +42,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 const FormSchema = z.object({
+
+  course_update_reminder: z.boolean().default(true).optional(),
+  instructor_new_course_reminder: z.boolean().default(true).optional(),
   session_reminders: z.boolean().default(true).optional(),
   qandAns_reminders: z.boolean().default(true).optional(),
   course_updates: z.boolean().default(true).optional(),
@@ -53,7 +56,9 @@ function Settings() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      session_reminders: true,
+      course_update_reminder: true,
+      instructor_new_course_reminder: true,
+      // session_reminders: true,
       qandAns_reminders: true,
       course_updates: true,
       marketing_emails: true,
@@ -82,9 +87,11 @@ function Settings() {
         >
           <div>
             <div>
-              <h3 className="mb-4 text-lg font-medium">Notifications</h3>
+              <h3 className="mb-4 text-lg font-semibold tracking-tight text-zinc-800 dark:text-white ">
+                Notifications
+              </h3>
               <div className="space-y-4">
-                <FormField
+                {/* <FormField
                   control={form.control}
                   name="session_reminders"
                   render={({ field }) => (
@@ -106,6 +113,52 @@ function Settings() {
                       </FormControl>
                     </FormItem>
                   )}
+                /> */}
+                <FormField
+                  control={form.control}
+                  name="course_update_reminder"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base font-semibold tracking-tight text-zinc-800 dark:text-white">
+                          Course Notifications
+                        </FormLabel>
+                        <FormDescription>
+                          Receive notifications reminders whenever there is
+                          update in any of your enrolled course.
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="instructor_new_course_reminder"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base font-semibold tracking-tight text-zinc-800 dark:text-white">
+                          New Course Notifications
+                        </FormLabel>
+                        <FormDescription>
+                          Receive notifications whenever there is a new course
+                          by instuctor of any course enrolled in.
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
                 />
                 <FormField
                   control={form.control}
@@ -113,7 +166,7 @@ function Settings() {
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">
+                        <FormLabel className="text-base font-semibold tracking-tight text-zinc-800 dark:text-white">
                           QnA Notification
                         </FormLabel>
                         <FormDescription>
@@ -134,7 +187,7 @@ function Settings() {
             </div>
 
             <div>
-              <h3 className="mb-4 mt-4 text-lg font-medium">
+              <h3 className="mb-4 mt-4 text-lg font-semibold tracking-tight text-zinc-800 dark:text-white">
                 Email Notifications
               </h3>
               <div className="space-y-4">
@@ -144,7 +197,7 @@ function Settings() {
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">
+                        <FormLabel className="text-base font-semibold tracking-tight text-zinc-800 dark:text-white">
                           Course Updates{" "}
                         </FormLabel>
                         <FormDescription>
@@ -167,7 +220,7 @@ function Settings() {
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">
+                        <FormLabel className="text-base font-semibold tracking-tight text-zinc-800 dark:text-white">
                           Marketing emails
                         </FormLabel>
                         <FormDescription>
@@ -189,7 +242,7 @@ function Settings() {
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
-                        <FormLabel className="text-base">
+                        <FormLabel className="text-base font-semibold tracking-tight text-zinc-800 dark:text-white">
                           Security emails
                         </FormLabel>
                         <FormDescription>
@@ -233,11 +286,13 @@ function DeleteAccountWidget() {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <div className="flex flex-col ml-4 cursor-pointer hover:bg-red-500 items-center justify-between rounded-lg border p-4 transition-all duration-300">
+        <div className="flex flex-col ml-4 cursor-pointer hover:bg-red-600 items-center justify-between rounded-lg border p-4 transition-all duration-300 group">
           <div className="space-y-0.5">
-            <Title className="text-base font-bold ">Delete Account</Title>
+            <Title className="text-base font-semibold text-zinc-800 dark:text-white group-hover:text-white ">
+              Delete Account
+            </Title>
             {/* <p>Click here to delete your Coursewave account</p> */}
-            <FormDescription>
+            <FormDescription className="group-hover:text-gray-200">
               Click here to delete your Coursewave account
             </FormDescription>
           </div>
@@ -266,11 +321,13 @@ function ChangePasswordWidget() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="flex flex-col cursor-pointer hover:bg-green-800 items-center justify-between rounded-lg border p-4 transition-all duration-300">
+        <div className="flex flex-col cursor-pointer hover:bg-green-600 items-center justify-between rounded-lg border p-4 transition-all duration-300 group">
           <div className="space-y-0.5">
-            <Title className="text-base font-bold">Change Password</Title>
+            <Title className="text-base font-semibold text-zinc-800 dark:text-white  group-hover:text-white">
+              Change Password
+            </Title>
             {/* <p>Receive emails about new products, features, and more</p> */}
-            <FormDescription>
+            <FormDescription className="group-hover:text-gray-200">
               Receive emails about new products, features, and more.
             </FormDescription>
           </div>
@@ -290,13 +347,21 @@ function ChangePasswordWidget() {
             <Label htmlFor="name" className="text-right">
               New Password
             </Label>
-            <Input id="newPassword" value="Enter your new password ..." className="col-span-3" />
+            <Input
+              id="newPassword"
+              value="Enter your new password ..."
+              className="col-span-3"
+            />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="username" className="text-right">
               Confirm Password
             </Label>
-            <Input id="confirmPassword" value="Confirm your password ..." className="col-span-3" />
+            <Input
+              id="confirmPassword"
+              value="Confirm your password ..."
+              className="col-span-3"
+            />
           </div>
         </div>
         <DialogFooter>

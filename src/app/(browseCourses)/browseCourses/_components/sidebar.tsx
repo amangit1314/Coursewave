@@ -2,6 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import { Josefin_Sans } from "next/font/google";
 import SideBarRoutes from './sidebarRoutes';
+import Link from 'next/link';
 
 const josefinSans = Josefin_Sans({
   weight: ["400", "500", "600", "700"],
@@ -15,7 +16,7 @@ const Sidebar = () => {
       aria-label="Sidebar"
     >
       <div className="h-full pl-3 md:px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-zinc-900">
-        <a
+        <Link
           href="/browseCourses"
           className="pb-6 flex cursor-pointer items-end"
         >
@@ -32,7 +33,7 @@ const Sidebar = () => {
           >
             Coursewave
           </p>
-        </a>
+        </Link>
         <SideBarRoutes />
       </div>
     </div>

@@ -52,7 +52,7 @@ const BrowseSection: React.FC<BrowseSectionProps> = ({ children }) => {
   console.log("User: ", user);
 
   return (
-    <div className="py-12 w-full px-12 overflow-x-hidden">
+    <div className="py-16 md:py-12 space-y-6 md:space-y-0 w-full px-6 md:px-12 overflow-x-hidden">
       <CategoriesComponent
         activeCategory={activeCategoryIndex}
         setActiveCategory={handleClick}

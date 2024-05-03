@@ -37,7 +37,6 @@ export const PATCH = async (req: NextRequest, { params }: {
             }, { status: 404 });
         }
 
-        // Update the course with the new category names
         const updatedCourse = await db.course.update({
             where: {
                 courseId: courseId,
@@ -47,12 +46,11 @@ export const PATCH = async (req: NextRequest, { params }: {
             },
         });
 
-        console.log('Update course after updating categories: ', updatedCourse);
+        console.log('Updated course after updating categories: ', updatedCourse);
+
         return NextResponse.json({
             success: true,
-            data: {
-                updatedCourse: updatedCourse,
-            },
+            data:  updatedCourse,
             message: 'Course categories successfully updated ...',
         }, { status: 200 });
     } catch (error: any) {

@@ -1,7 +1,9 @@
+"use client";
+
+import React from "react";
 import { IoNotificationsOutline } from "react-icons/io5";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
@@ -9,43 +11,51 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
-import { ScrollArea } from "./ui/scroll-area";
 import { Button } from "./ui/button";
-import { Callout } from "@tremor/react";
+import { ScrollArea } from "./ui/scroll-area";
 import { RiCheckboxCircleLine } from "react-icons/ri";
-import React from "react";
+import useNotificationsStore from "@/zustand/notificationsStore";
+import NotificationItem from "./notifications/NotificationItem";
 
-type NotificationItemProps = {
+type Notification = {
+  id: string;
   title: string;
+  message?: string;
+  color: "indigo" | "orange" | "emerald" | "yellow" | "red";
   icon: any;
-  color: string;
-  content: string;
+  isReaded: boolean;
 };
 
 export default function Notifications() {
-  const [notifications, setNotifications] = React.useState<
-    NotificationItemProps[]
-  >([
-    {
-      title: "Welcome to Coursewave",
-      icon: RiCheckboxCircleLine,
-      color: "indigo",
-      content:
-        "All systems are currently within their default operating ranges.",
-    },
-    {
-      title: "Explore variety of courses",
-      icon: RiCheckboxCircleLine,
-      color: "orange",
-      content:
-        "All systems are currently within their default operating ranges.",
-    },
-  ]);
+  const values = useNotificationsStore((state) => state.notifications);
+  const setValues = useNotificationsStore((state) => state.setNotification);
 
-  const clearNotifications = () => {
-    setNotifications([]);
-  };
+  const clearValues = useNotificationsStore(
+    (state) => state.clearNotifications
+  );
 
+  const [notifications, setNotifications] = React.useState<Notification[]>(
+    values ?? [
+      {
+        title: "Welcome to Coursewave",
+        icon: RiCheckboxCircleLine,
+        color: "indigo",
+        message:
+          "All systems are currently within their default operating ranges.",
+        isReaded: false,
+      },
+      {
+        title: "Explore variety of courses",
+        icon: RiCheckboxCircleLine,
+        color: "orange",
+        message:
+          "All systems are currently within their default operating ranges.",
+        isReaded: false,
+      },
+    ]
+  );
+
+  console.log("Notifications: ", notifications);
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -69,6 +79,7 @@ export default function Notifications() {
           )}
         </button>
       </SheetTrigger>
+
       <ScrollArea className="max-h-[70vh] h-full">
         <SheetContent>
           <SheetHeader>
@@ -79,22 +90,24 @@ export default function Notifications() {
           </SheetHeader>
 
           <div className="py-4">
-            {notifications ? (
+            {notifications.length ? (
               <div>
-                {notifications.map(
-                  (notification: NotificationItemProps, index: any) => {
-                    return (
-                      <div key={index}>
-                        <NotificationItem
-                          title={notification.title}
-                          icon={notification.icon}
-                          color={notification.color}
-                          content={notification.content}
-                        />
-                      </div>
-                    );
-                  }
-                )}
+                {notifications.map((notification: Notification, index: any) => {
+                  return (
+                    <div key={index}>
+                      <NotificationItem
+                        id={index}
+                        title={notification.title}
+                        icon={notification.icon}
+                        color={notification.color}
+                        message={
+                          notification.message ?? "Default notification message"
+                        }
+                        isReaded={false}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             ) : (
               <div></div>
@@ -102,13 +115,11 @@ export default function Notifications() {
           </div>
 
           <SheetFooter>
-            {/* <SheetClose asChild> */}
-
             {notifications.length > 0 ? (
               <Button
                 type="submit"
                 color="red"
-                onClick={clearNotifications}
+                onClick={clearValues}
                 className="text-white font-semibold dark:text-black"
               >
                 Clear Notifications
@@ -116,30 +127,9 @@ export default function Notifications() {
             ) : (
               <div></div>
             )}
-            {/* </SheetClose> */}
           </SheetFooter>
         </SheetContent>
       </ScrollArea>
     </Sheet>
-  );
-}
-
-function NotificationItem({
-  title,
-  icon,
-  color,
-  content,
-}: NotificationItemProps) {
-  return (
-    <Callout
-      className="mt-4 rounded-xl hover:shadow-md cursor-pointer line-clamp-2"
-      title={title ? title : "No critical system data"}
-      icon={icon ? icon : RiCheckboxCircleLine}
-      color={color ? color : "teal"}
-    >
-      {content
-        ? content
-        : "All systems are currently within their default operating ranges."}
-    </Callout>
   );
 }

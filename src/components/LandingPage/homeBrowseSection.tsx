@@ -81,7 +81,7 @@ const HomeBrowseSection = () => {
   return (
     <div className="min-h-screen h-auto mt-[14rem] md:mt-[1rem] mb-2 max-w-7xl place-items-center items-center w-full overflow-x-hidden">
       {/* heading */}
-      <p className="text-2xl font-bold text-center">
+      <p className="text-2xl font-bold text-center text-[#333333] dark:text-white">
         Browse Different Course Categories
       </p>
 

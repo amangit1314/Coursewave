@@ -21,6 +21,8 @@ import {
   Flex,
   Badge,
 } from "@tremor/react";
+import { DataTable } from "./_components/data-table";
+import { columns } from "./_components/columns";
 
 export default function CreatedCourses({ params }: { params: { id: string } }) {
   const instructorId = params?.id!;
@@ -63,12 +65,28 @@ export default function CreatedCourses({ params }: { params: { id: string } }) {
     fetchCourses();
   }, [instructorId]);
 
+  const transformedCourses = React.useMemo(() => {
+    // Helper function to convert Course object to CreatedCourseProps
+    const toCreatedCourseProps = (course: Course): CreatedCourseProps => {
+      return {
+        id: course.courseId, // Assuming `id` exists in the `Course` interface
+        instructorId: course.instructorID!,
+        image: course.courseImage || "", // Handle potential missing image
+        href: `/instructor/${instructorId}/courses/createdCourses/courses/${course.courseId}`,
+        name: course.courseTitle,
+        price: course.coursePrice!, // Assuming `price` exists in the `Course` interface
+        status: course.isPublished ? "published" : "draft", // Assuming all courses are published in this context
+      };
+    };
+    return createdCourses.map(toCreatedCourseProps);
+  }, [createdCourses, instructorId]);
+
   return (
     <div className="pt-[80px] px-[2rem] h-full dark:bg-zinc-900 pb-6">
-      <div className="rounded-3xl my-4 dark:bg-zinc-800 overflow-hidden dark:border-none">
+      <div className="rounded-3xl my-4 dark:bg-zinc-800 overflow-hidden dark:border-none ">
         <Toaster />
-        <Flex className="px-5 pt-4">
-          <MultiSelect
+        <Flex className="px-5 pt-4 pb-8">
+          {/* <MultiSelect
             onValueChange={setSelectedNames}
             placeholder="Select Course..."
             className="max-w-xs dark:bg-zinc-800"
@@ -78,72 +96,23 @@ export default function CreatedCourses({ params }: { params: { id: string } }) {
                 {item.courseTitle}
               </MultiSelectItem>
             ))}
-          </MultiSelect>
+          </MultiSelect> */}
 
           <CreateCourseButton />
         </Flex>
 
-        <Table className="mt-6 dark:bg-zinc-800 rounded-3xl p-2">
-          <TableHead>
-            <TableRow>
-              <TableHeaderCell>Image</TableHeaderCell>
-              <TableHeaderCell>Name</TableHeaderCell>
-              <TableHeaderCell className="text-right">
-                Price ($)
-              </TableHeaderCell>
-              {/* <TableHeaderCell className="text-right">
-                Enrollements
-              </TableHeaderCell> */}
-              {/* <TableHeaderCell className="text-right">
-                Total Earnings ($)
-              </TableHeaderCell> */}
-              <TableHeaderCell className="text-right">Status</TableHeaderCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {createdCourses
-              .filter((item) => isCourseSelected(item))
-              .map((item) => (
-                <TableRow key={item.courseId}>
-                  <TableCell>
-                    <Link
-                      href={`/instructor/${user.user?.id}/courses/createdCourses/${item.courseId}`}
-                    >
-                      <Image
-                        className="h-[40px] w-[40px] rounded-lg cursor-pointer object-cover"
-                        alt={item.courseTitle}
-                        src={item.courseImage!}
-                        height={40}
-                        width={40}
-                      />
-                    </Link>
-                  </TableCell>
-                  <TableCell className="cursor-pointer hover:text-blue-500 hover:underline">
-                    <Link
-                      href={`/instructor/${user.user?.id}/courses/createdCourses/${item.courseId}`}
-                    >
-                      {item.courseTitle}
-                    </Link>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {item.coursePrice}
-                  </TableCell>
-                  {/* <TableCell className="text-right">{0}</TableCell> */}
-                  <TableCell className="text-right">
-                    <Badge
-                      // Delta
-                      // deltaType={"increase"}
-                      size="xs"
-                    >
-                      {"published"}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
+        <DataTable columns={columns} data={transformedCourses} />
       </div>
     </div>
   );
 }
+
+type CreatedCourseProps = {
+  id: string;
+  instructorId: string;
+  image: string;
+  name: string;
+  href: string;
+  price: any;
+  status: "published" | "draft";
+};

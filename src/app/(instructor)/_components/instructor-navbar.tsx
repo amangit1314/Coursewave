@@ -11,7 +11,7 @@ function InstructorNavbar() {
     <div
       className={cn(
         "px-6 md:px-0 border-b w-full h-full flex justify-start items-center bg-white shadow-sm",
-        isAnalyticsPage ? "dark:bg-gray-800" : "dark:bg-zinc-800"
+        isAnalyticsPage ? "dark:bg-zinc-800" : "dark:bg-zinc-800"
       )}
     >
       <InstructorMobileSidebar />

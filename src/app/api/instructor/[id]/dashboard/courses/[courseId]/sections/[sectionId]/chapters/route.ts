@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = 'force-dynamic';
 import { db } from "@/lib/db";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/config/supabase";
 
 //? Upload a chapter
 export const POST = async (req: NextRequest, { params }: {

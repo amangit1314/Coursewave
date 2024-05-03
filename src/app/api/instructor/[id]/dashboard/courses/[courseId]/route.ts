@@ -62,7 +62,7 @@ export const DELETE = async (req: NextRequest, { params }: {
             where: {
                 courseId: courseId,
                 instructorID: instructorId,
-           }
+            }
         });
 
         return NextResponse.json({
@@ -85,7 +85,6 @@ export const PATCH = async (req: NextRequest, { params }: { params: { id: string
     const courseId = params?.courseId!;
 
     const reqBody = await req.json();
-    // Destructure only properties with values in reqBody
     const {
         newCourseTitle,
         newCourseDescription,
@@ -110,14 +109,29 @@ export const PATCH = async (req: NextRequest, { params }: { params: { id: string
             }, { status: 400 });
         }
 
-        // Use Prisma to update the course
+        const course = await db.course.findUnique({
+            where: {
+                courseId,
+            }
+        })
+
+        if (!course) {
+            return NextResponse.json({
+                success: false,
+                message: "NOT_FOUND, no course found with provided course Id",
+            }, { status: 404 });
+        }
+
         const updatedCourse = await db.course.update({
-            where: { courseId }, // Filter by courseId
+            where: {
+                courseId,
+                instructorID: instructorId
+            },
             data: {
-                courseTitle: newCourseTitle, // Update only if provided in reqBody
+                courseTitle: newCourseTitle,
                 courseDescription: newCourseDescription,
                 courseImage: newCourseImage,
-                coursePrice: newCoursePrice,
+                coursePrice: newCoursePrice.toString(),
                 dealPrice: newDealPrice,
                 discount: newDiscount,
                 courseCreator: newInstructorName,
@@ -128,16 +142,10 @@ export const PATCH = async (req: NextRequest, { params }: { params: { id: string
                 thisCourseIsFor: newThisCourseIsForPoints,
                 prerequisits: newPrerequisits,
                 whatYouWillLearn: newWhatYouWillLearnPoints,
-                // Update other properties as needed
             },
         });
 
-        if (!updatedCourse) {
-            return NextResponse.json({
-                success: false,
-                message: "Course update failed. Course not found.",
-            }, { status: 404 });
-        }
+        console.log('Updated course: ', updatedCourse);
 
         return NextResponse.json({
             success: true,
@@ -145,7 +153,7 @@ export const PATCH = async (req: NextRequest, { params }: { params: { id: string
             data: updatedCourse,
         }, { status: 200 });
     } catch (error: any) {
-        console.error('ERROR IN updating course inside instructor/id/dashboard/courses/courseId:', error.message);
+        console.error('ERROR in updating course inside instructor/id/dashboard/courses/courseId:', error.message);
         return NextResponse.json({
             success: false,
             error: error.message,

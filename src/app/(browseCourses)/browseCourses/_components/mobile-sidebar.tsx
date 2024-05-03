@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Menu } from './menu';
 import { Josefin_Sans } from "next/font/google";
 import SideBarRoutes from "./sidebarRoutes";
+import Link from 'next/link';
 
 const josefinSans = Josefin_Sans({
   weight: ["400", "500", "600", "700"],
@@ -21,12 +22,12 @@ function MobileSidebar() {
           className="px-3 py-4 bg-white dark:bg-gray-800"
         >
           {/* <Sidebar /> */}
-          <a
+          <Link
             href="/browseCourses"
             className="pb-6 flex cursor-pointer items-center"
           >
             <Image
-              src="/courseWaveFaviconColored.png"
+              src="/assets/images/logo/coursewave-favicon-color.png"
               alt="CourseWave Logo"
               className=""
               width={30}
@@ -38,7 +39,7 @@ function MobileSidebar() {
             >
               Coursewave
             </p>
-          </a>
+          </Link>
           <SideBarRoutes />
         </SheetContent>
       </Sheet>

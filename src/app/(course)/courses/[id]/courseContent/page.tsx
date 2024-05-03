@@ -225,7 +225,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
   const [activeChapterIndex, setActiveChapterIndex] = React.useState<number>(0);
   const [showFullDescription, setShowFullDescription] = React.useState(false);
 
-  const activeChapter = chapters.length ? chapters[activeChapterIndex] : null;
+  const activeChapter = chapters?.length ? chapters[activeChapterIndex] : null;
   const chapterId = activeChapter?.id!;
 
   const aboutChapter = activeChapter
@@ -462,7 +462,7 @@ function CourseSectionsAndChapters({
   return (
     <div>
       {chapters && chapters.length > 0 ? (
-        <div className="max-w-xl w-full h-full ">
+        <div className="max-w-xl w-full md:h-[360px] md:mt-2 h-full ">
           <ScrollArea className="max-w-xl w-full max-h-[512px] h-full p-4 rounded-xl border border-stroke">
             <div>
               {/* course chapters text & total chapters count */}

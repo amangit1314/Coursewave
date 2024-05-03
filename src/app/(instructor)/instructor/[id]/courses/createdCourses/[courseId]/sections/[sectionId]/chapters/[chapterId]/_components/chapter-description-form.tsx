@@ -26,6 +26,7 @@ interface ChapterDescriptionFormProps {
   initialData: Chapter;
   courseId: string;
   chapterId: string;
+  instructorId: string;
 }
 
 const formSchema = z.object({
@@ -36,6 +37,7 @@ export const ChapterDescriptionForm = ({
   initialData,
   courseId,
   chapterId,
+  instructorId,
 }: ChapterDescriptionFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -49,13 +51,14 @@ export const ChapterDescriptionForm = ({
       description: initialData?.description || "",
     },
   });
+  const sectionId = initialData.courseSectionId;
 
   const { isSubmitting, isValid } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/courses/${courseId}/chapters/${chapterId}`,
+        `/api/instructor/${instructorId}/dashboard/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}`,
         values
       );
       toast.success("Chapter updated");

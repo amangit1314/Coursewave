@@ -63,7 +63,7 @@ const VisitorsAnalyticsChart: React.FC = () => {
   });
 
   return (
-    <Card className="col-span-12 rounded-sm border border-stroke p-8 md:p-5 xl:col-span-5">
+    <div className="col-span-12 rounded-lg border border-stroke p-8 md:p-5 xl:col-span-5">
       <div className="mb-3 justify-between gap-4 sm:flex">
         <div>
           <h5 className="text-md font-semibold tracking-tight text-black dark:text-white">
@@ -152,7 +152,7 @@ const VisitorsAnalyticsChart: React.FC = () => {
           </div>
         </div>
       </div>
-    </Card>
+    </div>
   );
 };
 

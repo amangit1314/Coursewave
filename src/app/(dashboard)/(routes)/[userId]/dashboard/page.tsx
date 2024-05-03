@@ -27,13 +27,15 @@ import { ThemeModeToggle } from "@/components/themeModeToggle";
 import { useRouter } from "next/navigation";
 import useUserInfo from "@/hooks/use-user-info";
 import UserAvatar from "@/components/user-avatar";
-import { columns } from "./_components/enrolled-courses-tables/columns";
+import { Enrollment as enrollment, enrollmentColumns } from "./_components/enrolled-courses-tables/columns";
 import { useQuery } from "@tanstack/react-query";
-import { Course, User } from "@prisma/client";
+import { Course, Enrollment, User } from "@prisma/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { EnrolledCoursesTable } from "./_components/enrolled-courses-tables/enrolled-courses-table";
 import { EnrolledCoursesTremorTable } from "./_components/enrolled-courses-tremor-table";
+import { DataTable } from "./_components/enrolled-courses-tables/data-table";
+import { BarChartExampleWithCustomTooltip } from "./_components/bar-chart";
 
 function DashboardPage({
   params,
@@ -66,6 +68,38 @@ function DashboardPage({
 
   // const enrollementsData = [...enrolledCourses?.data];
 
+  type EnrollmentWithCourse = {
+    enrollment: Enrollment;
+    course: Course;
+  }
+
+    const enrolledCoursesTableData = React.useMemo(() => {
+      const toEnrollmentProps = (
+        enrollment: Enrollment
+      ): enrollment => {
+        // if (!enrollment)
+        //   return {
+        //     /* default values */
+        //   }; //
+
+        return {
+          // id: enrollment.enrollment.enrollmentId,
+          // courseId: enrollment.enrollment.courseId,
+          // courseName: enrollment.course.courseTitle,
+          // enrollmentDate: enrollment.enrollment.enrollmentDate.substring(0, 16),
+          id: enrollment.enrollmentId,
+          courseId: enrollment.courseId,
+          courseName: enrollment.courseTitle ?? "No Title Available",
+          enrollmentDate: enrollment.enrollmentDate.substring(0, 16),
+          progress: 75,
+          certificate: "Certificate",
+          status: "active",
+          validity: "Life time",
+        };
+      };
+      return enrolledCourses?.data?.map(toEnrollmentProps);
+    }, [enrolledCourses]);
+
   return (
     <div className="py-4">
       {/* header */}
@@ -87,13 +121,21 @@ function DashboardPage({
           <ScheduledSessions />
         </div> */}
 
-        <p className="text-xl pt-8   font-semibold text-gray-700 dark:text-gray-100">
+        <p className="text-xl pt-8 font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong tracking-tight">
           User Dashboard
         </p>
 
+        <div>
+          {/* <Divider> Activity Data </Divider> */}
+          <BarChartExampleWithCustomTooltip />
+        </div>
+
         {/* enrolledCourses */}
         <div className="mb-8">
-          <Divider> Enrolled Courses </Divider>
+          {/* <Divider> Enrolled Courses </Divider> */}
+          <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong tracking-tight mb-4">
+            Enrolled Courses
+          </h3>
           {isLoading ? (
             <div className="space-y-2">
               <Skeleton className="h-16 w-full rounded-md" />
@@ -106,9 +148,9 @@ function DashboardPage({
           ) : (
             <div>
               {enrolledCourses?.data?.length > 0 ? (
-                <EnrolledCoursesTremorTable
-                  // columns={columns}
-                  data={enrolledCourses?.data}
+                <DataTable
+                  columns={enrollmentColumns}
+                  data={enrolledCoursesTableData}
                 />
               ) : (
                 <div>You haven't enrolled in any courses yet.</div>

@@ -23,6 +23,24 @@ export const sendEmail = (email: string, subject: string, text: string, html: an
         });
 };
 
+export const sendContactEmail = (toEmail: string, fromEmail: string, subject: string, text: string, html: any, successCallback: any) => {
+    const msg = {
+        to: 'amansoni53453@gmail.com',
+        from: process.env.EMAIL_ADDRESS,
+        subject: subject,
+        text: text,
+        html: html,
+    };
+
+    sgMail
+        .send(msg as any)
+        .then(successCallback)
+        .catch((error) => {
+            console.error(error);
+            console.log(error);
+        });
+}
+
 // **********************************************************
 
 export const sendEmailViaNodemailer = async (res: Response,email: string, subject: string, text: string, html: any) => {

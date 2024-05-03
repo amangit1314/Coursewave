@@ -36,21 +36,21 @@ function InstructorSideBarRoutes() {
       label: "Courses",
       href: `/instructor/${instructorId}/courses/createdCourses`,
     },
-    {
-      icon: <HiUserGroup size={22} />,
-      label: "Enrollments",
-      href: `/instructor/${instructorId}/enrollements`,
-    },
-    {
-      icon: <VscFeedback size={22} />,
-      label: "Feedback",
-      href: `/instructor/${instructorId}/feedback`,
-    },
-    {
-      icon: <BsPatchQuestion size={22} />,
-      label: "Questions",
-      href: `/instructor/${instructorId}/questions`,
-    },
+    // {
+    //   icon: <HiUserGroup size={22} />,
+    //   label: "Enrollments",
+    //   href: `/instructor/${instructorId}/enrollements`,
+    // },
+    // {
+    //   icon: <VscFeedback size={22} />,
+    //   label: "Feedback",
+    //   href: `/instructor/${instructorId}/feedback`,
+    // },
+    // {
+    //   icon: <BsPatchQuestion size={22} />,
+    //   label: "Questions",
+    //   href: `/instructor/${instructorId}/questions`,
+    // },
     {
       icon: <AiFillSetting size={22} />,
       label: "Settings",
@@ -59,7 +59,7 @@ function InstructorSideBarRoutes() {
     {
       icon: <FaHandsHelping size={22} />,
       label: "Help & Support",
-      href: `/instructor/${instructorId}/instructorSettings`,
+      href: `/instructor/${instructorId}/helpAndSupport`,
     },
   ];
 
@@ -108,7 +108,7 @@ function InstructorSidebarItem({ href, icon, label }: SidebarItemProps) {
       onClick={onClick}
       type="button"
       className={cn(
-        "flex items-center w-full rounded-md text-gray-900 dark:text-white transition-all hover:bg-gray-100 dark:hover:bg-zinc-700 group",
+        "flex items-center w-full rounded-md text-zinc-900 dark:text-white transition-all hover:bg-zinc-100 dark:hover:bg-zinc-700 group",
         isActive &&
           "text-blue-500 bg-blue-200/20 hover:bg-blue-200/20 hover:text-blue-500"
       )}

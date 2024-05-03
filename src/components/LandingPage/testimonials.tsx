@@ -7,7 +7,7 @@ import TestimonialItem from "./testomonial_item";
 
 export default function Testimonials() {
   return (
-    <div className="min-h-screen mb-12 max-w-7xl w-full h-full">
+    <div className=" max-w-7xl w-full h-full">
       <div>
         <p className="text-2xl tracking-tight font-bold text-[#333333] dark:text-white text-center">
           Testimonials
@@ -17,7 +17,7 @@ export default function Testimonials() {
         </p>
       </div>
 
-      <div className=" flex flex-col lg:flex-row w-full md:p-8 md:mx-auto mb-[16rem] md:mb-[3rem] scroll-smooth">
+      <div className=" flex flex-col space-x-4 lg:flex-row w-full md:p-8 md:mx-auto mb-[16rem] md:mb-[3rem] scroll-smooth">
         <TestimonialItem
           imgUrl="/assets/images/images1.jpg"
           name="Josh Mayer"

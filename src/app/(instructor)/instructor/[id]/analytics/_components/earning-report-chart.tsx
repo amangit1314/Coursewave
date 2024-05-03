@@ -26,21 +26,23 @@ const mockDataSet: ChartData[] = [
     { date: '2023-01-14', Courses: 420, Sessions: 740 },
 ];
 
-const AreaChartDemo: FC = () => (
-    <Card className='rounded-lg mt-2'>
-        <Title>Total revenue over time (USD)</Title>
-        <AreaChart
-            className='h-80 mt-4'
-            data={mockDataSet}
-            index='date'
-            defaultValue={0}
-            categories={["Courses", "Sessions"]}
-            colors={["indigo", "orange", "fuchsia", "emerald"]}
-            allowDecimals={false}
-            yAxisWidth={60}
-            noDataText='There is no data, yet'
-        />
-    </Card>
+const EarningReportAreaChart: FC = () => (
+  <div className="rounded-lg mt-2 dark:bg-zinc-900 border border-stroke overflow-hidden">
+    <div className="px-4 pt-4">
+      <Title>Total revenue over time (USD)</Title>
+    </div>
+    <AreaChart
+      className="h-80 mt-4"
+      data={mockDataSet}
+      index="date"
+      defaultValue={0}
+      categories={["Courses", "Sessions"]}
+      colors={["indigo", "orange", "fuchsia", "emerald"]}
+      allowDecimals={false}
+      yAxisWidth={60}
+      noDataText="There is no data, yet"
+    />
+  </div>
 );
 
-export default AreaChartDemo;
+export default EarningReportAreaChart;

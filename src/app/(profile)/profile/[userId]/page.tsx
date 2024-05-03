@@ -4,7 +4,7 @@ import axios from "axios";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Divider } from "@tremor/react";
+import { Divider, Title } from "@tremor/react";
 import { SiGmail } from "react-icons/si";
 import { Camera, Pencil } from "lucide-react";
 import { RiInstagramFill } from "react-icons/ri";
@@ -14,6 +14,42 @@ import toast from "react-hot-toast";
 import useUserInfo from "@/hooks/use-user-info";
 import { ThemeModeToggle } from "@/components/themeModeToggle";
 import "@uploadthing/react/styles.css";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormDescription,
+  FormLabel,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { UploadDropzone } from "@/utils/uploadthing";
 
 const Profile = () => {
   const user = useUserInfo().user;
@@ -32,8 +68,12 @@ const Profile = () => {
 
         <ProfileImage />
 
-        <h3 className="mt-4 text-2xl tracking-tight font-bold text-black dark:text-white">
+        <h3 className="flex justify-center items-center mt-4 text-2xl tracking-tight font-bold text-black dark:text-white space-x-2">
           {user ? user.name : "Aman Soni"}
+          {/* <Pencil
+            size={16}
+            className="ut-upload-icon cursor-pointer duration-300 transition-all"
+          /> */}
         </h3>
 
         <div className="flex text-black dark:text-gray-200 justify-center items-center pt-auto space-x-2">
@@ -43,7 +83,10 @@ const Profile = () => {
               {user ? user.email : "amansoni@gmail.com"}
             </p>
           </div>
-          <Pencil size={16} className="ut-upload-icon cursor-pointer duration-300 transition-all" />
+          {/* <Pencil
+            size={16}
+            className="ut-upload-icon cursor-pointer duration-300 transition-all"
+          /> */}
         </div>
 
         <SwitchToInstructorButton />
@@ -132,6 +175,213 @@ function ProfileImage() {
   );
 }
 
+function EditProfileImage({
+  imageUrl,
+  setImageUrl,
+}: {
+  imageUrl: string;
+  setImageUrl: React.Dispatch<React.SetStateAction<string>>;
+}) {
+  const [isEditing, setIsEditing] = React.useState(false);
+
+  const handleEditClick = () => {
+    setIsEditing(!isEditing);
+  };
+
+   const content = isEditing ? (
+     <UploadDropzone
+       endpoint={"profileImageUpdater"}
+       onClientUploadComplete={(res: any) => {
+         console.log("Uploadthing profile image upload response: ", res);
+         console.log("Uploaded profile img url: ", res[0].url);
+         setImageUrl(res[0].url);
+         setIsEditing(false); // Toggle back to false after upload
+         toast.success("Profile Image uploaded successfully ...");
+       }}
+       onUploadError={(error: Error) => {
+         toast.error(`${error?.message}`);
+       }}
+     />
+   ) : (
+     <Image
+       src={imageUrl ? imageUrl : "/assets/images/user/user-01.png"}
+       width={96}
+       height={96}
+       className="rounded-full h-[96px] w-[96px] border border-stroke"
+       alt="profile"
+     />
+   );
+
+   return (
+     <div className="flex items-center mt-8 justify-center">
+       <div className="relative max-h-44 max-w-44">
+         {content}
+         <label
+           htmlFor="profile"
+           className="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-primary p-2 text-white bg-slate-700 hover:bg-opacity-70 sm:bottom-2 sm:right-2"
+           onClick={handleEditClick}
+         >
+           <Camera size={18} />
+         </label>
+       </div>
+     </div>
+   );
+}
+
+function EditProfileWidget() {
+  const user = useUserInfo();
+
+  const [imageUrl, setImageUrl] = React.useState(
+    user.user?.profileImageUrl ?? "/assets/images/user/user-02.png"
+  );
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      userName: user.user?.name!,
+      image: imageUrl,
+    },
+  });
+
+  const { isSubmitting, isValid } = form.formState;
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    await axios
+      .put(`/api/profile/${user.user?.id}/`, {
+        newUserName: values.userName,
+        newProfileImageUrl: imageUrl,
+      })
+      .then((response) => {
+        console.log("Form Values: ", values);
+        console.log("Response data after creating course: ", response);
+        toast.success("Profile data saved successfully ...");
+      })
+      .catch((err: any) => {
+        console.log("Error in updating profile: ", err.message);
+        toast.error(`Error: ${err.message}`);
+      });
+  };
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-blue-400 dark:hover:from-blue-600 hover:via-indigo-400 hover:to-sky-400 hover:bg-blue-600  hover:rounded-lg p-2 hover:text-white transition-all duration-200 text-gray-800 dark:text-gray-200">
+          <p className="text-sm">Edit Profile </p>
+          <MdOutlineKeyboardArrowRight />
+        </div>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit Profile</DialogTitle>
+          <DialogDescription>
+            Make changes in your username and image here. Click save when youre
+            done.
+          </DialogDescription>
+        </DialogHeader>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 py-4"
+          >
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <div>
+                  <FormItem className="mt-8">
+                    <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
+                      Profile Image
+                    </FormLabel>
+                    <FormControl>
+                      <EditProfileImage
+                        imageUrl={imageUrl}
+                        setImageUrl={setImageUrl}
+                      />
+                      {/* <Input
+                        disabled={isSubmitting}
+                        className="bg-transparent border-gray-700 dark:border-gray-400 "
+                        placeholder="i.e. 'Full Stack Bootcamp', etc..."
+                        {...field}
+                      /> */}
+                    </FormControl>
+                    <FormDescription className="">
+                      What will you teach in this course?
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                </div>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="userName"
+              render={({ field }) => (
+                <div>
+                  <FormItem className="mt-8">
+                    <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
+                      New username
+                    </FormLabel>
+                    <FormControl>
+                      <EditProfileImage
+                        imageUrl={imageUrl}
+                        setImageUrl={setImageUrl}
+                      />
+                      <Input
+                        id="newUsername"
+                        disabled={isSubmitting}
+                        className="bg-transparent border-gray-700 dark:border-gray-400 "
+                        placeholder={user.user?.name!}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription className="">
+                      Edit your username
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                </div>
+              )}
+            />
+
+            {/*
+            <div className=" space-y-2">
+              <FormLabel htmlFor="name" className="text-right">
+                New image
+              </FormLabel>
+              <FormControl>
+                <EditProfileImage
+                  imageUrl={imageUrl}
+                  setImageUrl={setImageUrl}
+                />
+              </FormControl>
+            </div>
+
+            <div className=" space-y-2">
+              <FormLabel htmlFor="username" className="text-right">
+                New username
+              </FormLabel>
+              <FormControl>
+                <Input
+                  id="newUsername"
+                  value={user.user?.name!}
+                  className="col-span-3"
+                />
+              </FormControl>
+            </div> */}
+
+            <DialogFooter>
+              <Button type="submit" disabled={!isValid || isSubmitting}>
+                Save changes
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function SwitchToInstructorButton() {
   const user = useUserInfo().user;
 
@@ -164,20 +414,23 @@ function AccountSettingsSection() {
       </p>
 
       <div className="flex group flex-col  space-y-2 max-w-7xl w-full  ">
-        <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-blue-400 dark:hover:from-blue-600 hover:via-indigo-400 hover:to-sky-400 dark:hover:bg-blue-600 hover:text-white hover:rounded-lg p-2 transition-all duration-200 text-gray-800 dark:text-gray-200">
-          <p className="text-sm">Career Goals</p>
+        {/* <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-blue-400 dark:hover:from-blue-600 hover:via-indigo-400 hover:to-sky-400 dark:hover:bg-blue-600 hover:text-white hover:rounded-lg p-2 transition-all duration-200 text-gray-800 dark:text-gray-200">
+          <p className="text-sm">Edit Profile Data</p>
           <MdOutlineKeyboardArrowRight />
-        </div>
-        <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-blue-400 dark:hover:from-blue-600 hover:via-indigo-400 hover:to-sky-400 hover:bg-blue-600 hover:text-white hover:rounded-lg p-2 transition-all duration-200 text-gray-800 dark:text-gray-200">
-          <p className="text-sm">Learning Reminders</p>
+        </div> */}
+        <EditProfileWidget />
+        {/* <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-blue-400 dark:hover:from-blue-600 hover:via-indigo-400 hover:to-sky-400 hover:bg-blue-600 hover:text-white hover:rounded-lg p-2 transition-all duration-200 text-gray-800 dark:text-gray-200">
+          <p className="text-sm">Change Password</p>
           <MdOutlineKeyboardArrowRight />
-        </div>
-        <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-blue-400 dark:hover:from-blue-600 hover:via-indigo-400 hover:to-sky-400 hover:bg-blue-600  hover:rounded-lg p-2 hover:text-white transition-all duration-200 text-gray-800 dark:text-gray-200">
+        </div> */}
+        <ChangePasswordWidget />
+        {/* <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-blue-400 dark:hover:from-blue-600 hover:via-indigo-400 hover:to-sky-400 hover:bg-blue-600  hover:rounded-lg p-2 hover:text-white transition-all duration-200 text-gray-800 dark:text-gray-200">
+          <p className="text-sm">Delete Account</p>
+          <MdOutlineKeyboardArrowRight />
+        </div> */}
+        <DeleteAccountWidget />
+        {/* <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-blue-400 dark:hover:from-blue-600 hover:via-indigo-400 hover:to-sky-400 hover:bg-blue-600  hover:rounded-lg p-2 hover:text-white transition-all duration-200 text-gray-800 dark:text-gray-200">
           <p className="text-sm">Notifications</p>
-          <MdOutlineKeyboardArrowRight />
-        </div>
-        {/* <div className="flex justify-between items-center cursor-pointer hover:bg-blue-600 hover:bg-opacity-20 hover:rounded-lg p-2 transition-all duration-200">
-          <p className="text-sm">Email Notifications</p>
           <MdOutlineKeyboardArrowRight />
         </div> */}
       </div>
@@ -185,10 +438,89 @@ function AccountSettingsSection() {
   );
 }
 
+const formSchema = z.object({
+  userName: z.string(),
+  image: z.string(),
+});
+
+function ChangePasswordWidget() {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-emerald-400 dark:hover:from-emerald-600 hover:via-green-400 hover:to-emerald-400 dark:hover:bg-emerald-600 hover:text-white hover:rounded-lg p-2 transition-all duration-200 text-gray-800 dark:text-gray-200">
+          <p className="text-sm">Change Password </p>
+          <MdOutlineKeyboardArrowRight />
+        </div>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Change Password</DialogTitle>
+          <DialogDescription>
+            Make changes in your password here. Click save when youre done.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              New Password
+            </Label>
+            <Input
+              id="newPassword"
+              value="Enter your new password ..."
+              className="col-span-3"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              Confirm Password
+            </Label>
+            <Input
+              id="confirmPassword"
+              value="Confirm your password ..."
+              className="col-span-3"
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="submit">Save changes</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function DeleteAccountWidget() {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-red-400 dark:hover:from-red-600 hover:via-pink-400 hover:to-red-400 dark:hover:bg-red-600 hover:text-white hover:rounded-lg p-2 transition-all duration-200 text-gray-800 dark:text-gray-200">
+          <p className="text-sm">Delete Account</p>
+          <MdOutlineKeyboardArrowRight />
+        </div>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your
+            account and remove your data from our servers.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter className="flex justify-end items-center">
+          <AlertDialogCancel className="mb-2">Cancel</AlertDialogCancel>
+          <AlertDialogAction className="bg-red-600 text-white">
+            Continue
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
 function HelpAndSupportSection() {
   return (
     <div className="mt-4 flex flex-col space-y-5 items-start">
-      <p className="text-md text-base font-semibold dark:text-white px-1">
+      <p className="text-md text-base font-semibold px-1 text-black  dark:text-white">
         Help and Support
       </p>
       <div className="flex flex-col space-y-2 max-w-7xl w-full">

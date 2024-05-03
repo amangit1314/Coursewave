@@ -65,12 +65,7 @@ export const CategoryForm = ({ course }: CategoryFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      // categories: course?.courseCategories ?? [
-      //   "Next.js",
-      //   "Full Stack Dev",
-      //   "Front-end Dev",
-      // ],
-      categories: course?.courseCategories.toString() ?? "",
+      categories: course?.courseCategories.toString() ?? "Next.js, Full Stack Dev, Front-end Dev",
     },
   });
 
@@ -83,9 +78,9 @@ export const CategoryForm = ({ course }: CategoryFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      // const categoriesArray = values.categories
-      //   .split(",")
-      //   .map((item: string) => item.trim());
+      const categoriesArray = values.categories
+        .split(",")
+        .map((item: string) => item.trim());
 
       await axios.patch(
         `/api/instructor/${course?.instructorID}/dashboard/courses/${course.courseId}/editCategories`,
@@ -182,20 +177,10 @@ export const CategoryForm = ({ course }: CategoryFormProps) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    {/* <Input
-                      ref={inputRef}
-                      className="dark:bg-transparent w-full  "
-                      type="text"
-                      placeholder="e.g full stack development ..."
-                      value={inputValue}
-                      onChange={handleInputChange}
-                      onKeyDown={handleKeyDown}
-                    /> */}
                     <Input
                       className="dark:bg-transparent w-full border-gray-700 dark:border-gray-400  "
                       type="text"
                       placeholder="i.e. Next.js, Flutter etc ..."
-                      // value={inputValue}
                       {...field}
                     />
                   </FormControl>
@@ -203,6 +188,7 @@ export const CategoryForm = ({ course }: CategoryFormProps) => {
                     Add course categories here, Saperate categories with ,
                   </FormDescription>
 
+                  {/* categories list */}
                   <div className="my-3 flex flex-wrap -m-1">
                     {points.map((point, index) => (
                       <span
@@ -223,11 +209,13 @@ export const CategoryForm = ({ course }: CategoryFormProps) => {
                       </span>
                     ))}
                   </div>
+
                   <FormMessage />
                 </FormItem>
               )}
             />
 
+            {/* submit button */}
             <div className="flex items-center gap-x-2">
               <Button
                 className="dark:bg-zinc-900 dark:hover:bg-zinc-950 transition-all duration-300 dark:text-white cursor-pointer"

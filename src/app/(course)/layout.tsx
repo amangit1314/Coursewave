@@ -18,7 +18,7 @@ export default function CourseLayout({ children }: CourseLayoutProps) {
     <div className="min-h-screen h-full w-full dark:bg-zinc-950">
 
       <div className="h-full">{children}</div>
-      {hideFooter ? <div></div> : <Footer />}
+      {/* {hideFooter ? <div></div> : <Footer />} */}
     </div>
   );
 }

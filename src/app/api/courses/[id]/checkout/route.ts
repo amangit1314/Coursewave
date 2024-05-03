@@ -7,11 +7,11 @@ export const dynamic = 'force-dynamic';
 
 export const POST = async (req: Request, { params }: {
   params: {
-    id?: string
+    id: string
   }
 }) => {
   const uuid4 = generateUid();
-  const courseId = params?.id;
+  const courseId = params?.id!;
 
   try {
     const reqBody = await req.json();
@@ -131,6 +131,7 @@ export const POST = async (req: Request, { params }: {
         enrollmentId: enrollementId,
         userId,
         courseId: course.courseId,
+        courseTitle: course.courseTitle,
         enrollmentDate: Date().toString(),
         enrollmentStatus: "ACTIVE",
         courseProgressId: courseProgress.id,

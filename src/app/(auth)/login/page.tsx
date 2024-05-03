@@ -12,6 +12,10 @@ import toast, { Toaster } from "react-hot-toast";
 import { PasswordInput } from "./_components/password-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import useNotificationsStore from "@/zustand/notificationsStore";
+import { absoluteUrl } from "@/lib/utils";
+import { BiNotification } from "react-icons/bi";
+import { BellIcon } from "lucide-react";
 
 const successNotification = (message: string) => toast.success(message);
 const errorNotification = (errorMessage: string) => toast.error(errorMessage);
@@ -22,6 +26,9 @@ function Login() {
   const [loading, setLoading] = React.useState(false);
   const [user, setUser] = React.useState({ email: "", password: "" });
   const [isButtonDisabled, setButtonDisabled] = React.useState(false);
+  // const setNotification = useNotificationsStore(
+  //   (state) => state.setNotification
+  // );
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -43,8 +50,28 @@ function Login() {
       //   staleTime: 10000,
       // });
       console.log("Login success", response.data);
+
+      // const res = await fetch(
+      //   absoluteUrl(`/api/notify`),
+      //   {
+      //     method: "POST",
+      //     body: JSON.stringify({title: 'Welcome Back 🎉', body: 'Welcome back to Coursewave, We missed you so much.', icon: BellIcon, url: absoluteUrl(`/browseCourses`)}),
+      //     headers: {
+      //       "content-type": "application/json",
+      //     },
+      //   }
+      // );
+
+      // const data = await res.json();
+      // console.log('Sended notification data: ', data);
+
       successNotification("Logged in successfully");
       router.push("/browseCourses");
+
+      // setNotification(
+      //   "Welcome Back 🎉",
+      //   `Welcome back to Courswave, we missed you so much "${response.data.courseName}" course.`
+      // );
     } catch (error: any) {
       console.error("Login failed: ", error.message);
       errorNotification(error.message);

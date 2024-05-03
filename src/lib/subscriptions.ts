@@ -41,7 +41,7 @@ export const storeSubscriptionPlans: SubscriptionPlan[] = [
       '24x7 Support with Premium',
       'All features unlocked'
     ],
-    stripePriceId: 'stripe_subscription_PRO',
+    stripePriceId: process.env.STRIPE_PRO_SUBSCRIPTION_PRICE_ID!,
     price: 25
   },
   // {

@@ -3,6 +3,7 @@ import Image from "next/image";
 import InstructorSidebarRoutes from "./instructor-sidebar-routes";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 function InstructorSidebar() {
   const path = usePathname();
@@ -14,11 +15,11 @@ function InstructorSidebar() {
     >
       <div
         className={cn(
-          "h-full pl-3 md:px-3 py-4 overflow-y-auto bg-gray-50 ",
-          isAnalyticsPage ? "dark:bg-gray-800" : "dark:bg-zinc-800"
+          "h-full pl-3 md:px-3 py-4 overflow-y-auto bg-zinc-50 ",
+          isAnalyticsPage ? "dark:bg-zinc-800" : "dark:bg-zinc-800"
         )}
       >
-        <a
+        <Link
           href="/browseCourses"
           className="pb-6 flex cursor-pointer items-center"
         >
@@ -33,7 +34,7 @@ function InstructorSidebar() {
           <p className="pl-2 text-blue-500 font-bold font-mono text-xl">
             Coursewave
           </p>
-        </a>
+        </Link>
         <InstructorSidebarRoutes />
       </div>
     </div>

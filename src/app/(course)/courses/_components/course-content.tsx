@@ -65,11 +65,11 @@ export default function CourseContent({ courseId }: CourseContentProps) {
             </li>
 
             <li className="text-sm">
-              {/* {sectionChapters ? sectionChapters.length : 0} lectures */}8
-              lectures
+              {/* {sectionChapters ? sectionChapters.length : 0} lectures
+              lectures */}
             </li>
 
-            <li className="text-sm">3 min total length</li>
+            {/* <li className="text-sm">3 min total length</li> */}
           </ul>
 
           {/* <div className="font-normal text-blue-500 text-sm">
@@ -194,13 +194,22 @@ const AccordionSectionItem = ({
           </div>
         </div>
 
-        <ul className="hidden list-disc md:flex md:visible space-x-6 items-center justify-end">
-          {/* lections */}
+        <ul className="hidden  md:flex md:visible space-x-6 items-center justify-end">
+          {/* lectures */}
           <li className="text-xs text-gray-600 dark:text-gray-400">
-            1 lecture
+            {chapters?.filter(
+              (chapter) => chapter.courseSectionId === section.courseSectionId
+            )
+              ? chapters?.filter(
+                  (chapter) =>
+                    chapter.courseSectionId === section.courseSectionId
+                ).length
+              : 1}{" "}
+            lecture
           </li>
+
           {/* total length */}
-          <li className="text-xs text-gray-600 dark:text-gray-400">3 min</li>
+          {/* <li className="text-xs text-gray-600 dark:text-gray-400">3 min</li> */}
         </ul>
 
         <p className="text-xs visible md:hidden">
@@ -246,9 +255,9 @@ const AccordionItemDescriptionItem = ({
           {name}
         </p>
       </div>
-      <p className="text-xs md:text-sm text-gray-700 dark:text-gray-300">
+      {/* <p className="text-xs md:text-sm text-gray-700 dark:text-gray-300">
         {duration}
-      </p>
+      </p> */}
     </div>
   );
 };

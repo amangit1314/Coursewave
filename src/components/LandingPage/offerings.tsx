@@ -27,7 +27,7 @@ function Offerings() {
   ];
 
   return (
-    <div className="h-screen max-w-7xl mb-12 w-full">
+    <div className="h-full max-w-7xl w-full">
       <div>
         <div className="font-bold tracking-tight text-center text-2xl text-zinc-800 dark:text-white ">
           What we Offer!
@@ -40,7 +40,7 @@ function Offerings() {
       </div>
 
       {/* links grid */}
-      <div className="mx-auto mt-8 mb-16 grid gap-x-5 text-center grid-cols-2 lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
+      <div className="mx-auto mt-8  grid gap-x-5 lg:gap-x-5 text-center grid-cols-2 lg:max-w-5xl lg:w-full  lg:grid-cols-4 lg:text-left">
         {offerings.map((offering, index) => {
           return (
             <div key={index}>
@@ -75,23 +75,21 @@ const OfferingsLinkItem = ({
           ? link
           : `https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app`
       }
-      className="group rounded-3xl border border-transparent p-4 transition-all duration-300 hover:border-stroke hover:shadow-xl hover:border-zinc-800 dark:hover:border-zinc-400"
+      // className="group rounded-3xl border h-[200px] w-[300px] border-transparent hover:bg-red-400 hover:border-stroke hover:border-zinc-800 dark:hover:border-zinc-400 p-2 transition-all duration-300  hover:shadow-xl space-y-3"
       target="_blank"
       rel="noopener noreferrer"
     >
-      <h2
-        className={`mb-3 text-[1.2rem] tracking-tight text-zinc-800 dark:text-gray-50 font-semibold`}
-      >
-        {title ? title : "Courses"}
-        <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none"></span>
-      </h2>
-      <p
-        className={`m-0 max-w-[30ch] text-[1rem]  text-zinc-700 dark:text-gray-200`}
-      >
-        {description
-          ? description
-          : "Find in-depth informative courses on various courses."}
-      </p>
+      <div className="group rounded-3xl border h-[140px] w-[241px] border-transparent  hover:border-stroke hover:border-zinc-800 dark:hover:border-zinc-400 p-4 transition-all duration-300  hover:shadow-xl space-y-3">
+        <h2 className="text-[1.2rem] tracking-tight text-zinc-800 dark:text-gray-50 font-semibold">
+          {title ? title : "Courses"}
+          <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none"></span>
+        </h2>
+        <p className="w-full text-[1rem]  text-zinc-700 dark:text-gray-200">
+          {description
+            ? description
+            : "Find in-depth informative courses on various courses."}
+        </p>
+      </div>
     </Link>
   );
 };

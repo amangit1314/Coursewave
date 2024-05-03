@@ -46,7 +46,7 @@ async function CourseContentNavbar({ course }: any) {
             <li className="">
               <Link
                 href=""
-                className={`text-blue-500 font-bold text-xl ${josefinSans.className} underline-offset-0`}
+                className={`text-blue-500 font-bold text-xl ${josefinSans.className} `}
               >
                 <Image
                   src="/assets/images/logo/coursewave-favicon-color.png"

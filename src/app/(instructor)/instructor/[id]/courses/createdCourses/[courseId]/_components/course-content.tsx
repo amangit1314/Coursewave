@@ -92,7 +92,9 @@ export default function CourseContent({
         <div>
           <div className="flex items-center gap-x-2">
             <IconBadge icon={LayoutDashboard} />
-            <h2 className="text-md font-medium">Customize your course</h2>
+            <h2 className="text-md font-medium text-zinc-800 dark:text-white">
+              Customize your course
+            </h2>
           </div>
 
           {/* title form, DONE ✔️ */}
@@ -111,16 +113,20 @@ export default function CourseContent({
           <div>
             <div className="flex items-center gap-x-2 mt-6">
               <IconBadge icon={Shapes} />
-              <h2 className="text-md font-medium">Course Categories</h2>
+              <h2 className="text-md font-medium text-zinc-800 dark:text-white">
+                Course Categories
+              </h2>
             </div>
             <CategoryForm course={course} />
           </div>
 
-          {/* price form */}
+          {/* price form, DONE ✔️ */}
           <div className="mt-6">
             <div className="flex items-center gap-x-2">
               <IconBadge icon={CircleDollarSign} />
-              <h2 className="text-md font-medium">Sell your course</h2>
+              <h2 className="text-md font-medium text-zinc-800 dark:text-white">
+                Sell your course
+              </h2>
             </div>
 
             {/* price form */}
@@ -131,7 +137,9 @@ export default function CourseContent({
           <div className="mt-6">
             <div className="flex items-center gap-x-2">
               <IconBadge icon={File} />
-              <h2 className="text-md font-medium">Resources & Attachments</h2>
+              <h2 className="text-md font-medium text-zinc-800 dark:text-white">
+                Resources & Attachments
+              </h2>
             </div>
 
             {/* attachments form */}
@@ -146,7 +154,9 @@ export default function CourseContent({
         <div className="space-y-6">
           <div className="flex items-center gap-x-2">
             <IconBadge icon={Highlighter} />
-            <h2 className="text-md font-medium">Course Requirements & Perks</h2>
+            <h2 className="text-md font-medium text-zinc-800 dark:text-white">
+              Course Requirements & Perks
+            </h2>
           </div>
 
           {/* prerequisits form, DONE ✔️ */}
@@ -163,13 +173,15 @@ export default function CourseContent({
         </div>
       </div>
 
-      {/* sections ans chapters */}
+      {/* sections ans chapters, DONE ✔️ */}
       <div className="grid grid-cols-1 gap-6 dark:bg-zinc-800 rounded-3xl overflow-hidden p-6 ">
         {/*  chapters form */}
         <div>
           <div className="flex items-center gap-x-2">
             <IconBadge icon={ListChecks} />
-            <h2 className="text-md font-medium">Course Sections & Chapters</h2>
+            <h2 className="text-md font-medium text-zinc-800 dark:text-white">
+              Course Sections & Chapters
+            </h2>
           </div>
 
           <SectionsForm

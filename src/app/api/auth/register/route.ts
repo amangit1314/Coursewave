@@ -65,7 +65,7 @@ export const POST = async (req: NextRequest) => {
         sendEmail(
             email,
             "Verify email address using SendGrid",
-            "Click on below text to verify your account,and easy to do anywhere, even with Node.js",
+            "Click on below text to verify your account,and easy to continue to Coursewave",
             `<a href="${verificationToken}"> Click to Verify</a>`,
             () => {
                 console.log("Email sent 🗯📧 ");

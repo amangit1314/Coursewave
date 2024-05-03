@@ -15,7 +15,7 @@ export default function InstructorLayout({ children }: InstructorLayoutProps) {
 
   return (
     <div
-      className={`min-h-screen h-full ${isAnalyticsPage ? "dark:bg-gray-900" : "dark:bg-zinc-900"} `}
+      className={`min-h-screen h-full ${isAnalyticsPage ? "dark:bg-zinc-900" : "dark:bg-zinc-900"} `}
     >
       <div className="h-[60px] md:pl-64 fixed inset-y-0 w-full z-50 ">
         <InstructorNavbar />
@@ -24,7 +24,7 @@ export default function InstructorLayout({ children }: InstructorLayoutProps) {
         <InstructorSidebar />
       </div>
       <div
-        className={`md:pl-64 min-h-screen h-full ${isAnalyticsPage ? "dark:bg-gray-900" : "dark:bg-zinc-900"}`}
+        className={`md:pl-64 min-h-screen h-full ${isAnalyticsPage ? "dark:bg-zinc-900" : "dark:bg-zinc-900"}`}
       >
         {children}
       </div>
