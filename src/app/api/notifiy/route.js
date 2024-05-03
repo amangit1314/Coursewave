@@ -10,7 +10,7 @@ const vapidKeys = {
 };
 
 webpush.setVapidDetails(
-  "test@gmail.com",
+  process.env.NEXT_PUBLIC_APP_URL,
   vapidKeys.publicKey,
   vapidKeys.privateKey
 );
