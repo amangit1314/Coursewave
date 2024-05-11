@@ -541,7 +541,7 @@ function AddToCartButton({ course }: { course: Course }) {
     if (isInCart) {
       handleRemoveFromCart(course.courseId!);
     } else {
-      handleAddToCart(course!);
+      handleAddToCart(course!, user.user?.id!);
       setIsInCart(!isInCart);
     }
   };
