@@ -81,8 +81,8 @@ export const GET = async (req: NextRequest, { params }: {
         profileImageUrl: true,
         isEmailVerified: true,
         wishList: true,
-        Blog: true,
-        BlogComment: true,
+        blogs: true,
+        blogComments: true,
       }
     });
 
@@ -93,10 +93,10 @@ export const GET = async (req: NextRequest, { params }: {
       }, { status: 404 });
     }
 
-    console.log(`Created articles by authorId:-> ${authorId}: `, author.Blog);
+    console.log(`Created articles by authorId:-> ${authorId}: `, author.blogs);
     return NextResponse.json({
       success: true,
-      data: author.Blog,
+      data: author.blogs,
       message: 'Articles fetched successfully ...',
     }, { status: 200 });
   } catch (error: any) {
