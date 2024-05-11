@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import "@uploadthing/react/styles.css";
-import { absoluteUrl } from "@/lib/utils";
+import { absoluteUrl } from "@/utils/utils";
 import {
   Form,
   FormControl,

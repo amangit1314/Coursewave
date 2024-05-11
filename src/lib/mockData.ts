@@ -1,3 +1,5 @@
+import { Payment } from "@/types/payment";
+
 export const reviews = [
   {
     name: "Lorean James",
@@ -70,14 +72,6 @@ export const reviews = [
       "Lorem ipsum dolor sit, amet consectetur adipisicing  ipsum dolor sit, amet consectetur adipisicing elit. elit. .",
   },
 ];
-
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "not started" | "ongoing" | "completed";
-  name: string;
-  enrollementDate: Date | string;
-};
 
 export const data: Payment[] = [
   {

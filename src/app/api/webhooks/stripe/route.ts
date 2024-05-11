@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { headers } from "next/headers";
-import { stripe } from "@/lib/stripe";
+import { stripe } from "@/config/stripe";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 

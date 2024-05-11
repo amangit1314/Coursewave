@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { User } from "@prisma/client";
-import { absoluteUrl } from "../lib/utils";
+import { absoluteUrl } from "../utils/utils";
 
 const fetchUser = async () => {
   const url = absoluteUrl("/api/auth/me");

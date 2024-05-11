@@ -77,7 +77,7 @@
 
 
 //! ------------------------------------------------ TRY 2 ------------------------------------
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import Link from "next/link";
 import { TiTick } from "react-icons/ti";
 import ManageUserSubscriptionButton from "./manage-user-subscription-button";

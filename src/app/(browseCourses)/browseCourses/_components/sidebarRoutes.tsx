@@ -24,11 +24,11 @@ const SideBarRoutes = () => {
       label: "Courses",
       href: `/browseCourses`,
     },
-    // {
-    //   icon: <FaBloggerB size={22} />,
-    //   label: "Articles",
-    //   href: `/articles`,
-    // },
+    {
+      icon: <FaBloggerB size={22} />,
+      label: "Articles",
+      href: `/articles`,
+    },
     // {
     //   icon: <BiBroadcast size={22} />,
     //   label: "Sessions",

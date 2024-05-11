@@ -10,7 +10,7 @@ import { HiUserGroup } from "react-icons/hi";
 import { VscFeedback } from "react-icons/vsc";
 import { FaHandsHelping } from "react-icons/fa";
 import { useRouter, usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import useUserInfo from "@/hooks/use-user-info";
 import useInstructorInfo from "@/hooks/use-instructor-info";
 import { Instructor } from "@prisma/client";

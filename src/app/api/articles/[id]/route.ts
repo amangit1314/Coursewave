@@ -4,17 +4,18 @@ export const dynamic = 'force-dynamic';
 
 export const GET = async (req: NextRequest, { params }: {
   params: {
-    id?: string;
+    id: string;
   };
 }) => {
-  const articleId = params.id;
+  const articleId = params?.id!;
+
   try {
     if (!articleId) {
-      console.log('article id not provided, articleId is required field ...')
+      console.log('[MISSING PARAMETERS] article id not provided, articleId is required field ...')
       return NextResponse.json({
         status: 'ERROR',
         success: false,
-        message: 'article id not provided, articleId is required field ...'
+        message: '[MISSING PARAMETERS], article id not provided, articleId is required field ...'
       }, { status: 400 })
     }
 
@@ -25,11 +26,11 @@ export const GET = async (req: NextRequest, { params }: {
     });
 
     if (!article) {
-      console.log(`No article found with such articleId: ${articleId} ...`)
+      console.log(`[NOT FOUND], No article found with such articleId: ${articleId} ...`)
       return NextResponse.json({
         status: 'ERROR',
         success: false,
-        message: `No article found with such articleId: ${articleId} ...`,
+        message: `[NOT FOUND], No article found with such articleId: ${articleId} ...`,
       }, { status: 404 })
     }
 
@@ -37,15 +38,15 @@ export const GET = async (req: NextRequest, { params }: {
       status: 'OK',
       success: true,
       data: article,
-      message: `article info for articleId:${articleId}, fetched successfully ✔️ ...`
+      message: `[SUCCESS], article info for articleId:${articleId}, fetched successfully ✔️ ...`
     }, { status: 200 });
   } catch (error: any) {
-    console.log(`Failed to get article info for articleId:${articleId} ❌🚧 ...`);
+    console.log(`[ARTICLE FOUND ERROR], Failed to get article info for articleId:${articleId}, ERROR: ${error.message} ❌🚧 ...`);
     return NextResponse.json({
       status: 'ERROR',
       success: false,
       error: error.message,
-      message: `Failed to get article info for articleId:${articleId} ❌🚧 ...`
+      message: `[ARTICLE FOUND ERROR], Failed to get article info for articleId:${articleId} ❌🚧 ...`
     }, { status: 500 });
   }
 }

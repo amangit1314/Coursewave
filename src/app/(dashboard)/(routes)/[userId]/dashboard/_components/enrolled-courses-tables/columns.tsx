@@ -22,7 +22,7 @@ export type Enrollment = {
   progress: number;
   certificate: string;
   status: "active" | "expired";
-  validity: string;
+  // validity: string;
 };
 
 export const enrollmentColumns: ColumnDef<Enrollment>[] = [
@@ -48,10 +48,10 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-  {
-    accessorKey: "id",
-    header: "Id",
-  },
+  // {
+  //   accessorKey: "id",
+  //   header: "Id",
+  // },
   {
     accessorKey: "courseName",
     header: ({ column }) => {
@@ -68,11 +68,21 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
   },
   {
     accessorKey: "enrollmentDate",
-    header: "Enrollment Date",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Enrollment Date
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "progress",
-    header: "Progress",
+    header: "Progress (%)",
   },
   {
     accessorKey: "certificate",
@@ -82,10 +92,10 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
     accessorKey: "status",
     header: "Status",
   },
-  {
-    accessorKey: "validity",
-    header: "Validity",
-  },
+  // {
+  //   accessorKey: "validity",
+  //   header: "Validity",
+  // },
   {
     id: "actions",
     cell: ({ row }) => {

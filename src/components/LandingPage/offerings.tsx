@@ -75,8 +75,7 @@ const OfferingsLinkItem = ({
           ? link
           : `https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app`
       }
-      // className="group rounded-3xl border h-[200px] w-[300px] border-transparent hover:bg-red-400 hover:border-stroke hover:border-zinc-800 dark:hover:border-zinc-400 p-2 transition-all duration-300  hover:shadow-xl space-y-3"
-      target="_blank"
+     target="_blank"
       rel="noopener noreferrer"
     >
       <div className="group rounded-3xl border h-[140px] w-[241px] border-transparent  hover:border-stroke hover:border-zinc-800 dark:hover:border-zinc-400 p-4 transition-all duration-300  hover:shadow-xl space-y-3">

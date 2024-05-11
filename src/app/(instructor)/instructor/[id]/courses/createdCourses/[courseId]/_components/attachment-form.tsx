@@ -47,7 +47,7 @@ import { Pencil, PlusCircle, Loader2, X, File, Tag } from "lucide-react";
 import { TbCategory2 } from "react-icons/tb";
 import { RxCross2 } from "react-icons/rx";
 import { Input } from "@/components/ui/input";
-import { absoluteUrl } from "@/lib/utils";
+import { absoluteUrl } from "@/utils/utils";
 
 const sampleCourseAttachments = [
   "Who wants to learn.",

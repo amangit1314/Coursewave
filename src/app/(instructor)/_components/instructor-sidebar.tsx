@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import InstructorSidebarRoutes from "./instructor-sidebar-routes";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import Link from "next/link";
 
 function InstructorSidebar() {

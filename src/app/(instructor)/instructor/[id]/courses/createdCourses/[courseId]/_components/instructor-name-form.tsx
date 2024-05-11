@@ -19,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import useUserInfo from "@/hooks/use-user-info";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { Course } from "@prisma/client";
 
 interface InstructorNameFormProps {

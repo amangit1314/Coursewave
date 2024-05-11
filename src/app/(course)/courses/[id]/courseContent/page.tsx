@@ -56,7 +56,7 @@ import useInstructorInfo from "@/hooks/use-instructor-info";
 import CourseContentScreenSkeleton from "./_components/course-content-screen-skeleton";
 import CourseChaptersSkeleton from "./_components/course-chapters-skeleton";
 import CourseResourcesSkeleton from "./_components/course-resources-skeleton";
-import { absoluteUrl } from "@/lib/utils";
+import { absoluteUrl } from "@/utils/utils";
 import CourseVideo from "./_components/course-video";
 import useUserInfo from "@/hooks/use-user-info";
 import { Skeleton } from "@/components/ui/skeleton";

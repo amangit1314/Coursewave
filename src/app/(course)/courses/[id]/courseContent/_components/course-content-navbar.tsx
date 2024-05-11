@@ -7,7 +7,7 @@ import { Course, CourseProgress, Enrollment } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import Notifications from "@/components/notification-button";
-import { absoluteUrl } from "@/lib/utils";
+import { absoluteUrl } from "@/utils/utils";
 import { db } from "@/lib/db";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";

@@ -1,9 +1,9 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { stripe } from "@/lib/stripe";
+import { stripe } from "@/config/stripe";
 import { getUserSubscriptionPlan } from "@/lib/subscription";
-import { absoluteUrl } from "@/lib/utils";
+import { absoluteUrl } from "@/utils/utils";
 
 const returnUrl = absoluteUrl("/subscription");
 

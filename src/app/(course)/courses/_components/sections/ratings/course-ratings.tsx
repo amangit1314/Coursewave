@@ -9,6 +9,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Review } from "@prisma/client";
 import getUserInfoById from "@/helpers/getUserInfoById";
+import { absoluteUrl } from "@/utils/utils";
 
 type CourseRatingsProps = {
   courseId: string;
@@ -113,8 +114,7 @@ const ReviewsMassionaryGrid = ({ courseId }: ReviewsGridProps) => {
       try {
         setLoading(true);
         const response = await fetch(
-          // https://localhost:3000
-          `/api/courses/${courseId}/reviews`
+          absoluteUrl(`/api/courses/${courseId}/reviews`)
         );
 
         if (!response.ok) {

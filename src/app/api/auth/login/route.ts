@@ -87,7 +87,7 @@ export const POST = async (req: NextRequest) => {
             data: updatedUser,
             accessToken,
             refreshToken,
-            message: "Login Successfull 🎉🎆 ",
+            message: "Login Successfull 🎉🎆 ... ",
         }, { status: 200 });
 
         // Set the cookie
@@ -95,11 +95,11 @@ export const POST = async (req: NextRequest) => {
 
         return response;
     } catch (error) {
-        console.error("Error:", error);
+        console.error("[AUTH LOGIN ERROR] Internel server error:", error);
         return NextResponse.json({
             status: false,
             error: error,
-            message: "Internal server error occurred ⚠👮‍♂️..",
+            message: "[AUTH LOGIN ERROR], Internal server error occurred ⚠👮‍♂️..",
         }, { status: 500 });
     }
 };

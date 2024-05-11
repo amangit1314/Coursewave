@@ -1,4 +1,3 @@
-// import useLocalStorage from '@/hooks/use-local-storage';
 import { generateUid } from '@/helpers/id_helper';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -30,23 +29,21 @@ const useNotificationsStore = create<State & Actions>()(persist(
     notifications: [],
     loading: false,
     error: null,
-    setNotification: (title: string, message?: string) =>
-      set((state) => ({
-        notifications: [...state.notifications, {
-          id: generateUid(),
-          title,
-          message,
-          color: "emerald",
-          icon: BellRing,
-          isReaded: false
-        }]
-      })),
-    readNotification: (notificationId: string) =>
-      set((state) => ({
-        notifications: state.notifications.map((notification) =>
-          notification.id === notificationId ? { ...notification, isReaded: true } : notification
-        ),
-      })),
+    setNotification: (title: string, message?: string) => set((state) => ({
+      notifications: [...state.notifications, {
+        id: generateUid(),
+        title,
+        message,
+        color: "emerald",
+        icon: BellRing,
+        isReaded: false
+      }]
+    })),
+    readNotification: (notificationId: string) => set((state) => ({
+      notifications: state.notifications.map((notification) =>
+        notification.id === notificationId ? { ...notification, isReaded: true } : notification
+      ),
+    })),
     clearNotifications: async () => set((state) => ({ notifications: [] }))
   }),
   { name: 'Notification-Store', getStorage: () => localStorage }

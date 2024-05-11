@@ -48,6 +48,7 @@ import useCheckCourseIsPurchased from "@/hooks/use-check-course-is-puchase";
 import useNotificationsStore from "@/zustand/notificationsStore";
 import { Loader } from "lucide-react";
 import Footer from "@/components/LandingPage/footer";
+import { absoluteUrl } from "@/utils/utils";
 
 function CoursePreview({ params }: { params: { id: string } }) {
   const courseId = params?.id;
@@ -588,7 +589,7 @@ function CourseEnrollButton({
       );
       if (isCoursePurchased.courseIsPurchased) {
         window.location.assign(
-          `https://localhost:3000/courses/${courseId}/courseContent`
+          absoluteUrl(`/courses/${courseId}/courseContent`)
         );
       } else {
         const response = await axios.post(`/api/courses/${courseId}/checkout`, {

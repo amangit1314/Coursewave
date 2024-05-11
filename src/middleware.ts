@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { useZustandStore } from "./zustand/store";
+import { absoluteUrl } from "./utils/utils";
 
 export function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
     const token = request.cookies.get("token")?.value || '';
+    const { user } = useZustandStore.getState();
 
     const isPublicPath = path === '/login' || path === '/register' || path === '/verifyEmail' || path === '/' || path === '/api/webhooks/stripe';
 
-    //* If there's token and the path is public, redirect to /browseCourses
+    //* If there's token and the path is public && user, redirect to /browseCourses
     if (isPublicPath && token) {
         return NextResponse.redirect(new URL(`/browseCourses`, request.url));
     }
@@ -15,11 +18,15 @@ export function middleware(request: NextRequest) {
     if (!isPublicPath && !token) {
         return NextResponse.redirect(new URL('/login', request.url));
     }
+
+    // if (!user) {
+    //     return NextResponse.redirect(new URL('/', request.url));
+    // }
 }
 
 async function getTokenUid(token: string): Promise<string | null> {
     try {
-        const response = await fetch('https://localhost:3000/api/auth/me', {
+        const response = await fetch(absoluteUrl('/api/auth/me'), {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

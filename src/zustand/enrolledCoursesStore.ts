@@ -12,7 +12,6 @@ const useEnrolledCoursesStore = create<EnrolledCoursesState>((set) => ({
   enrolledCourses: [],
   fetchEnrolledCourses: async (userId: string) => {
     try {
-      // Replace with your actual Prisma client call
       const courses = await db.course.findMany({
         where: { enrollments: { some: { userId } } },
         include: { enrollments: true },

@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { db } from "@/lib/db";
-import { stripe } from "@/lib/stripe";
+import { stripe } from "@/config/stripe";
 import { NextResponse } from "next/server";
 import { generateUid } from "@/helpers/id_helper";
 export const dynamic = 'force-dynamic';

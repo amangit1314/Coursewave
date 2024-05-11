@@ -1,7 +1,7 @@
 import React from "react";
 import InstructorMobileSidebar from "./instructor-mobile-sidebar";
 import InstructorNavbarRoutes from "./instructor-navbar-routes";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { usePathname } from "next/navigation";
 
 function InstructorNavbar() {

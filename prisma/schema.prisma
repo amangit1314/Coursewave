@@ -32,16 +32,16 @@ model User {
   resetTokenStatus           String?
 
   // RELATIONS
-  wishList       WishList[]
-  cart           Cart[]
-  enrollments    Enrollment[]
-  payments       Payment[]
-  BlogComment    BlogComment[]
-  Blog           Blog[]
-  Review         Review[]
-  CourseProgress CourseProgress[]
-  Subscription   Subscription[]
-  StripeCustomer StripeCustomer?
+  wishList         WishList[]
+  cart             Cart[]
+  enrollments      Enrollment[]
+  payments         Payment[]
+  blogComments     BlogComment[]
+  blogs            Blog[]
+  reviews          Review[]
+  courseProgresses CourseProgress[]
+  subscriptions    Subscription[]
+  StripeCustomer   StripeCustomer?
 
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
@@ -143,6 +143,7 @@ model Course {
 
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
+  // User      User?     @relation(fields: [userId], references: [id])
 }
 
 model CourseAttachment {
@@ -339,11 +340,13 @@ model Category {
 model Blog {
   id                   String  @id @unique
   title                String
-  content              Json
+  content              String
   estimatedReadingTime String
-  clapsCount           BigInt? @default(0)
+  clapsCount           Int     @default(0)
   authorId             String
   categoryName         String?
+  thumbnailUrl         String?
+  isRecommended        Boolean @default(false)
 
   comments BlogComment[]
   category Category?     @relation(fields: [categoryName], references: [name])

@@ -4,7 +4,7 @@ import * as React from "react";
 // import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import { FaCalendarAlt } from "react-icons/fa";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {

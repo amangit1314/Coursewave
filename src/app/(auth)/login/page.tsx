@@ -1,77 +1,50 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { QueryClient, QueryKey, useQueryClient } from "@tanstack/react-query";
-
 import axios from "axios";
 import Link from "next/link";
-
+import React, { useEffect } from "react";
+import { absoluteUrl } from "@/utils/utils";
+import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
+import { LucideLoader2 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import { PasswordInput } from "./_components/password-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import useNotificationsStore from "@/zustand/notificationsStore";
-import { absoluteUrl } from "@/lib/utils";
-import { BiNotification } from "react-icons/bi";
-import { BellIcon } from "lucide-react";
+import { QueryClient, useQuery } from "@tanstack/react-query";
+import { useZustandStore } from "@/zustand/store";
 
 const successNotification = (message: string) => toast.success(message);
 const errorNotification = (errorMessage: string) => toast.error(errorMessage);
 
-function Login() {
+const Login = () => {
   const router = useRouter();
 
   const [loading, setLoading] = React.useState(false);
-  const [user, setUser] = React.useState({ email: "", password: "" });
+  const [user, setUserInfo] = React.useState({ email: "", password: "" });
   const [isButtonDisabled, setButtonDisabled] = React.useState(false);
-  // const setNotification = useNotificationsStore(
-  //   (state) => state.setNotification
-  // );
+  const { setUser } = useZustandStore();
 
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 30,
-      },
-    },
-  });
+  // const queryClient = new QueryClient({
+  //   defaultOptions: {
+  //     queries: {
+  //       staleTime: 30,
+  //     },
+  //   },
+  // });
 
   const onLogin = async () => {
     try {
       setLoading(true);
-      const response = await axios.post("/api/auth/login", user);
-      // Cache the user information using React Query
-      queryClient.setQueryData(["user"], response.data);
-      // const data = await queryClient.fetchQuery({
-      //   queryKey: ["user"],
-      //   queryFn: ,
-      //   staleTime: 10000,
-      // });
-      console.log("Login success", response.data);
+      await axios.post("/api/auth/login", user).then((res) => {
+        console.log('Login response: ', res.data);
+        setUser(res.data)
+      });
 
-      // const res = await fetch(
-      //   absoluteUrl(`/api/notify`),
-      //   {
-      //     method: "POST",
-      //     body: JSON.stringify({title: 'Welcome Back 🎉', body: 'Welcome back to Coursewave, We missed you so much.', icon: BellIcon, url: absoluteUrl(`/browseCourses`)}),
-      //     headers: {
-      //       "content-type": "application/json",
-      //     },
-      //   }
-      // );
-
-      // const data = await res.json();
-      // console.log('Sended notification data: ', data);
-
+      // queryClient.setQueryData(["user"], response.data);
+      // console.log("Login success", response.data);
       successNotification("Logged in successfully");
       router.push("/browseCourses");
-
-      // setNotification(
-      //   "Welcome Back 🎉",
-      //   `Welcome back to Courswave, we missed you so much "${response.data.courseName}" course.`
-      // );
     } catch (error: any) {
       console.error("Login failed: ", error.message);
       errorNotification(error.message);
@@ -125,7 +98,7 @@ function Login() {
               type="text"
               value={user.email}
               onChange={(e) => {
-                setUser({ ...user, email: e.target.value });
+                setUserInfo({ ...user, email: e.target.value });
               }}
               placeholder="email"
             />
@@ -134,7 +107,7 @@ function Login() {
               id="current_password"
               value={user.password}
               onChange={(e: any) =>
-                setUser({ ...user, password: e.target.value })
+                setUserInfo({ ...user, password: e.target.value })
               }
               autoComplete="current-password"
             />
@@ -152,11 +125,13 @@ function Login() {
               className="py-2 text-white w-full bg-blue-500 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
               disabled={isButtonDisabled}
             >
-              {loading
-                ? "...Loading"
-                : isButtonDisabled
-                  ? "Cant Login"
-                  : "Login"}
+              {loading ? (
+                <LucideLoader2 className="animate-spin" />
+              ) : isButtonDisabled ? (
+                "Cant Login"
+              ) : (
+                "Login"
+              )}
             </button>
 
             <Toaster />
@@ -172,6 +147,6 @@ function Login() {
       </div>
     </div>
   );
-}
+};
 
 export default Login;

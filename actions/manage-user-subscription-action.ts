@@ -1,5 +1,5 @@
-import { absoluteUrl } from "@/lib/utils"
-import { stripe } from "@/lib/stripe";
+import { absoluteUrl } from "@/utils/utils"
+import { stripe } from "@/config/stripe";
 
 type manageStripeSubscriptionActionProps = {
   isSubscribed: boolean;

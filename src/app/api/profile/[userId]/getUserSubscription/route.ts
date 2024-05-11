@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { stripe } from "@/lib/stripe";
+import { stripe } from "@/config/stripe";
 import { storeSubscriptionPlans } from "@/lib/subscriptions";
 import { NextRequest, NextResponse } from "next/server";
 export const dynamic = 'force-dynamic';

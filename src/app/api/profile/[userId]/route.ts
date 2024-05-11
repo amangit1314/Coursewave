@@ -48,10 +48,10 @@ export const GET = async (req: NextRequest, { params }: { params: { userId: stri
 //* PUT update user account data
 export const PUT = async (req: NextRequest, { params }: { params: { userId: string } }) => {
     const uid = params?.userId!;
-    try {
-        const reqBody = await req.json();
-        const { newUserName, newProfileImageUrl } = reqBody;
+    const reqBody = await req.json();
+    const { newUserName, newProfileImageUrl } = reqBody;
 
+    try {
         if (!uid) {
             return NextResponse.json({
                 status: false,

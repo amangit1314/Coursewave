@@ -1,6 +1,11 @@
-import { absoluteUrl } from "@/lib/utils";
-import CourseWidget from "./course-widget";
+"use client";
+
+import React from "react";
+
+import { absoluteUrl } from "@/utils/utils";
 import { Course } from "@prisma/client";
+import CourseWidget from "./course-widget";
+import { useZustandStore } from "@/zustand/store";
 
 const getCourses = async () => {
   try {
@@ -19,14 +24,20 @@ const getCourses = async () => {
   }
 };
 
-export default async function DataComponent() {
-  const courses = await getCourses();
-  console.log(courses.data);
+export default function DataComponent() {
+  // const courses = await getCourses();
+  const { loading, courses, fetchCourses } = useZustandStore();
+
+  React.useEffect(() => {
+    fetchCourses();
+  }, [fetchCourses]);
+
+  console.log("Course in the Data component : ", courses);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 my-6 w-9/12 justify-start mx-auto">
-      {Array.isArray(courses.data) ? (
-        courses.data.map((course: Course, index: number) => (
+      {Array.isArray(courses) ? (
+        courses.map((course: Course, index: number) => (
           <CourseWidget
             key={index}
             index={index.toString()}

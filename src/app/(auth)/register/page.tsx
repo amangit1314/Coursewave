@@ -9,6 +9,8 @@ import { FcGoogle } from "react-icons/fc";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { PasswordInput } from "../login/_components/password-input";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
+import { LucideLoader2 } from "lucide-react";
 
 function RegisterPage() {
   const router = useRouter();
@@ -105,11 +107,13 @@ function RegisterPage() {
               className="py-2 text-white w-full bg-blue-500 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
               disabled={isButtonDisabled}
             >
-              {loading
-                ? "...Loading"
-                : isButtonDisabled
-                  ? "Cant Register"
-                  : "Register"}
+              {loading ? (
+                <LucideLoader2 className="animate-spin" />
+              ) : isButtonDisabled ? (
+                "Cant Register"
+              ) : (
+                "Register"
+              )}
             </button>
 
             <Toaster />
@@ -117,10 +121,10 @@ function RegisterPage() {
             <p className="pt-3 text-sm dark:text-gray-900">
               {" "}
               Already have an account?
-              <a href="/login" className="text-blue-500 ">
+              <Link href="/login" className="text-blue-500 ">
                 {" "}
                 Login!
-              </a>
+              </Link>
             </p>
           </div>
         </div>

@@ -15,13 +15,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CiUser, CiShoppingCart, CiSaveDown2 } from "react-icons/ci";
-import { FaMoneyCheck } from "react-icons/fa6";
 import { IoMdLogOut } from "react-icons/io";
 import axios from "axios";
-import { QueryClient } from "react-query";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { useZustandStore } from "@/zustand/store";
 
 const successNotification = (message: string) => toast.success(message);
 const errorNotification = (errorMessage: string) => toast.error(errorMessage);
@@ -32,20 +31,41 @@ const UserAvatar = () => {
   const [loading, setLoading] = React.useState(false);
   const [isButtonDisabled, setButtonDisabled] = React.useState(false);
 
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 30,
-      },
-    },
-  });
+  const { setUser } = useZustandStore();
 
   const onLogout = async () => {
     try {
       setLoading(true);
-      const response = await axios.post("/api/auth/logout", user);
-      queryClient.setQueryData(["user"], {});
-      console.log("Logout success", response.data);
+      await axios
+        .post("/api/auth/logout", user)
+        .then((res) => {
+          setUser({
+            id: "",
+            name: "",
+            email: "",
+            password: "",
+            profileImageUrl: "",
+            isEmailVerified: false,
+            isInstructor: false,
+            refreshTokenGenerationTime: null,
+            refreshToken: "",
+            refreshTokenExpiry: "",
+            refreshTokenStatus: "",
+            accessTokenGenerationTime: null,
+            accessToken: "",
+            accessTokenExpiry: "",
+            accessTokenStatus: "",
+            resetTokenGenerationTime: null,
+            resetToken: "",
+            resetTokenExpiry: "",
+            resetTokenStatus: "",
+            createdAt: null,
+            updatedAt: null,
+          });
+        })
+        .catch((err: any) => {
+          toast.error(`Error loging out: ${err.message}`);
+        });
 
       successNotification("Logged out successfully");
       router.push("/");
@@ -109,9 +129,9 @@ const UserAvatar = () => {
 
         <DropdownMenuItem
           onClick={onLogout}
-          className="transition-all duration-300"
+          className="transition-all duration-300 cursor-pointer"
         >
-          { loading ? <Loader2 className="animate-spin" /> : 'Log out'}
+          {loading ? <Loader2 className="animate-spin" /> : "Log out"}
           <DropdownMenuShortcut>
             <IoMdLogOut />
           </DropdownMenuShortcut>

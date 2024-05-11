@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { absoluteUrl } from "../lib/utils";
+import { absoluteUrl } from "../utils/utils";
 import { Enrollment, Purchase } from "@prisma/client";
 
 const useCheckCourseIsPurchased = (userId: string, courseId: string) => {

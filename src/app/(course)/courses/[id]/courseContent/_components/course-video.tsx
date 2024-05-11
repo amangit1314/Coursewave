@@ -2,7 +2,7 @@
 
 import { useConfettiStore } from "@/hooks/use-confetti-store";
 import useUserInfo from "@/hooks/use-user-info";
-import { absoluteUrl, cn } from "@/lib/utils";
+import { absoluteUrl, cn } from "@/utils/utils";
 import MuxPlayer from "@mux/mux-player-react";
 import { Chapter, MuxData } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";

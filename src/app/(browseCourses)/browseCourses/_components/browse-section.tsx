@@ -5,6 +5,7 @@ import { Category } from "@prisma/client";
 import CategoriesComponent from "@/app/(course)/courses/_components/courses-categories-component";
 import { FilteredCoursesComponent } from "@/app/(course)/courses/_components/filtered-courses";
 import useUserInfo from "@/hooks/use-user-info";
+import useCoursesStore from "@/zustand/coursesStore";
 import { useZustandStore } from "@/zustand/store";
 
 interface BrowseSectionProps {
@@ -12,41 +13,34 @@ interface BrowseSectionProps {
 }
 
 const BrowseSection: React.FC<BrowseSectionProps> = ({ children }) => {
-  const [loading, setLoading] = React.useState(true);
   const [activeCategoryIndex, setActiveCategoryIndex] =
     React.useState<number>(0);
-  const [categories, setCategories] = React.useState<Category[]>([]);
+  const [categoriesData, setCategories] = React.useState<Category[]>([]);
 
-  // const { courses } = useZustandStore((state: any) => ({
-  //   bears: 0,
-  //   increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
-  //   removeAllBears: () => set({ bears: 0 }),
-  // }));
+  const { courses, fetchCourses } = useCoursesStore();
+  const { loading, categories, fetchCategories } = useZustandStore();
 
   useEffect(() => {
-    fetch("/api/categories/")
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        } else {
-          throw new Error("Failed to fetch categories");
-        }
-      })
-      .then((data) => {
-        setCategories([{ name: "All" }, ...data.data]);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching categories:", error);
-        setLoading(false);
-      });
-  }, []);
+    fetchCourses();
+  }, [fetchCourses]);
+
+  useEffect(() => {
+    fetchCategories();
+
+  }, [fetchCategories]);
+
+  useEffect(() => {
+    setCategories([
+      { name: "All", createdAt: null, updatedAt: null },
+      ...categories,
+    ]);
+  }, [setCategories, categories]);
 
   const handleClick = (index: number) => {
     setActiveCategoryIndex(index);
   };
 
-  const activeCategory = categories[activeCategoryIndex]?.name || "All";
+  const activeCategory = categoriesData[activeCategoryIndex]?.name || "All";
 
   const user = useUserInfo();
   console.log("User: ", user);
@@ -56,12 +50,12 @@ const BrowseSection: React.FC<BrowseSectionProps> = ({ children }) => {
       <CategoriesComponent
         activeCategory={activeCategoryIndex}
         setActiveCategory={handleClick}
-        categories={categories}
+        categories={categoriesData}
         loading={loading}
       />
       <FilteredCoursesComponent
         activeCategory={activeCategory}
-        categories={categories}
+        categories={categoriesData}
       />
     </div>
   );

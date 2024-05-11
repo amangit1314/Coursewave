@@ -2,14 +2,14 @@ import { Course } from '@prisma/client';
 import { create } from 'zustand';
 
 interface CartItem {
-  id: string; // Unique identifier for cart item
+  id: string;
   userId: string;
-  courseId: string; // Reference to the Course model
+  courseId: string;
   courseName: string;
-  courseInstructorName?: string; // Optional instructor name
-  courseImageUrl?: string; // Optional image URL
-  coursePrice: string; // String representation of price
-  quantity: number; // Quantity of the item in the cart
+  courseInstructorName?: string;
+  courseImageUrl?: string;
+  coursePrice: string;
+  quantity: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -21,7 +21,7 @@ interface CartState {
 }
 
 type Actions = {
-  addToCart: (course: Course) => void;
+  addToCart: (course: Course, userId: string) => void;
   removeFromCart: (courseId: string) => void;
   updateQuantity: (courseId: string, quantity: number) => void;
   clearCart: () => void;
@@ -38,7 +38,7 @@ export const useCartStore = create<CartState & Actions>((set, get) => ({
   totalItems: initialState.totalItems,
   totalPrice: initialState.totalPrice,
 
-  addToCart: (course: Course) => {
+  addToCart: (course: Course, userId: string) => {
     set((state) => {
       const existingItem = state.cartItems.find((item) => item.courseId === course.courseId);
 
@@ -54,13 +54,13 @@ export const useCartStore = create<CartState & Actions>((set, get) => ({
           totalPrice: state.totalPrice + parseFloat(course.coursePrice!), // Ensure price is a number
         };
       } else {
-        // Add new course to cart
+
         const newCartItem: CartItem = {
-          id: Math.random().toString(36).substring(2, 15), // Generate unique ID
-          userId: ''/* Your logic to get user ID */,
+          id: Math.random().toString(36).substring(2, 15),
+          userId: userId,
           courseId: course.courseId,
-          courseName: course.courseTitle, // Use courseTitle for cart display
-          courseInstructorName: course.courseCreator!, // Use courseCreator for instructor name (optional)
+          courseName: course.courseTitle,
+          courseInstructorName: course.courseCreator!,
           courseImageUrl: course.courseImage!,
           coursePrice: course.coursePrice!,
           quantity: 1,

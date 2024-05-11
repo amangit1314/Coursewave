@@ -4,6 +4,7 @@ import React, { useEffect } from 'react'
 import { Category } from '@prisma/client';
 import { FilteredCoursesComponent } from '@/app/(course)/courses/_components/filtered-courses';
 import CategoriesComponent from '@/app/(course)/courses/_components/courses-categories-component';
+import { absoluteUrl } from '@/utils/utils';
 
 interface BrowseEnrolledCoursesSectionProps {
     children: React.ReactNode;
@@ -16,7 +17,7 @@ const BrowseEnrolledCoursesSection: React.FC<BrowseEnrolledCoursesSectionProps> 
 
     useEffect(() => {
       // https://localhost:3000
-      fetch("/api/categories/")
+      fetch(absoluteUrl("/api/categories/"))
         .then((res) => {
           if (res.ok) {
             return res.json();

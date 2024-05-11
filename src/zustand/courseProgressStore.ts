@@ -1,4 +1,4 @@
-import { absoluteUrl } from '@/lib/utils';
+import { absoluteUrl } from '@/utils/utils';
 import { ChapterProgress, CourseProgress } from '@prisma/client';
 import { create } from 'zustand';
 

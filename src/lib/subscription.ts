@@ -1,5 +1,5 @@
 import { storeSubscriptionPlans } from "./subscriptions"
-import { stripe } from "./stripe"
+import { stripe } from "../config/stripe"
 import { db } from "@/lib/db"
 import { cookies } from "next/headers";
 import { decrypt } from "@/helpers/jwt_helper";

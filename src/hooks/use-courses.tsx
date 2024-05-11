@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { absoluteUrl } from "../lib/utils";
+import { absoluteUrl } from "../utils/utils";
 import { Course } from "@prisma/client";
 
 const useCourses = () => {

@@ -1,14 +1,21 @@
-import { absoluteUrl } from '@/lib/utils';
 import { create } from 'zustand';
-import { Category, Chapter, ChapterNotes, Course, CourseAttachment, CourseProgress, CourseSection, Instructor, User } from '@prisma/client';
+import { persist } from 'zustand/middleware';
+import { absoluteUrl } from '@/utils/utils';
+import { Blog, Category, Chapter, ChapterNotes, Course, CourseAttachment, CourseProgress, CourseSection, Instructor, Review, User } from '@prisma/client';
 
-interface CoursewaveState {
+type CoursewaveState = {
   courses: Course[];
   courseInfo: Course | null;
   categories: Category[];
   selectedCategory: Category | null;
   filteredCourses: Course[];
-  userInfo: User | null;
+  user: User | null;
+  cartCourses: Course[];
+  wishListedCourses: Course[];
+  enrolledCourses: Course[];
+  articles: Blog[];
+  savedArticles: Blog[];
+  createdArticles: Blog[];
   instructorInfo: Instructor | null;
   instructorCourses: Course[];
   instructorCourse: Course | null;
@@ -16,25 +23,64 @@ interface CoursewaveState {
   courseProgress: CourseProgress | null;
   courseAttachments: CourseAttachment[];
   courseSections: CourseSection[];
-  // activeCourseSection: CourseSection | null;
   courseSectionChapters: Chapter[];
   courseSectionChapterInfo: Chapter | null;
   chapterNotes: ChapterNotes[];
+  courseReviews: Review[];
   error: String | null;
-  loading: Boolean;
-  fetchUserInfo: () => Promise<void>;
+  loading: boolean;
+}
+
+type CoursewaveActions = {
+  setUser: (user: User | null) => void;
+  // fetchUserInfo: () => Promise<void>;
+  addToCart: (userId: string, courseId: string) => Promise<void>;
+  removeFromCart: (userId: string, courseId: string) => void;
+  addToWishList: (userId: string, course: Course) => Promise<void>;
+  removeFromWishList: (courseId: string) => void;
+  fetchEnrolledCourses: (userId: string) => Promise<void>;
+  fetchArticles: () => Promise<void>;
+  createArticle: (title: string, content: string, thumbnailUrl: string | null, estimatedReadingTime: string, authorId: string) => Promise<void>;
+  editArticle: (title: string, content: string, thubnailUrl: string | null, estimatedReadingTime: string, authorId: string) => Promise<void>;
+  fetchCreatedArticles: (userId: string) => Promise<void>;
+  fetchSavedArticles: (userId: string) => Promise<void>;
   fetchCourses: () => Promise<void>;
   fetchCategories: () => Promise<void>;
   fetchSelectedCourseInfo: (courseId: string) => Promise<void>;
+  fetchInstructorCourses: (instructorId: string) => Promise<void>;
+  fetchInstructorSelectedCourseInfo: (instructorId: string, courseId: string) => Promise<void>;
+  fetchCourseProgress: (userId: string, courseId: string) => Promise<void>;
+  fetchCourseAttachments: (courseId: string) => Promise<void>;
+  fetchCourseSections: (courseId: string) => Promise<void>;
+  fetchCourseSectionInfo: (courseId: string, sectionId: string) => Promise<void>;
+  fetchCourseSectionChapterInfo: (courseId: string, sectionId: string, chapterId: string) => Promise<void>;
+  fetchChapterNotes: (userId: string, courseId: string, chapterId: string) => Promise<void>;
+  fetchCourseReviews: (courseId: string) => Promise<void>;
 }
 
-export const useZustandStore = create<CoursewaveState>((set) => ({
+const fetchCourse = async (courseId: string) => {
+  const response = await fetch(absoluteUrl(`/api/courses/${courseId}`));
+  if (!response.ok) {
+    console.error("Failed to get course details");
+    return null;
+  }
+  const data = await response.json();
+  return data?.data! as Course;
+};
+
+export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(persist((set) => ({
   courses: [],
   courseInfo: null,
   categories: [],
   selectedCategory: null,
   filteredCourses: [],
-  userInfo: null,
+  user: null,
+  cartCourses: [],
+  wishListedCourses: [],
+  enrolledCourses: [],
+  articles: [],
+  savedArticles: [],
+  createdArticles: [],
   instructorInfo: null,
   instructorCourses: [],
   instructorCourse: null,
@@ -45,32 +91,58 @@ export const useZustandStore = create<CoursewaveState>((set) => ({
   courseSectionChapters: [],
   courseSectionChapterInfo: null,
   chapterNotes: [],
+  courseReviews: [],
   error: null,
   loading: false,
-  fetchUserInfo: async () => {
-    try {
-      set({ loading: true });
-      const response = await fetch(absoluteUrl(`/api/auth/me`));
-
-      if (!response.ok) {
-        console.error("Failed to get user info from auth/me api ...");
-      }
-
-      const data = await response.json();
-      const user: User = data?.data;
-
-      set({ userInfo: user, loading: false, error: null });
-    } catch (error: any) {
-      console.error(
-        `Failed to get user info from auth/me api in @/zustand/store.ts, ERROR: ${error.message} ...`
-      );
-      set({ loading: false, error: error.message });
+  setUser: (user: User | null) => set({ loading: false, user: user }),
+  addToCart: async (userId: string,courseId: string) => {
+    const course = await fetchCourse(courseId);
+    if (course) {
+      set((state) => ({ cartCourses: [...state.cartCourses, course] }));
     }
   },
+  removeFromCart: (userId:string, courseId: string) => {
+    set((state) => ({
+      cartCourses: state.cartCourses.filter((course) => course.courseId !== courseId),
+    }));
+  },
+  addToWishList: async (userId: string, course: Course) => {
+    try {
+      set((state) => ({ loading: true }));
+
+      // 2. Call API endpoint to save the course (assuming user authentication)
+      const response = await fetch(absoluteUrl(`/api/profile/${userId}/wishlist`), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: userId })
+      });
+
+      if (!response.ok) {
+        set((state) => ({ loading: false, error: 'Failed to save course ' }));
+      }
+
+      // 3. Update local state (if successful)
+      set((state) => ({ wishListedCourses: [...state.wishListedCourses, course] }));
+    } catch (error: any) {
+      console.error("Error saving course:", error);
+      set((state) => ({ error: error.message, loading: false }));
+      // Handle errors in the UI
+    }
+  },
+  removeFromWishList: (courseId: string) => { },
+  fetchEnrolledCourses: async (userId: string) => { },
+  fetchArticles: async () => {
+  },
+  createArticle: async (title: string, content: string, thumbnailUrl: string | null, estimatedReadingTime: string, authorId: string) => { },
+  editArticle: async (title: string, content: string, thubnailUrl: string | null, estimatedReadingTime: string, authorId: string) => { },
+  fetchCreatedArticles: async (userId: string) => { },
+  fetchSavedArticles: async (userId: string) => { },
   fetchCourses: async () => {
     set({ loading: true });
     try {
-      const response = await fetch("https://localhost:3000/api/courses/");
+      const response = await fetch(absoluteUrl("/api/courses"));
 
       if (!response.ok) {
         console.error("Failed to get user info from api/courses api ...");
@@ -90,14 +162,14 @@ export const useZustandStore = create<CoursewaveState>((set) => ({
   fetchCategories: async () => {
     try {
       set({ loading: true });
-      const response = await fetch("/api/categories/");
+      const response = await fetch(absoluteUrl(`/api/categories/`));
 
       if (!response.ok) {
         console.error("Failed to get categories from api/categories api ...");
       }
 
       const categories = await response.json();
-      set({ categories: [{ categoryName: "All" }, ...categories.data], loading: false });
+      set({ categories: [{ categoryName: "All", createdAt: Date.now(), updatedAt: Date.now() }, ...categories.data], loading: false });
     }
 
     catch (error: any) {
@@ -127,4 +199,34 @@ export const useZustandStore = create<CoursewaveState>((set) => ({
       set({ loading: false, error: error.message });
     }
   },
-}));
+  fetchInstructorCourses: async (instructorId: string) => { },
+  fetchInstructorSelectedCourseInfo: async (instructorId: string, courseId: string) => { },
+  fetchCourseProgress: async (courseId: string, sectionId: string) => { },
+  fetchCourseAttachments: async (courseId: string) => { },
+  fetchCourseSections: async (courseId: string) => { },
+  fetchCourseSectionInfo: async (courseId: string, sectionId: string) => { },
+  fetchCourseSectionChapterInfo: async (courseId: string, sectionId: string, chapterId: string) => { },
+  fetchChapterNotes: async (userId: string, courseId: string, chapterId: string) => { },
+  fetchCourseReviews: async (courseId: string) => { }
+}), { name: 'Coursewave-Store', getStorage: () => localStorage },));
+
+// fetchUserInfo: async () => {
+//   try {
+//     set({ loading: true });
+//     const response = await fetch(absoluteUrl(`/api/auth/me`));
+
+//     if (!response.ok) {
+//       console.error("Failed to get user info from auth/me api ...");
+//     }
+
+//     const data = await response.json();
+//     const user: User = data?.data;
+
+//     set({ user: user, loading: false, error: null });
+//   } catch (error: any) {
+//     console.error(
+//       `Failed to get user info from auth/me api in @/zustand/store.ts, ERROR: ${error.message} ...`
+//     );
+//     set({ loading: false, error: error.message });
+//   }
+// },

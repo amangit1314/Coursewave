@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { absoluteUrl } from "@/utils/utils";
 
 export const dynamic = 'force-dynamic';
 
@@ -32,7 +33,7 @@ export const GET = async (req: NextRequest, { params }: {
 
         // Construct the correct URL based on the 'uid' parameter
         // https://localhost:3000
-        const currentURL = `/api/profile/${uid}`;
+        const currentURL = absoluteUrl(`/api/profile/${uid}`);
 
         const enrolledCourses = await db.enrollment.findMany({
             where: {

@@ -1,11 +1,11 @@
+import { absoluteUrl } from "@/utils/utils";
 import { User } from "@prisma/client";
 import { useQuery } from "react-query";
 
 
 const getUserInfoById = async (userId: string): Promise<{user: User | null, error: Error | null} > => {
   try {
-    // https://localhost:3000
-    const url = `/api/profile/${userId}`;
+    const url = absoluteUrl(`/api/profile/${userId}`);
     const response = await fetch(url);
 
     if (!response.ok) {
