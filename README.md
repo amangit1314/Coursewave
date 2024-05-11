@@ -1,8 +1,14 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# CourseWave - Unlock your infinte learning potential
+
+## Important
+
+Copy the .env.example content and create a .env file at the sample level of .env.example and paste all the copied content in the .env file.
 
 ## Getting Started
 
 First, run the development server:
+
+Set all the variables with your own values in the .env file to continue and run the app (those are important to run the app).
 
 ```bash
 npm run dev
@@ -14,11 +20,11 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [https://localhost:3000](https://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Poppins, a custom Google Font.
 
 ## Learn More
 
