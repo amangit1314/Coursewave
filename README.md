@@ -2,13 +2,13 @@
 
 ## Important
 
-Copy the .env.example content and create a .env file at the sample level of .env.example and paste all the copied content in the .env file.
+Copy the `.env.example` content and create a `.env` file at the sample level of .env.example and paste all the copied content in the `.env` file.
 
 ## Getting Started
 
 First, run the development server:
 
-Set all the variables with your own values in the .env file to continue and run the app (those are important to run the app).
+Set all the variables with your own values in the `.env` file to continue and run the app `*(this is important to run the app).*`
 
 ```bash
 npm run dev
