@@ -2,7 +2,7 @@
 
 ## Important
 
-Copy the `.env.example` content and create a `.env` file at the sample level of .env.example and paste all the copied content in the `.env` file.
+Copy the `.env.example` content and create a `.env` file at the sample level of `.env.example` and paste all the copied content in the `.env` file.
 
 ## Getting Started
 
