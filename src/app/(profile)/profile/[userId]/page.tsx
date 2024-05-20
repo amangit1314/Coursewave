@@ -50,6 +50,8 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UploadDropzone } from "@/utils/uploadthing";
+import { absoluteUrl } from "@/utils/utils";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 const Profile = () => {
   const user = useUserInfo().user;
@@ -83,10 +85,6 @@ const Profile = () => {
               {user ? user.email : "amansoni@gmail.com"}
             </p>
           </div>
-          {/* <Pencil
-            size={16}
-            className="ut-upload-icon cursor-pointer duration-300 transition-all"
-          /> */}
         </div>
 
         <SwitchToInstructorButton />
@@ -188,51 +186,56 @@ function EditProfileImage({
     setIsEditing(!isEditing);
   };
 
-   const content = isEditing ? (
-     <UploadDropzone
-       endpoint={"profileImageUpdater"}
-       onClientUploadComplete={(res: any) => {
-         console.log("Uploadthing profile image upload response: ", res);
-         console.log("Uploaded profile img url: ", res[0].url);
-         setImageUrl(res[0].url);
-         setIsEditing(false); // Toggle back to false after upload
-         toast.success("Profile Image uploaded successfully ...");
-       }}
-       onUploadError={(error: Error) => {
-         toast.error(`${error?.message}`);
-       }}
-     />
-   ) : (
-     <Image
-       src={imageUrl ? imageUrl : "/assets/images/user/user-01.png"}
-       width={96}
-       height={96}
-       className="rounded-full h-[96px] w-[96px] border border-stroke"
-       alt="profile"
-     />
-   );
+  const content = isEditing ? (
+    <UploadDropzone
+      endpoint={"profileImageUpdater"}
+      onClientUploadComplete={(res: any) => {
+        console.log("Uploadthing profile image upload response: ", res);
+        console.log("Uploaded profile img url: ", res[0].url);
+        setImageUrl(res[0].url);
+        setIsEditing(false); // Toggle back to false after upload
+        toast.success("Profile Image uploaded successfully ...");
+      }}
+      onUploadError={(error: Error) => {
+        toast.error(`${error?.message}`);
+      }}
+    />
+  ) : (
+    <Image
+      src={imageUrl ? imageUrl : "/assets/images/user/user-01.png"}
+      width={96}
+      height={96}
+      className="rounded-full h-[96px] w-[96px] border border-stroke"
+      alt="profile"
+    />
+  );
 
-   return (
-     <div className="flex items-center mt-8 justify-center">
-       <div className="relative max-h-44 max-w-44">
-         {content}
-         <label
-           htmlFor="profile"
-           className="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-primary p-2 text-white bg-slate-700 hover:bg-opacity-70 sm:bottom-2 sm:right-2"
-           onClick={handleEditClick}
-         >
-           <Camera size={18} />
-         </label>
-       </div>
-     </div>
-   );
+  return (
+    <div className="flex items-center mt-8 justify-center">
+      <div className="relative max-h-44 max-w-44">
+        {content}
+        <label
+          htmlFor="profile"
+          className="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-primary p-2 text-white bg-slate-700 hover:bg-opacity-70 sm:bottom-2 sm:right-2"
+          onClick={handleEditClick}
+        >
+          <Camera size={18} />
+        </label>
+      </div>
+    </div>
+  );
 }
+
+const formSchema = z.object({
+  userName: z.string(),
+  image: z.string(),
+});
 
 function EditProfileWidget() {
   const user = useUserInfo();
 
   const [imageUrl, setImageUrl] = React.useState(
-    user.user?.profileImageUrl ?? "/assets/images/user/user-02.png"
+    user.user?.profileImageUrl!
   );
 
   const form = useForm({
@@ -247,7 +250,7 @@ function EditProfileWidget() {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     await axios
-      .put(`/api/profile/${user.user?.id}/`, {
+      .put(absoluteUrl(`/api/profile/${user.user?.id}/`), {
         newUserName: values.userName,
         newProfileImageUrl: imageUrl,
       })
@@ -270,9 +273,12 @@ function EditProfileWidget() {
           <MdOutlineKeyboardArrowRight />
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+
+      <DialogContent className="sm:max-w-[425px] w-full">
         <DialogHeader>
-          <DialogTitle>Edit Profile</DialogTitle>
+          <DialogTitle className="text-zinc-950 dark:text-white">
+            Edit Profile
+          </DialogTitle>
           <DialogDescription>
             Make changes in your username and image here. Click save when youre
             done.
@@ -289,8 +295,8 @@ function EditProfileWidget() {
               render={({ field }) => (
                 <div>
                   <FormItem className="mt-8">
-                    <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
-                      Profile Image
+                    <FormLabel className="my-4 text-base text-zinc-800 dark:text-gray-100 tracking-tight font-medium">
+                      Edit profile image
                     </FormLabel>
                     <FormControl>
                       <EditProfileImage
@@ -305,7 +311,7 @@ function EditProfileWidget() {
                       /> */}
                     </FormControl>
                     <FormDescription className="">
-                      What will you teach in this course?
+                      Edit your profile image
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -319,14 +325,14 @@ function EditProfileWidget() {
               render={({ field }) => (
                 <div>
                   <FormItem className="mt-8">
-                    <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
-                      New username
+                    <FormLabel className="my-4 text-base text-zinc-800 dark:text-gray-100  tracking-tight font-medium">
+                      Edit username
                     </FormLabel>
                     <FormControl>
-                      <EditProfileImage
+                      {/* <EditProfileImage
                         imageUrl={imageUrl}
                         setImageUrl={setImageUrl}
-                      />
+                      /> */}
                       <Input
                         id="newUsername"
                         disabled={isSubmitting}
@@ -344,37 +350,9 @@ function EditProfileWidget() {
               )}
             />
 
-            {/*
-            <div className=" space-y-2">
-              <FormLabel htmlFor="name" className="text-right">
-                New image
-              </FormLabel>
-              <FormControl>
-                <EditProfileImage
-                  imageUrl={imageUrl}
-                  setImageUrl={setImageUrl}
-                />
-              </FormControl>
-            </div>
-
-            <div className=" space-y-2">
-              <FormLabel htmlFor="username" className="text-right">
-                New username
-              </FormLabel>
-              <FormControl>
-                <Input
-                  id="newUsername"
-                  value={user.user?.name!}
-                  className="col-span-3"
-                />
-              </FormControl>
-            </div> */}
-
-            <DialogFooter>
-              <Button type="submit" disabled={!isValid || isSubmitting}>
-                Save changes
-              </Button>
-            </DialogFooter>
+            <Button type="submit" disabled={!isValid || isSubmitting}>
+              Save changes
+            </Button>
           </form>
         </Form>
       </DialogContent>
@@ -438,52 +416,130 @@ function AccountSettingsSection() {
   );
 }
 
-const formSchema = z.object({
-  userName: z.string(),
-  image: z.string(),
+const changePasswordFormSchema = z.object({
+  oldPassword: z.string(),
+  newPassword: z.string(),
 });
 
 function ChangePasswordWidget() {
+  const user = useUserInfo();
+
+  const form = useForm({
+    resolver: zodResolver(changePasswordFormSchema),
+    defaultValues: {
+      oldPassword: "",
+      newPassword: "",
+    },
+  });
+
+  const { isSubmitting, isValid } = form.formState;
+
+  const onSubmit = async (values: z.infer<typeof changePasswordFormSchema>) => {
+    await axios
+      .patch(absoluteUrl(`/api/profile/${user.user?.id}/changePassword`), {
+        oldPassword: values.oldPassword,
+        newPassword: values.newPassword,
+      })
+      .then((response) => {
+        console.log("Form Values: ", values);
+        console.log("Response data after changing password: ", response);
+        toast.success("User password changed successfully 👮🔒🥳 ...");
+      })
+      .catch((err: any) => {
+        console.log("Error in updating profile: ", err.message);
+        toast.error(`Error: ${err.message}`);
+      });
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
         <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-emerald-400 dark:hover:from-emerald-600 hover:via-green-400 hover:to-emerald-400 dark:hover:bg-emerald-600 hover:text-white hover:rounded-lg p-2 transition-all duration-200 text-gray-800 dark:text-gray-200">
-          <p className="text-sm">Change Password </p>
+          <p className="text-sm text-zinc-950 dark:text-white">
+            Change Password{" "}
+          </p>
           <MdOutlineKeyboardArrowRight />
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] rounded-3xl overflow-hidden">
         <DialogHeader>
-          <DialogTitle>Change Password</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-zinc-950 dark:text-white">
+            Change Password
+          </DialogTitle>
+          <DialogDescription className="text-zinc-500 dark:text-zinc-400">
             Make changes in your password here. Click save when youre done.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              New Password
-            </Label>
-            <Input
-              id="newPassword"
-              value="Enter your new password ..."
-              className="col-span-3"
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 py-4"
+          >
+            <FormField
+              control={form.control}
+              name="oldPassword"
+              render={({ field }) => (
+                <FormItem className="mt-8 space-y-1">
+                  <FormLabel className="text-right text-zinc-800 dark:text-white font-medium tracking-tight">
+                    Current Password
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      id="oldPassword"
+                      disabled={isSubmitting}
+                      placeholder="Enter your current password ..."
+                      className="col-span-3"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription className="">
+                    Enter your current password to verify ...
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Confirm Password
-            </Label>
-            <Input
-              id="confirmPassword"
-              value="Confirm your password ..."
-              className="col-span-3"
+
+            <FormField
+              control={form.control}
+              name="newPassword"
+              render={({ field }) => (
+                <div>
+                  <FormItem className="mt-8 space-y-1">
+                    <FormLabel className="text-right text-zinc-800 dark:text-white font-medium tracking-tight">
+                      New Password
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="newPassword"
+                        disabled={isSubmitting}
+                        placeholder="Confirm your password ..."
+                        className="col-span-3"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription className="">
+                      Enter new password to update to ...
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                </div>
+              )}
             />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
+
+            <DialogFooter className="flex justify-start space-x-4 items-center">
+              <Button type="submit" disabled={!isValid || isSubmitting} className="hover:bg-green-600 hover:text-white overflow-hidden">
+                Save changes
+              </Button>
+
+              <DialogClose>
+                <Button className="bg-black text-white hover:bg-red-600">
+                  Cancle
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

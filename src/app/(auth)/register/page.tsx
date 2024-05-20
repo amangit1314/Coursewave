@@ -11,6 +11,7 @@ import { PasswordInput } from "../login/_components/password-input";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { LucideLoader2 } from "lucide-react";
+import { absoluteUrl } from "@/utils/utils";
 
 function RegisterPage() {
   const router = useRouter();
@@ -38,7 +39,7 @@ function RegisterPage() {
   const onRegister = async () => {
     try {
       setLoading(true);
-      const response = await axios.post("/api/auth/register", user);
+      const response = await axios.post(absoluteUrl("/api/auth/register"), user);
       console.log("Signup success", response.data);
       router.push("/login");
     } catch (error: any) {

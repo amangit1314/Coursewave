@@ -36,7 +36,7 @@ const Login = () => {
   const onLogin = async () => {
     try {
       setLoading(true);
-      await axios.post("/api/auth/login", user).then((res) => {
+      await axios.post(absoluteUrl("/api/auth/login"), user).then((res) => {
         console.log('Login response: ', res.data);
         setUser(res.data)
       });
@@ -79,7 +79,7 @@ const Login = () => {
 
           {/* Right Section */}
           <div className="flex flex-col p-8 bg-white rounded-3xl">
-            <Button variant="outline" className="p-3 border-blue-500">
+            <Button variant="outline" className="p-3 bg-transparent border-blue-500 rounded-md overflow-hidden">
               <FcGoogle size={26} />
               <div className="pl-2">Sign in with Google</div>
             </Button>

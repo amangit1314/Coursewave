@@ -36,7 +36,7 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
               levelUp && "text-green-400"
             } ${levelDown && "text-blue-400"} `}
           >
-            rate ? <div>{rate}</div> : <div></div>
+            {rate ?? 0}
             {levelUp && (
               <svg
                 className="fill-green-400"

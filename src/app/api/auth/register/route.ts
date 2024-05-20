@@ -16,12 +16,17 @@ export const POST = async (req: NextRequest) => {
     const reqBody = await req.json();
     const { email, password } = reqBody;
 
-    console.log(reqBody);
+    console.log('Registeration request body: ', reqBody);
 
     if (!email || !password) {
+
+        console.log('Email: ', email);
+        console.log('Password: ', password);
+        console.log("All fields are mandatory 👮‍♂️ ... ");
+
         return NextResponse.json({
             status: false,
-            message: "All fields are mandatory 👮‍♂️ ",
+            message: "All fields are mandatory 👮‍♂️ ... ",
         }, { status: 400 });
     }
 

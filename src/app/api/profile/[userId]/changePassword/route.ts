@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 export const dynamic = 'force-dynamic';
 
 // change password
-export const POST = async (req: NextRequest, { params }: { params: { userId?: string }; }) => {
+export const PATCH = async (req: NextRequest, { params }: { params: { userId?: string }; }) => {
     const uid = params?.userId;
 
     try {

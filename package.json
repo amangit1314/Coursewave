@@ -6,7 +6,7 @@
     "start": "next start",
     "lint": "next lint",
     "video": "& npx next-video sync -w",
-    "dev": "next dev --experimental-https",
+    "dev": "next dev ",
     "build": "next build",
     "turbo": "next dev --turbo",
     "preview": "next build && next start",
