@@ -81,7 +81,7 @@ const CartPage = ({ params }: { params: { userId: string } }) => {
 
 export default CartPage;
 
-export function CartBreadcrumb() {
+function CartBreadcrumb() {
   return (
     <Breadcrumb>
       <BreadcrumbList>
@@ -112,7 +112,5 @@ export function CartBreadcrumb() {
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
-  )
+  );
 }
-
-
