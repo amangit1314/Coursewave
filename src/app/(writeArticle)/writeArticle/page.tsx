@@ -19,13 +19,16 @@ import { AiOutlineVideoCameraAdd } from "react-icons/ai";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { RiExternalLinkLine, RiImageAddFill } from "react-icons/ri";
-import ReactQuill from "react-quill";
+import dynamic from "next/dynamic"; // Import dynamic from next/dynamic
 import "react-quill/dist/quill.bubble.css";
 import { z } from "zod";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import useUserInfo from "@/hooks/use-user-info";
+
+// Dynamically import ReactQuill with no SSR
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -37,10 +40,9 @@ const formSchema = z.object({
 
 const WriteArticlePage = () => {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
   const user = useUserInfo();
   const userId = user?.user?.id!;
-  console.log('User id in the write article page: ', userId);
+  console.log("User id in the write article page: ", userId);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -130,19 +132,28 @@ const WriteArticlePage = () => {
                       {/* h-[700px] */}
                       <div className="justify-start items-start  py-4">
                         <div className="flex justify-start items-start">
-                          <button onClick={() => setOpen(!open)}>
+                          <button type="button" onClick={() => setOpen(!open)}>
                             <IoAddCircleOutline className="h-8 w-8" />
                           </button>
 
                           {open && (
                             <div className="flex justify-start items-center space-x-[5px] mx-2">
-                              <button className="flex justify-center items-center border bg-transparent border-stroke rounded-full p-2 cursor-pointer transition-all duration-300 hover:border-blue-400 h-8 w-8 hover:bg-blue-100 hover:text-blue-400">
+                              <button
+                                type="button"
+                                className="flex justify-center items-center border bg-transparent border-stroke rounded-full p-2 cursor-pointer transition-all duration-300 hover:border-blue-400 h-8 w-8 hover:bg-blue-100 hover:text-blue-400"
+                              >
                                 <RiImageAddFill size={18} />
                               </button>
-                              <button className="flex justify-center items-center border bg-transparent border-stroke rounded-full p-2 cursor-pointer transition-all duration-300 hover:border-blue-400 h-8 w-8 hover:bg-blue-100 hover:text-blue-400">
+                              <button
+                                type="button"
+                                className="flex justify-center items-center border bg-transparent border-stroke rounded-full p-2 cursor-pointer transition-all duration-300 hover:border-blue-400 h-8 w-8 hover:bg-blue-100 hover:text-blue-400"
+                              >
                                 <AiOutlineVideoCameraAdd size={18} />
                               </button>
-                              <button className="flex justify-center items-center border bg-transparent border-stroke rounded-full p-2 cursor-pointer transition-all duration-300 hover:border-blue-400 h-8 w-8 hover:bg-blue-100 hover:text-blue-400">
+                              <button
+                                type="button"
+                                className="flex justify-center items-center border bg-transparent border-stroke rounded-full p-2 cursor-pointer transition-all duration-300 hover:border-blue-400 h-8 w-8 hover:bg-blue-100 hover:text-blue-400"
+                              >
                                 <RiExternalLinkLine size={18} />
                               </button>
                             </div>
