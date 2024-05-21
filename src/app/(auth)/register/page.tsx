@@ -13,7 +13,10 @@ import Link from "next/link";
 import { LucideLoader2 } from "lucide-react";
 import { absoluteUrl } from "@/utils/utils";
 
-function RegisterPage() {
+axios.defaults.withCredentials = true;
+axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+const RegisterPage = () => {
   const router = useRouter();
   const [user, setUser] = React.useState({
     email: "",

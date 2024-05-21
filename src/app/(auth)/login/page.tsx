@@ -14,6 +14,9 @@ import { Input } from "@/components/ui/input";
 import { QueryClient, useQuery } from "@tanstack/react-query";
 import { useZustandStore } from "@/zustand/store";
 
+axios.defaults.withCredentials = true;
+axios.defaults.headers.post['Content-Type'] = 'application/json';
+
 const successNotification = (message: string) => toast.success(message);
 const errorNotification = (errorMessage: string) => toast.error(errorMessage);
 
