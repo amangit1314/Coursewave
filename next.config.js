@@ -2,6 +2,14 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${process.env.NEXT_PUBLIC_APP_URL}:path*`,
+      },
+    ];
+  },
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -41,5 +49,5 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig
-  // withNextVideo(nextConfig);
+module.exports = nextConfig;
+// withNextVideo(nextConfig);
