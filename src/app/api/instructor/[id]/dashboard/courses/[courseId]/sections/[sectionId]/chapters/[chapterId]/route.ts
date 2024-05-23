@@ -3,6 +3,14 @@ import { db } from "@/lib/db";
 import Mux from "@mux/mux-node";
 export const dynamic = 'force-dynamic';
 
+import cors, { runMiddleware } from '@/lib/cors';
+
+// Handle the OPTIONS request
+export async function OPTIONS(req: NextRequest) {
+  await runMiddleware(req, NextResponse, cors);
+  return new NextResponse('OK', { status: 200 });
+}
+
 const mux = new Mux({
     tokenId: process.env.MUX_TOKEN_ID!,
     tokenSecret: process.env.MUX_TOKEN_SECRET!

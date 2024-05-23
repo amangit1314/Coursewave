@@ -1,26 +1,27 @@
+import { absoluteUrl } from "@/utils/utils";
 import Link from "next/link";
 import React from "react";
 
 function Offerings() {
   const offerings = [
     {
-      link: "",
+      link: absoluteUrl("/browseCourses"),
       title: "Courses",
       description: "Find in-depth informative courses on various courses.",
     },
     {
-      link: "",
+      link: absoluteUrl("/browseArticles"),
       title: "Community Articles",
       description:
         "Read technical articles on vast development and technical topics!",
     },
     {
-      link: "",
+      link: absoluteUrl("/browseSessions"),
       title: "One on One Sessions",
       description: "Book one to one mentorships on various tech and projects.",
     },
     {
-      link: "",
+      link: absoluteUrl("/browseSessions"),
       title: "Sessions",
       description: "We organize sessions on latest technology trends.",
     },
@@ -75,7 +76,7 @@ const OfferingsLinkItem = ({
           ? link
           : `https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app`
       }
-     target="_blank"
+      target="_blank"
       rel="noopener noreferrer"
     >
       <div className="group rounded-3xl border h-[140px] w-[241px] border-transparent  hover:border-stroke hover:border-zinc-800 dark:hover:border-zinc-400 p-4 transition-all duration-300  hover:shadow-xl space-y-3">

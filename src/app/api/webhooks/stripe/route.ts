@@ -1,8 +1,16 @@
 import Stripe from "stripe";
 import { headers } from "next/headers";
 import { stripe } from "@/config/stripe";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+
+import cors, { runMiddleware } from '@/lib/cors';
+
+// Handle the OPTIONS request
+export async function OPTIONS(req: NextRequest) {
+  await runMiddleware(req, NextResponse, cors);
+  return new NextResponse('OK', { status: 200 });
+}
 
 export async function POST(req: Request) {
   const body = await req.text();

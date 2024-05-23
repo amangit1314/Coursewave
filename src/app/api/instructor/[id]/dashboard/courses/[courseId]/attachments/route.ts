@@ -2,6 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateUid } from "@/helpers/id_helper";
 import { db } from "@/lib/db";
 
+import cors, { runMiddleware } from '@/lib/cors';
+
+// Handle the OPTIONS request
+export async function OPTIONS(req: NextRequest) {
+  await runMiddleware(req, NextResponse, cors);
+  return new NextResponse('OK', { status: 200 });
+}
+
 export const dynamic = 'force-dynamic';
 
 export const POST = async (req: NextRequest, { params }: {

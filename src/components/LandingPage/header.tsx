@@ -4,6 +4,8 @@ import { CgMenuRightAlt } from "react-icons/cg";
 import { ThemeModeToggle } from "../themeModeToggle";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Grip } from "lucide-react";
+import { absoluteUrl } from "@/utils/utils";
 interface TestimonialItemProps {
   handleLoginClick: any;
 }
@@ -12,7 +14,7 @@ const LandingPageHeader: React.FC<TestimonialItemProps> = ({
   handleLoginClick,
 }) => {
   return (
-    <div className="bg-transparent border-b sticky z-10 top-0 backdrop-blur-xl  p-[2rem] max-w-7xl h-[64px] w-full mx-auto flex justify-between items-center py-auto ">
+    <div className="bg-transparent border-b sticky z-10 top-0 backdrop-blur-xl  p-[2rem] max-w-7xl h-[64px] w-full mx-auto flex justify-between items-center py-auto overflow-x-hidden overflow-y-hidden ">
       {/* coursewave logo and text */}
       <div className="flex cursor-pointer items-center py-auto">
         <Image
@@ -29,24 +31,25 @@ const LandingPageHeader: React.FC<TestimonialItemProps> = ({
 
       {/* navigate links */}
       <div className="hidden lg:flex lg:visible justify-around lg:space-x-4">
-        <Link
+        {/* <Link
           href=""
           className="text-[14px] text-gray-400 hover:text-blue-500 cursor-point font-medium"
         >
           About
-        </Link>
+        </Link> */}
         <Link
-          href="/browseCourses"
+          href={absoluteUrl('/browseCourses')}
           className="text-[14px] text-gray-400 hover:text-blue-500 cursor-point font-medium"
         >
           Courses
         </Link>
-        {/* <Link
-            href=""
+        <Link
+            href={absoluteUrl('/browseArticles')}
             className="text-[1rem] text-gray-400 hover:text-blue-500 cursor-point font-medium"
           >
             Articles
           </Link>
+        {/* 
           <Link
             href="/browseSessions"
             className="text-[14px] text-gray-400 hover:text-blue-500 cursor-point font-medium"
@@ -54,7 +57,7 @@ const LandingPageHeader: React.FC<TestimonialItemProps> = ({
             Sessions
           </Link> */}
         <Link
-          href="/contact"
+          href={absoluteUrl('/helpAndSupport')}
           className="text-[14px] text-gray-400 hover:text-blue-500 cursor-point font-medium"
         >
           Contact
@@ -80,8 +83,8 @@ const LandingPageHeader: React.FC<TestimonialItemProps> = ({
           </Button>
         </Link>
 
-        <Button className="hidden group md:visible md:flex justify-center items-center h-10 w-10 rounded-md bg-transparent dark:hover:bg-zinc-800 transition-all duration-200 border border-stroke">
-          <CgMenuRightAlt className="scale-100 md:scale-0 transition-all duration-200 text-black group-hover:text-white dark:text-white" />
+        <Button className="visible group md:hidden flex justify-center items-center h-10 w-10 rounded-md dark:bg-transparent dark:hover:bg-zinc-800 transition-all duration-200 border border-stroke">
+          <Grip className="scale-100 md:scale-0 transition-all duration-200 text-black group-hover:text-white dark:text-white h-[1.2rem] w-[1.2rem]"  />
         </Button>
       </div>
     </div>

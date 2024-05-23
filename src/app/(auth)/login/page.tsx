@@ -13,9 +13,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { QueryClient, useQuery } from "@tanstack/react-query";
 import { useZustandStore } from "@/zustand/store";
+import { signIn } from "next-auth/react";
 
 axios.defaults.withCredentials = true;
-axios.defaults.headers.post['Content-Type'] = 'application/json';
+axios.defaults.headers.post["Content-Type"] = "application/json";
 
 const successNotification = (message: string) => toast.success(message);
 const errorNotification = (errorMessage: string) => toast.error(errorMessage);
@@ -28,24 +29,14 @@ const Login = () => {
   const [isButtonDisabled, setButtonDisabled] = React.useState(false);
   const { setUser } = useZustandStore();
 
-  // const queryClient = new QueryClient({
-  //   defaultOptions: {
-  //     queries: {
-  //       staleTime: 30,
-  //     },
-  //   },
-  // });
-
   const onLogin = async () => {
     try {
       setLoading(true);
       await axios.post(absoluteUrl("/api/auth/login"), user).then((res) => {
-        console.log('Login response: ', res.data);
-        setUser(res.data)
+        console.log("Login response: ", res.data);
+        setUser(res.data);
       });
 
-      // queryClient.setQueryData(["user"], response.data);
-      // console.log("Login success", response.data);
       successNotification("Logged in successfully");
       router.push("/browseCourses");
     } catch (error: any) {
@@ -82,12 +73,8 @@ const Login = () => {
 
           {/* Right Section */}
           <div className="flex flex-col p-8 bg-white rounded-3xl">
-            <Button variant="outline" className="p-3 bg-transparent border-blue-500 rounded-md overflow-hidden">
-              <FcGoogle size={26} />
-              <div className="pl-2">Sign in with Google</div>
-            </Button>
-
             <div className="inline-flex items-center justify-center w-full">
+              <SignInWithGoogleButton />
               <hr className="w-30 h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
               <span className="px-3 font-medium text-gray-900  bg-white  ">
                 or
@@ -153,3 +140,16 @@ const Login = () => {
 };
 
 export default Login;
+
+const SignInWithGoogleButton = () => {
+  return (
+    <Button
+      variant="outline"
+      onClick={() => signIn()}
+      className="p-3 bg-transparent border-blue-500 rounded-md overflow-hidden"
+    >
+      <FcGoogle size={26} />
+      <div className="pl-2">Sign in with Google</div>
+    </Button>
+  );
+};

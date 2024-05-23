@@ -12,6 +12,7 @@ import Testimonials from "@/components/LandingPage/testimonials";
 import { firebaseClourdMessaging } from "@/config/firebase";
 import toast from "react-hot-toast";
 
+
 export default function Home() {
   const router = useRouter();
 
@@ -20,7 +21,7 @@ export default function Home() {
   };
 
   return (
-    <main className="flex dark:bg-black dark:bg-opacity-80 h-full flex-col items-center justify-between  ">
+    <main className="flex dark:bg-black dark:bg-opacity-80 h-full flex-col items-center justify-between overflow-hidden ">
       <LandingPageHeader handleLoginClick={handleLoginClick} />
 
       <div className="p-10 h-full">

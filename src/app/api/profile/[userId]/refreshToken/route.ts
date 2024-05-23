@@ -2,6 +2,14 @@ import { generateAccessToken } from "@/helpers/jwt_helper";
 import { NextRequest, NextResponse } from "next/server";
 export const dynamic = 'force-dynamic';
 
+import cors, { runMiddleware } from '@/lib/cors';
+
+// Handle the OPTIONS request
+export async function OPTIONS(req: NextRequest) {
+  await runMiddleware(req, NextResponse, cors);
+  return new NextResponse('OK', { status: 200 });
+}
+
 // refresh token
 export const POST = async (req: NextRequest, { params }: {
     params: {

@@ -1,9 +1,17 @@
 import Stripe from "stripe";
 import { db } from "@/lib/db";
 import { stripe } from "@/config/stripe";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { generateUid } from "@/helpers/id_helper";
 export const dynamic = 'force-dynamic';
+
+import cors, { runMiddleware } from '@/lib/cors';
+
+// Handle the OPTIONS request
+export async function OPTIONS(req: NextRequest) {
+  await runMiddleware(req, NextResponse, cors);
+  return new NextResponse('OK', { status: 200 });
+}
 
 export const POST = async (req: Request, { params }: {
   params: {

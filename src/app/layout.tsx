@@ -5,10 +5,10 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { usePathname, useRouter } from "next/navigation";
 import LandingPageHeader from "@/components/LandingPage/header";
-import { GlobalQueryClientProvider } from "@/components/providers/query-client-provider";
-import { ThemeProvider } from "@/components/providers/theme-provider";
-import { ToastProvider } from "@/components/providers/toaster-provider";
-import { CookiesProvider } from "next-client-cookies/server";
+import { GlobalQueryClientProvider } from "@/providers/query-client-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
+import { ToastProvider } from "@/providers/toaster-provider";
+import AuthProvider from "@/providers/auth-provider";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -36,21 +36,16 @@ export default function RootLayout({
     router.push("/login");
   };
 
-  const handleSignUpClick = () => {
-    router.push("/register");
-  };
-
   const hideSidebar = pathname.match(
     /courses\/enrolledCourses\/(undefined|null)/
   );
 
   return (
     <html lang="en">
-      <body className={poppins.className}>
-        {/* <CookiesProvider> */}
+      {/* <AuthProvider> */}
+        <body className={poppins.className}>
+          {/* <CookiesProvider> */}
           <GlobalQueryClientProvider>
-            {/* <Provider store={store}> */}
-
             <ThemeProvider
               attribute="class"
               defaultTheme="system"
@@ -59,22 +54,19 @@ export default function RootLayout({
             >
               <ToastProvider />
 
-              {/* <Provider store={store}> */}
               <div className="dark:bg-zinc-800">
                 {hideSidebar && (
                   <LandingPageHeader handleLoginClick={handleLoginClick} />
                 )}
-
-                {/* <LandingPageHeader handleLoginClick={handleLoginClick} /> */}
-
                 {children}
               </div>
             </ThemeProvider>
 
             {/* </Provider> */}
           </GlobalQueryClientProvider>
-        {/* </CookiesProvider> */}
-      </body>
+          {/* </CookiesProvider> */}
+        </body>
+      {/* </AuthProvider> */}
     </html>
   );
 }

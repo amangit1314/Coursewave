@@ -7,6 +7,13 @@ import { forgotHtml } from "@/helpers/forgot_password_email_html";
 import { NextApiResponse } from "next";
 
 import { db } from "@/lib/db";
+import cors, { runMiddleware } from '@/lib/cors';
+
+// Handle the OPTIONS request
+export async function OPTIONS(req: NextRequest) {
+  await runMiddleware(req, NextResponse, cors);
+  return new NextResponse('OK', { status: 200 });
+}
 // import { PrismaClient } from "@prisma/client";
 // const prisma = new PrismaClient();
 export const dynamic = 'force-dynamic';

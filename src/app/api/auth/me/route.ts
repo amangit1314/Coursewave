@@ -1,9 +1,16 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import dotenv from "dotenv";
 dotenv.config();
 import { db } from "@/lib/db";
 import { decrypt, verifyToken } from "@/helpers/jwt_helper";
+import cors, { runMiddleware } from '@/lib/cors';
+
+// Handle the OPTIONS request
+export async function OPTIONS(req: NextRequest) {
+  await runMiddleware(req, NextResponse, cors);
+  return new NextResponse('OK', { status: 200 });
+}
 
 export const dynamic = 'force-dynamic';
 

@@ -8,6 +8,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Divider } from "@tremor/react";
+import { absoluteUrl } from "@/utils/utils";
+import { FaSquareXTwitter } from "react-icons/fa6";
 
 const CourseFooter = () => {
   return (
@@ -147,43 +149,66 @@ const Footer = () => {
       {/* options */}
       <div className="flex w-full flex-col md:flex-row justify-start md:justify-between items-center">
         {/* other options */}
-        <div className="flex flex-col md:flex-row md:p-4 justify-start">
+        <div className="flex flex-col md:flex-row md:p-4 justify-start ">
           {/* become member, send feedback */}
-          <div className="space-y-4 mt-6 md:mt-0  md:mr-8">
-            <p className="font-medium  md:font-bold text-md text-base md:text-xs cursor-pointer text-slate-100">
-              Become A Member
-            </p>
-            <p className=" font-medium md:font-bold text-md text-base md:text-xs cursor-pointer text-slate-100">
+          <div className="flex flex-col space-y-4 mt-6 md:mt-0 border-r pr-8 border-stroke">
+            <Link
+              href={absoluteUrl("/subscription")}
+              className="font-medium  md:font-bold text-md text-base md:text-sm cursor-pointer text-slate-100"
+            >
+              Become A Member{" "}
+            </Link>
+            <Link
+              href={absoluteUrl("/helpAndSupport")}
+              className=" font-medium md:font-bold text-md text-base md:text-sm cursor-pointer text-slate-100"
+            >
               Send us feedback
-            </p>
+            </Link>
           </div>
 
           <div className="hidden md:visible md:flex flex-col md:flex-row mt-4 md:mt-0 ">
             {/* get help */}
-            <div className="md:mx-8 space-y-4">
-              <p className="uppercase font-bold text-xs cursor-pointer text-slate-100">
-                Get Help
-              </p>
-              <p className="text-xs text-slate-400 hover:text-slate-100 cursor-pointer">
-                Courses
-              </p>
-              <p className="text-xs text-slate-400 hover:text-slate-100 cursor-pointer">
-                Community Articles
-              </p>
-              <p className="text-xs text-slate-400 hover:text-slate-100 cursor-pointer">
-                Sessions
-              </p>
-              <p className="text-xs text-slate-400 hover:text-slate-100 cursor-pointer">
-                Payment Options
-              </p>
-              <p className="text-xs text-slate-400 hover:text-slate-100 cursor-pointer">
-                Contact Us on gitaman818@gmail.com
-              </p>
+            <div className="md:mx-8 space-y-4 border-r  pr-8  border-stroke">
+              <Link href={absoluteUrl("/helpAndSupport")}>
+                <p className="uppercase font-bold text-sm cursor-pointer text-slate-100">
+                  Get Help
+                </p>
+              </Link>
+
+              <div className="flex flex-col space-y-4">
+                <Link
+                  href={absoluteUrl("/browseCourses")}
+                  className="text-xs text-slate-400 hover:text-slate-100 cursor-pointer"
+                >
+                  Courses
+                </Link>
+
+                <Link
+                  href={absoluteUrl("/browseArticles")}
+                  className="text-xs text-slate-400 hover:text-slate-100 cursor-pointer my-2"
+                >
+                  Community Articles
+                </Link>
+
+                <Link
+                  href={absoluteUrl("/browseSessions")}
+                  className="text-xs text-slate-400 hover:text-slate-100 cursor-pointer my-2"
+                >
+                  Sessions
+                </Link>
+
+                <Link
+                  href={absoluteUrl("")}
+                  className="text-xs text-slate-400 hover:text-slate-100 cursor-pointer my-2"
+                >
+                  Contact Us on gitaman818@gmail.com
+                </Link>
+              </div>
             </div>
 
             {/* about Coursewave */}
             <div className="mt-4 md:mt-0 space-y-4">
-              <p className="uppercase font-bold text-xs cursor-pointer text-slate-100">
+              <p className="uppercase font-bold text-sm  text-slate-100">
                 About Coursewave
               </p>
               <p className="text-xs text-slate-400 hover:text-slate-100 cursor-pointer">
@@ -205,7 +230,7 @@ const Footer = () => {
         {/* social icons links */}
         <div className="flex items-center justify-between mt-6 mr-8 mb-auto">
           <div className="flex mt-4 space-x-5 sm:justify-center sm:mt-0">
-            <Link href="#" className="text-gray-500 hover:text-blue-500 ">
+            {/* <Link href={absoluteUrl('/')} className="text-gray-500 hover:text-blue-500 ">
               <svg
                 className="w-4 h-4"
                 aria-hidden="true"
@@ -220,8 +245,8 @@ const Footer = () => {
                 />
               </svg>
               <span className="sr-only">Facebook page</span>
-            </Link>
-            <Link href="#" className="text-gray-500 hover:text-blue-500 ">
+            </Link> */}
+            <Link href='https://discord.gg/gemZ3T6r' className="text-gray-500 hover:text-blue-500 ">
               <svg
                 className="w-4 h-4"
                 aria-hidden="true"
@@ -233,23 +258,11 @@ const Footer = () => {
               </svg>
               <span className="sr-only">Discord community</span>
             </Link>
-            <Link href="#" className="text-gray-500 hover:text-blue-500 ">
-              <svg
-                className="w-4 h-4"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 17"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M20 1.892a8.178 8.178 0 0 1-2.355.635 4.074 4.074 0 0 0 1.8-2.235 8.344 8.344 0 0 1-2.605.98A4.13 4.13 0 0 0 13.85 0a4.068 4.068 0 0 0-4.1 4.038 4 4 0 0 0 .105.919A11.705 11.705 0 0 1 1.4.734a4.006 4.006 0 0 0 1.268 5.392 4.165 4.165 0 0 1-1.859-.5v.05A4.057 4.057 0 0 0 4.1 9.635a4.19 4.19 0 0 1-1.856.07 4.108 4.108 0 0 0 3.831 2.807A8.36 8.36 0 0 1 0 14.184 11.732 11.732 0 0 0 6.291 16 11.502 11.502 0 0 0 17.964 4.5c0-.177 0-.35-.012-.523A8.143 8.143 0 0 0 20 1.892Z"
-                  clipRule="evenodd"
-                />
-              </svg>
+            <Link href="https://x.com/soni07_aman" className="text-gray-500 hover:text-blue-500 ">
+            <FaSquareXTwitter className="w-4 h-4" />
               <span className="sr-only">Twitter page</span>
             </Link>
-            <Link href="#" className="text-gray-500 hover:text-blue-500 ">
+            <Link href="https://github.com/amangit1314" className="text-gray-500 hover:text-blue-500 ">
               <svg
                 className="w-4 h-4"
                 aria-hidden="true"
