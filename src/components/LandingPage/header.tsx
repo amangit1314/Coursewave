@@ -46,7 +46,7 @@ const LandingPageHeader: React.FC<TestimonialItemProps> = ({
         </Link>
         <Link
             // href={absoluteUrl('/browseArticles')}
-            href={"/browseArticles"}
+            href={"/articles"}
             className="text-[1rem] text-gray-400 hover:text-blue-500 cursor-point font-medium"
           >
             Articles

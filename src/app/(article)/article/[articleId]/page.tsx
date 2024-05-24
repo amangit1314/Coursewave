@@ -44,7 +44,7 @@ export default function ArticleContentPage({
     <div className="min-h-screen h-full justify-center">
       <div className="flex justify-between items-center px-16 py-2 border border-b-[1px] border-stroke">
         <div>
-          <Link href={`/browseArticles`}>
+          <Link href={`/articles`}>
             <Button
               variant="outline"
               size="icon"

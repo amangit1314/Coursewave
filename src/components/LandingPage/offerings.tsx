@@ -12,7 +12,7 @@ function Offerings() {
     },
     {
       // link: absoluteUrl("/browseArticles"),
-      link: "/browseArticles",
+      link: "/articles",
       title: "Community Articles",
       description:
         "Read technical articles on vast development and technical topics!",

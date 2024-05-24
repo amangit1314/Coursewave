@@ -34,7 +34,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -50,7 +49,6 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UploadDropzone } from "@/utils/uploadthing";
-import { absoluteUrl } from "@/utils/utils";
 import { DialogClose } from "@radix-ui/react-dialog";
 
 const Profile = () => {
@@ -105,7 +103,7 @@ const Profile = () => {
 
 export default Profile;
 
-function ProfileWithBackground() {
+const ProfileWithBackground = () => {
   const user = useUserInfo();
   return (
     <div className="relative">
@@ -142,9 +140,9 @@ function ProfileWithBackground() {
       </div>
     </div>
   );
-}
+};
 
-function ProfileImage() {
+const ProfileImage = () => {
   const user = useUserInfo();
 
   return (
@@ -171,15 +169,15 @@ function ProfileImage() {
       </div>
     </div>
   );
-}
+};
 
-function EditProfileImage({
+const EditProfileImage = ({
   imageUrl,
   setImageUrl,
 }: {
   imageUrl: string;
   setImageUrl: React.Dispatch<React.SetStateAction<string>>;
-}) {
+}) => {
   const [isEditing, setIsEditing] = React.useState(false);
 
   const handleEditClick = () => {
@@ -224,19 +222,17 @@ function EditProfileImage({
       </div>
     </div>
   );
-}
+};
 
 const formSchema = z.object({
   userName: z.string(),
   image: z.string(),
 });
 
-function EditProfileWidget() {
+const EditProfileWidget = () => {
   const user = useUserInfo();
 
-  const [imageUrl, setImageUrl] = React.useState(
-    user.user?.profileImageUrl!
-  );
+  const [imageUrl, setImageUrl] = React.useState(user.user?.profileImageUrl!);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -250,7 +246,7 @@ function EditProfileWidget() {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     await axios
-      .put((`api/profile/${user.user?.id}/`), {
+      .put(`api/profile/${user.user?.id}/`, {
         newUserName: values.userName,
         newProfileImageUrl: imageUrl,
       })
@@ -358,9 +354,9 @@ function EditProfileWidget() {
       </DialogContent>
     </Dialog>
   );
-}
+};
 
-function SwitchToInstructorButton() {
+const SwitchToInstructorButton = () => {
   const user = useUserInfo().user;
 
   const isInstructor = user?.isInstructor!;
@@ -382,9 +378,9 @@ function SwitchToInstructorButton() {
       {isInstructor ? "Switch to instructor view" : "Become Instructor"}
     </button>
   );
-}
+};
 
-function AccountSettingsSection() {
+const AccountSettingsSection = () => {
   return (
     <div className="flex mt-4 space-y-5 flex-col items-start">
       <p className="text-md text-base font-semibold px-1 text-black  dark:text-white">
@@ -414,14 +410,14 @@ function AccountSettingsSection() {
       </div>
     </div>
   );
-}
+};
 
 const changePasswordFormSchema = z.object({
   oldPassword: z.string(),
   newPassword: z.string(),
 });
 
-function ChangePasswordWidget() {
+const ChangePasswordWidget = () => {
   const user = useUserInfo();
 
   const form = useForm({
@@ -436,7 +432,7 @@ function ChangePasswordWidget() {
 
   const onSubmit = async (values: z.infer<typeof changePasswordFormSchema>) => {
     await axios
-      .patch((`api/profile/${user.user?.id}/changePassword`), {
+      .patch(`api/profile/${user.user?.id}/changePassword`, {
         oldPassword: values.oldPassword,
         newPassword: values.newPassword,
       })
@@ -528,7 +524,11 @@ function ChangePasswordWidget() {
             />
 
             <DialogFooter className="flex justify-start space-x-4 items-center">
-              <Button type="submit" disabled={!isValid || isSubmitting} className="hover:bg-green-600 hover:text-white overflow-hidden">
+              <Button
+                type="submit"
+                disabled={!isValid || isSubmitting}
+                className="hover:bg-green-600 hover:text-white overflow-hidden"
+              >
                 Save changes
               </Button>
 
@@ -543,9 +543,9 @@ function ChangePasswordWidget() {
       </DialogContent>
     </Dialog>
   );
-}
+};
 
-function DeleteAccountWidget() {
+const DeleteAccountWidget = () => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -571,9 +571,9 @@ function DeleteAccountWidget() {
       </AlertDialogContent>
     </AlertDialog>
   );
-}
+};
 
-function HelpAndSupportSection() {
+const HelpAndSupportSection = () => {
   return (
     <div className="mt-4 flex flex-col space-y-5 items-start">
       <p className="text-md text-base font-semibold px-1 text-black  dark:text-white">
@@ -591,9 +591,9 @@ function HelpAndSupportSection() {
       </div>
     </div>
   );
-}
+};
 
-function FollowCoursewaveOn() {
+const FollowCoursewaveOn = () => {
   return (
     <div className="mt-8">
       <h4 className="mb-2 text-sm font-normal text-black dark:text-white">
@@ -615,4 +615,4 @@ function FollowCoursewaveOn() {
       </div>
     </div>
   );
-}
+};
