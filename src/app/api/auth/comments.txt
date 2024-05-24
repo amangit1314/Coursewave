@@ -6,7 +6,6 @@
 //     try {
 //         const payload = jwt.verify(refreshToken, process.env.REFRESH_SECRET as string);
 //         // TODO: update the user session with new access token and save it to db
-//         // Then continue with next middleware
 //         NextResponse.next();
 //     } catch (error: any) {
 //         console.log(error.message);

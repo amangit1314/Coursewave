@@ -8,8 +8,8 @@ import cors, { runMiddleware } from '@/lib/cors';
 
 // Handle the OPTIONS request
 export async function OPTIONS(req: NextRequest) {
-  await runMiddleware(req, NextResponse, cors);
-  return new NextResponse('OK', { status: 200 });
+    await runMiddleware(req, NextResponse, cors);
+    return new NextResponse('OK', { status: 200 });
 }
 
 export const dynamic = 'force-dynamic';
@@ -25,26 +25,25 @@ export const POST = async (req: NextRequest) => {
 
     console.log('Registeration request body: ', reqBody);
 
-    if (!email || !password) {
-
-        console.log('Email: ', email);
-        console.log('Password: ', password);
-        console.log("All fields are mandatory 👮‍♂️ ... ");
-
-        return NextResponse.json({
-            status: false,
-            message: "All fields are mandatory 👮‍♂️ ... ",
-        }, { status: 400 });
-    }
-
-    if (!isPasswordValid(password)) {
-        return NextResponse.json({
-            status: false,
-            message: "Password must be at least 8 characters long with at least 1 number, 1 special character, 1 uppercase letter, and 1 lowercase letter.",
-        }, { status: 400 });
-    }
-
     try {
+        if (!email || !password) {
+            console.log('Email: ', email);
+            console.log('Password: ', password);
+            console.log("All fields are mandatory 👮‍♂️ ... ");
+
+            return NextResponse.json({
+                status: false,
+                message: "All fields are mandatory 👮‍♂️ ... ",
+            }, { status: 400 });
+        }
+
+        if (!isPasswordValid(password)) {
+            return NextResponse.json({
+                status: false,
+                message: "Password must be at least 8 characters long with at least 1 number, 1 special character, 1 uppercase letter, and 1 lowercase letter.",
+            }, { status: 400 });
+        }
+
         const uuid4 = generateUid();
         console.log("Generated uid: ", uuid4);
 
@@ -76,23 +75,10 @@ export const POST = async (req: NextRequest) => {
 
         sendEmail(
             email,
+            "VERIFY",
             "Verify email address using SendGrid",
             "Click on below text to verify your account,and easy to continue to Coursewave",
-            `
-            <p> 
-                <a>Hey, Aman!</a>
-                <br />
 
-                <a style="margin-top:8px;" className="mt-4">Thank you for joining <span  className="text-blue-500 font-semibold tracking-tight">Coursewave</span>! To activate your account and start exploring, please click the verification link below:</a>
-                <a style="color:DodgerBlue;" href="${verificationToken}" className="flex cursor-pointer hover:bg-blue-600 hover:text-white justify-center items-center px-4 py-2 bg-blue-400 text-blue-700"> Verify My Account</a>
-
-                <br />
-
-                <a style="margin-top:8px;" className="mt-4">Best Regards</a>
-                <br />
-                <a>Aman Soni</a>
-            </p>
-            `,          
             () => {
                 console.log("Email sent 🗯📧 ");
                 return NextResponse.json({

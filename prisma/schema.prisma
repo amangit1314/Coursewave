@@ -18,16 +18,20 @@ model User {
   isInstructor    Boolean? @default(false)
 
   // TOKENS
-  refreshTokenGenerationTime DateTime? @default(now())
+  verifyToken                String?
+  verifyTokenGenerationTime  DateTime? @default(now())
+  verifyTokenExpiry          String?
+  verifyTokenStatus          String?
   refreshToken               String?
+  refreshTokenGenerationTime DateTime? @default(now())
   refreshTokenExpiry         String?
   refreshTokenStatus         String?
-  accessTokenGenerationTime  DateTime? @default(now())
   accessToken                String?
+  accessTokenGenerationTime  DateTime? @default(now())
   accessTokenExpiry          String?
   accessTokenStatus          String?
-  resetTokenGenerationTime   DateTime? @default(now())
   resetToken                 String?
+  resetTokenGenerationTime   DateTime? @default(now())
   resetTokenExpiry           String?
   resetTokenStatus           String?
 
@@ -36,8 +40,8 @@ model User {
   cart             Cart[]
   enrollments      Enrollment[]
   payments         Payment[]
-  blogComments     BlogComment[]
-  blogs            Blog[]
+  blogs     BlogComment[]
+  createdBlogs     Blog[]
   reviews          Review[]
   courseProgresses CourseProgress[]
   subscriptions    Subscription[]

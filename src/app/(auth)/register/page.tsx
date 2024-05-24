@@ -6,12 +6,10 @@ import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { FcGoogle } from "react-icons/fc";
-import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { PasswordInput } from "../login/_components/password-input";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { LucideLoader2 } from "lucide-react";
-import { absoluteUrl } from "@/utils/utils";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -68,8 +66,8 @@ const RegisterPage = () => {
           </div>
 
           {/* Right Section */}
-          <div className="flex flex-col m-14 py-8 px-8 bg-white rounded-3xl">
-            <Button variant="outline" className="border-blue-500">
+          <div className="flex flex-col m-14 p-8 bg-white rounded-3xl">
+            {/* <Button variant="outline" className="border-blue-500">
               <FcGoogle size={26} />{" "}
               <div className="pl-2">Continue with Google</div>
             </Button>
@@ -80,7 +78,7 @@ const RegisterPage = () => {
                 or
               </span>
               <hr className="w-30 h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
-            </div>
+            </div> */}
 
             <Input
               className="p-2 border bg-transparent border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"

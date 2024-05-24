@@ -73,14 +73,14 @@ const Login = () => {
 
           {/* Right Section */}
           <div className="flex flex-col p-8 bg-white rounded-3xl">
-            <div className="inline-flex items-center justify-center w-full">
+            {/* <div className="inline-flex items-center justify-center w-full">
               <SignInWithGoogleButton />
               <hr className="w-30 h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
               <span className="px-3 font-medium text-gray-900  bg-white  ">
                 or
               </span>
               <hr className="w-30 h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
-            </div>
+            </div> */}
 
             <Input
               className="p-2 border border-gray-300 bg-transparent rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
@@ -104,7 +104,7 @@ const Login = () => {
 
             <Link
               href="/forgotPassword"
-              className="pb-2 text-xs text-blue-500 cursor-point"
+              className="pb-2 text-sm text-blue-500 cursor-point"
             >
               forgot password?
             </Link>
