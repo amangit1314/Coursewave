@@ -4,7 +4,7 @@ import { Course } from "@prisma/client";
 
 const useCourses = () => {
   const fetchCourses = async () => {
-    const coursesUrl = absoluteUrl(`/api/courses`);
+    const coursesUrl = (`api/courses`);
     const response = await fetch(coursesUrl);
 
     if (!response.ok) {

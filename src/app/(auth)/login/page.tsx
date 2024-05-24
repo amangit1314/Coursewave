@@ -32,7 +32,7 @@ const Login = () => {
   const onLogin = async () => {
     try {
       setLoading(true);
-      await axios.post(absoluteUrl("/api/auth/login"), user).then((res) => {
+      await axios.post(("api/auth/login"), user).then((res) => {
         console.log("Login response: ", res.data);
         setUser(res.data);
       });

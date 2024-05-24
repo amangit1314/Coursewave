@@ -4,7 +4,7 @@ import { Blog } from "@prisma/client";
 
 const useArticleInfo = (articleId: string) => {
   const fetchArticleInfo = async () => {
-    const articleUrl = absoluteUrl(`/api/articles/${articleId}`);
+    const articleUrl = (`api/articles/${articleId}`);
     const response = await fetch(articleUrl);
 
     if (!response.ok) {

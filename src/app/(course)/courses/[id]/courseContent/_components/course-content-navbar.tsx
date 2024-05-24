@@ -68,7 +68,7 @@ async function CourseContentNavbar({ course }: any) {
         </div>
       </div>
 
-      <Link href={absoluteUrl(`/browseCourses`)} className="visible md:hidden">
+      <Link href={(`/browseCourses`)} className="visible md:hidden">
         <Image
           src="/assets/images/logo/coursewave-favicon-color.png"
           alt="CourseWave Logo"

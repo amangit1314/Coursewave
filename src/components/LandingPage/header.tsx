@@ -38,13 +38,15 @@ const LandingPageHeader: React.FC<TestimonialItemProps> = ({
           About
         </Link> */}
         <Link
-          href={absoluteUrl('/browseCourses')}
+          // href={absoluteUrl('/browseCourses')}
+          href={"/browseCourses"}
           className="text-[14px] text-gray-400 hover:text-blue-500 cursor-point font-medium"
         >
           Courses
         </Link>
         <Link
-            href={absoluteUrl('/browseArticles')}
+            // href={absoluteUrl('/browseArticles')}
+            href={"/browseArticles"}
             className="text-[1rem] text-gray-400 hover:text-blue-500 cursor-point font-medium"
           >
             Articles
@@ -57,7 +59,8 @@ const LandingPageHeader: React.FC<TestimonialItemProps> = ({
             Sessions
           </Link> */}
         <Link
-          href={absoluteUrl('/helpAndSupport')}
+          // href={absoluteUrl('/helpAndSupport')}
+          href={"/helpAndSupport"}
           className="text-[14px] text-gray-400 hover:text-blue-500 cursor-point font-medium"
         >
           Contact

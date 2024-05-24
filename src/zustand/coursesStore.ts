@@ -20,7 +20,7 @@ const useCoursesStore = create<CoursesState & CoursesActions>()((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await fetch(absoluteUrl(`/api/courses`));
+      const response = await fetch(`api/courses`);
 
       if (!response.ok) {
         set({loading: false, error: 'Failed to fetch courses ...' })

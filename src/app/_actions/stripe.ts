@@ -20,7 +20,7 @@ export const manageStripeSubscriptionAction = async ({
   email,
   userId,
 }: ManageStripeSubscriptionActionProps) => {
-  const billingUrl = absoluteUrl("/billing");
+  const billingUrl = ("/billing");
 
   if (isSubscribed && stripeCustomerId && isCurrentPlan) {
     const stripeSession = await stripe.billingPortal.sessions.create({

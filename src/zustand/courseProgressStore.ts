@@ -21,7 +21,7 @@ const useCourseProgressStore = create<CourseProgressState>((set) => ({
 
       // Update chapter completion status
       const response = await fetch(
-        absoluteUrl(`/api/profile/${userId}/enrolledCourses/${courseId}/courseProgress/chapters/${chapterId}`),
+        (`api/profile/${userId}/enrolledCourses/${courseId}/courseProgress/chapters/${chapterId}`),
         {
           method: 'PATCH',
           body: JSON.stringify({ isCompleted: true }),
@@ -32,7 +32,7 @@ const useCourseProgressStore = create<CourseProgressState>((set) => ({
 
       // Recalculate and update course progress (implementation depends on your API)
       const courseProgressResponse = await fetch(
-        absoluteUrl(`/api/profile/${userId}/enrolledCourses/${courseId}/courseProgress`),
+        (`/api/profile/${userId}/enrolledCourses/${courseId}/courseProgress`),
         {
           method: 'PATCH',
         }
@@ -47,7 +47,7 @@ const useCourseProgressStore = create<CourseProgressState>((set) => ({
   },
   fetchCourseProgress: async (userId: string, courseId: string) => {
     try {
-      const response = await fetch(absoluteUrl(`/api/profile/${userId}/enrolledCourses/${courseId}/courseProgress?include=chapterProgress`));
+      const response = await fetch((`/api/profile/${userId}/enrolledCourses/${courseId}/courseProgress?include=chapterProgress`));
       const data = await response.json();
 
       // Ensure data structure matches CourseProgressWithChapters

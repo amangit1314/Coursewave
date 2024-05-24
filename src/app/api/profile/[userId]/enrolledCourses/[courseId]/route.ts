@@ -39,9 +39,8 @@ export const GET = async (req: NextRequest, { params }: {
             }, { status: 400 }); // Return a 400 Bad Request status code.
         }
 
-        // Construct the correct URL based on the 'uid' parameter
-        // https://localhost:3000
-        const currentURL = absoluteUrl(`/api/profile/${uid}`);
+       
+        const currentURL = `api/profile/${uid}`;
 
         const enrolledCourses = await db.enrollment.findMany({
             where: {

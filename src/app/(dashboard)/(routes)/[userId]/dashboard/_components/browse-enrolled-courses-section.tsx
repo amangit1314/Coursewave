@@ -17,7 +17,7 @@ const BrowseEnrolledCoursesSection: React.FC<BrowseEnrolledCoursesSectionProps> 
 
     useEffect(() => {
       // https://localhost:3000
-      fetch(absoluteUrl("/api/categories/"))
+      fetch(("api/categories/"))
         .then((res) => {
           if (res.ok) {
             return res.json();

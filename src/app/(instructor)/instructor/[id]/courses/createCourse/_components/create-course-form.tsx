@@ -107,7 +107,7 @@ const CreateCourseForm = ({ instructorId }: { instructorId: string }) => {
         console.log("Form Values: ", values);
         console.log("Response data after creating course: ", response);
         router.push(
-          absoluteUrl(
+          (
             `/instructor/${instructorId}/courses/createdCourses/${response.data.data?.courseId!}`
           )
         );

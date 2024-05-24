@@ -59,7 +59,7 @@ type CoursewaveActions = {
 }
 
 const fetchCourse = async (courseId: string) => {
-  const response = await fetch(absoluteUrl(`/api/courses/${courseId}`));
+  const response = await fetch(`api/courses/${courseId}`);
   if (!response.ok) {
     console.error("Failed to get course details");
     return null;
@@ -111,7 +111,7 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(per
       set((state) => ({ loading: true }));
 
       // 2. Call API endpoint to save the course (assuming user authentication)
-      const response = await fetch(absoluteUrl(`/api/profile/${userId}/wishlist`), {
+      const response = await fetch((`api/profile/${userId}/wishlist`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -142,7 +142,7 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(per
   fetchCourses: async () => {
     set({ loading: true });
     try {
-      const response = await fetch(absoluteUrl("/api/courses"));
+      const response = await fetch(("api/courses"));
 
       if (!response.ok) {
         console.error("Failed to get user info from api/courses api ...");
@@ -162,7 +162,7 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(per
   fetchCategories: async () => {
     try {
       set({ loading: true });
-      const response = await fetch(absoluteUrl(`/api/categories/`));
+      const response = await fetch((`api/categories/`));
 
       if (!response.ok) {
         console.error("Failed to get categories from api/categories api ...");
@@ -182,7 +182,7 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(per
   fetchSelectedCourseInfo: async (courseId: string) => {
     try {
       set({ loading: true });
-      const response = await fetch(absoluteUrl(`/api/courses/${courseId}`));
+      const response = await fetch((`api/courses/${courseId}`));
 
       if (!response.ok) {
         console.error("Failed to get course for course with this courseId ...");
@@ -213,7 +213,7 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(per
 // fetchUserInfo: async () => {
 //   try {
 //     set({ loading: true });
-//     const response = await fetch(absoluteUrl(`/api/auth/me`));
+//     const response = await fetch((`/api/auth/me`));
 
 //     if (!response.ok) {
 //       console.error("Failed to get user info from auth/me api ...");

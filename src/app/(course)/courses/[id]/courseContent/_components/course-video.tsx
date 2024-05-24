@@ -41,8 +41,8 @@ const CourseVideo = ({
 }: CourseVideoProps) => {
   const fetchChapterMuxData = async () => {
     const response = await fetch(
-      absoluteUrl(
-        `/api/courses/${activeChapter?.courseId!}/chapters/${activeChapter?.id!}/muxData`
+      (
+        `api/courses/${activeChapter?.courseId!}/chapters/${activeChapter?.id!}/muxData`
       )
     );
 

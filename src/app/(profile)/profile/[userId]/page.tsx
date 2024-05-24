@@ -250,7 +250,7 @@ function EditProfileWidget() {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     await axios
-      .put(absoluteUrl(`/api/profile/${user.user?.id}/`), {
+      .put((`api/profile/${user.user?.id}/`), {
         newUserName: values.userName,
         newProfileImageUrl: imageUrl,
       })
@@ -436,7 +436,7 @@ function ChangePasswordWidget() {
 
   const onSubmit = async (values: z.infer<typeof changePasswordFormSchema>) => {
     await axios
-      .patch(absoluteUrl(`/api/profile/${user.user?.id}/changePassword`), {
+      .patch((`api/profile/${user.user?.id}/changePassword`), {
         oldPassword: values.oldPassword,
         newPassword: values.newPassword,
       })

@@ -31,7 +31,7 @@ export async function middleware(request: NextRequest) {
 
 async function getTokenUid(token: string): Promise<string | null> {
   try {
-    const response = await fetch(absoluteUrl("/api/auth/me"), {
+    const response = await fetch(("api/auth/me"), {
       headers: {
         Authorization: `Bearer ${token}`,
       },

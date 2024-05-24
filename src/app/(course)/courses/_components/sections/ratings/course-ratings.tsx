@@ -114,7 +114,7 @@ const ReviewsMassionaryGrid = ({ courseId }: ReviewsGridProps) => {
       try {
         setLoading(true);
         const response = await fetch(
-          absoluteUrl(`/api/courses/${courseId}/reviews`)
+          (`api/courses/${courseId}/reviews`)
         );
 
         if (!response.ok) {

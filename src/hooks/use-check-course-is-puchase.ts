@@ -4,7 +4,7 @@ import { Enrollment, Purchase } from "@prisma/client";
 
 const useCheckCourseIsPurchased = (userId: string, courseId: string) => {
   const fetchIsCourseAlreadyPurchased = async () => {
-    const courseAlreadyPurchasedUrl = absoluteUrl(`/api/courses/${courseId}/alreadyPurchased`);
+    const courseAlreadyPurchasedUrl = (`api/courses/${courseId}/alreadyPurchased`);
     const response = await fetch(courseAlreadyPurchasedUrl, {
       headers: {
         'Accept': 'application/json',

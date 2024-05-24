@@ -130,7 +130,7 @@ function CourseContentPage({ params }: { params: { id: string } }) {
     );
 
     const response = await fetch(
-      absoluteUrl(`/api/courses/${courseId}/chapters`)
+      (`api/courses/${courseId}/chapters`)
     );
 
     if (!response.ok) {

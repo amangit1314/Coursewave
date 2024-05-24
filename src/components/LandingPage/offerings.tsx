@@ -5,23 +5,27 @@ import React from "react";
 function Offerings() {
   const offerings = [
     {
-      link: absoluteUrl("/browseCourses"),
+      // link: absoluteUrl("/browseCourses"),
+      link: "/browseCourses",
       title: "Courses",
       description: "Find in-depth informative courses on various courses.",
     },
     {
-      link: absoluteUrl("/browseArticles"),
+      // link: absoluteUrl("/browseArticles"),
+      link: "/browseArticles",
       title: "Community Articles",
       description:
         "Read technical articles on vast development and technical topics!",
     },
     {
-      link: absoluteUrl("/browseSessions"),
+      // link: absoluteUrl("/browseSessions"),
+      link: "/browseSessions",
       title: "One on One Sessions",
       description: "Book one to one mentorships on various tech and projects.",
     },
     {
-      link: absoluteUrl("/browseSessions"),
+      // link: absoluteUrl("/browseSessions"),
+      link: "/browseSessions",
       title: "Sessions",
       description: "We organize sessions on latest technology trends.",
     },

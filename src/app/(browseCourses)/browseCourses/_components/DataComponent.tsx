@@ -9,7 +9,7 @@ import { useZustandStore } from "@/zustand/store";
 
 const getCourses = async () => {
   try {
-    const res = await fetch(absoluteUrl("/api/courses"));
+    const res = await fetch(("api/courses"));
 
     if (!res.ok) {
       throw new Error("Could not retrieve courses");

@@ -42,7 +42,7 @@ const RegisterPage = () => {
   const onRegister = async () => {
     try {
       setLoading(true);
-      const response = await axios.post(absoluteUrl("/api/auth/register"), user);
+      const response = await axios.post(("api/auth/register"), user);
       console.log("Signup success", response.data);
       router.push("/login");
     } catch (error: any) {
