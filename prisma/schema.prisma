@@ -40,7 +40,7 @@ model User {
   cart             Cart[]
   enrollments      Enrollment[]
   payments         Payment[]
-  blogs     BlogComment[]
+  blogComments     BlogComment[]
   createdBlogs     Blog[]
   reviews          Review[]
   courseProgresses CourseProgress[]
