@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import { generateResetToken } from "@/helpers/jwt_helper";
 import { sendEmail } from "@/helpers/send_email_helper";
 import { NextRequest, NextResponse } from "next/server";
-import { forgotHtml } from "@/helpers/forgot_password_email_html";
+import { forgotPasswordHtmlTemplate } from "@/helpers/forgot_password_email_html";
 import { NextApiResponse } from "next";
 
 import { db } from "@/lib/db";
@@ -11,14 +11,11 @@ import cors, { runMiddleware } from '@/lib/cors';
 
 // Handle the OPTIONS request
 export async function OPTIONS(req: NextRequest) {
-  await runMiddleware(req, NextResponse, cors);
-  return new NextResponse('OK', { status: 200 });
+    await runMiddleware(req, NextResponse, cors);
+    return new NextResponse('OK', { status: 200 });
 }
-// import { PrismaClient } from "@prisma/client";
-// const prisma = new PrismaClient();
+
 export const dynamic = 'force-dynamic';
-
-
 
 export const POST = async (req: NextRequest) => {
     try {
@@ -49,7 +46,7 @@ export const POST = async (req: NextRequest) => {
                 resetTokenStatus: "valid",
             },
         });
-        const localhost = 'http://192.168.1.3:3000';
+
         const resetPasswordUrl = `http://192.168.1.3:3000/forgotPassword`;
         const emailText = `Click here to reset your password`;
         const logoUrl = 'https://wcgwzdehnxpexussrkni.supabase.co/storage/v1/object/public/assets/coursewave-high-resolution-color-logo.png';
@@ -63,10 +60,10 @@ export const POST = async (req: NextRequest) => {
             </p>`;
         sendEmail(
             email,
+            "RESET",
             "Password Reset Request",
-            emailText,
-            // forgotHtml(siteUrl, resetPasswordUrl, email, logoUrl),
-            forgotPasswordhtml,
+            // emailText,
+            forgotPasswordHtmlTemplate,
             () => {
                 console.log(resetPasswordUrl, resetToken);
                 return NextResponse.json({
