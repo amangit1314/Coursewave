@@ -13,7 +13,9 @@ export async function middleware(request: NextRequest) {
     // path.includes("/login") ||
     path === "/register" ||
     // path.includes("/register") ||
-    path === "/verifyEmail" ||
+    path === "/verifyEmail" || 
+    path == "/forgotPassword" ||
+    path == "/resetPassword" ||
     // path.includes("/verifyEmail") ||
     path === "/" ||
     path === "/api/webhooks/stripe";
