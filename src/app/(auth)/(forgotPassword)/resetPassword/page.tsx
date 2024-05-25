@@ -69,7 +69,7 @@ const ResetPassword = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 ">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 my-12 rounded-3xl bg-gray-900 p-4 flex justify-center items-center align-middle mx-auto ">
         {/* new password  */}
         <FormField
           control={form.control}
@@ -100,7 +100,7 @@ const ResetPassword = () => {
         {/* confirm password */}
         <FormField
           control={form.control}
-          name="password"
+          name="confirmPassword"
           render={({ field }) => (
             <div>
               <FormItem className="mt-8">
