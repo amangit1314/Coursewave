@@ -1,13 +1,12 @@
 "use client";
 
 import React from "react";
-import { FaSort } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import { BiSearchAlt } from "react-icons/bi";
 import { CiCircleRemove } from "react-icons/ci";
 import { Button } from "@/components/ui/button";
 
-export default function ArticlesSearchButton() {
+const ArticlesSearchButton = () => {
   const [isFormOpen, setIsFormOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
   const router = useRouter();
@@ -68,4 +67,6 @@ export default function ArticlesSearchButton() {
       {isFormOpen ? form : searchButton}
     </div>
   );
-}
+};
+
+export default ArticlesSearchButton;

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import Image from "next/image";
-import { Menu } from './menu';
+import Menu from './menu';
 import { Josefin_Sans } from "next/font/google";
 import SideBarRoutes from "./sidebarRoutes";
 import Link from 'next/link';
@@ -11,7 +11,7 @@ const josefinSans = Josefin_Sans({
   subsets: ["latin"],
 });
 
-function MobileSidebar() {
+const MobileSidebar = () => {
     return (
       <Sheet>
         <SheetTrigger className="md:hidden pr-4 hover:opacity-75 transition">
@@ -47,4 +47,3 @@ function MobileSidebar() {
 }
 
 export default MobileSidebar
-

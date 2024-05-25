@@ -2,7 +2,7 @@ import { absoluteUrl } from "@/utils/utils";
 import Link from "next/link";
 import React from "react";
 
-function Offerings() {
+const Offerings = () => {
   const offerings = [
     {
       // link: absoluteUrl("/browseCourses"),
@@ -60,7 +60,7 @@ function Offerings() {
       </div>
     </div>
   );
-}
+};
 
 export default Offerings;
 

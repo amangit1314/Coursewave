@@ -12,8 +12,7 @@ import Testimonials from "@/components/LandingPage/testimonials";
 import { firebaseClourdMessaging } from "@/config/firebase";
 import toast from "react-hot-toast";
 
-
-export default function Home() {
+const Home = () => {
   const router = useRouter();
 
   const handleLoginClick = () => {
@@ -43,8 +42,11 @@ export default function Home() {
       <Footer />
     </main>
   );
-}
+};
 
+export default Home;
+
+// ? -------------------------------------------------------------------------
 // const [fcmToken, setFcmToken] = useState<string | (() => Promise<string | null>) | null | undefined>(undefined);
 // const [messages, setMessages] = useState<string>("");
 
@@ -148,3 +150,4 @@ export default function Home() {
 //     handleServiceWorker();
 //   }
 // }, []);
+// ? -------------------------------------------------------------------------

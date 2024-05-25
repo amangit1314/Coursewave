@@ -10,16 +10,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-// import { Textarea } from "@/components/ui/textarea";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineVideoCameraAdd } from "react-icons/ai";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { RiExternalLinkLine, RiImageAddFill } from "react-icons/ri";
-import dynamic from "next/dynamic"; // Import dynamic from next/dynamic
+import dynamic from "next/dynamic";
 import "react-quill/dist/quill.bubble.css";
 import { z } from "zod";
 import axios from "axios";
@@ -27,7 +25,6 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import useUserInfo from "@/hooks/use-user-info";
 
-// Dynamically import ReactQuill with no SSR
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const formSchema = z.object({

@@ -25,13 +25,13 @@ import { CgAdd } from "react-icons/cg";
 import { BsBack } from "react-icons/bs";
 import Link from "next/link";
 
-export default function ArticleContentPage({
+const ArticleContentPage = ({
   params,
 }: {
   params: {
     articleId: string;
   };
-}) {
+}) => {
   const articleId = params?.articleId!;
   const articleData = useArticleInfo(articleId);
 
@@ -137,7 +137,7 @@ export default function ArticleContentPage({
               src={
                 article?.thumbnailUrl
                   ? article?.thumbnailUrl
-                   : "/women-with-laptop.png"
+                  : "/women-with-laptop.png"
               }
               alt={"Article Thumbnail"}
               className="h-[22rem] object-cover"
@@ -178,4 +178,6 @@ export default function ArticleContentPage({
       </div>
     </div>
   );
-}
+};
+
+export default ArticleContentPage;

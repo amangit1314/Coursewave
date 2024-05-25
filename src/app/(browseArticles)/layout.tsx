@@ -2,12 +2,21 @@
 
 import Navbar from "../(browseCourses)/browseCourses/_components/navbar";
 import Sidebar from "../(browseCourses)/browseCourses/_components/sidebar";
+import React from "react";
+import UserAvatar from "@/components/user-avatar";
+import { ThemeModeToggle } from "@/components/themeModeToggle";
+import useUserInfo from "@/hooks/use-user-info";
+import Notifications from "@/components/notification-button";
+import SearchButton from "@/components/search-button";
+import ArticlesSearchButton from "./articles/_components/articles-search-button";
 
 interface BrowseArticlesLayoutProps {
   children: React.ReactNode;
 }
 
-export default function BrowseArticlesLayout({ children }: BrowseArticlesLayoutProps) {
+export default function BrowseArticlesLayout({
+  children,
+}: BrowseArticlesLayoutProps) {
   return (
     <div className="min-h-screen h-full dark:bg-zinc-900">
       <div className="h-[64px] md:pl-56 inset-y-0 w-full z-50 ">
@@ -22,24 +31,16 @@ export default function BrowseArticlesLayout({ children }: BrowseArticlesLayoutP
   );
 }
 
-function ArticlesNavbar() {
+const ArticlesNavbar = () => {
   return (
     <div className="px-6 md:px-0 border-b w-full h-full flex justify-start items-center dark:bg-transparent bg-white shadow-sm">
       {/* <InstructorMobileSidebar /> */}
       <ArticlesNavbarRoutes />
     </div>
   );
-}
+};
 
-import React from "react";
-import UserAvatar from "@/components/user-avatar";
-import { ThemeModeToggle } from "@/components/themeModeToggle";
-import useUserInfo from "@/hooks/use-user-info";
-import Notifications from "@/components/notification-button";
-import SearchButton from "@/components/search-button";
-import ArticlesSearchButton from "./articles/_components/articles-search-button";
-
-function ArticlesNavbarRoutes({ name }: any) {
+const ArticlesNavbarRoutes = ({ name }: { name?: string }) => {
   const user = useUserInfo();
 
   return (
@@ -62,4 +63,4 @@ function ArticlesNavbarRoutes({ name }: any) {
       </div>
     </div>
   );
-}
+};

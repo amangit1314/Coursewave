@@ -1,22 +1,23 @@
+import { db } from "@/lib/db";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 import { getCookies } from "cookies-next";
 import { SignJWT, jwtVerify } from "jose";
-import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
-dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET!;
+const ACCESS_TOKEN_EXPIRATION = process.env.ACCESS_TOKEN_EXPIRATION!;
+
 if (!JWT_SECRET) {
     throw new Error("JWT_SECRET is not defined in the environment");
 }
 
-const ACCESS_TOKEN_EXPIRATION = process.env.ACCESS_TOKEN_EXPIRATION;
+const key = new TextEncoder().encode(JWT_SECRET);
+
 if (!ACCESS_TOKEN_EXPIRATION) {
     throw new Error("ACCESS_TOKEN_EXPIRATION is not defined in the environment");
 }
 
-const key = new TextEncoder().encode(JWT_SECRET);
+// * --------------------------------------------------------------------------------------------
 
 export const generateAccessToken = async (payload: any) => {
     try {
@@ -26,16 +27,6 @@ export const generateAccessToken = async (payload: any) => {
         console.error(error);
     }
 };
-
-export const verifyToken = async (token: string) => {
-    try {
-        const decryptedToken = await jwtVerify(token, key, { algorithms: ["HS256"] });
-        return decryptedToken;
-    } catch (error: any) {
-        console.log(error.message);
-        throw new Error(error);
-    }
-}
 
 export const generateRefreshToken = async (payload: any) => {
     try {
@@ -69,6 +60,18 @@ export const generateResetToken = (email: string) => {
     }
 };
 
+// * --------------------------------------------------------------------------------------------
+
+export const verifyToken = async (token: string) => {
+    try {
+        const decryptedToken = await jwtVerify(token, key, { algorithms: ["HS256"] });
+        return decryptedToken;
+    } catch (error: any) {
+        console.log(error.message);
+        throw new Error(error);
+    }
+}
+
 //! ----------------------------------------------------------------------------------------------
 
 export async function encrypt(payload: any) {
@@ -79,6 +82,8 @@ export async function decrypt(input: string): Promise<any> {
     const { payload } = await jwtVerify(input, key, { algorithms: ["HS256"] });
     return payload;
 }
+
+// ? --------------------------------------------------------------------------------------------
 
 export async function updateToken(req: NextRequest) {
     try {
@@ -100,6 +105,8 @@ export async function updateToken(req: NextRequest) {
         return error;
     }
 }
+
+// * --------------------------------------------------------------------------------------------
 
 export async function getUserIdFromToken(token: string) {
 
@@ -132,3 +139,14 @@ export async function getUserById(id: string) {
     }
 
 }
+
+export const getEmailFromResetToken = async (token: string) => {
+    try {
+        const secretKey = new TextEncoder().encode(process.env.JWT_SECRET);
+        const { payload } = await jwtVerify(token, secretKey, { algorithms: ["HS256"] });
+        return payload.email;
+    } catch (error) {
+        console.error("Error verifying reset token:", error);
+        throw new Error("Invalid or expired token.");
+    }
+};

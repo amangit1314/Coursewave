@@ -5,6 +5,7 @@ import axios from "axios";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { ChevronLeft, Loader } from "lucide-react";
 
 const ForgotPasswordPage = () => {
   const router = useRouter();
@@ -24,7 +25,10 @@ const ForgotPasswordPage = () => {
   const onForgotPassword = async () => {
     try {
       setLoading(true);
-      const response = await axios.post("api/auth/forgotPassword", user);
+      const response = await axios.post(
+        "api/auth/forgotPassword",
+        JSON.stringify(user.email)
+      );
       console.log("Forgot email sent successfully", response.data);
       toast.success("Forgot email sent successfully");
       router.push("/login");
@@ -42,6 +46,14 @@ const ForgotPasswordPage = () => {
         <div className="flex flex-col lg:flex-row xl:flex-row w-auto justify-center bg-slate-900 rounded-lg">
           {/* Left section */}
           <div className="flex flex-col py-8 px-8 mr-0 lg:mr-20 xl:mr-20 justify-center">
+            <p className="pt-3 text-sm">
+              <Link
+                href="/login"
+                className="text-white hover:text-blue-500 space-x-2 transition-all duration-200"
+              >
+                <ChevronLeft /> <p>Back to login!</p>
+              </Link>
+            </p>
             <div className="text-white font-bold text-3xl">
               Did you Forgot Password <br /> your password for{" "}
               <span className="text-blue-500">Coursewae</span>
@@ -74,7 +86,13 @@ const ForgotPasswordPage = () => {
               className="py-2 text-white w-full bg-blue-500 inline-flex  justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
               disabled={isButtonDisabled}
             >
-              {isButtonDisabled ? "Can't Send" : "Send Email"}
+              {loading ? (
+                <Loader className="animate-spin" />
+              ) : isButtonDisabled ? (
+                "Can't Send"
+              ) : (
+                "Send Email"
+              )}
             </button>
 
             <p className="pt-3 text-sm">

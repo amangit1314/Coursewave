@@ -1,30 +1,25 @@
 "use client";
 
 import React from "react";
-
-import { absoluteUrl } from "@/utils/utils";
 import { Course } from "@prisma/client";
 import CourseWidget from "./course-widget";
 import { useZustandStore } from "@/zustand/store";
 
-const getCourses = async () => {
-  try {
-    const res = await fetch(("api/courses"));
+// const getCourses = async () => {
+//   try {
+//     const res = await fetch("api/courses");
+//     if (!res.ok) {
+//       throw new Error("Could not retrieve courses");
+//     }
+//     console.log(res.json.toString());
+//     return res.json();
+//   } catch (error: any) {
+//     console.error("Error fetching courses:", error.message);
+//     throw error;
+//   }
+// };
 
-    if (!res.ok) {
-      throw new Error("Could not retrieve courses");
-    }
-
-    console.log(res.json.toString());
-
-    return res.json();
-  } catch (error: any) {
-    console.error("Error fetching courses:", error.message);
-    throw error;
-  }
-};
-
-export default function DataComponent() {
+const DataComponent = () => {
   // const courses = await getCourses();
   const { loading, courses, fetchCourses } = useZustandStore();
 
@@ -61,4 +56,6 @@ export default function DataComponent() {
       )}
     </div>
   );
-}
+};
+
+export default DataComponent;

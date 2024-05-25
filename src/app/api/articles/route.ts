@@ -8,6 +8,7 @@ export async function OPTIONS(req: NextRequest) {
   await runMiddleware(req, NextResponse, cors);
   return new NextResponse('OK', { status: 200 });
 }
+
 export const dynamic = 'force-dynamic';
 
 export const GET = async (req: NextRequest) => {
@@ -40,18 +41,18 @@ export const POST = async (req: NextRequest) => {
       }, { status: 402 });
     }
 
-    // const user = await db.user.findUnique({
-    //   where: {
-    //     id: authorId,
-    //   }
-    // });
+    const user = await db.user.findUnique({
+      where: {
+        id: authorId,
+      }
+    });
 
-    // if (!user) {
-    //   return NextResponse.json({
-    //     success: false,
-    //     message: '[NOT FOUND], user not found with this authorId ... ',
-    //   }, { status: 404 });
-    // }
+    if (!user) {
+      return NextResponse.json({
+        success: false,
+        message: '[NOT FOUND], user not found with this authorId ... ',
+      }, { status: 404 });
+    }
 
     const createdBlog = await db.blog.create({
       data: {

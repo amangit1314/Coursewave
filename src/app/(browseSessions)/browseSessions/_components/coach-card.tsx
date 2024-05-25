@@ -3,7 +3,7 @@ import Image from "next/image";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { Button } from "@/components/ui/button";
 
-export function CoachCard({image, name, profession, about }: any) {
+export const CoachCard = ({image, name, profession, about }: any) => {
   return (
     <div className="max-h-[25rem] h-auto mt-2 shadow-md bg-white dark:bg-zinc-900 w-[15rem] rounded-2xl  mb-8 dark:hover:border dark:hover:border-blue-500 hover:border-stoke transition-all duration-300">
       <Image
