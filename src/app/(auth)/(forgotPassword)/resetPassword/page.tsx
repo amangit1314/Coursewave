@@ -124,7 +124,7 @@ const ResetPassword = () => {
           )}
         />
 
-        <Button type="submit" disabled={!isValid || isSubmitting}>
+        <Button type="submit" disabled={!isValid || isSubmitting} color="blue">
           Change Password
         </Button>
       </form>
