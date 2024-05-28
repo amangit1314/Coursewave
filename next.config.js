@@ -39,9 +39,7 @@ const nextConfig = {
       },
     ],
   },
-  "redirects": [
-    { "source": "/:path*", "destination": "/:path*", "permanent": false }
-  ],
+  redirects: [{ source: "/:path*", destination: "/:path*", permanent: false }],
   async headers() {
     return [
       {

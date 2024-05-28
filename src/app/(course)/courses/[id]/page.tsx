@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -49,18 +49,25 @@ import useNotificationsStore from "@/zustand/notificationsStore";
 import { Loader } from "lucide-react";
 import Footer from "@/components/LandingPage/footer";
 import { absoluteUrl } from "@/utils/utils";
+import useCourseStore from "@/zustand/courseStore";
 
 function CoursePreview({ params }: { params: { id: string } }) {
   const courseId = params?.id;
   // const style = { color: "blue", fontSize: "1em" };
-  const courseData = useCourseInfo(courseId);
-  const course: Course = courseData.data?.data;
+  // const courseData = useCourseInfo(courseId);
+  // const course: Course = courseData.data?.data;
+
+  const {fetchCourse, course, loading, error} = useCourseStore();
+
+  useEffect(() => {
+    fetchCourse(courseId);
+  }, [fetchCourse, courseId]);
 
   // console.log('Course data in the course detail page: ', course);
 
   // return <CourseSkeleton />;
 
-  if (courseData.isLoading)
+  if (loading)
     return (
       <>
         <div className="visible flex mx-auto items-center justify-center md:hidden align-middle my-auto">
@@ -77,7 +84,7 @@ function CoursePreview({ params }: { params: { id: string } }) {
       <div className="flex flex-col pb-[6rem] overflow-x-hidden">
         {/* course navbar */}
         <div className=" inset-y-0 w-full z-50 px-4 md:px-10 py-2 ">
-          <CourseNavbar courseName={course.courseTitle} />
+          <CourseNavbar courseName={course?.courseTitle} />
         </div>
 
         {/* course breadcrumb */}
@@ -99,10 +106,10 @@ function CoursePreview({ params }: { params: { id: string } }) {
               <Image
                 className="visible md:hidden h-60 w-full bg-slate-700 rounded-xl shadow-md"
                 src={
-                  course.courseImage ??
+                  course?.courseImage ??
                   "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210301154221/System-Design-Live-Course-By-GeeksforGeeks.png"
                 }
-                alt={course.courseTitle || "Alt"}
+                alt={course?.courseTitle || "Alt"}
                 width={400}
                 height={30}
                 style={{
@@ -119,19 +126,19 @@ function CoursePreview({ params }: { params: { id: string } }) {
                 {/* title */}
                 <p className="dark:text-white tracking-tight text-gray-800 font-semibold text-2xl md:text-4xl mb-2">
                   {" "}
-                  {course.courseTitle}{" "}
+                  {course?.courseTitle}{" "}
                 </p>
 
                 {/* duration of course */}
                 <p className="text-sm mb-2">
-                  {course.courseDuration!} on demand content
+                  {course?.courseDuration!} on demand content
                 </p>
               </div>
 
               {/* rating sections */}
               <div className="flex flex-row justify-start items-start md:items-center mt-4">
                 <div className="flex justify-start items-center">
-                  <RatingStars courseStarRatings={course.avgStarRatings!} />
+                  <RatingStars courseStarRatings={course?.avgStarRatings!} />
                   <p className="mr-1 md:mx-1 cursor-pointer text-xs font-medium text-blue-500 dark:text-blue-600">{`(${239} Reviews)`}</p>
                 </div>
 
@@ -151,14 +158,14 @@ function CoursePreview({ params }: { params: { id: string } }) {
                   Course Instructor:
                 </p>
                 <p className="text-gray-800 dark:text-white cursor-pointer text-sm font-medium underline tracking-tight">
-                  {course.courseCreator!}
+                  {course?.courseCreator!}
                 </p>
               </div>
               {/* <FaCircleCheck style={style} size={16} color="blue" /> */}
             </div>
 
             {/* <p className="text-xs font-thin mb-2 dark:text-400 dark:opacity-50">
-            Last updated on {course.updatedAt?.toString().split("T")[0]}
+            Last updated on {course?.updatedAt?.toString().split("T")[0]}
           </p> */}
 
             <div className="visible md:hidden pr-8 py-4 md:pr-0 space-y-4">
@@ -171,13 +178,13 @@ function CoursePreview({ params }: { params: { id: string } }) {
               </div>
 
               <p className="font-bold text-2xl text-gray-800 dark:text-white tracking-tight">
-                ${course.coursePrice!}
+                ${course?.coursePrice!}
               </p>
 
               <div className="flex flex-col justify-center items-center space-y-2">
                 <CourseEnrollButton
                   course={course!}
-                  courseId={course.courseId}
+                  courseId={courseId}
                 />
                 {/* <p className="text-xs opacity-50">Apply coupon</p> */}
                 <ApplyCouponCode />
@@ -187,30 +194,30 @@ function CoursePreview({ params }: { params: { id: string } }) {
             <div className="my-4 md:my-0 md:mt-16 md:mb-8 w-full">
               <CourseDescription
                 courseDescription={
-                  course.courseDescription ??
+                  course?.courseDescription ??
                   "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Provident eos odit nam quae repellat quis cumque reiciendis autem ab expedita Provident eos odit nam quae repellat"
                 }
               />
             </div>
 
-            <WhatYouWillLearn whatYouWillLearn={course.whatYouWillLearn} />
+            <WhatYouWillLearn whatYouWillLearn={course?.whatYouWillLearn} />
 
             <CourseContent courseId={courseId} />
 
-            <WhoThisCourseIsFor thisCourseIsFor={course.thisCourseIsFor} />
+            <WhoThisCourseIsFor thisCourseIsFor={course?.thisCourseIsFor} />
 
-            <Prerequisits prerequisits={course.prerequisits} />
+            <Prerequisits prerequisits={course?.prerequisits} />
           </div>
 
           {/* right part */}
-          <CourseDetailsRightSection course={course} />
+          <CourseDetailsRightSection course={course!} />
         </div>
 
         {/* course ratings */}
         <div className="max-w-7xl py-4 md:py-[4rem] px-2 md:px-[6rem] flex justify-start items-center mt-4 w-full ">
           <CourseRatings
             courseId={courseId}
-            avgStarRatings={course.avgStarRatings ?? 4.9}
+            avgStarRatings={course?.avgStarRatings ?? 4.9}
           />
         </div>
 
@@ -219,11 +226,11 @@ function CoursePreview({ params }: { params: { id: string } }) {
           <h3 className="mb-4 text-xl md:text-2xl text-gray-800 dark:text-slate-200 tracking-tight font-semibold">
             Meet Your Instructor
           </h3>
-          <InstructorCard instructorId={course.instructorID!} />
+          <InstructorCard instructorId={course?.instructorID!} />
 
           <MoreIntructorCreatedCourses
-            instructorId={course.instructorID!}
-            instructorName={course.courseCreator!}
+            instructorId={course?.instructorID!}
+            instructorName={course?.courseCreator!}
           />
         </div>
       </div>
@@ -384,10 +391,10 @@ function CourseDetailsRightSection({ course }: { course: Course }) {
         <Image
           className="h-60 max-w-[28rem] w-full bg-slate-700 rounded-t-3xl relative left-0 right-0"
           src={
-            course.courseImage ??
+            course?.courseImage ??
             "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210301154221/System-Design-Live-Course-By-GeeksforGeeks.png"
           }
-          alt={course.courseTitle || "Alt"}
+          alt={course?.courseTitle || "Alt"}
           width={448}
           height={30}
           style={{
@@ -400,7 +407,7 @@ function CourseDetailsRightSection({ course }: { course: Course }) {
           <div className="flex py-auto items-center">
             <span className="text-blue-500 font-bold mr-1">$</span>
             <p className="text-lg font-semibold tracking-tight text-gray-950 dark:text-gray-200">
-              {course.coursePrice ?? 499}
+              {course?.coursePrice ?? 499}
             </p>
             <p className=" pl-1 text-xs dark:text-gray-400">
               (life time access)
@@ -408,7 +415,7 @@ function CourseDetailsRightSection({ course }: { course: Course }) {
           </div>
 
           <div className="flex flex-col justify-start space-y-1 px-2 items-center w-full">
-            <CourseEnrollButton course={course!} courseId={course.courseId} />
+            <CourseEnrollButton course={course!} courseId={course?.courseId} />
             {/* <AddToCartButton course={course!} /> */}
           </div>
 
@@ -426,7 +433,7 @@ function CourseDetailsRightSection({ course }: { course: Course }) {
             <ul className="pl-4 flex flex-col text-gray-700 dark:text-gray-400 text-sm justify-between pb-2 list-disc space-y-2">
               <li>
                 On demand{" "}
-                {course.courseDuration ? course.courseDuration : "2 hour"} of
+                {course?.courseDuration ? course?.courseDuration : "2 hour"} of
                 video content
               </li>
               <li>Certificate for Completion</li>
@@ -434,8 +441,8 @@ function CourseDetailsRightSection({ course }: { course: Course }) {
               <li>
                 <div className="flex justify-start items-center space-x-2">
                   <p>You will learn about: </p>
-                  {course.technologiesYouAreGoingToLearn ? (
-                    course.technologiesYouAreGoingToLearn
+                  {course?.technologiesYouAreGoingToLearn ? (
+                    course?.technologiesYouAreGoingToLearn
                       .slice(0, 2)
                       .map((tech: any, index: any) => {
                         return (
@@ -488,7 +495,7 @@ function CourseDescription({
   courseDescription: string;
 }) {
   const [isExpanded, setIsExpanded] = React.useState(false);
-  // const courseDescription = course.courseDescription || "Lorem ipsum...";
+  // const courseDescription = course?.courseDescription || "Lorem ipsum...";
 
   const truncatedDescription = courseDescription.slice(0, 170);
 
@@ -527,11 +534,11 @@ function AddToCartButton({ course }: { course: Course }) {
   const cartItemToAdd: CartItem = {
     id: `cart_${cartItemId}`,
     userId: user.user?.id,
-    courseId: course.courseId,
-    courseName: course.courseTitle,
-    courseInstructorName: course.instructorName ?? "",
-    courseImageUrl: course.courseImage ?? "./assets/images/images1.jpg",
-    coursePrice: course.coursePrice!,
+    courseId: course?.courseId,
+    courseName: course?.courseTitle,
+    courseInstructorName: course?.instructorName ?? "",
+    courseImageUrl: course?.courseImage ?? "./assets/images/images1.jpg",
+    coursePrice: course?.coursePrice!,
     quantity: 1,
     createdAt: null,
     updatedAt: null,
@@ -539,7 +546,7 @@ function AddToCartButton({ course }: { course: Course }) {
 
   const toggleIsInCart = () => {
     if (isInCart) {
-      handleRemoveFromCart(course.courseId!);
+      handleRemoveFromCart(course?.courseId!);
     } else {
       handleAddToCart(course!, user.user?.id!);
       setIsInCart(!isInCart);
@@ -592,7 +599,7 @@ function CourseEnrollButton({
           absoluteUrl(`/courses/${courseId}/courseContent`)
         );
       } else {
-        const response = await axios.post(`/api/courses/${courseId}/checkout`, {
+        const response = await axios.post(`api/courses/${courseId}/checkout`, {
           userId: user?.user?.id!,
         });
 
@@ -600,7 +607,7 @@ function CourseEnrollButton({
 
         setNotification(
           "Course Enrollment Successful 🎉",
-          `Congratulations! You have successfully enrolled in "${course.courseTitle}" course.`
+          `Congratulations! You have successfully enrolled in "${course?.courseTitle}" course?.`
         );
       }
     } catch (error) {
