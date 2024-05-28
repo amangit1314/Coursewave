@@ -39,9 +39,9 @@ export const GET = async (req: NextRequest, { params }: {
         }
 
         const courseCategories = await db.category.findMany({
-            where: {
-                courseId: course?.courseId,
-            },
+            // where: {
+            //     courseId: course?.courseId,
+            // },
         });
 
         return NextResponse.json({
