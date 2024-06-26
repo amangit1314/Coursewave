@@ -45,6 +45,8 @@ const UserAvatar = () => {
             email: "",
             password: "",
             profileImageUrl: "",
+            about: "",
+            shortSummary: "",
             isEmailVerified: false,
             isInstructor: false,
             verifyToken: "",
