@@ -14,16 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Eye, EyeOff, SquarePen, UserMinus, UserPlus } from "lucide-react";
-// import { Blog, BlogComment } from "@prisma/client";
+import { BlogComment } from "@prisma/client";
 
-type BlogComment = {
-  id: string;
-  blogId: string;
-  content: string;
-  authorId: string;
-  writtenOn: Date | null;
-  editedOn: Date | null;
-};
 
 type BlogWithComments = {
   id: string;
@@ -34,9 +26,10 @@ type BlogWithComments = {
   clapsCount: number;
   authorId: string;
   categoryName: string | null;
-  comments: BlogComment[];
   thumbnailUrl: string | null;
   isRecommended: boolean;
+  
+  comments: BlogComment[];
   createdAt: Date | null;
   updatedAt: Date | null;
 };
