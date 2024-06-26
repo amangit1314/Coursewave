@@ -12,18 +12,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Enrollment } from "@prisma/client";
 import Link from "next/link";
 
-export type Enrollment = {
-  id: string;
-  courseId: string;
-  courseName: string;
-  enrollmentDate: string;
+export type EnrollementWithProgress = Enrollment & {
   progress: number;
   certificate: string;
-  status: "active" | "expired";
-  // validity: string;
-};
+  validity: string;
+}
 
 export const enrollmentColumns: ColumnDef<Enrollment>[] = [
   {
@@ -48,23 +44,20 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-  // {
-  //   accessorKey: "id",
-  //   header: "Id",
-  // },
   {
-    accessorKey: "courseName",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Course Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    accessorKey: "courseTitle",
+    header: "Course Title",
+    // header: ({ column }) => {
+    //   return (
+    //     <Button
+    //       variant="ghost"
+    //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+    //     >
+    //       Course Title
+    //       <ArrowUpDown className="ml-2 h-4 w-4" />
+    //     </Button>
+    //   );
+    // },
   },
   {
     accessorKey: "enrollmentDate",
@@ -89,13 +82,13 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
     header: "Certificate",
   },
   {
-    accessorKey: "status",
-    header: "Status",
+    accessorKey: "enrollmentStatus",
+    header: "Enrollment Status",
   },
-  // {
-  //   accessorKey: "validity",
-  //   header: "Validity",
-  // },
+  {
+    accessorKey: "validity",
+    header: "Validity",
+  },
   {
     id: "actions",
     cell: ({ row }) => {
@@ -113,7 +106,7 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => navigator.clipboard.writeText(enrollment.id)}
+              onClick={() => navigator.clipboard.writeText(enrollment.enrollmentId)}
             >
               Copy enrollment ID
             </DropdownMenuItem>

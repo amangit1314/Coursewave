@@ -88,10 +88,10 @@ export function DataTable<TData, TValue>({
         <Input
           placeholder="Filter courses by name..."
           value={
-            (table.getColumn("courseName")?.getFilterValue() as string) ?? ""
+            (table.getColumn("courseTitle")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
-            table.getColumn("courseName")?.setFilterValue(event.target.value)
+            table.getColumn("courseTitle")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -143,6 +143,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
+
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
@@ -179,6 +180,7 @@ export function DataTable<TData, TValue>({
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
+
         <div className="space-x-2">
           <Button
             variant="outline"

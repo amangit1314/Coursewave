@@ -7,11 +7,6 @@ import { Course, CourseProgress, Enrollment } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import Notifications from "@/components/notification-button";
-import { absoluteUrl } from "@/utils/utils";
-import { db } from "@/lib/db";
-import toast from "react-hot-toast";
-import { useQuery } from "@tanstack/react-query";
-import { Skeleton } from "@/components/ui/skeleton";
 import useCourseProgressStore from "@/zustand/courseProgressStore";
 import useUserInfo from "@/hooks/use-user-info";
 
@@ -68,7 +63,7 @@ async function CourseContentNavbar({ course }: any) {
         </div>
       </div>
 
-      <Link href={(`/browseCourses`)} className="visible md:hidden">
+      <Link href={`/browseCourses`} className="visible md:hidden">
         <Image
           src="/assets/images/logo/coursewave-favicon-color.png"
           alt="CourseWave Logo"

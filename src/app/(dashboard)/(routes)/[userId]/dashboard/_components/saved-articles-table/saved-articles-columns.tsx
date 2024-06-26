@@ -13,19 +13,9 @@ import {
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
+import { Blog } from "@prisma/client";
 
-export type Enrollment = {
-  id: string;
-  courseId: string;
-  courseName: string;
-  enrollmentDate: string;
-  progress: number;
-  certificate: string;
-  status: "active" | "expired";
-  // validity: string;
-};
-
-export const savedArticlesColumns: ColumnDef<Enrollment>[] = [
+export const savedArticlesColumns: ColumnDef<Blog>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -48,58 +38,46 @@ export const savedArticlesColumns: ColumnDef<Enrollment>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-  // {
-  //   accessorKey: "id",
-  //   header: "Id",
-  // },
   {
-    accessorKey: "courseName",
+    accessorKey: "id",
+    header: "Id",
+  },
+  {
+    accessorKey: "title",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Course Name
+          Article Title
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
   },
   {
-    accessorKey: "enrollmentDate",
+    accessorKey: "clapsCount",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Enrollment Date
+          Claps Count
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
   },
   {
-    accessorKey: "progress",
-    header: "Progress (%)",
+    accessorKey: "authorId",
+    header: "AuthorId",
   },
-  {
-    accessorKey: "certificate",
-    header: "Certificate",
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-  },
-  // {
-  //   accessorKey: "validity",
-  //   header: "Validity",
-  // },
   {
     id: "actions",
     cell: ({ row }) => {
-      const enrollment = row.original;
+      const article = row.original;
 
       return (
         <DropdownMenu>
@@ -113,23 +91,16 @@ export const savedArticlesColumns: ColumnDef<Enrollment>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => navigator.clipboard.writeText(enrollment.id)}
+              onClick={() => navigator.clipboard.writeText(article.id)}
             >
-              Copy enrollment ID
+              Copy article ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <Link href={`/courses/${enrollment.courseId}`}>
+            <Link href={`/articles/${article.id}`}>
               <DropdownMenuItem className="cursor-pointer">
-                View Course
+                View Article
               </DropdownMenuItem>
             </Link>
-            {/* <Link
-              href={`/instructor/${course.instructorId}/courses/createdCourses/${course.id}`}
-            >
-              <DropdownMenuItem className="cursor-pointer">
-                View course details
-              </DropdownMenuItem>
-            </Link> */}
           </DropdownMenuContent>
         </DropdownMenu>
       );

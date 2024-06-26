@@ -5,7 +5,7 @@ export { default } from "next-auth/middleware";
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
-    const token = request.cookies.get("token")?.value || "";
+  const token = request.cookies.get("token")?.value || "";
   // const token = await getToken({ req: request });
 
   const isPublicPath =
@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
     // path.includes("/login") ||
     path === "/register" ||
     // path.includes("/register") ||
-    path === "/verifyEmail" || 
+    path === "/verifyEmail" ||
     path == "/forgotPassword" ||
     path == "/resetPassword" ||
     // path.includes("/verifyEmail") ||

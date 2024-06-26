@@ -1,7 +1,5 @@
 import React from "react";
 import CardDataStats from "@/components/CardDataStats";
-import { BsPersonVideo2 } from "react-icons/bs";
-import { TbMoneybag } from "react-icons/tb";
 import { AiOutlineSolution } from "react-icons/ai";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { GrInProgress } from "react-icons/gr";

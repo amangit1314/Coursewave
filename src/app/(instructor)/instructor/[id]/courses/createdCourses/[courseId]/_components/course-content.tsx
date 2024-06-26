@@ -64,8 +64,8 @@ export default function CourseContent({
   chapters,
   courseAttachments,
 }: CourseContentProps) {
-  console.log("Course sections in couse content: ", sections);
-  console.log("Course sections in couse content: ", chapters);
+  // console.log("Course sections in couse content: ", sections);
+  // console.log("Course sections in couse content: ", chapters);
 
   return (
     <div className="py-20 px-8 space-y-8 dark:bg-zinc-900">
@@ -199,11 +199,3 @@ export default function CourseContent({
     </div>
   );
 }
-
-// const IconBadge = ({ icon }: any) => {
-//   return (
-//     <div className="flex justify-center items-center rounded-full bg-transparent dark:bg-zinc-800 border border-stroke border-blue-500 dark:border-white">
-//       <Icon icon={icon} size="xs" className="text-blue-500 dark:text-white" />
-//     </div>
-//   );
-// };

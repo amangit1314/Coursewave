@@ -1,11 +1,12 @@
-// import fs from "fs"
-// import { v2 as cloudinary } from "cloudinary"
+import { v2 as cloudinaryAdapter } from "cloudinary"
 
-// cloudinary.config({
-//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-//   api_key: process.env.CLOUDINARY_API_KEY,
-//   api_secret: process.env.CLOUDINARY_API_SECRET
-// });
+export const cloudinary = cloudinaryAdapter.config({
+    //   cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
+    cloud_name: 'df2g8tcxq' as string,
+    api_key: process.env.CLOUDINARY_API_KEY! as string,
+    api_secret: process.env.CLOUDINARY_API_SECRET! as string,
+    secure: true,
+});
 
 // const uploadOnCloudinary = async (localFilePath: any) => {
 //   try {

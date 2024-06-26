@@ -1,33 +1,34 @@
 import { useQuery } from "@tanstack/react-query";
 import { absoluteUrl } from "../utils/utils";
 import { Enrollment, Purchase } from "@prisma/client";
+import axios from "axios";
 
 const useCheckCourseIsPurchased = (userId: string, courseId: string) => {
   const fetchIsCourseAlreadyPurchased = async () => {
-    const courseAlreadyPurchasedUrl = (`api/courses/${courseId}/alreadyPurchased`);
-    const response = await fetch(courseAlreadyPurchasedUrl, {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: 'POST',
-      body: JSON.stringify({ userId: userId })
+    // const courseAlreadyPurchasedUrl = (
+    //   // process.env.ENVIRONMENT === 'DEVELOPMENT' ?
+
+    //   // : `api/courses/${courseId}/alreadyPurchased`
+    // );
+    const response = await axios.post(absoluteUrl(`/api/courses/${courseId}/alreadyPurchased`), {
+      userId,
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to get course info from ${courseAlreadyPurchasedUrl} ...`);
+    if (!response.data.success) {
+      throw new Error(`Failed to get course info from ${`api/courses/${courseId}/areadyPurchased`}`);
     }
 
-    return await response.json();
+    return response.data;
   };
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["courseIsPurchased"],
     queryFn: fetchIsCourseAlreadyPurchased,
-    staleTime: 4,
+    // staleTime: 4,
   });
 
   const courseIsPurchased: boolean = data?.data!.hasPurchased;
+  console.log('Is already purchased: ', courseIsPurchased);
   const enrollment: Enrollment = data?.data.enrollment!;
   const purchase: Purchase = data?.data.purchase!;
 

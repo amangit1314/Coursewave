@@ -13,37 +13,15 @@ import React from "react";
 import toast from "react-hot-toast";
 
 type CourseVideoProps = {
-  // playbackId?: string | null;
-  // videoId?: string;
-  // videoTitle?: string;
-  viewerUserId?: string;
+  // viewerUserId?: string;
   activeChapter: Chapter;
-  // course: Course;
-  // userId: string;
-  // muxData: MuxData;
-  // nextChapter: Chapter;
-  // courseProgress: CourseProgress;
-  // purchase: Purchase;
+  videoPlaybackId: string;
 };
 
-const CourseVideo = ({
-  // playbackId,
-  // videoId,
-  // videoTitle,
-  viewerUserId,
-  activeChapter,
-  // course,
-  // userId,
-  // muxData,
-  // nextChapter,
-  // courseProgress,
-  // purchase,
-}: CourseVideoProps) => {
+const CourseVideo = ({ activeChapter, videoPlaybackId }: CourseVideoProps) => {
   const fetchChapterMuxData = async () => {
     const response = await fetch(
-      (
-        `api/courses/${activeChapter?.courseId!}/chapters/${activeChapter?.id!}/muxData`
-      )
+      `/api/courses/${activeChapter?.courseId!}/chapters/${activeChapter?.id!}/muxData`
     );
 
     if (!response.ok) {
@@ -67,56 +45,11 @@ const CourseVideo = ({
     staleTime: 4,
   });
 
-  if (isLoading) {
-    return <div>Loading video data...</div>;
-  }
-
-  if (error) {
-    return <div>Error fetching video data</div>;
-  }
+  if (isLoading) return <div>Loading video data...</div>;
+  if (error) return <div>Error fetching video data</div>;
 
   const muxData: MuxData = chapterMuxData?.data;
   console.log("MuxData response: ", muxData);
-
-  // const chapter = activeChapter;
-
-  // const {
-  //   chapter,
-  //   course,
-  //   muxData,
-  //   attachments,
-  //   nextChapter,
-  //   courseProgress,
-  //   purchase,
-  // } = await getChapter({
-  //   userId,
-  //   chapterId: activeChapter.id,
-  //   courseId: activeChapter.courseId,
-  // });
-
-  // const chapter = await getChapter({
-  //   userId,
-  //   courseId: activeChapter.courseId,
-  //   chapterId: activeChapter.id,
-  // });
-  // const muxData = chapter.muxData;
-  // const purchase = chapter.purchase;
-  // const courseProgress = chapter.courseProgress;
-
-  // const muxData = await getMuxData(activeChapter.courseId);
-  // const purchase = await getCoursePurchase(activeChapter.courseId, userId);
-  // const courseProgress = await getCourseProgress(
-  //   activeChapter.courseId,
-  //   userId
-  // );
-  // const courseProgress = await getProgress(activeChapter.courseId, userId);
-
-  // if (!activeChapter || !course) {
-  //   return redirect("/browseCourses");
-  // }
-
-  // const isLocked = !activeChapter.isFree && !purchase;
-  // const completeOnEnd = !!purchase && !(courseProgress?.progress! === 100);
 
   return (
     // * version 1
@@ -131,33 +64,36 @@ const CourseVideo = ({
     // />
 
     // ** version 2
-    <MuxPlayer
-      title={activeChapter.title}
-      playbackId={
-        muxData?.playbackId! ?? "EcHgOK9coz5K4rjSwOkoE7Y7O01201YMIC200RI6lNxnhs"
-      }
-      accentColor="blue"
-      autoPlay
-      className="smooth-content w-xl h-xl md:h-[360px] overflow-hidden rounded-lg object-cover md:w-[45rem] bg-blue-200"
-      // metadata={{
-      //   video_id: muxData?.id,
-      //   asset_id: muxData?.assetId,
-      //   // video_id: videoId ? videoId : "video-id-54321",
-      //   // video_title: videoTitle ? videoTitle : "Test video title",
-      //   viewer_user_id: viewerUserId ? viewerUserId : "user-id-007",
-      // }}
-    />
+    // <MuxPlayer
+    //   title={activeChapter.title}
+    //   playbackId={
+    //     muxData?.playbackId! ?? "EcHgOK9coz5K4rjSwOkoE7Y7O01201YMIC200RI6lNxnhs"
+    //   }
+    //   accentColor="blue"
+    //   autoPlay
+    //   className="smooth-content w-xl h-xl md:h-[360px] overflow-hidden rounded-lg object-cover md:w-[45rem] bg-blue-200"
+    // />
 
     // *** version 3
     // <VideoPlayer
     //   chapterId={muxData?.chapterId}
     //   title={activeChapter.title}
     //   courseId={activeChapter.courseId}
-    //   // nextChapterId={nextChapter?.id}
     //   playbackId={muxData?.playbackId!}
     //   isLocked={false}
     //   completeOnEnd={true}
     // />
+
+    // *** version 4
+    <iframe
+      src={`https://player.cloudinary.com/embed/?cloud_name=df2g8tcxq&public_id=${videoPlaybackId}`}
+      allow="autoplay; fullscreen"
+      height={360}
+      width={720}
+      allowFullScreen
+      frameBorder={"0"}
+      className="smooth-content w-xl h-xl md:h-[360px] overflow-hidden rounded-lg object-cover md:w-[45rem] bg-blue-200"
+    />
   );
 };
 

@@ -1,20 +1,16 @@
-import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import Mux from "@mux/mux-node";
-export const dynamic = 'force-dynamic';
-
+import { mux } from "@/config/mux";
 import cors, { runMiddleware } from '@/lib/cors';
+import { cloudinary } from "@/config/cloudinary";
+import { NextRequest, NextResponse } from "next/server";
+
+export const dynamic = 'force-dynamic';
 
 // Handle the OPTIONS request
 export async function OPTIONS(req: NextRequest) {
-  await runMiddleware(req, NextResponse, cors);
-  return new NextResponse('OK', { status: 200 });
+    await runMiddleware(req, NextResponse, cors);
+    return new NextResponse('OK', { status: 200 });
 }
-
-const mux = new Mux({
-    tokenId: process.env.MUX_TOKEN_ID!,
-    tokenSecret: process.env.MUX_TOKEN_SECRET!
-});
 
 //* get chapter information for provided videoId
 export async function GET(req: NextRequest, { params }: {
@@ -166,7 +162,16 @@ export async function DELETE(
     }
 }
 
-// * route to update chapter (video with MUX)
+// ? <----------------- Helper function -------------------->
+function getPublicIdFromUrl(url: string) {
+    const parts = url.split('/');
+    // Assuming the public_id is the last part of the URL before the extension
+    const lastPart = parts?.pop()!;
+    const publicId = lastPart.split('.').slice(0, -1).join('.');
+    return publicId;
+}
+
+// * route to update chapter (video with MUX / Cloudinary)
 export async function PATCH(
     req: Request,
     { params }: {
@@ -232,33 +237,67 @@ export async function PATCH(
         });
 
         if (values.videoUrl) {
-            const existingMuxData = await db.muxData.findFirst({
+            //? --------------- updating mux data --------------------
+            // const existingMuxData = await db.muxData.findFirst({
+            //     where: {
+            //         chapterId: chapterId,
+            //     }
+            // });
+
+            // if (existingMuxData) {
+            //     await mux.video.assets.delete(existingMuxData.assetId);
+            //     await db.muxData.delete({
+            //         where: {
+            //             id: existingMuxData.id,
+            //         }
+            //     });
+            // }
+
+            // const asset = await mux.video.assets.create({
+            //     input: values.videoUrl,
+            //     playback_policy: ['public'],
+            //     test: false,
+            // });
+
+            // console.log('Mux created video asset id: ', asset.id);
+
+            // await db.muxData.create({
+            //     data: {
+            //         assetId: asset.id,
+            //         playbackId: asset.playback_ids?.[0]?.id!,
+            //         courseId,
+            //         chapterId,
+            //     }
+            // });
+
+            //? --------------- updating cloudinary data --------------------
+
+            const existingCloudinaryData = await db.cloudinaryData.findFirst({
                 where: {
                     chapterId: chapterId,
                 }
             });
 
-            if (existingMuxData) {
-                await mux.video.assets.delete(existingMuxData.assetId);
-                await db.muxData.delete({
+            if (existingCloudinaryData) {
+                await cloudinary.uploader.destroy(existingCloudinaryData.publicId, {
+                    resource_type: "video",
+                });
+
+                await db.cloudinaryData.delete({
                     where: {
-                        id: existingMuxData.id,
+                        id: existingCloudinaryData.id,
                     }
                 });
             }
 
-            const asset = await mux.video.assets.create({
-                input: values.videoUrl,
-                playback_policy: ['public'],
-                test: false,
-            });
+            // const videoUrl = "https://res.cloudinary.com/demo/video/upload/v1623782384/sample.mp4";
+            const publicId = getPublicIdFromUrl(values.videoUrl);
+            console.log(publicId);  // exampleOutput: sample.mp4
 
-            console.log('Mux created video asset id: ', asset.id);
-
-            await db.muxData.create({
+            await db.cloudinaryData.create({
                 data: {
-                    assetId: asset.id,
-                    playbackId: asset.playback_ids?.[0]?.id!,
+                    cloudName: 'df2g8tcxq',
+                    publicId: publicId,
                     courseId,
                     chapterId,
                 }
@@ -267,8 +306,8 @@ export async function PATCH(
 
         return NextResponse.json(chapter);
     } catch (error) {
-        console.log("[COURSES_CHAPTER_ID_ERROR]", error);
-        return new NextResponse("Internal Error", { status: 500 });
+        console.log("[COURSES_CHAPTER_ID_VIDEO_UPDATE_ERROR]: ", error);
+        return new NextResponse("Internal Error, while uploading or updating chapter video ...", { status: 500 });
     }
 }
 

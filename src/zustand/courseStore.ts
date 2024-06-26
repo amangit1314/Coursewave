@@ -1,4 +1,4 @@
-import { Category, Chapter, Course, CourseAttachment, CourseProgress, CourseSection, Enrollment, Instructor, InstructorEarning, MuxData, Payment, Purchase, Review } from '@prisma/client';
+import { Category, Chapter, ChapterProgress, Course, CourseAttachment, CourseProgress, CourseSection, Enrollment, Instructor, InstructorEarning, MuxData, Payment, Purchase, Review } from '@prisma/client';
 import { create } from 'zustand';
 
 type CourseState = {
@@ -36,8 +36,10 @@ type CourseActions = {
     fetchInstructorEarningsFromThisCourse: (courseId: string) => Promise<void>;
 
     saveCourse: (courseId: string, userId: string) => Promise<void>;
-    updateCourseProgress: (courseId: string) => Promise<void>;
+    updateCourseProgress: (userId: string, courseId: string, chapterId: string,) => Promise<void>;
 }
+
+type CourseProgressWithChapters = CourseProgress & { chapterProgress: ChapterProgress[] };
 
 const useCourseStore = create<CourseState & CourseActions>()((set) => ({
     course: null,
@@ -59,7 +61,7 @@ const useCourseStore = create<CourseState & CourseActions>()((set) => ({
         try {
             set({ loading: true, error: null });
 
-            const response = await fetch(`api/courses/${courseId}`);
+            const response = await fetch(process.env.ENVIRONMENT! === "DEVELOPMENT" ? `/api/courses/${courseId}` : `api/courses/${courseId}`);
 
             if (!response.ok) {
                 set({ loading: false, error: 'Failed to fetch course info ...' })
@@ -160,7 +162,6 @@ const useCourseStore = create<CourseState & CourseActions>()((set) => ({
     fetchCourseMuxDatas: async (courseId: string) => {
 
     },
-
     fetchCourseAttachments: async (courseId: string) => {
         try {
             set({ loading: true, error: null });
@@ -180,11 +181,52 @@ const useCourseStore = create<CourseState & CourseActions>()((set) => ({
             set({ loading: false, error: error.message });
         }
     },
-
     // TODO: SEE HOW YOU WILL DO THIS
-    fetchCourseProgress: async (courseId: string, userId: string) => { },
+    updateCourseProgress: async (userId: string, courseId: string, chapterId: string,
+        // progress: number
+    ) => {
+        try {
 
+            // Update chapter completion status
+            const response = await fetch(
+                (`api/profile/${userId}/enrolledCourses/${courseId}/courseProgress/chapters/${chapterId}`),
+                {
+                    method: 'PATCH',
+                    body: JSON.stringify({ isCompleted: true }),
+                }
+            );
 
+            const updatedChapterProgress = await response.json();
+
+            // Recalculate and update course progress (implementation depends on your API)
+            const courseProgressResponse = await fetch(
+                (`/api/profile/${userId}/enrolledCourses/${courseId}/courseProgress`),
+                {
+                    method: 'PATCH',
+                }
+            );
+            const updatedCourseProgress = await courseProgressResponse.json();
+
+            set({ courseProgress: updatedCourseProgress });
+
+        } catch (error) {
+            console.error("Error updating course progress:", error);
+        }
+    },
+    fetchCourseProgress: async (userId: string, courseId: string) => {
+        try {
+            const response = await fetch((`/api/profile/${userId}/enrolledCourses/${courseId}/courseProgress?include=chapterProgress`));
+            const data = await response.json();
+
+            // Ensure data structure matches CourseProgressWithChapters
+            const courseProgressWithChapters = data;
+            set({ courseProgress: courseProgressWithChapters });
+
+            // set({ courseProgress: data });
+        } catch (error) {
+            console.error("Error fetching course progress:", error);
+        }
+    },
     fetchCourseReviews: async (courseId: string) => {
 
         try {
@@ -223,10 +265,10 @@ const useCourseStore = create<CourseState & CourseActions>()((set) => ({
             console.error('Error fetching course enrollments:', error);
             set({ loading: false, error: error.message });
         }
-     },
+    },
     fetchCoursePurchases: async (courseId: string) => { },
     fetchCoursePayments: async (courseId: string) => { },
-    fetchCourseInstructor: async (courseId: string) => { 
+    fetchCourseInstructor: async (courseId: string) => {
         try {
             set({ loading: true, error: null });
 
@@ -246,11 +288,7 @@ const useCourseStore = create<CourseState & CourseActions>()((set) => ({
         }
     },
     fetchInstructorEarningsFromThisCourse: async (courseId: string) => { },
-
-
     saveCourse: async (courseId: string, userId: string) => { },
-    updateCourseProgress: async (courseId: string) => { }
-
 }));
 
 export default useCourseStore;

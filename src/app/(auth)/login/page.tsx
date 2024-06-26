@@ -32,7 +32,7 @@ const Login = () => {
   const onLogin = async () => {
     try {
       setLoading(true);
-      await axios.post(("api/auth/login"), user).then((res) => {
+      await axios.post((process.env.ENVIRONMENT === "DEVELOPMENT" ? absoluteUrl("/api/auth/login") : "api/auth/login"), user).then((res) => {
         console.log("Login response: ", res.data);
         setUser(res.data);
       });
@@ -95,6 +95,7 @@ const Login = () => {
 
             <PasswordInput
               id="current_password"
+              // type="password"
               value={user.password}
               onChange={(e: any) =>
                 setUserInfo({ ...user, password: e.target.value })

@@ -24,6 +24,9 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import useUserInfo from "@/hooks/use-user-info";
+import { Input } from "@/components/ui/input";
+import { absoluteUrl } from "@/utils/utils";
+import { useRouter } from "next/navigation";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -36,6 +39,7 @@ const formSchema = z.object({
 });
 
 const WriteArticlePage = () => {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const user = useUserInfo();
   const userId = user?.user?.id!;
@@ -59,12 +63,13 @@ const WriteArticlePage = () => {
         title: values.title,
         content: values.content,
         estimatedReadingTime: "10 min",
-        thumbnailUrl: values.image ?? "",
+        thumbnailUrl: values.image ?? "https://wcgwzdehnxpexussrkni.supabase.co/storage/v1/object/public/assets/green-3d.jpg",
       })
       .then((response) => {
         console.log("Write Article Form Values: ", values);
         console.log("Response data after creating article: ", response);
         toast.success("Article Created successfully ...");
+        router.push(absoluteUrl('/articles'));
       })
       .catch((err: any) => {
         console.log("Error in creating course: ", err.message);
@@ -81,114 +86,105 @@ const WriteArticlePage = () => {
         </p>
       </div>
 
-      <div>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 ">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <div>
-                  <FormItem className="mt-8 flex flex-col">
-                    <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
-                      Article Title
-                    </FormLabel>
-                    <FormControl>
-                      {/* <Input
-                        disabled={isSubmitting}
-                        className="bg-transparent border-gray-700 dark:border-gray-400 max-w-7xl w-full "
-                        placeholder="i.e. 'Full Stack Bootcamp', etc..."
-                        {...field}
-                      /> */}
-                      <input
-                        type="text"
-                        placeholder="Title"
-                        className="bg-transparent overflow-hidden outline-none cursor-gray-300 dark:text-white"
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 ">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <div>
+                <FormItem className="mt-8 flex flex-col">
+                  <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
+                    Article Title
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Title"
+                      className="bg-transparent overflow-hidden outline-none cursor-gray-300 dark:text-white"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription className="">
+                    Enter the title of the article here ...
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              </div>
+            )}
+          />
+
+          {/* article field */}
+          <FormField
+            control={form.control}
+            name="content"
+            render={({ field }) => (
+              <div>
+                <FormItem className="mt-8">
+                  <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
+                    Article Content
+                  </FormLabel>
+                  <FormControl>
+                    <div className="justify-start items-start  py-4">
+                      <div className="flex justify-start items-start">
+                        <button type="button" onClick={() => setOpen(!open)}>
+                          <IoAddCircleOutline className="h-8 w-8" />
+                        </button>
+
+                        {open && (
+                          <div className="flex justify-start items-center space-x-[5px] mx-2">
+                            <button
+                              type="button"
+                              className="flex justify-center items-center border bg-transparent border-stroke rounded-full p-2 cursor-pointer transition-all duration-300 hover:border-blue-400 h-8 w-8 hover:bg-blue-100 hover:text-blue-400"
+                            >
+                              <RiImageAddFill size={18} />
+                            </button>
+                            <button
+                              type="button"
+                              className="flex justify-center items-center border bg-transparent border-stroke rounded-full p-2 cursor-pointer transition-all duration-300 hover:border-blue-400 h-8 w-8 hover:bg-blue-100 hover:text-blue-400"
+                            >
+                              <AiOutlineVideoCameraAdd size={18} />
+                            </button>
+                            <button
+                              type="button"
+                              className="flex justify-center items-center border bg-transparent border-stroke rounded-full p-2 cursor-pointer transition-all duration-300 hover:border-blue-400 h-8 w-8 hover:bg-blue-100 hover:text-blue-400"
+                            >
+                              <RiExternalLinkLine size={18} />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      <ReactQuill
+                        theme="bubble"
+                        className="w-full dark:text-white text-[28px]"
+                        placeholder="Tell your story ..."
                         {...field}
                       />
-                    </FormControl>
-                    <FormDescription className="">
-                      Enter the title of the article here ...
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                </div>
-              )}
-            />
+                    </div>
+                  </FormControl>
+                  <FormDescription className="">
+                    Write your of the article here ...
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              </div>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="content"
-              render={({ field }) => (
-                <div>
-                  <FormItem className="mt-8">
-                    <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
-                      Article Content
-                    </FormLabel>
-                    <FormControl>
-                      {/* h-[700px] */}
-                      <div className="justify-start items-start  py-4">
-                        <div className="flex justify-start items-start">
-                          <button type="button" onClick={() => setOpen(!open)}>
-                            <IoAddCircleOutline className="h-8 w-8" />
-                          </button>
-
-                          {open && (
-                            <div className="flex justify-start items-center space-x-[5px] mx-2">
-                              <button
-                                type="button"
-                                className="flex justify-center items-center border bg-transparent border-stroke rounded-full p-2 cursor-pointer transition-all duration-300 hover:border-blue-400 h-8 w-8 hover:bg-blue-100 hover:text-blue-400"
-                              >
-                                <RiImageAddFill size={18} />
-                              </button>
-                              <button
-                                type="button"
-                                className="flex justify-center items-center border bg-transparent border-stroke rounded-full p-2 cursor-pointer transition-all duration-300 hover:border-blue-400 h-8 w-8 hover:bg-blue-100 hover:text-blue-400"
-                              >
-                                <AiOutlineVideoCameraAdd size={18} />
-                              </button>
-                              <button
-                                type="button"
-                                className="flex justify-center items-center border bg-transparent border-stroke rounded-full p-2 cursor-pointer transition-all duration-300 hover:border-blue-400 h-8 w-8 hover:bg-blue-100 hover:text-blue-400"
-                              >
-                                <RiExternalLinkLine size={18} />
-                              </button>
-                            </div>
-                          )}
-                        </div>
-
-                        <ReactQuill
-                          theme="bubble"
-                          className="w-full dark:text-white text-[28px]"
-                          // value={value}
-                          // onChange={setValue}
-                          placeholder="Tell your story ..."
-                          {...field}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormDescription className="">
-                      Enter the title of the article here ...
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                </div>
-              )}
-            />
-
-            <div className="flex items-center gap-x-2 mb-4">
-              <Link href="/">
-                <Button variant="ghost" type="button">
-                  Cancel
-                </Button>
-              </Link>
-              <Button type="submit" disabled={!isValid || isSubmitting}>
-                Create
+          {/* cancel and create button */}
+          <div className="flex items-center gap-x-2 mb-4">
+            <Link href="/">
+              <Button variant="ghost" type="button">
+                Cancel
               </Button>
-            </div>
-          </form>
-        </Form>
-      </div>
+            </Link>
+            <Button type="submit" disabled={!isValid || isSubmitting}>
+              Create
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 };

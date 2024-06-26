@@ -1,11 +1,11 @@
-export default function WhoThisCourseIsFor({ thisCourseIsFor }: any) {
+export const WhoThisCourseIsFor = ({ thisCourseIsFor }: any) => {
   return (
-    <div className="md:mt-4 text-base max-w-3xl justify-start">
-      <h3 className="mb-4 text-xl text-gray-700 dark:text-slate-200 tracking-tight font-semibold">
+    <div className="md:mt-4 text-base max-w-3xl justify-start space-y-4">
+      <h3 className=" text-xl text-gray-800 dark:text-slate-200 tracking-tight font-semibold">
         Who this course is for:
       </h3>
       {thisCourseIsFor ? (
-        <ul className="pl-4 flex flex-col text-gray-700 dark:text-gray-400 text-md justify-between pb-2 list-disc">
+        <ul className="pl-4 flex flex-col text-gray-700 dark:text-gray-400 text-md justify-between list-disc">
           {thisCourseIsFor.map((point: string, index: any) => (
             <li key={index} className="pb-1">
               {point}
@@ -31,7 +31,7 @@ export default function WhoThisCourseIsFor({ thisCourseIsFor }: any) {
       )}
     </div>
   );
-}
+};
 
 /**
  * <li className="pb-1">

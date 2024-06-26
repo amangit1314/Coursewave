@@ -3,7 +3,7 @@ import { User } from "@prisma/client";
 import { absoluteUrl } from "../utils/utils";
 
 const fetchUser = async () => {
-  const url = "api/auth/me";
+  const url = "/api/auth/me";
   const response = await fetch(url);
 
   if (!response.ok) {

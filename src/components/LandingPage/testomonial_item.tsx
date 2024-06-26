@@ -41,9 +41,9 @@ const TestimonialItem: React.FC<TestimonialItemProps> = ({
             </p>
             <div className="flex items-center justify-end space-x-1">
               <p className="text-md font-semibold tracking-tight text-zinc-800 dark:text-white">
-               {rating ?? 4.8}
+               {rating.toFixed(1) ?? 4.8}
               </p>
-              <FaStar className="text-yellow-500" />
+              <FaStar className="text-yellow-500" size={14} />
             </div>
           </div>
 

@@ -35,7 +35,12 @@ const formSchema = z.object({
   sectionDescription: z.string(),
 });
 
-export const SectionsForm = ({ initialData, course, sections, chapters }: SectionsFormProps) => {
+export const SectionsForm = ({
+  initialData,
+  course,
+  sections,
+  chapters,
+}: SectionsFormProps) => {
   const params = useParams();
   const courseId = course.courseId;
 
@@ -53,7 +58,7 @@ export const SectionsForm = ({ initialData, course, sections, chapters }: Sectio
     defaultValues: {
       title: "",
       sectionNumber: "",
-      sectionDescription: ""
+      sectionDescription: "",
     },
   });
 
@@ -74,7 +79,7 @@ export const SectionsForm = ({ initialData, course, sections, chapters }: Sectio
       toggleCreating();
       router.refresh();
     } catch (err: any) {
-      console.log('Error: ', err.message);
+      console.log("Error: ", err.message);
       toast.error("Something went wrong");
     }
   };
@@ -96,12 +101,14 @@ export const SectionsForm = ({ initialData, course, sections, chapters }: Sectio
   };
 
   const onEdit = (id: string) => {
-    router.push(`/api/instructor/${course.instructorID}/dashboard/courses/${courseId}/chapters/${id}`);
+    router.push(
+      `/api/instructor/${course.instructorID}/dashboard/courses/${courseId}/chapters/${id}`
+    );
   };
 
-  console.log('Course in sections form: ', course);
-  console.log("sections in sections form: ", sections);
-  console.log("chapters in sections form: ", chapters);
+  // console.log("Course in sections form: ", course);
+  // console.log("sections in sections form: ", sections);
+  // console.log("chapters in sections form: ", chapters);
 
   return (
     <div className="relative mt-6 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4 w-full">
@@ -138,7 +145,6 @@ export const SectionsForm = ({ initialData, course, sections, chapters }: Sectio
                 <FormItem>
                   <FormControl>
                     <Input
-                      // type="number"
                       disabled={isSubmitting}
                       placeholder="e.g. 1"
                       {...field}
@@ -183,11 +189,7 @@ export const SectionsForm = ({ initialData, course, sections, chapters }: Sectio
               )}
             />
 
-            <Button
-              className="dark:bg-zinc-800"
-              // disabled={!isSubmitting}
-              type="submit"
-            >
+            <Button className="dark:bg-zinc-800" type="submit">
               Create
             </Button>
           </form>

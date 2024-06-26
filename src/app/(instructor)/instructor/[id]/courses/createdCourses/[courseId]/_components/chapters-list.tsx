@@ -94,18 +94,18 @@ export const ChaptersList = ({
                     {!isEditing ? (
                       <div
                         className={cn(
-                          "flex items-center gap-x-2 bg-slate-200 border-slate-200 border text-slate-700 dark:text-gray-400 dark:bg-zinc-800 dark:border-none rounded-md mb-4 text-sm",
+                          "flex items-center gap-x-2 bg-slate-200 border-slate-200 border text-slate-700 dark:text-gray-400 dark:bg-zinc-800 dark:border-none rounded-md mb-4 text-sm  transition-all duration-300",
                           chapter.isPublished &&
-                            "bg-sky-100 border-sky-200 text-sky-700"
+                            "bg-blue-100 border-blue-200 text-blue-600  transition-all duration-300"
                         )}
                         // ref={provided.innerRef}{...provided.draggableProps}
                       >
                         {/* grip icon */}
                         <div
                           className={cn(
-                            "px-2 py-3 border-r border-r-slate-200 hover:bg-slate-300 rounded-l-md transition",
+                            "px-2 py-3 border-r border-r-slate-200 hover:bg-slate-300 rounded-l-md  transition-all duration-300",
                             chapter.isPublished &&
-                              "border-r-sky-200 hover:bg-sky-200"
+                              "border-r hover:bg-blue-200 dark:hover:bg-zinc-950  transition-all duration-300"
                           )}
                           {...provided.dragHandleProps}
                         >
@@ -113,7 +113,9 @@ export const ChaptersList = ({
                         </div>
 
                         {/* chapter title */}
-                        {chapter.title}
+                       <p className="not-italic">
+                       {chapter.title}
+                       </p>
 
                         {/* isFree badge, published or in draft badge, pencil icon */}
                         <div className="ml-auto pr-2 flex items-center gap-x-2">
@@ -123,8 +125,8 @@ export const ChaptersList = ({
                           {/* published or in draft badge */}
                           <Badge
                             className={cn(
-                              "bg-slate-500 dark:text-gray-400",
-                              chapter.isPublished && "bg-sky-700"
+                              "bg-zinc-500 dark:text-gray-400 dark:bg-zinc-800 not-italic text-xs  transition-all duration-300",
+                              chapter.isPublished && "bg-zinc-500 dark:bg-zinc-800 cursor-not-allowed  transition-all duration-300"
                             )}
                           >
                             {chapter.isPublished ? "Published" : "Draft"}
@@ -140,7 +142,7 @@ export const ChaptersList = ({
                                 chapter.id
                               )
                             }
-                            className="w-4 h-4 cursor-pointer hover:opacity-75 transition"
+                            className="w-4 h-4 hover:text-black dark:hover:text-white cursor-pointer transition-all duration-300"
                           />
                         </div>
                       </div>

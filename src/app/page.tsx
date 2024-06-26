@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import About from "@/components/LandingPage/about";
-import Footer from "@/components/LandingPage/footer";
+import {Footer} from "@/components/LandingPage/footer";
 import { useRouter } from "next/navigation";
 import * as scrollAnimation from "./ScrollAnimation.json";
 import Offerings from "@/components/LandingPage/offerings";

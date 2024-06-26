@@ -1,17 +1,13 @@
 "use client";
 
 import React from "react";
+
 import { FaRegCirclePlay } from "react-icons/fa6";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { Chapter, CourseSection } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
-import toast, { Toaster } from "react-hot-toast";
 
-type CourseContentProps = {
-  courseId: string;
-};
-
-export default function CourseContent({ courseId }: CourseContentProps) {
+export const CourseContent = ({ courseId }: { courseId: string }) => {
   const fetchCourseSections = async () => {
     const res = await fetch(`/api/courses/${courseId}/sections`);
 
@@ -53,21 +49,22 @@ export default function CourseContent({ courseId }: CourseContentProps) {
   }
 
   return (
-    <div className="mt-4 pr-8 md:pr-0 md:p-0 max-w-3xl w-full pb-4 md:pb-6">
-      <div>
-        <h3 className="mb-4 tracking-tight text-xl font-semibold text-gray-700 dark:text-slate-200">
+    <div className="mt-4 space-y-4 pr-8 md:pr-0 md:p-0 max-w-3xl w-full">
+      <div className="flex justify-between items-center">
+        <h3 className="tracking-tight text-xl font-semibold text-gray-800 dark:text-slate-200">
           Course Content:
         </h3>
-        <div className="flex justify-between pb-2">
+
+        <div className="flex justify-between">
           <ul className="flex pl-4 list-disc space-x-6 flex-wrap md:flex justify-evenly text-gray-700 dark:text-gray-400">
             <li className="text-sm">
               {courseSections ? courseSections.length : 0} sections
             </li>
 
-            <li className="text-sm">
-              {/* {sectionChapters ? sectionChapters.length : 0} lectures
-              lectures */}
-            </li>
+            {/* <li className="text-sm">
+              {sectionChapters ? sectionChapters.length : 0} lectures
+              lectures
+            </li> */}
 
             {/* <li className="text-sm">3 min total length</li> */}
           </ul>
@@ -81,7 +78,7 @@ export default function CourseContent({ courseId }: CourseContentProps) {
       <SectionsAndChaptersAccordion sections={courseSections} />
     </div>
   );
-}
+};
 
 const SectionsAndChaptersAccordion = ({
   sections,

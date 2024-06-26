@@ -18,7 +18,7 @@ const josefinSans = Josefin_Sans({
   subsets: ["latin"],
 });
 
-function CourseNavbar({ courseName }: any) {
+export const CourseNavbar = ({ courseName }: { courseName: string }) => {
   const router = useRouter();
   const user = useUserInfo();
   const userId = user.user?.id;
@@ -94,6 +94,4 @@ function CourseNavbar({ courseName }: any) {
       </div>
     </div>
   );
-}
-
-export default CourseNavbar;
+};

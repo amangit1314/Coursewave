@@ -2,15 +2,13 @@ import React from "react";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
-import { Banner } from "@/components/banner";
 import toast, { Toaster } from "react-hot-toast";
-// import { IconBadge } from "@/components/icon-badge";
 import { ChapterTitleForm } from "./_components/chapter-title-form";
 import { ChapterDescriptionForm } from "./_components/chapter-description-form";
 import { ChapterAccessForm } from "./_components/chapter-access-form";
 import { ChapterVideoForm } from "./_components/chapter-video-form";
 import { ChapterActions } from "./_components/chapter-actions";
-import { ArrowLeft, Eye, LayoutDashboard, Video } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Callout } from "@tremor/react";
 
 const ChapterEditPage = async ({
@@ -45,7 +43,7 @@ const ChapterEditPage = async ({
       courseSectionId: sectionId,
     },
     include: {
-      muxData: true,
+      CloudinaryData: true,
     },
   });
 
@@ -57,6 +55,17 @@ const ChapterEditPage = async ({
     );
   }
 
+  const chapterWithCloudinaryData = {
+    ...chapter,
+    id: chapter?.CloudinaryData?.id!,
+    cloudName: chapter?.CloudinaryData?.cloudName!,
+    publicId: chapter?.CloudinaryData?.publicId!,
+    courseId: chapter?.CloudinaryData?.courseId!,
+    chapterId: chapter?.CloudinaryData?.chapterId!,
+    createdAt: chapter?.CloudinaryData?.createdAt!,
+    updatedAt: chapter?.CloudinaryData?.updatedAt!,
+  };
+
   const requiredFields = [chapter.title, chapter.description, chapter.videoUrl];
 
   const totalFields = requiredFields.length;
@@ -66,7 +75,6 @@ const ChapterEditPage = async ({
 
   return (
     <div className="pt-[80px] px-8">
-      {/* <div>Chapter Id: {chapterId}</div> */}
       <div>
         {!chapter.isPublished && (
           <Callout
@@ -79,7 +87,7 @@ const ChapterEditPage = async ({
           <div className="flex items-center justify-between">
             <div className="w-full">
               <Link
-                href={`/teacher/courses/${params.courseId}`}
+                href={``}
                 className="flex items-center text-sm hover:opacity-75 transition mb-6"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
@@ -108,7 +116,6 @@ const ChapterEditPage = async ({
             <div className="space-y-4">
               <div className="space-y-4">
                 <div className="flex items-center gap-x-2">
-                  {/* <IconBadge icon={LayoutDashboard} /> */}
                   <h2 className="text-xl font-semibold tracking-tight text-zinc-800 dark:text-white">
                     Customize your chapter
                   </h2>
@@ -127,9 +134,9 @@ const ChapterEditPage = async ({
                   chapterId={params.chapterId}
                 />
               </div>
+
               <div className="space-y-4">
                 <div className="flex items-center gap-x-2">
-                  {/* <IconBadge icon={Eye} /> */}
                   <h2 className="text-xl font-semibold tracking-tight text-zinc-800 dark:text-white">
                     Access Settings
                   </h2>
@@ -141,19 +148,20 @@ const ChapterEditPage = async ({
                 />
               </div>
             </div>
+
             <div className="space-y-4">
               <div className="flex items-center gap-x-2">
-                {/* <IconBadge icon={Video} /> */}
                 <h2 className="text-xl font-semibold tracking-tight  text-zinc-800 dark:text-white">
                   Add a video
                 </h2>
               </div>
+
               <ChapterVideoForm
-                initialData={chapter}
+                chapterWithCloudinaryData={chapterWithCloudinaryData}
                 instructorId={instructorId}
-                sectionId={sectionId}
-                chapterId={chapterId}
-                courseId={courseId}
+                // sectionId={sectionId}
+                // chapterId={chapterId}
+                // courseId={courseId}
               />
             </div>
           </div>

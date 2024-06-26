@@ -11,7 +11,7 @@ import { Divider } from "@tremor/react";
 import { absoluteUrl } from "@/utils/utils";
 import { FaSquareXTwitter } from "react-icons/fa6";
 
-const CourseFooter = () => {
+export const CourseFooter = () => {
   return (
     <div className="flex bottom-0 dark:bg-black flex-col py-2 md:flex-row h-auto w-full px-4 items-center justify-between">
       <div className="flex flex-row md:flex-row justify-center md:justify-between items-start  md:items-center py-auto mb-6 md:mb-0">
@@ -143,7 +143,7 @@ const CourseFooter = () => {
   );
 };
 
-const Footer = () => {
+export const Footer = () => {
   return (
     <footer className="w-full h-auto md:p-4 bg-zinc-900  text-slate-700">
       {/* options */}
@@ -246,7 +246,10 @@ const Footer = () => {
               </svg>
               <span className="sr-only">Facebook page</span>
             </Link> */}
-            <Link href='https://discord.gg/gemZ3T6r' className="text-gray-500 hover:text-blue-500 ">
+            <Link
+              href="https://discord.gg/gemZ3T6r"
+              className="text-gray-500 hover:text-blue-500 "
+            >
               <svg
                 className="w-4 h-4"
                 aria-hidden="true"
@@ -258,11 +261,17 @@ const Footer = () => {
               </svg>
               <span className="sr-only">Discord community</span>
             </Link>
-            <Link href="https://x.com/soni07_aman" className="text-gray-500 hover:text-blue-500 ">
-            <FaSquareXTwitter className="w-4 h-4" />
+            <Link
+              href="https://x.com/soni07_aman"
+              className="text-gray-500 hover:text-blue-500 "
+            >
+              <FaSquareXTwitter className="w-4 h-4" />
               <span className="sr-only">Twitter page</span>
             </Link>
-            <Link href="https://github.com/amangit1314" className="text-gray-500 hover:text-blue-500 ">
+            <Link
+              href="https://github.com/amangit1314"
+              className="text-gray-500 hover:text-blue-500 "
+            >
               <svg
                 className="w-4 h-4"
                 aria-hidden="true"
@@ -320,7 +329,7 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+// export default Footer;
 
 const CopyRightText = () => {
   return (
@@ -332,7 +341,7 @@ const CopyRightText = () => {
   );
 };
 
-const MobileFooterAccordionSection = () => {
+export const MobileFooterAccordionSection = () => {
   const points = [
     "Courses",
     "Community Articles",

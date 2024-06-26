@@ -14,6 +14,8 @@ model User {
   email           String   @unique
   password        String
   profileImageUrl String?
+  about           String?
+  shortSummary    String?
   isEmailVerified Boolean? @default(false)
   isInstructor    Boolean? @default(false)
 
@@ -145,9 +147,10 @@ model Course {
   Instructor Instructor? @relation(fields: [instructorID], references: [instructorID])
   WishList   WishList?   @relation(fields: [userId], references: [userId])
 
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
+  createdAt      DateTime?        @default(now())
+  updatedAt      DateTime?        @updatedAt
   // User      User?     @relation(fields: [userId], references: [id])
+  CloudinaryData CloudinaryData[]
 }
 
 model CourseAttachment {
@@ -198,8 +201,9 @@ model Chapter {
   course        Course?        @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
   courseSection CourseSection? @relation(fields: [courseSectionId], references: [courseSectionId])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  CloudinaryData CloudinaryData?
 
   @@index([courseId])
 }
@@ -234,6 +238,20 @@ model MuxData {
   playbackId String
   courseId   String
   chapterId  String @unique
+
+  chapter Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  course  Course?  @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model CloudinaryData {
+  id        String @id @default(cuid())
+  cloudName String
+  publicId  String
+  courseId  String
+  chapterId String @unique
 
   chapter Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   course  Course?  @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
@@ -289,7 +307,7 @@ model Enrollment {
   courseId         String
   enrollmentDate   String
   courseProgressId String
-  courseTitle      String?
+  courseTitle      String
   enrollmentStatus EnrollmentStatus @default(ACTIVE)
   user             User?            @relation(fields: [userId], references: [id])
   course           Course?          @relation(fields: [courseId], references: [courseId])
@@ -344,6 +362,7 @@ model Category {
 model Blog {
   id                   String  @id @unique
   title                String
+  shortDescription     String?
   content              String
   estimatedReadingTime String
   clapsCount           Int     @default(0)

@@ -13,7 +13,13 @@ export const dynamic = 'force-dynamic';
 
 export const GET = async (req: NextRequest) => {
   try {
-    const articles = await db.blog.findMany();
+    const articles = await db.blog.findMany({
+      include: {
+        comments: true,
+        category: true,
+        author: true,
+      }
+    });
     return NextResponse.json({
       success: true,
       data: articles,
@@ -34,7 +40,7 @@ export const POST = async (req: NextRequest) => {
   const blogId = `article_${id.split('-')[0]}`;
 
   try {
-    if (!authorId || !title || !content || !estimatedReadingTime ) {
+    if (!authorId || !title || !content || !estimatedReadingTime) {
       return NextResponse.json({
         success: false,
         message: '[MISSING REQUIRED FIELDS], missing authorId or title or content or estimatedReadingTime or thumbnailUrl ... ',
@@ -71,14 +77,14 @@ export const POST = async (req: NextRequest) => {
       success: true,
       data: createdBlog,
       message: '[WRITE ARTICLE SUCCESS], article created successfully ✔️🎉 ... ',
-    }, { status: 500 });
+    }, { status: 200 });
 
   } catch (error: any) {
     console.log('[WRITE ARTICLE ERROR], failed to write an article ❌🚧 ... ', error.message);
     return NextResponse.json({
       success: false,
       error: error.message,
-      message: '[WRITE ARTICLE ERROR], failed to write an article ❌🚧 ... ',
-    }, { status: 404 });
+      message: 'Internal server errorr, failed to write an article ❌🚧 ... ',
+    }, { status: 500 });
   }
 }

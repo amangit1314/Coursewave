@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Link from "next/link";
 import Image from "next/image";
 
 import axios from "axios";
@@ -11,27 +10,22 @@ import { FaAngleRight, FaCircleCheck, FaStar } from "react-icons/fa6";
 import { IoPeopleCircleSharp } from "react-icons/io5";
 import { HiOutlineShoppingCart, HiShoppingCart } from "react-icons/hi";
 
-import CourseNavbar from "../_components/course-navbar";
+import { CourseNavbar } from "../_components/course-navbar";
 import { CartItem, Course, Review } from "@prisma/client";
 import { RatingStars } from "../_components/rating-stars";
-import CourseContent from "../_components/course-content";
-import Prerequisits from "../_components/sections/prerequisits";
-import InstructorCard from "../_components/sections/instructor-info";
-import Description from "../_components/sections/course-description";
-import WhatYouWillLearn from "../_components/sections/what-you-will-learn";
-import CourseRatings from "../_components/sections/ratings/course-ratings";
-import WhoThisCourseIsFor from "../_components/sections/who-this-course-is-for";
+import { CourseContent } from "../_components/course-content";
+import { Prerequisits } from "../_components/sections/prerequisits";
+import { InstructorCard } from "../_components/sections/instructor-info";
+import { WhatYouWillLearn } from "../_components/sections/what-you-will-learn";
+import { CourseRatings } from "../_components/sections/ratings/course-ratings";
+import { WhoThisCourseIsFor } from "../_components/sections/who-this-course-is-for";
+import { CourseBreadcrumb } from "../_components/sections/course-breadcrumb";
+import { MoreIntructorCreatedCourses } from "../_components/sections/more-instructor-created-courses";
 
-import { usePathname } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
-import { Button, Divider, Title } from "@tremor/react";
-
-import { useCartStore } from "@/zustand/cartStore";
-import useUserInfo from "@/hooks/use-user-info";
+import { Loader } from "lucide-react";
+import { Footer } from "@/components/LandingPage/footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { generateUid } from "@/helpers/id_helper";
-import CourseBreadcrumb from "../_components/sections/course-breadcrumb";
-import MoreIntructorCreatedCourses from "../_components/sections/more-instructor-created-courses";
 import {
   Dialog,
   DialogContent,
@@ -41,193 +35,104 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { absoluteUrl } from "@/utils/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-dropdown-menu";
+import toast, { Toaster } from "react-hot-toast";
+import { Button, Divider, Title } from "@tremor/react";
+
+import { usePathname } from "next/navigation";
+import useUserInfo from "@/hooks/use-user-info";
+
 import useCourseInfo from "@/hooks/use-course-info";
-import useCheckCourseIsPurchased from "@/hooks/use-check-course-is-puchase";
+import { useCartStore } from "@/zustand/cartStore";
+import useCheckCourseIsPurchased from "@/hooks/use-check-course-is-puchased";
 import useNotificationsStore from "@/zustand/notificationsStore";
-import { Loader } from "lucide-react";
-import Footer from "@/components/LandingPage/footer";
-import { absoluteUrl } from "@/utils/utils";
-import useCourseStore from "@/zustand/courseStore";
+import { SiCrowdsource } from "react-icons/si";
+import { GoProjectTemplate } from "react-icons/go";
+import useInstructorInfo from "@/hooks/use-instructor-info";
+import { VscPreview } from "react-icons/vsc";
 
 function CoursePreview({ params }: { params: { id: string } }) {
   const courseId = params?.id;
-  // const style = { color: "blue", fontSize: "1em" };
-  // const courseData = useCourseInfo(courseId);
-  // const course: Course = courseData.data?.data;
+  const courseData = useCourseInfo(courseId);
+  const course: Course = courseData.courseInfo;
 
-  const {fetchCourse, course, loading, error} = useCourseStore();
+  // const { fetchCourse, course, loading, error } = useCourseStore();
+  // useEffect(() => {
+  //   fetchCourse(courseId);
+  // }, [fetchCourse, courseId]);
 
-  useEffect(() => {
-    fetchCourse(courseId);
-  }, [fetchCourse, courseId]);
+  console.log(
+    `Course data for courseId:${courseId} in course id detail page: `,
+    course
+  );
 
-  // console.log('Course data in the course detail page: ', course);
-
-  // return <CourseSkeleton />;
-
-  if (loading)
+  if (courseData.isLoading) {
     return (
       <>
         <div className="visible flex mx-auto items-center justify-center md:hidden align-middle my-auto">
-          <Loader className="animate-spin" />
+          <CourseSmallScreenSkeleton />
         </div>
-        <div className="hidden md:flex">
-          <CourseSkeleton />
+        <div className="hidden md:flex md:items-center md:justify-center md:mx-auto">
+          <CourseBigScreenSkeleton />
         </div>
       </>
     );
+  }
+
+  if (courseData.error) {
+    return (
+      <div className="justify-center items-center">
+        <p className="flex align-middle items-center justify-center space-x-4 text-red-400">
+          ERROR: <span>{courseData.error.message}</span>
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div>
+    <div className="overflow-x-hidden">
       <div className="flex flex-col pb-[6rem] overflow-x-hidden">
         {/* course navbar */}
         <div className=" inset-y-0 w-full z-50 px-4 md:px-10 py-2 ">
-          <CourseNavbar courseName={course?.courseTitle} />
+          <CourseNavbar courseName={course.courseTitle} />
         </div>
 
         {/* course breadcrumb */}
-        <div className="visible md:hidden pl-8">
+        {/* <div className="visible md:hidden pl-8">
           <CourseBreadcrumb course={course!} />
-        </div>
+        </div> */}
 
         {/* course content */}
         <div className="md:grid md:grid-cols-2 md:max-w-7xl pl-8 md:pl-[6rem] ">
           {/* left part */}
-          <div className="md:pt-[50px] flex flex-col text-red items-start justify-center text-start text-xl">
-            {/* course breadcrumb */}
-            <div className="hidden md:flex">
-              <CourseBreadcrumb course={course!} />
-            </div>
-
-            {/* course image only for mobile screen */}
-            <div className="pr-8 my-4 max-w-screen-2xl w-full">
-              <Image
-                className="visible md:hidden h-60 w-full bg-slate-700 rounded-xl shadow-md"
-                src={
-                  course?.courseImage ??
-                  "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210301154221/System-Design-Live-Course-By-GeeksforGeeks.png"
-                }
-                alt={course?.courseTitle || "Alt"}
-                width={400}
-                height={30}
-                style={{
-                  objectFit: "cover",
-                }}
-                quality={100}
-              />
-            </div>
-
-            {/* course title, description, ratings,*/}
-            <div className="space-y-1">
-              {/* title  & course duration*/}
-              <div>
-                {/* title */}
-                <p className="dark:text-white tracking-tight text-gray-800 font-semibold text-2xl md:text-4xl mb-2">
-                  {" "}
-                  {course?.courseTitle}{" "}
-                </p>
-
-                {/* duration of course */}
-                <p className="text-sm mb-2">
-                  {course?.courseDuration!} on demand content
-                </p>
-              </div>
-
-              {/* rating sections */}
-              <div className="flex flex-row justify-start items-start md:items-center mt-4">
-                <div className="flex justify-start items-center">
-                  <RatingStars courseStarRatings={course?.avgStarRatings!} />
-                  <p className="mr-1 md:mx-1 cursor-pointer text-xs font-medium text-blue-500 dark:text-blue-600">{`(${239} Reviews)`}</p>
-                </div>
-
-                <div className="flex flex-row items-center">
-                  <div className="mx-1 flex rounded-lg  justify-center items-center text-xs font-medium text-white space-x-[4px] bg-slate-900 dark:bg-blue-600 px-2 py-1 ">
-                    <IoPeopleCircleSharp size={16} />
-                    <span className="text-xs">{`${1456} enrolled`}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* creator */}
-            <div className="space-x-1 mt-2 mb-2 items-center flex justify-start">
-              <div className="flex justify-start items-center space-x-1">
-                <p className="text-gray-700 text-sm  font-medium dark:text-gray-300 tracking-tight">
-                  Course Instructor:
-                </p>
-                <p className="text-gray-800 dark:text-white cursor-pointer text-sm font-medium underline tracking-tight">
-                  {course?.courseCreator!}
-                </p>
-              </div>
-              {/* <FaCircleCheck style={style} size={16} color="blue" /> */}
-            </div>
-
-            {/* <p className="text-xs font-thin mb-2 dark:text-400 dark:opacity-50">
-            Last updated on {course?.updatedAt?.toString().split("T")[0]}
-          </p> */}
-
-            <div className="visible md:hidden pr-8 py-4 md:pr-0 space-y-4">
-              <div className="space-y-2">
-                <p className="text-xs font-medium text-blue-500">Buy course</p>
-                <p className="text-xs text-gray-700 dark:text-gray-400">
-                  Get access to this course forever when you buy it. Learn at
-                  your own pace, anytime
-                </p>
-              </div>
-
-              <p className="font-bold text-2xl text-gray-800 dark:text-white tracking-tight">
-                ${course?.coursePrice!}
-              </p>
-
-              <div className="flex flex-col justify-center items-center space-y-2">
-                <CourseEnrollButton
-                  course={course!}
-                  courseId={courseId}
-                />
-                {/* <p className="text-xs opacity-50">Apply coupon</p> */}
-                <ApplyCouponCode />
-              </div>
-            </div>
-
-            <div className="my-4 md:my-0 md:mt-16 md:mb-8 w-full">
-              <CourseDescription
-                courseDescription={
-                  course?.courseDescription ??
-                  "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Provident eos odit nam quae repellat quis cumque reiciendis autem ab expedita Provident eos odit nam quae repellat"
-                }
-              />
-            </div>
-
-            <WhatYouWillLearn whatYouWillLearn={course?.whatYouWillLearn} />
-
-            <CourseContent courseId={courseId} />
-
-            <WhoThisCourseIsFor thisCourseIsFor={course?.thisCourseIsFor} />
-
-            <Prerequisits prerequisits={course?.prerequisits} />
-          </div>
+          <CourseDetailsLeftSection course={course!} />
 
           {/* right part */}
-          <CourseDetailsRightSection course={course!} />
+          <div className="sticky">
+            <CourseDetailsRightSection course={course!} />
+          </div>
         </div>
 
         {/* course ratings */}
-        <div className="max-w-7xl py-4 md:py-[4rem] px-2 md:px-[6rem] flex justify-start items-center mt-4 w-full ">
+        <div className="max-w-7xl md:mt-4 px-2 md:px-[6rem] flex justify-start items-center w-full ">
           <CourseRatings
             courseId={courseId}
             avgStarRatings={course?.avgStarRatings ?? 4.9}
           />
         </div>
 
-        {/* DONE: Instructor Info */}
-        <div className="max-w-7xl w-full bg-gray-50 dark:bg-transparent  border-y flex flex-col justify-start mt-4 px-8 md:px-[6rem] py-8">
-          <h3 className="mb-4 text-xl md:text-2xl text-gray-800 dark:text-slate-200 tracking-tight font-semibold">
+        {/* Instructor Info */}
+        <div className="max-w-7xl w-full dark:bg-transparent border-y flex flex-col justify-start mt-4 px-8 md:px-[6rem] py-8">
+          <h3 className="mb-4 text-xl text-gray-800 dark:text-slate-200 tracking-tight font-semibold">
             Meet Your Instructor
           </h3>
+
+          {/* instructor card */}
           <InstructorCard instructorId={course?.instructorID!} />
 
+          {/* more created courses by instructor */}
           <MoreIntructorCreatedCourses
             instructorId={course?.instructorID!}
             instructorName={course?.courseCreator!}
@@ -242,14 +147,86 @@ function CoursePreview({ params }: { params: { id: string } }) {
 
 export default CoursePreview;
 
-//* ------------------------------------- COMPONENTS ------------------------------------
+// ------------------------------------- SKELETONS ------------------------------------
 
-function CourseSkeleton() {
+function CourseSmallScreenSkeleton() {
   return (
-    <div className=" min-h-screen min-w-screen flex justify-center items-center">
-      <div className="flex justify-between space-x-8 items-start min-h-screen h-full border border-stroke rounded-3xl p-4">
+    <div className="space-y-4 min-h-screen min-w-screen py-8">
+      <Skeleton className="h-[220px] w-full rounded-2xl" />
+      <div className="h-full col-span-2 w-full space-y-8">
+        <div className="flex space-x-2">
+          <Skeleton className="h-4 w-[100px] rounded-full" />
+          <FaAngleRight />
+          <Skeleton className="h-4 w-[100px] rounded-full" />
+        </div>
+
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-full rounded-md" />
+            <Skeleton className="h-8 w-[300px] rounded-md" />
+          </div>
+
+          <div className="flex space-x-2 justify-start items-center">
+            <FaStar className="text-yellow-500" />
+            <Skeleton className="h-4 w-[100px] rounded-full" />
+            <Skeleton className="h-4 w-[230px] rounded-full" />
+            <Skeleton className="h-4 w-[150px] rounded-md" />
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-[260px] rounded-md" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 mt-2 w-full rounded-full" />
+            <Skeleton className="h-4 w-full rounded-full" />
+            <Skeleton className="h-4 w-[320px] rounded-full" />
+          </div>
+        </div>
+
+        <div className="space-y-4 mt-4">
+          <div>
+            <Skeleton className="h-6 w-40  rounded-md" />
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex space-x-2">
+              <Skeleton className="h-4 w-4 rounded-full" />
+              <Skeleton className="h-4 w-full rounded-full" />
+            </div>
+            <div className="flex space-x-2">
+              <Skeleton className="h-4 w-4 rounded-full" />
+              <Skeleton className="h-4 w-full rounded-full" />
+            </div>
+            <div className="flex space-x-2">
+              <Skeleton className="h-4 w-4 rounded-full" />
+              <Skeleton className="h-4 w-full rounded-full" />
+            </div>
+            <div className="flex space-x-2">
+              <Skeleton className="h-4 w-4 rounded-full" />
+              <Skeleton className="h-4 w-full rounded-full" />
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-[260px] rounded-md" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 mt-2 w-full rounded-full" />
+            <Skeleton className="h-4 w-full rounded-full" />
+            <Skeleton className="h-4 w-[320px] rounded-full" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CourseBigScreenSkeleton() {
+  return (
+    <div className=" min-h-screen min-w-screen flex justify-center items-center py-8">
+      <div className="grid grid-cols-3 justify-between space-x-8 items-start min-h-screen h-full border border-stroke rounded-3xl p-4">
         {/* left */}
-        <div className="h-full max-w-[60vw] w-full space-y-8">
+        <div className="h-full col-span-2 w-full space-y-8">
           <div className="flex space-x-2">
             <Skeleton className="h-4 w-[100px] rounded-full" />
             <FaAngleRight />
@@ -315,7 +292,7 @@ function CourseSkeleton() {
         </div>
 
         {/* right */}
-        <div className="h-full max-w-[40vw] space-y-2 w-full rounded-3xl border border-stroke p-4">
+        <div className="h-full col-span-1 space-y-2 max-w-[22rem] w-full rounded-3xl border border-stroke p-4 ">
           <Skeleton className="h-[220px] w-full rounded-2xl" />
           <div className="flex justify-start items-center space-x-2">
             <span className="text-blue-500 font-bold">$</span>
@@ -362,6 +339,200 @@ function CourseSkeleton() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function InstructorBadgeLoadingSkeleton() {
+  return (
+    <div className="flex justify-start items-center space-x-4">
+      <Skeleton className="rounded-full h-20 w-20" />
+
+      <div className="space-y-2">
+        <Skeleton className="h-6 w-full rounded-md" />
+        <Skeleton className="h-3 w-full rounded-md" />
+      </div>
+    </div>
+  );
+}
+
+//* ------------------------------------- SECTIONS -------------------------------------
+
+function CourseDetailsLeftSection({ course }: { course: Course }) {
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<String | null>(null);
+
+  const instructorId = course?.instructorID!;
+  console.log(
+    `Instructor id in the course details left section: ${instructorId} `
+  );
+  const instructor = useInstructorInfo(instructorId).instructor;
+
+  if (loading) {
+    return <InstructorBadgeLoadingSkeleton />;
+  }
+
+  if (error) {
+    return <div>ERROR: {error}</div>;
+  }
+
+  return (
+    <div className="mt-[3.125rem] flex flex-col text-red items-start justify-center text-start text-xl space-y-6 overflow-x-hidden">
+      {/* course title, description, ratings,*/}
+      <div className="space-y-4 mr-8">
+        <div className=" rounded-3xl py-4 pl-4 pr-4 md:pr-4 backdrop-blur-sm bg-gradient-to-br from-purple-500 to-blue-500 dark:from-zinc-900 dark:to-blue-500 md:w-[590px] space-y-4 md:mr-0 w-full">
+          <div className="space-y-1">
+            {/* course breadcrumb */}
+            <div className="">
+              <CourseBreadcrumb course={course!} />
+            </div>
+
+            {/* course image only for mobile screen */}
+            <div className="visible md:hidden pr-8 my-4 max-w-screen-2xl w-full mr-8">
+              <Image
+                className="visible md:hidden h-60 w-full bg-slate-700 rounded-3xl shadow-md"
+                src={
+                  course?.courseImage ??
+                  "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210301154221/System-Design-Live-Course-By-GeeksforGeeks.png"
+                }
+                alt={course?.courseTitle || "Alt"}
+                width={400}
+                height={30}
+                style={{
+                  objectFit: "cover",
+                }}
+                quality={100}
+              />
+            </div>
+
+            {/* title */}
+            {/* text-gray-800 */}
+            <h1 className="dark:text-white tracking-tight text-white  font-semibold text-2xl md:text-4xl">
+              {course?.courseTitle}
+            </h1>
+
+            {/* rating stars */}
+            <div className="flex flex-row justify-start items-start md:items-center">
+              <div className="flex items-center justify-start space-x-1">
+                {/* text-zinc-800 */}
+                <div className="text-sm font-semibold tracking-tight text-white  dark:text-white">
+                  {course?.avgStarRatings?.toFixed(1) ?? 4.8}
+                </div>
+                <FaStar className="text-yellow-500" size={12} />
+              </div>
+
+              {/* number of students enrolled badge */}
+              <div className="flex flex-row items-center">
+                <div className="mx-1 flex rounded-full  justify-center items-center text-xs font-medium text-white space-x-[4px] bg-slate-900 dark:bg-blue-600 px-2 py-1 ">
+                  <VscPreview size={16} />
+                  <span className="text-xs">{`${156} reviews`}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* instructor info tile */}
+          <div className=" flex flex-row justify-start flex-shrink-0 w-auto transition-all duration-200 rounded-lg cursor-pointer align-center items-center md:items-start backdrop-filter-blur ">
+            <Image
+              className="items-center bg-white rounded-full w-12 h-12"
+              src={instructor?.instructorProfilePicUrl!}
+              alt={instructor?.instructorName}
+              height={12}
+              width={12}
+              unoptimized
+            />
+
+            <div className="w-full ml-1 px-2 pt-1 md:pt-0 my-1 md:my-0 flex flex-col">
+              <div className="flex justify-between items-center py-auto rating">
+                {/* text-zinc-800  */}
+                <p className="text-md text-base tracking-tight font-semibold text-gray-100 dark:text-gray-200">
+                  {instructor?.instructorName}
+                </p>
+              </div>
+
+              {/* text-gray-700 */}
+              <p className="text-sm text-gray-300  dark:text-gray-400">
+                Instructor of this course
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* no of reviews and projects */}
+      <div className="flex justify-start space-x-6 items-center md:max-w-7xl w-full pr-8 md:pr-0 md:mr-0">
+        {/* backdrop-blur-sm bg-gradient-to-r from-purple-500 to-red-400 */}
+        {/* dark:from-purple-700 dark:to-[#64E9FF] */}
+        <div
+          className="p-4 space-y-2 h-50 rounded-3xl backdrop-blur-sm bg-gradient-to-br from-purple-500 to-blue-500  dark:from-zinc-900 dark:to-blue-500
+         "
+        >
+          <div className="space-y-1">
+            <SiCrowdsource size={24} className="text-white" />
+            <p className="text-4xl font-bold tracking-tighter text-white">
+              200+
+            </p>
+          </div>
+
+          <p className="text-gray-200 text-md text-base">
+            Number of peoples enrolled in this course just after launch
+          </p>
+        </div>
+
+        <div className="p-4 space-y-2 h-50 rounded-3xl backdrop-blur-sm bg-gradient-to-br from-purple-500 to-blue-500 dark:from-zinc-900 dark:to-blue-500">
+          <div className="space-y-1">
+            <GoProjectTemplate size={24} className="text-white" />
+            <p className="text-4xl font-bold tracking-tighter text-white">5</p>
+          </div>
+
+          <p className=" text-gray-200 text-md text-base">
+            We will build 5 big projects together and will learn a lot of
+            concepts.
+          </p>
+        </div>
+      </div>
+
+      {/* only for mobile screen */}
+      <div className="visible md:hidden pr-8 mr-8 py-4 md:pr-0 space-y-4">
+        <div className="space-y-2 mr-8">
+          <p className="text-sm font-medium text-blue-500">Buy course</p>
+          <p className="text-sm text-gray-700 dark:text-gray-400">
+            Get access to this course forever when you buy it. Learn at your own
+            pace, anytime
+          </p>
+        </div>
+
+        <p className="font-bold text-2xl text-gray-800 dark:text-white tracking-tight">
+          ${course?.coursePrice!}
+        </p>
+
+        <div className="flex flex-col justify-center items-center space-y-2 mr-4">
+          <CourseEnrollButton course={course!} courseId={course?.courseId} />
+          <ApplyCouponCode />
+        </div>
+      </div>
+
+      {/* course description */}
+      <div className="my-4 md:my-0 md:mt-16 md:mb-8 w-full">
+        <CourseDescription
+          courseDescription={
+            course?.courseDescription ??
+            "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Provident eos odit nam quae repellat quis cumque reiciendis autem ab expedita Provident eos odit nam quae repellat"
+          }
+        />
+      </div>
+
+      {/* what you will learn */}
+      <WhatYouWillLearn whatYouWillLearn={course?.whatYouWillLearn} />
+
+      {/* course content (chapters, sections) */}
+      <CourseContent courseId={course?.courseId} />
+
+      {/* who this course is for? */}
+      <WhoThisCourseIsFor thisCourseIsFor={course?.thisCourseIsFor} />
+
+      {/* pre-requisits */}
+      <Prerequisits prerequisits={course?.prerequisits} />
     </div>
   );
 }
@@ -489,34 +660,46 @@ function CourseDetailsRightSection({ course }: { course: Course }) {
   );
 }
 
+//? --------------------------------------- COMPONENTS ----------------------------------
+
 function CourseDescription({
   courseDescription,
 }: {
   courseDescription: string;
 }) {
   const [isExpanded, setIsExpanded] = React.useState(false);
-  // const courseDescription = course?.courseDescription || "Lorem ipsum...";
-
   const truncatedDescription = courseDescription.slice(0, 170);
+  const [showFullDescription, setShowFullDescription] = React.useState(false);
 
   return (
-    <div className="w-full h-auto">
-      <h3 className="tracking-tight text-xl mt-2 font-semibold text-zinc-800 dark:text-slate-200">
+    <div className="w-full h-auto space-y-4 mt-2">
+      <h3 className="tracking-tight text-xl font-semibold text-zinc-800 dark:text-slate-200">
         About This Course
       </h3>
-      <p
-        className={`text-md text-base mt-2 md:py-2 md:text-md md:p-0 md:pr-[8rem] w-auto line-clamp-5 md:line-clamp-3 font-noraml text-gray-700 dark:text-gray-400 ${
+      {/* <p
+        className={`text-md text-base md:text-md md:p-0 md:pr-[8rem] w-auto line-clamp-5 md:line-clamp-3 font-noraml text-gray-700 dark:text-gray-400 ${
           isExpanded ? "text-clamp-4" : ""
         }`}
       >
         {truncatedDescription}
+      </p> */}
+
+      <p
+        className={`${
+          showFullDescription ? "" : "line-clamp-4"
+        } text-md text-base text-slate-700 dark:text-gray-400 py-4 md:py-2 md:text-md md:p-0 w-auto   ${
+          showFullDescription ? "" : "overflow-hidden"
+        }`}
+      >
+        {courseDescription}
       </p>
+
       {courseDescription.length > 250 && (
         <div
           className="expand-toggle cursor-pointer text-blue-500 text-md text-base"
-          onClick={() => setIsExpanded(!isExpanded)}
+          onClick={() => setShowFullDescription(!showFullDescription)}
         >
-          {isExpanded ? "Show Less" : "Show More"}
+          {showFullDescription ? "Show Less" : "Show More"}
         </div>
       )}
     </div>
@@ -599,7 +782,7 @@ function CourseEnrollButton({
           absoluteUrl(`/courses/${courseId}/courseContent`)
         );
       } else {
-        const response = await axios.post(`api/courses/${courseId}/checkout`, {
+        const response = await axios.post(`/api/courses/${courseId}/checkout`, {
           userId: user?.user?.id!,
         });
 
@@ -609,6 +792,8 @@ function CourseEnrollButton({
           "Course Enrollment Successful 🎉",
           `Congratulations! You have successfully enrolled in "${course?.courseTitle}" course?.`
         );
+
+        toast.success(`Congratulations 🎉! You have successfully enrolled in "${course?.courseTitle}" course`)
       }
     } catch (error) {
       toast.error("Something went wrong ...");

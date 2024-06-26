@@ -3,14 +3,45 @@ import { GoDotFill } from "react-icons/go";
 import Link from "next/link";
 import { FaHandsClapping } from "react-icons/fa6";
 import { AiOutlineComment } from "react-icons/ai";
-import { Divider } from "@tremor/react";
-import { CiBookmarkPlus } from "react-icons/ci";
-import { IoMdBookmark } from "react-icons/io";
 import { FaShareFromSquare } from "react-icons/fa6";
-import { MdMoreHoriz } from "react-icons/md";
-import { Blog } from "@prisma/client";
+import { MdMoreHoriz, MdReport } from "react-icons/md";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Eye, EyeOff, SquarePen, UserMinus, UserPlus } from "lucide-react";
+// import { Blog, BlogComment } from "@prisma/client";
 
-export const ArticleCard = ({ article }: {article: Blog}) => {
+type BlogComment = {
+  id: string;
+  blogId: string;
+  content: string;
+  authorId: string;
+  writtenOn: Date | null;
+  editedOn: Date | null;
+};
+
+type BlogWithComments = {
+  id: string;
+  title: string;
+  shortDescription: string | null;
+  content: string;
+  estimatedReadingTime: string;
+  clapsCount: number;
+  authorId: string;
+  categoryName: string | null;
+  comments: BlogComment[];
+  thumbnailUrl: string | null;
+  isRecommended: boolean;
+  createdAt: Date | null;
+  updatedAt: Date | null;
+};
+
+export const ArticleCard = ({ article }: {article: BlogWithComments}) => {
   return (
     <Link
       href={`/article/${article.id}`}
@@ -49,8 +80,8 @@ export const ArticleCard = ({ article }: {article: Blog}) => {
             : "Elevate & Innovate: Design Trends for the Modern Aesthetic"}
         </p>
         <p className="text-sm dark:text-gray-300 line-clamp-2">
-          {article.content ? (
-            article.content.toString()
+          {article.shortDescription ? (
+            article.shortDescription.toString()
           ) : (
             `Lorem ipsum dolor sit amet, consectetur adipisicing elit. Incidunt
           illo iusto molestias consectetur totam quod tenetur consequatur odio
@@ -62,36 +93,72 @@ export const ArticleCard = ({ article }: {article: Blog}) => {
 
       <div className="flex justify-between items-center">
         <div className="flex px-1 space-x-4">
-          <div className="flex justify-start items-center space-x-2 cursor-pointer hover:text-zinc-900 dark:hover:text-blue-600">
+          <div className="flex justify-start items-center space-x-2  hover:text-zinc-900 dark:hover:text-blue-600">
             <FaHandsClapping size={18} />
             <p className="text-xs mt-1">
               {article.clapsCount ? article.clapsCount : 0}
             </p>
           </div>
 
-          <div className="flex justify-start items-center space-x-2 cursor-pointer hover:text-zinc-900 dark:hover:text-blue-600">
+          <div className="flex justify-start items-center space-x-2 hover:text-zinc-900 dark:hover:text-blue-600">
             <AiOutlineComment size={18} />
             <p className="text-xs mt-1">
-              {article.clapsCount ? article.clapsCount : 0}
+              {article.comments && article.comments.length > 0 ? article.comments.length : 0}
             </p>
           </div>
         </div>
 
         <div className="flex px-1 space-x-4">
           {/* bookmark icons */}
-          <div className="flex justify-start items-center space-x-2 cursor-pointer hover:text-zinc-900 dark:hover:text-blue-600">
+          {/* <div className="flex justify-start items-center space-x-2 cursor-pointer hover:text-zinc-900 dark:hover:text-blue-600">
             <CiBookmarkPlus size={18} />
-          </div>
+          </div> */}
 
           {/* share */}
-          <div className="flex justify-start items-center space-x-2 cursor-pointer hover:text-zinc-900">
+          <div className="flex justify-start items-center space-x-2 cursor-pointer hover:text-blue-500">
             <FaShareFromSquare size={18} />
           </div>
 
           {/* more */}
-          <div className="flex justify-start items-center space-x-2 cursor-pointer hover:text-zinc-900 dark:hover:text-blue-600">
+          {/* <div className="flex justify-start items-center space-x-2 cursor-pointer hover:text-zinc-900 dark:hover:text-blue-600">
             <MdMoreHoriz size={18} />
-          </div>
+          </div> */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div className="flex justify-start items-center space-x-2 cursor-pointer hover:text-blue-500 dark:hover:text-blue-500">
+                  <MdMoreHoriz size={18} />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-64 rounded-xl">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem className="cursor-pointer hover:text-green-500 dark:hover:text-green-400 ">
+                    <Eye className="mr-2 h-4 w-4" />
+                    <span>Show more from author</span>
+                    <DropdownMenuShortcut>⇧⌘M</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="hover:text-red-500 dark:hover:text-red-400 cursor-pointer">
+                    <EyeOff className="mr-2 h-4 w-4" />
+                    <span>Show less from author</span>
+                    <DropdownMenuShortcut>⌘L</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="hover:text-green-500 dark:hover:text-green-400 cursor-pointer">
+                    <UserPlus className="mr-2 h-4 w-4" />
+                    <span>Follow Author</span>
+                    <DropdownMenuShortcut>⌘F</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="hover:text-red-500 dark:hover:text-red-400 cursor-pointer">
+                    <UserMinus className="mr-2 h-4 w-4" />
+                    <span>Mute Author</span>
+                    <DropdownMenuShortcut>⌘M</DropdownMenuShortcut>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuItem className="text-red-500 dark:text-red-400 cursor-pointer">
+                  <MdReport className="mr-2 h-4 w-4" />
+                  <span>Report article</span>
+                  <DropdownMenuShortcut>⌘R</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
         </div>
       </div>
     </Link>

@@ -1,33 +1,17 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { CgWebsite } from "react-icons/cg";
-import {
-  FaGithub,
-  FaLinkedin,
-  FaLock,
-  FaNoteSticky,
-  FaLink,
-} from "react-icons/fa6";
-import { BsInstagram } from "react-icons/bs";
+import { FaNoteSticky, FaLink } from "react-icons/fa6";
 import { Button } from "@tremor/react";
 import CourseContentNavbar from "./_components/course-content-navbar";
-import {
-  Chapter,
-  Course,
-  CourseAttachment,
-  CourseSection,
-  Instructor,
-  CourseProgress,
-  MuxData,
-} from "@prisma/client";
+import { Chapter, Course, CourseAttachment, Instructor } from "@prisma/client";
 import { FaPauseCircle, FaPlayCircle } from "react-icons/fa";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { MdModeEditOutline } from "react-icons/md";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import Footer from "@/components/LandingPage/footer";
+import { Footer } from "@/components/LandingPage/footer";
 import {
   Dialog,
   DialogContent,
@@ -50,7 +34,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { courseChapters, sampleText } from "@/lib/mockData";
 import useInstructorInfo from "@/hooks/use-instructor-info";
 import CourseContentScreenSkeleton from "./_components/course-content-screen-skeleton";
@@ -61,14 +45,14 @@ import CourseVideo from "./_components/course-video";
 import useUserInfo from "@/hooks/use-user-info";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCookies } from "next-client-cookies";
-import { useSearchParams } from "next/navigation";
 import { TiTick, TiTickOutline } from "react-icons/ti";
 import useCourseProgressStore from "@/zustand/courseProgressStore";
 import { useZustandStore } from "@/zustand/store";
 
-function CourseContentPage({ params }: { params: { id: string } }) {
+const CourseContentPage = ({ params }: { params: { id: string } }) => {
   const courseId = params?.id!;
 
+  // <--------------- Fetch Course ------------------------>
   const fetchCourseInfo = async () => {
     console.log("Course id in Course Content page.tsx:", courseId);
     const response = await fetch(`/api/courses/${courseId}`);
@@ -101,37 +85,14 @@ function CourseContentPage({ params }: { params: { id: string } }) {
 
   const course: Course = courseData?.data;
 
-  // const { selectedCourse, fetchSelectedCourseInfo, error, loading } =
-  //   useZustandStore();
-  // let course;
-
-  // useEffect(() => {
-  //   if (!selectedCourse || !selectedCourse.courseId) {
-  //     return; // No need to fetch if no selected course or missing ID
-  //   }
-
-  //   const fetchCourseDetails = async () => {
-  //     try {
-  //       await fetchSelectedCourseInfo(selectedCourse.courseId);
-  //     } catch (error) {
-  //       console.error("Error fetching course info:", error);
-  //     }
-  //   };
-
-  //   fetchCourseDetails();
-  // }, [selectedCourse, fetchSelectedCourseInfo]);
-
-  // course = selectedCourse;
-
+  // <--------------- Fetch Course Chapter --------------->
   const fetchCourseChapters = async () => {
     console.log(
       "Course id in Course Content page.tsx inside fetchCourseChapters:",
       courseId
     );
 
-    const response = await fetch(
-      (`api/courses/${courseId}/chapters`)
-    );
+    const response = await fetch(`/api/courses/${courseId}/chapters`);
 
     if (!response.ok) {
       console.log("Failed to fetch course chapters ...");
@@ -162,15 +123,38 @@ function CourseContentPage({ params }: { params: { id: string } }) {
   console.log(`Course: ${courseId}, Chapters: ${chaptersData}`);
   console.log("Chapters data", chapters);
 
+  // <----------- Get muxId from cookies ----------->
   const cookies = useCookies();
   const muxCookie = cookies?.get("muxData");
   const muxViewerIdString = muxCookie?.split("&")[0];
   const muxViewerId = muxViewerIdString?.split("=")[1];
   console.log("User mux viewer id: ", muxViewerId);
 
-  if (isLoading) return <CourseContentScreenSkeleton />;
-  if (error) return <div>Error: {error.message}</div>;
+  // <----------- Instructor ----------->
+  const instructor: Instructor = useInstructorInfo(
+    course?.instructorID!
+  ).instructor;
+  const isInstructorInfoLoading = useInstructorInfo(
+    course?.instructorID!
+  ).isLoading;
+  const instructorInfoError = useInstructorInfo(course?.instructorID!).error;
 
+  // <----------- Loading or error ----------->
+  if (isLoading && isChaptersLoading && isInstructorInfoLoading)
+    return <CourseContentScreenSkeleton />;
+  if (error || chaptersError || instructorInfoError)
+    return (
+      <div>
+        Error:{" "}
+        {error
+          ? error.message
+          : chaptersError
+            ? chaptersError.message
+            : instructorInfoError?.message}
+      </div>
+    );
+
+  // <----------- Main return ----------->
   return (
     <div className="overflow-x-hidden h-auto">
       <div className="inset-y-0 w-full z-50 ">
@@ -180,7 +164,7 @@ function CourseContentPage({ params }: { params: { id: string } }) {
       <CourseDetails
         course={course!}
         chapters={chapters}
-        instructorId={course?.instructorID!}
+        instructor={instructor}
         courseId={courseId}
         isChaptersLoading={isChaptersLoading}
         chaptersError={chaptersError}
@@ -192,16 +176,15 @@ function CourseContentPage({ params }: { params: { id: string } }) {
       <Footer />
     </div>
   );
-}
+};
 
 export default CourseContentPage;
 
-//! .............................. Utility to saperate the details code ....................
-
+//! <--------------------- Utility to saperate the details code --------------------->
 type CourseDetailsProps = {
   course: Course;
   chapters: Chapter[];
-  instructorId: string;
+  instructor: Instructor;
   courseId: string;
   isChaptersLoading: boolean;
   chaptersError: Error | null;
@@ -211,7 +194,7 @@ type CourseDetailsProps = {
 const CourseDetails: React.FC<CourseDetailsProps> = ({
   course,
   chapters,
-  instructorId,
+  instructor,
   courseId,
   isChaptersLoading,
   chaptersError,
@@ -261,13 +244,9 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
           <div className="w-xl md:w-[45rem] h-auto md:h-[360px]">
             {
               <CourseVideo
-                viewerUserId={muxViewerId!}
-                activeChapter={
-                  // chapters.length && chapters.length > 0 && activeChapter
-                  activeChapter!
-                }
-                // course={course}
-                // userId={user.user?.id!}
+                // viewerUserId={muxViewerId!}
+                activeChapter={activeChapter!}
+                videoPlaybackId="" // TODO: do this and generate the videoPlaybackId by uploading course video to cloudinary
               />
             }
           </div>
@@ -329,9 +308,10 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
               About Instructor
             </h3>
             <InstructorCard
-              instructorId={
-                instructorId ? instructorId : "No instructor id provided ..."
-              }
+              // instructorId={
+              //   instructorId ? instructorId : "No instructor id provided ..."
+              // }
+              instructor={instructor}
             />
           </div>
         </div>
@@ -362,13 +342,12 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
   );
 };
 
-//* ------------------------------- Components ---------------------------
-
-function ShowChapters({
+//* <--------------------- Components --------------------->
+const ShowChapters = ({
   chapters,
   activeChapterIndex,
   setActiveChapterIndex,
-}: any) {
+}: any) => {
   return (
     <Sheet key={"left"}>
       <SheetTrigger asChild>
@@ -442,18 +421,18 @@ function ShowChapters({
       </ScrollArea>
     </Sheet>
   );
-}
+};
 
-function CourseSectionsAndChapters({
+const CourseSectionsAndChapters = ({
   chapters,
   activeChapterIndex,
   setActiveChapterIndex,
-  isChaptersLoading,
+  // isChaptersLoading,
   chaptersError,
-}: any) {
-  if (isChaptersLoading) {
-    return <CourseChaptersSkeleton />;
-  }
+}: any) => {
+  // if (isChaptersLoading) {
+  //   return <CourseChaptersSkeleton />;
+  // }
 
   if (chaptersError) {
     return <div>Error in loading chapters: {chaptersError.message}</div>;
@@ -575,16 +554,16 @@ function CourseSectionsAndChapters({
       )}
     </div>
   );
-}
+};
 
-function ChapterItem({
+const ChapterItem = ({
   title,
   duration,
   isChapterFree,
   activeChapterIndex,
   setActiveChapter,
   index,
-}: any) {
+}: any) => {
   const [videoPlaying, setVideoPlaying] = React.useState(false);
 
   var today = new Date();
@@ -624,9 +603,9 @@ function ChapterItem({
       </div>
     </div>
   );
-}
+};
 
-function CourseNotes() {
+const CourseNotes = () => {
   const [notes, setNotes] = React.useState([
     "What is Full Stack",
     "Node.js Installation Steps",
@@ -755,9 +734,9 @@ function CourseNotes() {
       </ul>
     </ScrollArea>
   );
-}
+};
 
-function CourseAttachments({ courseId }: { courseId: string }) {
+const CourseAttachments = ({ courseId }: { courseId: string }) => {
   const fetchCourseAttachments = async () => {
     const response = await fetch(`/api/courses/${courseId}/attachments`);
     if (!response.ok) {
@@ -816,7 +795,7 @@ function CourseAttachments({ courseId }: { courseId: string }) {
       )}
     </div>
   );
-}
+};
 
 const CourseAttachmentItem = ({
   id,
@@ -843,33 +822,12 @@ const CourseAttachmentItem = ({
   );
 };
 
-function InstructorCard({ instructorId }: { instructorId: string }) {
-  console.log(`Instructor id in the instructor-info.tsx: ${instructorId} `);
-  const instructor: Instructor = useInstructorInfo(instructorId).instructor;
-  const isLoading = useInstructorInfo(instructorId).isLoading;
-  const error = useInstructorInfo(instructorId).error;
+const InstructorCard = ({ instructor }: { instructor: Instructor }) => {
+  console.log(
+    `Instructor id in the instructor-info.tsx: ${instructor?.instructorID!} `
+  );
 
-  console.log("Instructor Info in instructor card: ", instructor);
-
-  if (isLoading) {
-    return (
-      <div className="space-y-4">
-        <div className="flex space-x-4">
-          <Skeleton className="h-[50px] w-[50px] rounded-full" />
-          <div className="flex flex-col space-y-2">
-            <Skeleton className="h-[16px] w-full rounded-badge" />
-            <Skeleton className="h-[16px] w-full rounded-badge" />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Skeleton className="h-[16px] w-full rounded-badge" />
-          <Skeleton className="h-[16px] w-full rounded-badge" />
-          <Skeleton className="h-[16px] w-full rounded-badge" />
-        </div>
-      </div>
-    );
-  }
+  console.log("Instructor Info in instructor card: ", instructor!);
 
   return (
     <div className="max-w-3xl py-4 md:py-2  w-full flex flex-col justify-start items-start  rounded-xl space-y-4">
@@ -902,13 +860,6 @@ function InstructorCard({ instructorId }: { instructorId: string }) {
         </div>
       </div>
 
-      {/* <div className="flex justify-start items-center space-x-4 ">
-        <FaGithub size={22} className="hover:text-blue-500 cursor-pointer" />
-        <BsInstagram size={22} className="hover:text-blue-500 cursor-pointer" />
-        <FaLinkedin size={22} className="hover:text-blue-500 cursor-pointer" />
-        <CgWebsite size={22} className="hover:text-blue-500 cursor-pointer" />
-      </div> */}
-
       <p className="text-md  text-start text-base  md:text-md md:p-0  w-auto line-clamp-3 font-noraml text-gray-700 dark:text-gray-400">
         {instructor
           ? instructor.aboutInstructor ??
@@ -921,4 +872,4 @@ function InstructorCard({ instructorId }: { instructorId: string }) {
       </p>
     </div>
   );
-}
+};

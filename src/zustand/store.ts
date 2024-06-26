@@ -56,6 +56,7 @@ type CoursewaveActions = {
   fetchCourseSectionChapterInfo: (courseId: string, sectionId: string, chapterId: string) => Promise<void>;
   fetchChapterNotes: (userId: string, courseId: string, chapterId: string) => Promise<void>;
   fetchCourseReviews: (courseId: string) => Promise<void>;
+  saveArticle: (article: Blog) => Promise<void>;
 }
 
 const fetchCourse = async (courseId: string) => {
@@ -68,165 +69,149 @@ const fetchCourse = async (courseId: string) => {
   return data?.data! as Course;
 };
 
-export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(persist((set) => ({
-  courses: [],
-  courseInfo: null,
-  categories: [],
-  selectedCategory: null,
-  filteredCourses: [],
-  user: null,
-  cartCourses: [],
-  wishListedCourses: [],
-  enrolledCourses: [],
-  articles: [],
-  savedArticles: [],
-  createdArticles: [],
-  instructorInfo: null,
-  instructorCourses: [],
-  instructorCourse: null,
-  selectedCourse: null,
-  courseProgress: null,
-  courseAttachments: [],
-  courseSections: [],
-  courseSectionChapters: [],
-  courseSectionChapterInfo: null,
-  chapterNotes: [],
-  courseReviews: [],
-  error: null,
-  loading: false,
-  setUser: (user: User | null) => set({ loading: false, user: user }),
-  addToCart: async (userId: string,courseId: string) => {
-    const course = await fetchCourse(courseId);
-    if (course) {
-      set((state) => ({ cartCourses: [...state.cartCourses, course] }));
-    }
-  },
-  removeFromCart: (userId:string, courseId: string) => {
-    set((state) => ({
-      cartCourses: state.cartCourses.filter((course) => course.courseId !== courseId),
-    }));
-  },
-  addToWishList: async (userId: string, course: Course) => {
-    try {
-      set((state) => ({ loading: true }));
+export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(
+  persist(
+    (set) => ({
+      courses: [],
+      courseInfo: null,
+      categories: [],
+      selectedCategory: null,
+      filteredCourses: [],
+      user: null,
+      cartCourses: [],
+      wishListedCourses: [],
+      enrolledCourses: [],
+      articles: [],
+      savedArticles: [],
+      createdArticles: [],
+      instructorInfo: null,
+      instructorCourses: [],
+      instructorCourse: null,
+      selectedCourse: null,
+      courseProgress: null,
+      courseAttachments: [],
+      courseSections: [],
+      courseSectionChapters: [],
+      courseSectionChapterInfo: null,
+      chapterNotes: [],
+      courseReviews: [],
+      error: null,
+      loading: false,
+      setUser: (user: User | null) => set({ loading: false, user: user }),
+      addToCart: async (userId: string, courseId: string) => {
+        const course = await fetchCourse(courseId);
+        if (course) {
+          set((state) => ({ cartCourses: [...state.cartCourses, course] }));
+        }
+      },
+      removeFromCart: (userId: string, courseId: string) => {
+        set((state) => ({
+          cartCourses: state.cartCourses.filter((course) => course.courseId !== courseId),
+        }));
+      },
+      addToWishList: async (userId: string, course: Course) => {
+        try {
+          set((state) => ({ loading: true }));
 
-      // 2. Call API endpoint to save the course (assuming user authentication)
-      const response = await fetch((`api/profile/${userId}/wishlist`), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId: userId })
-      });
+          // 2. Call API endpoint to save the course (assuming user authentication)
+          const response = await fetch((`api/profile/${userId}/wishlist`), {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId: userId })
+          });
 
-      if (!response.ok) {
-        set((state) => ({ loading: false, error: 'Failed to save course ' }));
+          if (!response.ok) {
+            set((state) => ({ loading: false, error: 'Failed to save course ' }));
+          }
+
+          // 3. Update local state (if successful)
+          set((state) => ({ wishListedCourses: [...state.wishListedCourses, course] }));
+        } catch (error: any) {
+          console.error("Error saving course:", error);
+          set((state) => ({ error: error.message, loading: false }));
+          // Handle errors in the UI
+        }
+      },
+      removeFromWishList: (courseId: string) => { },
+      fetchEnrolledCourses: async (userId: string) => { },
+      fetchArticles: async () => {
+      },
+      createArticle: async (title: string, content: string, thumbnailUrl: string | null, estimatedReadingTime: string, authorId: string) => { },
+      editArticle: async (title: string, content: string, thubnailUrl: string | null, estimatedReadingTime: string, authorId: string) => { },
+      fetchCreatedArticles: async (userId: string) => { },
+      fetchSavedArticles: async (userId: string) => { },
+      fetchCourses: async () => {
+        set({ loading: true });
+        try {
+          const response = await fetch(("api/courses"));
+
+          if (!response.ok) {
+            console.error("Failed to get user info from api/courses api ...");
+          }
+
+          const courses = await response.json();
+          set({ courses: courses, loading: false });
+        }
+
+        catch (error: any) {
+          console.error(
+            `Failed to get user info from api/courses api, ERROR: ${error.message} ...`
+          );
+          set({ loading: false, error: error.message });
+        }
+      },
+      fetchCategories: async () => {
+        try {
+          set({ loading: true });
+          const response = await fetch((`api/categories/`));
+
+          if (!response.ok) {
+            console.error("Failed to get categories from api/categories api ...");
+          }
+
+          const categories = await response.json();
+          set({ categories: [{ categoryName: "All", createdAt: Date.now(), updatedAt: Date.now() }, ...categories.data], loading: false });
+        }
+
+        catch (error: any) {
+          console.error(
+            `Failed to get categories from api/categories api, ERROR: ${error.message} ...`
+          );
+          set({ loading: false, error: error.message });
+        }
+      },
+      fetchSelectedCourseInfo: async (courseId: string) => {
+        try {
+          set({ loading: true });
+          const response = await fetch((`api/courses/${courseId}`));
+
+          if (!response.ok) {
+            console.error("Failed to get course for course with this courseId ...");
+          }
+
+          const course = await response.json();
+          // const course: Course = data.data;
+
+          set({ selectedCourse: course.data, loading: false, error: null });
+        } catch (error: any) {
+          console.error(
+            `Failed to fetch course info for given courseId in @/zustand/store.ts, ERROR: ${error.message} ...`
+          );
+          set({ loading: false, error: error.message });
+        }
+      },
+      fetchInstructorCourses: async (instructorId: string) => { },
+      fetchInstructorSelectedCourseInfo: async (instructorId: string, courseId: string) => { },
+      fetchCourseProgress: async (courseId: string, sectionId: string) => { },
+      fetchCourseAttachments: async (courseId: string) => { },
+      fetchCourseSections: async (courseId: string) => { },
+      fetchCourseSectionInfo: async (courseId: string, sectionId: string) => { },
+      fetchCourseSectionChapterInfo: async (courseId: string, sectionId: string, chapterId: string) => { },
+      fetchChapterNotes: async (userId: string, courseId: string, chapterId: string) => { },
+      fetchCourseReviews: async (courseId: string) => { },
+      saveArticle: async (article: Blog) => {
+        set((state) => ({ loading: false, savedArticles: [...state.savedArticles, article] }));
       }
-
-      // 3. Update local state (if successful)
-      set((state) => ({ wishListedCourses: [...state.wishListedCourses, course] }));
-    } catch (error: any) {
-      console.error("Error saving course:", error);
-      set((state) => ({ error: error.message, loading: false }));
-      // Handle errors in the UI
-    }
-  },
-  removeFromWishList: (courseId: string) => { },
-  fetchEnrolledCourses: async (userId: string) => { },
-  fetchArticles: async () => {
-  },
-  createArticle: async (title: string, content: string, thumbnailUrl: string | null, estimatedReadingTime: string, authorId: string) => { },
-  editArticle: async (title: string, content: string, thubnailUrl: string | null, estimatedReadingTime: string, authorId: string) => { },
-  fetchCreatedArticles: async (userId: string) => { },
-  fetchSavedArticles: async (userId: string) => { },
-  fetchCourses: async () => {
-    set({ loading: true });
-    try {
-      const response = await fetch(("api/courses"));
-
-      if (!response.ok) {
-        console.error("Failed to get user info from api/courses api ...");
-      }
-
-      const courses = await response.json();
-      set({ courses: courses, loading: false });
-    }
-
-    catch (error: any) {
-      console.error(
-        `Failed to get user info from api/courses api, ERROR: ${error.message} ...`
-      );
-      set({ loading: false, error: error.message });
-    }
-  },
-  fetchCategories: async () => {
-    try {
-      set({ loading: true });
-      const response = await fetch((`api/categories/`));
-
-      if (!response.ok) {
-        console.error("Failed to get categories from api/categories api ...");
-      }
-
-      const categories = await response.json();
-      set({ categories: [{ categoryName: "All", createdAt: Date.now(), updatedAt: Date.now() }, ...categories.data], loading: false });
-    }
-
-    catch (error: any) {
-      console.error(
-        `Failed to get categories from api/categories api, ERROR: ${error.message} ...`
-      );
-      set({ loading: false, error: error.message });
-    }
-  },
-  fetchSelectedCourseInfo: async (courseId: string) => {
-    try {
-      set({ loading: true });
-      const response = await fetch((`api/courses/${courseId}`));
-
-      if (!response.ok) {
-        console.error("Failed to get course for course with this courseId ...");
-      }
-
-      const course = await response.json();
-      // const course: Course = data.data;
-
-      set({ selectedCourse: course.data, loading: false, error: null });
-    } catch (error: any) {
-      console.error(
-        `Failed to fetch course info for given courseId in @/zustand/store.ts, ERROR: ${error.message} ...`
-      );
-      set({ loading: false, error: error.message });
-    }
-  },
-  fetchInstructorCourses: async (instructorId: string) => { },
-  fetchInstructorSelectedCourseInfo: async (instructorId: string, courseId: string) => { },
-  fetchCourseProgress: async (courseId: string, sectionId: string) => { },
-  fetchCourseAttachments: async (courseId: string) => { },
-  fetchCourseSections: async (courseId: string) => { },
-  fetchCourseSectionInfo: async (courseId: string, sectionId: string) => { },
-  fetchCourseSectionChapterInfo: async (courseId: string, sectionId: string, chapterId: string) => { },
-  fetchChapterNotes: async (userId: string, courseId: string, chapterId: string) => { },
-  fetchCourseReviews: async (courseId: string) => { }
-}), { name: 'Coursewave-Store', getStorage: () => localStorage },));
-
-// fetchUserInfo: async () => {
-//   try {
-//     set({ loading: true });
-//     const response = await fetch((`/api/auth/me`));
-
-//     if (!response.ok) {
-//       console.error("Failed to get user info from auth/me api ...");
-//     }
-
-//     const data = await response.json();
-//     const user: User = data?.data;
-
-//     set({ user: user, loading: false, error: null });
-//   } catch (error: any) {
-//     console.error(
-//       `Failed to get user info from auth/me api in @/zustand/store.ts, ERROR: ${error.message} ...`
-//     );
-//     set({ loading: false, error: error.message });
-//   }
-// },
+    }), { name: 'Coursewave-Store', getStorage: () => localStorage },));

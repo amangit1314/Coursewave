@@ -37,8 +37,15 @@ const nextConfig = {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
       },
+      {
+        protocol: "https",
+        hostname: "wcgwzdehnxpexussrkni.supabase.co",
+      },
     ],
   },
+  // async redirects() {
+  //   return ;
+  // },
   redirects: [{ source: "/:path*", destination: "/:path*", permanent: false }],
   async headers() {
     return [

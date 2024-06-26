@@ -46,9 +46,6 @@ export const ChaptersForm = ({
 
   const toggleCreating = (sectionId: string) => {
     setIsCreating((current) => !current);
-    // router.push(
-    //   `/instructor/${course.instructorID}/courses/createdCourses/${course.courseId}/sections/${sectionId}/chapters/createChapter`
-    // );
   };
 
   const router = useRouter();
@@ -72,7 +69,7 @@ export const ChaptersForm = ({
       toggleCreating(section.courseSectionId);
       router.refresh();
     } catch (err: any) {
-      console.log('Error in creating chapter: ', err.message)
+      console.log("Error in creating chapter: ", err.message);
       toast.error(`Something went wrong, ${err.message}`);
     }
   };
@@ -104,8 +101,8 @@ export const ChaptersForm = ({
         </div>
       )}
 
-      <div className="font-medium flex items-center justify-between">
-        Section chapters
+      <div className="font-medium flex items-center justify-between not-italic">
+        <p className="text-sm dark:text-white"> Section chapters</p>
         <Button
           onClick={() => toggleCreating(section.courseSectionId)}
           variant="ghost"
@@ -115,7 +112,7 @@ export const ChaptersForm = ({
           ) : (
             <>
               <PlusCircle className="h-4 w-4 mr-2" />
-              Add a chapter
+              <p className="text-sm dark:text-white">Add a chapter</p>
             </>
           )}
         </Button>
@@ -171,7 +168,7 @@ export const ChaptersForm = ({
       )}
 
       {!isCreating && (
-        <p className="text-xs text-muted-foreground mt-4">
+        <p className="text-xs text-muted-foreground mt-4 not-italic">
           Drag and drop to reorder the chapters
         </p>
       )}

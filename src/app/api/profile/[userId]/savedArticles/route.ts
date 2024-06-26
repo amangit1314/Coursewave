@@ -10,7 +10,6 @@ export async function OPTIONS(req: NextRequest) {
   return new NextResponse('OK', { status: 200 });
 }
 
-
 export const GET = async (req: NextRequest) => {
   try {
     const reqBody = await req.json();
@@ -21,7 +20,7 @@ export const GET = async (req: NextRequest) => {
         status: 'ERROR',
         success: false,
         message: 'id is a required field ...',
-      }, { status: 400 });
+      }, { status: 402 });
     }
 
     const instructor = await db.instructor.findUnique({
@@ -44,15 +43,15 @@ export const GET = async (req: NextRequest) => {
       status: 'OK',
       success: true,
       data: instructor,
-      message: 'Instructor found ✔️ ...',
+      message: 'User saved articles fetched ✔️ ...',
     }, { status: 200 });
   } catch (error: any) {
-    console.log(`Internal server error: ${error.message} ❌🚧 ...`)
+    console.log(`Internal server error in fetching saved articles: ${error.message} ❌🚧 ...`)
     return NextResponse.json({
       status: 'OK',
       success: true,
       error: error.message,
-      message: 'Internal server error ❌🚧 ...',
-    }, { status: 200 });
+      message: 'Internal server error, in fetching saved articles ❌🚧 ...',
+    }, { status: 500 });
   }
 }

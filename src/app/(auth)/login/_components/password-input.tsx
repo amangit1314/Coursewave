@@ -16,6 +16,7 @@ const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
       <div className="relative mb-4">
         <Input
           type={showPassword ? "text" : "password"}
+          placeholder="password"
           className={cn(
             "hide-password-toggle pr-10  border border-gray-300 bg-transparent rounded-lg focus:outline-none focus:border-gray-600 text-black",
             className

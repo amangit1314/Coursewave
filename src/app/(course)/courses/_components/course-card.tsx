@@ -11,15 +11,7 @@ type CourseCardProps = {
 };
 
 export const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
-  const [isBookmarked, setBookmarked] = React.useState(false);
-  const [courseRating, setCourseRating] = React.useState(4.95);
-  const [noOfCourseReviews, setNoOfCourseReviews] = React.useState(25);
-
   const router = useRouter();
-
-  const toggleBookmark = () => {
-    setBookmarked(!isBookmarked);
-  };
 
   const onViewDetails = () => {
     router.push(`/courses/${course.courseId}`);
@@ -35,8 +27,8 @@ export const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
       {/* Course Image */}
       <div className="relative">
         <Image
-          className="max-h-[8.5rem] h-full md:max-w-[15rem] w-full bg-slate-700 rounded-t-3xl relative left-0 right-0"
-          src={course.courseImage ?? './assets/images/android-jetpack.jpg'}
+          className="h-[8.5rem] md:max-w-[15rem] w-full bg-slate-700 object-cover rounded-t-3xl relative left-0 right-0"
+          src={course.courseImage ?? "./assets/images/android-jetpack.jpg"}
           alt="Next.js Logo"
           width={250}
           height={35}

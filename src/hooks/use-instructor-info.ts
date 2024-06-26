@@ -4,7 +4,11 @@ import { Instructor } from "@prisma/client";
 
 const useInstructorInfo = (instructorId: string) => {
   const fetchInstructorInfo = async () => {
-    const instructorUrl = (`api/instructor/${instructorId}`);
+    const instructorUrl = 
+    // process.env.ENVIRONMENT === 'DEVELOPMENT' ?
+   (`/api/instructor/${instructorId}`)
+      // : (`api/instructor/${instructorId}`);
+
     const instructorResponse = await fetch(instructorUrl);
 
     if (!instructorResponse.ok) {

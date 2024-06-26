@@ -15,7 +15,7 @@ export const POST = async (req: NextRequest, { params }: {
     id: string;
   };
 }) => {
-  const courseId = params?.id;
+  const courseId = params?.id!;
   const reqBody = await req.json();
   const { userId } = reqBody;
   try {
@@ -69,6 +69,8 @@ export const POST = async (req: NextRequest, { params }: {
       }
     });
 
+    console.log('courseId in the course is alreadyPurchased: ', courseId);
+
     if (!course) {
       console.log(`No course found with such courseId in already purchased: ${courseId} ...`)
       return NextResponse.json({
@@ -83,7 +85,7 @@ export const POST = async (req: NextRequest, { params }: {
         courseId: course.courseId,
         userId: userId as string,
       }
-    })
+    });
 
     const purchase = await db.purchase.findFirst({
       where: {
@@ -99,7 +101,11 @@ export const POST = async (req: NextRequest, { params }: {
     return NextResponse.json({
       status: 'OK',
       success: true,
-      data: { hasPurchased, enrollment: enrollment, purchase: purchase },
+      data: {
+        hasPurchased: hasPurchased,
+        enrollment: enrollment,
+        purchase: purchase
+      },
       message: `Course with courseId:${courseId}, is already purchased by userId: ${userId} ? -> : ${hasPurchased} ✔️ ...`
     }, { status: 200 });
   } catch (error: any) {

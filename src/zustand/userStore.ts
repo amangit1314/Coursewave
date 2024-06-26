@@ -1,16 +1,21 @@
-import { User } from '@prisma/client';
+import { Course, User } from '@prisma/client';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 type UserState = {
   user: User | null,
+  savedCourses: Course[],
+  token: string | null;
   loading: boolean,
   error: String | null,
 };
 
 type UserActions = {
+  loginUser: (user: User) => Promise<void>;
+  logOutUser: (userId: string) => Promise<void>;
   setUser: (user: User) => void;
-  verifyEmail: () => void;
+  saveCourse: (course: Course) => Promise<void>;
+  verifyEmail: () => Promise<void>;
   updateUserProfile: (userId: string, newUserName: string, newProfileImage: string) => Promise<void>;
   becomeInstructor: (userId: string) => Promise<void>;
   updatePassword: (userId: string, oldPassword: string, newPassword: string) => Promise<void>;
@@ -19,10 +24,15 @@ type UserActions = {
 
 export const useUserStore = create<UserState & UserActions>()(persist((set) => ({
   user: null,
+  savedCourses: [],
+  token: null,
   loading: false,
   error: null,
+  loginUser: async (user: User) => { },
+  logOutUser: async (userId: string) => { },
   setUser: (user: User) => { set({ user }) },
-  verifyEmail: () => { },
+  saveCourse: async (course: Course) => { },
+  verifyEmail: async () => { },
   updateUserProfile: async (userId: string, newUserName: string, newProfileImage: string) => {
     set({ loading: true, error: null });
     try {
@@ -96,7 +106,7 @@ export const useUserStore = create<UserState & UserActions>()(persist((set) => (
       const response = await fetch(`/api/profile/${userId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-     });
+      });
 
       if (!response.ok) {
         throw new Error('Failed to delete user ...');
@@ -110,5 +120,5 @@ export const useUserStore = create<UserState & UserActions>()(persist((set) => (
       console.error('Error making user an instructor:', error);
       set({ loading: false, error: error.message });
     }
-   }
+  },
 }), { name: 'User-Store', getStorage: () => localStorage },));
