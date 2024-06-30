@@ -6,11 +6,7 @@ import {
   enrollmentColumns,
 } from "./_components/enrolled-courses-tables/columns";
 import { useQuery } from "@tanstack/react-query";
-import { Course, Enrollment, User } from "@prisma/client";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DataTable } from "./_components/enrolled-courses-tables/data-table";
-import UserDashboardStats from "./_components/user-dashboard-stats";
-import DashboardHeader from "./_components/dashboard-header";
 import {
   Callout,
   Tab,
@@ -20,15 +16,18 @@ import {
   TabPanels,
 } from "@tremor/react";
 import { cn } from "@/utils/utils";
+import { useZustandStore } from "@/zustand/store";
+import { DataTable } from "./_components/enrolled-courses-tables/data-table";
 import { createdArticlesColumns } from "./_components/created-articles-table/created-articles-columns";
 import { savedArticlesColumns } from "./_components/saved-articles-table/saved-articles-columns";
+import DashboardHeader from "./_components/dashboard-header";
+import UserDashboardStats from "./_components/user-dashboard-stats";
 import LearningGoals from "./_components/learning-goals/learning-goals";
-import { useZustandStore } from "@/zustand/store";
+
 
 const DashboardPage = ({ params }: { params: { userId: string } }) => {
   const userId = params?.userId!;
 
-  // <------------------------------------------------------------------>
   const fetchUserEnrolledCourses = async () => {
     const response = await fetch(`/api/profile/${userId}/enrolledCourses`);
 
@@ -89,10 +88,6 @@ const DashboardPage = ({ params }: { params: { userId: string } }) => {
     <div className="py-4 overflow-x-hidden">
       {/* header */}
       <DashboardHeader />
-
-      {/* <div className="flex justify-between items-center h-full">
-        <DashboardHeader />
-      </div> */}
 
       {/* other content */}
       <div className="space-y-4 md:space-y-12">
