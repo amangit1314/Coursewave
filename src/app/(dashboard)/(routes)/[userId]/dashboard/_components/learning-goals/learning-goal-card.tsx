@@ -1,6 +1,8 @@
 import { Checkbox } from "@/components/ui/checkbox";
+import { useZustandStore } from "@/zustand/store";
 
 type LearningGoal = {
+  id: string;
   title: string;
   tag: string;
   time: Date | string;
@@ -8,9 +10,19 @@ type LearningGoal = {
 }
 
 const LearningGoalCard = ({learningGoal}: {learningGoal : LearningGoal}) => {
+  const {markLearningGoalAsDone} = useZustandStore();
+
+  const markGoalCompleted = () => {
+    markLearningGoalAsDone(learningGoal.id, learningGoal.isDone);
+  }
+
   return (
     <div className="flex justify-start items-start space-x-2 ">
-      <Checkbox className="mt-1" />
+      <Checkbox 
+        className="mt-1"
+        checked={learningGoal.isDone}
+        onCheckedChange={markGoalCompleted}
+      />
       <div className="">
         <p className="text-sm font-medium text-zinc-800 dark:text-gray-50 tracking-tight line-clamp-1">{learningGoal.title ?? "Task need to done"}</p>
         <div className="flex justify-start items-center space-x-2 line-clamp-1">

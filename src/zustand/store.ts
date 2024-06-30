@@ -111,11 +111,19 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(
       loading: false,
       setUser: (user: User | null) => set({ loading: false, user: user }),
 
-      addLearningGoal: (learningGoal: LearningGoal) => { 
+      addLearningGoal: (learningGoal: LearningGoal) => {
         set((state) => ({ learningGoals: [...state.learningGoals, learningGoal] }));
       },
-      markLearningGoalAsDone: (id: string, isDone: boolean) => { },
-      // editLearningGoal: () => { },
+      markLearningGoalAsDone: (id: string, isDone: boolean) => {
+        set((state) => {
+          const updatedGoals = state.learningGoals.map((goal) =>
+            goal.id === id ? { ...goal, isDone } : goal
+          );
+          localStorage.setItem('learningGoals', JSON.stringify(updatedGoals));
+          return { learningGoals: updatedGoals };
+        });
+      },
+
 
       addToCart: async (userId: string, courseId: string) => {
         const course = await fetchCourse(courseId);
