@@ -1,5 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { useZustandStore } from "@/zustand/store";
+import { useState } from "react";
 
 type LearningGoal = {
   id: string;
@@ -11,9 +12,11 @@ type LearningGoal = {
 
 const LearningGoalCard = ({learningGoal}: {learningGoal : LearningGoal}) => {
   const {markLearningGoalAsDone} = useZustandStore();
+  const [isDone, setIsDone] = useState<boolean>(false);
 
   const markGoalCompleted = () => {
-    markLearningGoalAsDone(learningGoal.id, learningGoal.isDone);
+    setIsDone(!isDone);
+    markLearningGoalAsDone(learningGoal.id, isDone);
   }
 
   return (

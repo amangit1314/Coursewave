@@ -40,6 +40,7 @@ const formSchema = z.object({
 });
 
 type LearningGoal = {
+  id: string;
   title: string;
   tag: string;
   time: Date | string;
@@ -72,7 +73,7 @@ const LearningGoals = () => {
             {learningGoals?.length > 0 ? (
               <div>
                 {learningGoals.map((goal: LearningGoal, index: any) => (
-                  <div key={index}>
+                  <div key={goal.id}>
                     <LearningGoalCard learningGoal={goal} />
                   </div>
                 ))}
