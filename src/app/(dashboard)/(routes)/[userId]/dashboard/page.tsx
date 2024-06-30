@@ -153,7 +153,6 @@ const DashboardPage = ({ params }: { params: { userId: string } }) => {
 export default DashboardPage;
 
 const SavedArticlesAndLearningGoals = ({ userId }: { userId: string }) => {
-  // <---------------------------------- Created Articles -------------------------------->
   const fetchCreatedArticles = async () => {
     const response = await fetch(`/api/profile/${userId}/createdArticles`);
 
@@ -174,7 +173,6 @@ const SavedArticlesAndLearningGoals = ({ userId }: { userId: string }) => {
     staleTime: 4,
   });
 
-  // <--------------------------------- Saved Articles --------------------------------->
   const savedArticles = useZustandStore((state) => state.savedArticles);
   const isSavedArticlesLoading = useZustandStore((state) => state.loading);
   const savedArticlesError = useZustandStore((state) => state.error);

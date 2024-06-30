@@ -3,6 +3,14 @@ import { persist } from 'zustand/middleware';
 import { absoluteUrl } from '@/utils/utils';
 import { Blog, Category, Chapter, ChapterNotes, Course, CourseAttachment, CourseProgress, CourseSection, Instructor, Review, User } from '@prisma/client';
 
+type LearningGoal = {
+  id: string;
+  title: string;
+  tag: string;
+  time: Date | string;
+  isDone: boolean;
+}
+
 type CoursewaveState = {
   courses: Course[];
   courseInfo: Course | null;
@@ -10,6 +18,7 @@ type CoursewaveState = {
   selectedCategory: Category | null;
   filteredCourses: Course[];
   user: User | null;
+  learningGoals: LearningGoal[];
   cartCourses: Course[];
   wishListedCourses: Course[];
   enrolledCourses: Course[];
@@ -33,7 +42,9 @@ type CoursewaveState = {
 
 type CoursewaveActions = {
   setUser: (user: User | null) => void;
-  // fetchUserInfo: () => Promise<void>;
+  addLearningGoal: (learningGoal: LearningGoal) => void;
+  markLearningGoalAsDone: (id: string, isDone: boolean) => void;
+  // editLearningGoal: (id: string, title: string, ) => void;
   addToCart: (userId: string, courseId: string) => Promise<void>;
   removeFromCart: (userId: string, courseId: string) => void;
   addToWishList: (userId: string, course: Course) => Promise<void>;
@@ -78,6 +89,7 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(
       selectedCategory: null,
       filteredCourses: [],
       user: null,
+      learningGoals: [],
       cartCourses: [],
       wishListedCourses: [],
       enrolledCourses: [],
@@ -98,6 +110,13 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(
       error: null,
       loading: false,
       setUser: (user: User | null) => set({ loading: false, user: user }),
+
+      addLearningGoal: (learningGoal: LearningGoal) => { 
+        set((state) => ({ learningGoals: [...state.learningGoals, learningGoal] }));
+      },
+      markLearningGoalAsDone: (id: string, isDone: boolean) => { },
+      // editLearningGoal: () => { },
+
       addToCart: async (userId: string, courseId: string) => {
         const course = await fetchCourse(courseId);
         if (course) {
