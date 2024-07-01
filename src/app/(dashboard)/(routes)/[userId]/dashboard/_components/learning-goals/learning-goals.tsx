@@ -93,14 +93,8 @@ export default LearningGoals;
 
 const AddLearningGoalButton = () => {
   const { addLearningGoal } = useZustandStore();
-  const [title, setTitle] = useState("");
-  const [tag, setTag] = useState("");
   const [time, setTime] = useState("10:00");
-
-  const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const [imageUrl, setImageUrl] = React.useState("");
 
   useEffect(() => {
     inputRef.current?.focus(); // Focus the input element when the component mounts
@@ -131,7 +125,7 @@ const AddLearningGoalButton = () => {
   };
 
   return (
-    <div className="max-h-[70vh] max-w-[70vw] rounded-3xl overflow-hidden">
+    <div className="max-h-[70vh] h-full max-w-[70vw] w-full rounded-3xl overflow-hidden">
       <Dialog>
         <DialogTrigger asChild>
           <div className="flex justify-center items-center text-blue-500 cursor-pointer font-medium hover:text-blue-600 transition-all duration-300">
@@ -150,7 +144,6 @@ const AddLearningGoalButton = () => {
               onSubmit={form.handleSubmit(onSubmit)}
               className="grid gap-4 py-4 overflow-y-scroll"
             >
-
               <FormField
                 control={form.control}
                 name="title"
@@ -158,13 +151,13 @@ const AddLearningGoalButton = () => {
                   <div>
                     <FormItem className="mt-8">
                       <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
-                        Course Name
+                        Learning Goal
                       </FormLabel>
                       <FormControl>
                         <Input
                           disabled={isSubmitting}
                           className="bg-transparent border-gray-700 dark:border-gray-400 "
-                          placeholder="i.e. 'Full Stack Bootcamp', etc..."
+                          placeholder="i.e. 'Write an article', etc..."
                           {...field}
                         />
                       </FormControl>
@@ -190,7 +183,7 @@ const AddLearningGoalButton = () => {
                         <Input
                           disabled={isSubmitting}
                           className="bg-transparent border-gray-700 dark:border-gray-400 "
-                          placeholder="i.e. 'Full Stack Bootcamp', etc..."
+                          placeholder="i.e. 'task', etc..."
                           {...field}
                         />
                       </FormControl>
@@ -216,7 +209,7 @@ const AddLearningGoalButton = () => {
                         <Input
                           disabled={isSubmitting}
                           className="bg-transparent border-gray-700 dark:border-gray-400 "
-                          placeholder="i.e. 'Full Stack Bootcamp', etc..."
+                          placeholder="i.e. '9:00 AM', etc..."
                           {...field}
                         />
                       </FormControl>
@@ -230,7 +223,7 @@ const AddLearningGoalButton = () => {
               />
 
               <DialogFooter>
-                <Button type="submit">Save changes</Button>
+                <Button type="submit" disabled={isSubmitting || !isValid}>Save changes</Button>
               </DialogFooter>
             </form>
           </Form>
