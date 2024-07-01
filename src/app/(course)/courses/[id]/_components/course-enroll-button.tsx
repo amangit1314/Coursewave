@@ -9,7 +9,7 @@ import { Loader } from "lucide-react";
 import React from "react";
 import toast from "react-hot-toast";
 
-export default function CourseEnrollButton({
+export function CourseEnrollButton({
   course,
   courseId,
 }: {
