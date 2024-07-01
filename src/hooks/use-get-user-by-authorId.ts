@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 
 const useGetUserByAuthorId = (authorId: string) => {
     const fetchUserByAuthorId = async () => {
-        const response = await fetch(`api/users/${authorId}`);
+        const response = await fetch(`/api/users/${authorId}`);
         if (!response.ok) {
             throw new Error(await response.text());
         }
