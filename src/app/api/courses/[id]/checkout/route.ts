@@ -6,6 +6,7 @@ import { generateUid } from "@/helpers/id_helper";
 export const dynamic = 'force-dynamic';
 
 import cors, { runMiddleware } from '@/lib/cors';
+import { absoluteUrl } from "@/utils/utils";
 
 // Handle the OPTIONS request
 export async function OPTIONS(req: NextRequest) {
@@ -26,20 +27,20 @@ export const POST = async (req: Request, { params }: {
     const { userId } = reqBody;
 
     if (!userId) {
-      return new NextResponse('MISSING REQUIRED FIELDS, userId is required', { status: 422 });
+      return new NextResponse('MISSING REQUIRED FIELDS, userId is required', { status: 400 });
     }
 
-    const user = await db.user.findFirst({
+    const user = await db.user.findUnique({
       where: {
         id: userId as string,
       }
     });
 
     if (!user) {
-      return new NextResponse('UNAUTHORIZED ACCESS, No user found with this userId,You are not authorized to buy course, authenticate first', { status: 401 })
+      return new NextResponse('NOT FOUND, No user found with this userId, You are not authorized to buy course, authenticate first', { status: 404 })
     }
 
-    const course = await db.course.findFirst({
+    const course = await db.course.findUnique({
       where: {
         courseId,
       }
@@ -99,8 +100,8 @@ export const POST = async (req: Request, { params }: {
       customer: stripeCustomer.stripeCustomerId,
       line_items,
       mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/courses/${course.courseId}?success=1`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/courses/${course.courseId}?canceled=1`,
+      success_url: absoluteUrl(`/courses/${course.courseId}?success=1`),
+      cancel_url: absoluteUrl(`/courses/${course.courseId}?canceled=1`),
       metadata: {
         courseId: course.courseId,
         userId: user.id,
@@ -155,6 +156,6 @@ export const POST = async (req: Request, { params }: {
     }, { status: 200 });
   } catch (error: any) {
     console.log("[COURSE_ID_CHECKOUT_ERROR]", error);
-    return new NextResponse('Internal Server Error', { status: 500 })
+    return new NextResponse('Internal Server Error, in creasting stripe checkout seession url', { status: 500 })
   }
 }
