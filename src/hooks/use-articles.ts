@@ -30,7 +30,7 @@ const useArticles = () => {
       };
 
     const fetchArticles = async ()  => {
-        const articlesUrl = (`api/articles`);
+        const articlesUrl = (`/api/articles`);
         const response = await fetch(articlesUrl);
 
         if (!response.ok) {

@@ -6,7 +6,7 @@ import axios from "axios";
 const useCheckCourseIsPurchased = (userId: string, courseId: string) => {
   const fetchIsCourseAlreadyPurchased = async () => {
     const response = await fetch(
-      `api/courses/${courseId}/alreadyPurchased?userId=${userId}`, {
+      `/api/courses/${courseId}/alreadyPurchased?userId=${userId}`, {
         method: 'GET',
       }
     );

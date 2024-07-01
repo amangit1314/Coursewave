@@ -6,7 +6,7 @@ const useInstructorInfo = (instructorId: string) => {
   const fetchInstructorInfo = async () => {
     const instructorUrl = 
     // process.env.ENVIRONMENT === 'DEVELOPMENT' ?
-   (`api/instructor/${instructorId}`)
+   (`/api/instructor/${instructorId}`)
       // : (`api/instructor/${instructorId}`);
 
     const instructorResponse = await fetch(instructorUrl);

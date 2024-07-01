@@ -6,7 +6,7 @@ const useCourseInfo = (courseId: string) => {
   const fetchCourseInfo = async () => {
     const response = await fetch(
       // process.env.ENVIRONMENT! === "DEVELOPMENT" ? 
-      `api/courses/${courseId}`
+      `/api/courses/${courseId}`
       //  : `api/courses/${courseId}`
     );
 
