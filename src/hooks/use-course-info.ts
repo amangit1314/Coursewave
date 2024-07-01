@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { Course } from "@prisma/client";
-import { absoluteUrl } from "@/utils/utils";
+// import { absoluteUrl } from "@/utils/utils";
 
 const useCourseInfo = (courseId: string) => {
   const fetchCourseInfo = async () => {
     const response = await fetch(
       // process.env.ENVIRONMENT! === "DEVELOPMENT" ? 
-      `/api/courses/${courseId}`
+      `api/courses/${courseId}`
       //  : `api/courses/${courseId}`
     );
 
@@ -18,11 +18,10 @@ const useCourseInfo = (courseId: string) => {
   }
 
   const { data, error, isLoading } =
-    // return
     useQuery({
       queryKey: ["course", courseId],
       queryFn: fetchCourseInfo,
-      // staleTime: 4,
+      staleTime: 4,
     });
 
   const courseInfo: Course = data?.data!;

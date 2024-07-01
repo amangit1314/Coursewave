@@ -51,4 +51,4 @@ export const ApplyCouponCode = () => {
       </DialogContent>
     </Dialog>
   );
-};
+}

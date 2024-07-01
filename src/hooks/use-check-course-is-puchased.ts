@@ -15,7 +15,7 @@ const useCheckCourseIsPurchased = (userId: string, courseId: string) => {
       throw new Error(`Failed to get course info from /api/courses/${courseId}/alreadyPurchased`);
     }
 
-    return response.json();
+    return await response.json();
   };
 
   const { data, error, isLoading } = useQuery({

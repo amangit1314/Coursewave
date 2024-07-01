@@ -2,17 +2,12 @@
 
 import React, { useEffect } from "react";
 import Image from "next/image";
-
-import axios from "axios";
 import { FaShare } from "react-icons/fa";
 import { RiCoupon3Line } from "react-icons/ri";
 import { FaAngleRight, FaCircleCheck, FaStar } from "react-icons/fa6";
-import { IoPeopleCircleSharp } from "react-icons/io5";
 import { HiOutlineShoppingCart, HiShoppingCart } from "react-icons/hi";
-
 import { CourseNavbar } from "../_components/course-navbar";
 import { CartItem, Course, Review } from "@prisma/client";
-import { RatingStars } from "../_components/rating-stars";
 import { CourseContent } from "../_components/course-content";
 import { Prerequisits } from "../_components/sections/prerequisits";
 import { InstructorCard } from "../_components/sections/instructor-info";
@@ -21,8 +16,6 @@ import { CourseRatings } from "../_components/sections/ratings/course-ratings";
 import { WhoThisCourseIsFor } from "../_components/sections/who-this-course-is-for";
 import { CourseBreadcrumb } from "../_components/sections/course-breadcrumb";
 import { MoreIntructorCreatedCourses } from "../_components/sections/more-instructor-created-courses";
-
-import { Loader } from "lucide-react";
 import { Footer } from "@/components/LandingPage/footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { generateUid } from "@/helpers/id_helper";
@@ -40,28 +33,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import toast, { Toaster } from "react-hot-toast";
 import { Button, Divider, Title } from "@tremor/react";
-
 import { usePathname } from "next/navigation";
 import useUserInfo from "@/hooks/use-user-info";
-
 import useCourseInfo from "@/hooks/use-course-info";
 import { useCartStore } from "@/zustand/cartStore";
-import useCheckCourseIsPurchased from "@/hooks/use-check-course-is-puchased";
-import useNotificationsStore from "@/zustand/notificationsStore";
 import { SiCrowdsource } from "react-icons/si";
 import { GoProjectTemplate } from "react-icons/go";
 import useInstructorInfo from "@/hooks/use-instructor-info";
 import { VscPreview } from "react-icons/vsc";
+import CourseEnrollButton from "./_components/course-enroll-button";
 
 function CoursePreview({ params }: { params: { id: string } }) {
   const courseId = params?.id;
   const courseData = useCourseInfo(courseId);
   const course: Course = courseData.courseInfo;
-
-  // const { fetchCourse, course, loading, error } = useCourseStore();
-  // useEffect(() => {
-  //   fetchCourse(courseId);
-  // }, [fetchCourse, courseId]);
 
   console.log(
     `Course data for courseId:${courseId} in course id detail page: `,
@@ -753,78 +738,6 @@ function AddToCartButton({ course }: { course: Course }) {
         </div>
       )}
     </Button>
-  );
-}
-
-function CourseEnrollButton({
-  course,
-  courseId,
-}: {
-  course: Course;
-  courseId: string;
-}) {
-  const [isLoading, setIsLoading] = React.useState(false);
-  const user = useUserInfo();
-  const isCoursePurchased = useCheckCourseIsPurchased(user?.user?.id, courseId);
-  const setNotification = useNotificationsStore(
-    (state) => state.setNotification
-  );
-
-  const enrollInCourse = async () => {
-    try {
-      setIsLoading(true);
-      console.log(
-        "Is course already purchased? : ",
-        isCoursePurchased.courseIsPurchased
-      );
-      if (isCoursePurchased.courseIsPurchased) {
-        window.location.assign(
-          absoluteUrl(`/courses/${courseId}/courseContent`)
-        );
-      } else {
-        const response = await axios.post(`api/courses/${courseId}/checkout`, {
-          userId: user?.user?.id!,
-        });
-
-        window.location.assign(response.data.url);
-
-        setNotification(
-          "Course Enrollment Successful 🎉",
-          `Congratulations! You have successfully enrolled in "${course?.courseTitle}" course?.`
-        );
-
-        toast.success(`Congratulations 🎉! You have successfully enrolled in "${course?.courseTitle}" course`)
-      }
-    } catch (error) {
-      toast.error("Something went wrong ...");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  if (isCoursePurchased.error) {
-    return <div>Error: {isCoursePurchased.error.message}</div>;
-  }
-
-  return (
-    <div className="flex justify-between">
-      <Button
-        onClick={enrollInCourse}
-        disabled={isLoading}
-        size="sm"
-        color="blue"
-        className="mt-2 text-center text-white bg-blue-500 w-[28rem] md:w-[26rem] mr-8 md:mr-0 rounded-md hover:bg-blue-700 text-sm  font-semibold p-2"
-      >
-        {isCoursePurchased.isLoading ? (
-          <Loader className="animate-spin" />
-        ) : // "Checking if course is purchased or not ..."
-        isCoursePurchased.courseIsPurchased ? (
-          "Resume Learning"
-        ) : (
-          "Buy Now"
-        )}
-      </Button>
-    </div>
   );
 }
 
