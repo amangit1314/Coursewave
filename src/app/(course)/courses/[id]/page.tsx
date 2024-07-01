@@ -782,7 +782,7 @@ function CourseEnrollButton({
           absoluteUrl(`/courses/${courseId}/courseContent`)
         );
       } else {
-        const response = await axios.post(`/api/courses/${courseId}/checkout`, {
+        const response = await axios.post(`api/courses/${courseId}/checkout`, {
           userId: user?.user?.id!,
         });
 

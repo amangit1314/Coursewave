@@ -5,17 +5,17 @@ import axios from "axios";
 
 const useCheckCourseIsPurchased = (userId: string, courseId: string) => {
   const fetchIsCourseAlreadyPurchased = async () => {
-    // const courseAlreadyPurchasedUrl = (
-    //   // process.env.ENVIRONMENT === 'DEVELOPMENT' ?
-
-    //   // : `api/courses/${courseId}/alreadyPurchased`
-    // );
-    const response = await axios.post(absoluteUrl(`/api/courses/${courseId}/alreadyPurchased`), {
-      userId,
-    });
+    const response = await axios.post(
+      `api/courses/${courseId}/alreadyPurchased`,
+      {
+        userId,
+      }
+    );
 
     if (!response.data.success) {
-      throw new Error(`Failed to get course info from ${`api/courses/${courseId}/areadyPurchased`}`);
+      throw new Error(
+        `Failed to get course info from ${`api/courses/${courseId}/areadyPurchased`}`
+      );
     }
 
     return response.data;
@@ -24,11 +24,11 @@ const useCheckCourseIsPurchased = (userId: string, courseId: string) => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["courseIsPurchased"],
     queryFn: fetchIsCourseAlreadyPurchased,
-    // staleTime: 4,
+    staleTime: 4,
   });
 
   const courseIsPurchased: boolean = data?.data!.hasPurchased;
-  console.log('Is already purchased: ', courseIsPurchased);
+  console.log("Is already purchased: ", courseIsPurchased);
   const enrollment: Enrollment = data?.data.enrollment!;
   const purchase: Purchase = data?.data.purchase!;
 
