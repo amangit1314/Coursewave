@@ -179,11 +179,11 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(
           learningGoals: state.learningGoals.map((goal: LearningGoal) =>
             goal.id === id
               ? {
-                ...goal,
-                title: title ?? goal.title,
-                tag: tag ?? goal.tag,
-                time: time ?? goal.time,
-              }
+                  ...goal,
+                  title: title ?? goal.title,
+                  tag: tag ?? goal.tag,
+                  time: time ?? goal.time,
+                }
               : goal
           ),
         }));
@@ -231,34 +231,36 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(
           // Handle errors in the UI
         }
       },
-      removeFromWishList: (courseId: string) => { },
-      fetchEnrolledCourses: async (userId: string) => { },
-      fetchArticles: async () => { },
+      removeFromWishList: (courseId: string) => {},
+      fetchEnrolledCourses: async (userId: string) => {},
+      fetchArticles: async () => {},
       createArticle: async (
         title: string,
         content: string,
         thumbnailUrl: string | null,
         estimatedReadingTime: string,
         authorId: string
-      ) => { },
+      ) => {},
       editArticle: async (
         title: string,
         content: string,
         thubnailUrl: string | null,
         estimatedReadingTime: string,
         authorId: string
-      ) => { },
-      fetchCreatedArticles: async (userId: string) => { },
-      fetchSavedArticles: async (userId: string) => { },
+      ) => {},
+      fetchCreatedArticles: async (userId: string) => {},
+      fetchSavedArticles: async (userId: string) => {},
       saveArticle: (article: Blog) => {
         set((state) => ({ savedArticles: [...state.savedArticles, article] }));
       },
       unsaveArticle: (articleId: string) => {
         set((state) => ({
-          savedArticles: state.savedArticles.filter(article => article.id !== articleId)
+          savedArticles: state.savedArticles.filter(
+            (article) => article.id !== articleId
+          ),
         }));
       },
-      syncSavedArticles: async () => { },
+      syncSavedArticles: async () => {},
       fetchCourses: async () => {
         set({ loading: true });
         try {
@@ -329,27 +331,26 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(
           set({ loading: false, error: error.message });
         }
       },
-      fetchInstructorCourses: async (instructorId: string) => { },
+      fetchInstructorCourses: async (instructorId: string) => {},
       fetchInstructorSelectedCourseInfo: async (
         instructorId: string,
         courseId: string
-      ) => { },
-      fetchCourseProgress: async (courseId: string, sectionId: string) => { },
-      fetchCourseAttachments: async (courseId: string) => { },
-      fetchCourseSections: async (courseId: string) => { },
-      fetchCourseSectionInfo: async (courseId: string, sectionId: string) => { },
+      ) => {},
+      fetchCourseProgress: async (courseId: string, sectionId: string) => {},
+      fetchCourseAttachments: async (courseId: string) => {},
+      fetchCourseSections: async (courseId: string) => {},
+      fetchCourseSectionInfo: async (courseId: string, sectionId: string) => {},
       fetchCourseSectionChapterInfo: async (
         courseId: string,
         sectionId: string,
         chapterId: string
-      ) => { },
+      ) => {},
       fetchChapterNotes: async (
         userId: string,
         courseId: string,
         chapterId: string
-      ) => { },
-      fetchCourseReviews: async (courseId: string) => { },
-
+      ) => {},
+      fetchCourseReviews: async (courseId: string) => {},
     }),
     { name: "Coursewave-Store", getStorage: () => localStorage }
   )
