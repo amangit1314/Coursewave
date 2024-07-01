@@ -40,25 +40,23 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 
-//  --------------------------------------------
-const LearningGoalCardDropdownMenu = ({
-  learningGoal,
-}: {
-  learningGoal: LearningGoal;
-}) => {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <EllipsisVertical size={16} />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="">
-        <EditLearningGoal learningGoal={learningGoal} />
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};
+// const LearningGoalCardDropdownMenu = ({
+//   learningGoal,
+// }: {
+//   learningGoal: LearningGoal;
+// }) => {
+//   return (
+//     <DropdownMenu>
+//       <DropdownMenuTrigger asChild>
+//         <EllipsisVertical size={16} />
+//       </DropdownMenuTrigger>
+//       <DropdownMenuContent className="">
+//         <EditLearningGoal learningGoal={learningGoal} />
+//       </DropdownMenuContent>
+//     </DropdownMenu>
+//   );
+// };
 
-// ----------------------------------------------
 const formSchema = z.object({
   title: z.string().optional(),
   tag: z.string().optional(),
@@ -101,10 +99,7 @@ const EditLearningGoal = ({ learningGoal }: { learningGoal: LearningGoal }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <DropdownMenuItem disabled className="cursor-pointer transition-all duration-100">
-          <Pencil className="mr-2 h-4 w-4" />
-          <span>Edit</span>
-        </DropdownMenuItem>
+        <Pencil className="mr-2 h-4 w-4 cursor-pointer transition-all duration-100 hover:text-blue-500" />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -209,7 +204,6 @@ const EditLearningGoal = ({ learningGoal }: { learningGoal: LearningGoal }) => {
   );
 };
 
-// ----------------------------------------------
 type LearningGoal = {
   id: string;
   title: string;
