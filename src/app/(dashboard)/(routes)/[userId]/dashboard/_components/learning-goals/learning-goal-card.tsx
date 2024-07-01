@@ -49,11 +49,9 @@ const LearningGoalCardDropdownMenu = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">
-          <EllipsisVertical />
-        </Button>
+        <EllipsisVertical size={16} />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
+      <DropdownMenuContent className="">
         <EditLearningGoal learningGoal={learningGoal} />
       </DropdownMenuContent>
     </DropdownMenu>
@@ -101,115 +99,113 @@ const EditLearningGoal = ({ learningGoal }: { learningGoal: LearningGoal }) => {
   };
 
   return (
-    <div>
-      <Dialog>
-        <DialogTrigger asChild>
-          <DropdownMenuItem disabled>
-            <Pencil className="mr-2 h-4 w-4" />
-            <span>Edit</span>
-          </DropdownMenuItem>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit Goal</DialogTitle>
-            <DialogDescription>
-              Add a learning goal and click save when done.
-            </DialogDescription>
-          </DialogHeader>
+    <Dialog>
+      <DialogTrigger asChild>
+        <DropdownMenuItem disabled className="cursor-pointer transition-all duration-100">
+          <Pencil className="mr-2 h-4 w-4" />
+          <span>Edit</span>
+        </DropdownMenuItem>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit Goal</DialogTitle>
+          <DialogDescription>
+            Add a learning goal and click save when done.
+          </DialogDescription>
+        </DialogHeader>
 
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="grid gap-4 py-4 overflow-y-scroll"
-            >
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <div>
-                    <FormItem className="mt-8">
-                      <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
-                        Learning Goal
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={isSubmitting}
-                          className="bg-transparent border-gray-700 dark:border-gray-400 "
-                          placeholder={learningGoal.title}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription className="">
-                        What goal you will set?
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  </div>
-                )}
-              />
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="grid gap-4 py-4 overflow-y-scroll"
+          >
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <div>
+                  <FormItem className="mt-8">
+                    <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
+                      Learning Goal
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isSubmitting}
+                        className="bg-transparent border-gray-700 dark:border-gray-400 "
+                        placeholder={learningGoal.title}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription className="">
+                      What goal you will set?
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                </div>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="tag"
-                render={({ field }) => (
-                  <div>
-                    <FormItem className="mt-8">
-                      <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
-                        Tag
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={isSubmitting}
-                          className="bg-transparent border-gray-700 dark:border-gray-400 "
-                          placeholder={learningGoal.tag}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription className="">
-                        Give your goal a tag
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  </div>
-                )}
-              />
+            <FormField
+              control={form.control}
+              name="tag"
+              render={({ field }) => (
+                <div>
+                  <FormItem className="mt-8">
+                    <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
+                      Tag
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isSubmitting}
+                        className="bg-transparent border-gray-700 dark:border-gray-400 "
+                        placeholder={learningGoal.tag}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription className="">
+                      Give your goal a tag
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                </div>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="time"
-                render={({ field }) => (
-                  <div>
-                    <FormItem className="mt-8">
-                      <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
-                        Time
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={isSubmitting}
-                          className="bg-transparent border-gray-700 dark:border-gray-400 "
-                          placeholder={learningGoal.time.toString()}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription className="">
-                        Select your deadline time for that goal
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  </div>
-                )}
-              />
+            <FormField
+              control={form.control}
+              name="time"
+              render={({ field }) => (
+                <div>
+                  <FormItem className="mt-8">
+                    <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
+                      Time
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isSubmitting}
+                        className="bg-transparent border-gray-700 dark:border-gray-400 "
+                        placeholder={learningGoal.time.toString()}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription className="">
+                      Select your deadline time for that goal
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                </div>
+              )}
+            />
 
-              <DialogFooter>
-                <Button type="submit" disabled={!isValid || isSubmitting}>
-                  Save changes
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
-    </div>
+            <DialogFooter>
+              <Button type="submit" disabled={!isValid || isSubmitting}>
+                Save changes
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 };
 
@@ -262,7 +258,7 @@ const LearningGoalCard = ({ learningGoal }: { learningGoal: LearningGoal }) => {
       </div>
 
       {/* dropdown */}
-      <LearningGoalCardDropdownMenu learningGoal={learningGoal} />
+      <EditLearningGoal learningGoal={learningGoal} />
     </div>
   );
 };
