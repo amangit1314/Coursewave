@@ -241,7 +241,7 @@ const LearningGoalCard = ({ learningGoal }: { learningGoal: LearningGoal }) => {
           )}
           <div className="flex justify-start items-center space-x-2 line-clamp-1">
             <p className="text-xs font-thin text-gray-400 dark:text-gray-300 line-clamp-1">
-              {learningGoal.title ?? "Tag"}
+              {learningGoal.tag ?? "Tag"}
             </p>
 
             <p className="text-xs border-l border-stroke font-medium pl-2 text-blue-500">
