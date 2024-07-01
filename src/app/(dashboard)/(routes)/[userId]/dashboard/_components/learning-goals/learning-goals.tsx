@@ -12,7 +12,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -48,9 +47,9 @@ type LearningGoal = {
 };
 
 const LearningGoals = () => {
-  const learningGoals = useZustandStore((state) => state.learningGoals);
-  const isLearningGoalsLoading = useZustandStore((state) => state.loading);
-  const learningGoalsError = useZustandStore((state) => state.error);
+  const learningGoals = useZustandStore((state: any) => state.learningGoals);
+  const isLearningGoalsLoading = useZustandStore((state: any) => state.loading);
+  const learningGoalsError = useZustandStore((state: any) => state.error);
 
   return (
     <div className="space-y-4">
@@ -72,15 +71,15 @@ const LearningGoals = () => {
           <div>
             {learningGoals?.length > 0 ? (
               <div>
-                {learningGoals.map((goal: LearningGoal, index: any) => (
+                {learningGoals.map((goal: LearningGoal) => (
                   <div key={goal.id}>
                     <LearningGoalCard learningGoal={goal} />
                   </div>
                 ))}
               </div>
             ) : (
-              <div>
-                You doesn't saved any article, Browse and save one 😁 ...
+              <div className="text-sm text-yellow-400">
+                You don't have any goals, set some 🧐 ...
               </div>
             )}
           </div>
@@ -132,7 +131,7 @@ const AddLearningGoalButton = () => {
   };
 
   return (
-    <div>
+    <div className="max-h-[70vh] max-w-[70vw] rounded-3xl overflow-hidden">
       <Dialog>
         <DialogTrigger asChild>
           <div className="flex justify-center items-center text-blue-500 cursor-pointer font-medium hover:text-blue-600 transition-all duration-300">
@@ -149,53 +148,8 @@ const AddLearningGoalButton = () => {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
-              className="grid gap-4 py-4"
+              className="grid gap-4 py-4 overflow-y-scroll"
             >
-              {/* <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="title" className="text-right">
-                  Title
-                </Label>
-                <Field
-                  name="title"
-                  render={({ input }) => (
-                    <input
-                      {...input}
-                      id="title"
-                      placeholder="Enter your learning goal ..."
-                      className="col-span-3"
-                    />
-                  )}
-                />
-              </div>
-
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="tag" className="text-right">
-                  Tag
-                </Label>
-                <Field
-                  name="tag"
-                  render={({ input }) => (
-                    <input
-                      {...input}
-                      id="tag"
-                      placeholder="Give a tag ..."
-                      className="col-span-3"
-                    />
-                  )}
-                />
-              </div>
-              
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="time" className="text-right">
-                  Time
-                </Label>
-                <TimePicker
-                  id="time"
-                  onChange={setTime}
-                  value={time}
-                  className="col-span-3"
-                />
-              </div> */}
 
               <FormField
                 control={form.control}

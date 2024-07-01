@@ -107,9 +107,7 @@ const CreateCourseForm = ({ instructorId }: { instructorId: string }) => {
         console.log("Form Values: ", values);
         console.log("Response data after creating course: ", response);
         router.push(
-          (
-            `/instructor/${instructorId}/courses/createdCourses/${response.data.data?.courseId!}`
-          )
+          `/instructor/${instructorId}/courses/createdCourses/${response.data.data?.courseId!}`
         );
         toast.success("Course Created successfully ...");
       })
