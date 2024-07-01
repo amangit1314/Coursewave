@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Eye, EyeOff, SquarePen, UserMinus, UserPlus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useZustandStore } from "@/zustand/store";
 
 type BlogComment = {
   id: string;
@@ -60,21 +61,33 @@ const ArticleContentPage = ({ params }: { params: { articleId: string } }) => {
   const articleId = params?.articleId!;
   const articleData = useArticleInfo(articleId);
   const [isBookmarked, setIsBookmarked] = React.useState<boolean>(false);
-
-  const toggleBookmark = () => {
-    setIsBookmarked(!isBookmarked);
-  };
-
-  if (!articleData) {
-    return <div>Loading the article information ...</div>;
-  }
+  const { saveArticle, unsaveArticle } = useZustandStore();
 
   const article: BlogWithComments = articleData.data?.data! as BlogWithComments;
   console.log("Article info: ", article);
 
+
   if (articleData.isLoading) {
     return <ArticleContentLoadingSkeleton article={article!} />;
   }
+
+  if (!articleData) {
+    return (
+      <div className="text-red-500">
+        Error in getting the article information ...
+      </div>
+    );
+  }
+
+
+  const toggleBookmark = () => {
+    setIsBookmarked(!isBookmarked);
+    if (isBookmarked) {
+      unsaveArticle(article.id);
+    } else {
+      saveArticle(article);
+    }
+  };
 
   return (
     <div className="min-h-screen h-full justify-center overflow-x-hidden">
