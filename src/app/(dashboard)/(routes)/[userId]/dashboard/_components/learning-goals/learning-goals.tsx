@@ -70,7 +70,7 @@ const LearningGoals = () => {
         ) : (
           <div>
             {learningGoals?.length > 0 ? (
-              <div>
+              <div className="space-y-2">
                 {learningGoals.map((goal: LearningGoal) => (
                   <div key={goal.id}>
                     <LearningGoalCard learningGoal={goal} />
