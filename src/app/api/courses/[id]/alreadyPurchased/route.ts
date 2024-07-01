@@ -10,14 +10,14 @@ export async function OPTIONS(req: NextRequest) {
   return new NextResponse('OK', { status: 200 });
 }
 
-export const POST = async (req: NextRequest, { params }: {
+export const GET = async (req: NextRequest, { params }: {
   params: {
     id: string;
   };
 }) => {
   const courseId = params?.id!;
-  const reqBody = await req.json();
-  const { userId } = reqBody;
+  const userId = req.nextUrl.searchParams.get('userId');
+  
   try {
     if (!courseId || !userId) {
       console.log('Course id or User id not provided, courseId & userId are required field ...')
