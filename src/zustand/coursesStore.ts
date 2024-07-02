@@ -20,14 +20,16 @@ const useCoursesStore = create<CoursesState & CoursesActions>()((set) => ({
     try {
       set({ loading: true, error: null });
 
-      const response = await fetch(process.env.ENVIRONMENT === 'DEVELOPMENT' ? "/api/courses" : `api/courses`);
+      const response = await fetch(
+        // process.env.ENVIRONMENT === 'DEVELOPMENT' ? "/api/courses" :
+         `api/courses`);
 
       if (!response.ok) {
         set({ loading: false, error: 'Failed to fetch courses ...' })
       }
 
       const data = await response.json();
-      const courses: Course[] = data?.data;
+      const courses: Course[] = data?.data! as Course[];
 
       set({ courses: courses, loading: false, error: null });
     } catch (error: any) {
