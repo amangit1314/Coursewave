@@ -1,5 +1,6 @@
-import { Course } from '@prisma/client';
-import { create } from 'zustand';
+import { Course } from "@prisma/client";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface CartItem {
   id: string;
@@ -25,7 +26,7 @@ type Actions = {
   removeFromCart: (courseId: string) => void;
   updateQuantity: (courseId: string, quantity: number) => void;
   clearCart: () => void;
-}
+};
 
 const initialState: CartState = {
   cartItems: [],
@@ -33,86 +34,117 @@ const initialState: CartState = {
   totalPrice: 0,
 };
 
-export const useCartStore = create<CartState & Actions>((set, get) => ({
-  cartItems: initialState.cartItems,
-  totalItems: initialState.totalItems,
-  totalPrice: initialState.totalPrice,
+const useCartStore = create<CartState & Actions>()(
+  persist(
+    (set, get) => ({
+      cartItems: initialState.cartItems,
+      totalItems: initialState.totalItems,
+      totalPrice: initialState.totalPrice,
 
-  addToCart: (course: Course, userId: string) => {
-    set((state) => {
-      const existingItem = state.cartItems.find((item) => item.courseId === course.courseId);
+      addToCart: (course: Course, userId: string) => {
+        set((state) => {
+          const existingItem = state.cartItems.find(
+            (item) => item.courseId === course.courseId
+          );
 
-      if (existingItem) {
-        // Update quantity of existing item
-        const updatedCartItems = state.cartItems.map((item) =>
-          item.courseId === course.courseId ? { ...item, quantity: item.quantity + 1 } : item
-        );
-        return {
-          ...state,
-          cartItems: updatedCartItems,
-          totalItems: state.totalItems + 1,
-          totalPrice: state.totalPrice + parseFloat(course.coursePrice!), // Ensure price is a number
-        };
-      } else {
+          if (existingItem) {
+            // Update quantity of existing item
+            const updatedCartItems = state.cartItems.map((item) =>
+              item.courseId === course.courseId
+                ? { ...item, quantity: item.quantity + 1 }
+                : item
+            );
+            return {
+              ...state,
+              cartItems: updatedCartItems,
+              totalItems: state.totalItems + 1,
+              totalPrice: state.totalPrice + parseFloat(course.coursePrice!), // Ensure price is a number
+            };
+          } else {
+            const newCartItem: CartItem = {
+              id: Math.random().toString(36).substring(2, 15),
+              userId: userId,
+              courseId: course.courseId,
+              courseName: course.courseTitle,
+              courseInstructorName: course.courseCreator!,
+              courseImageUrl: course.courseImage!,
+              coursePrice: course.coursePrice!,
+              quantity: 1,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            };
 
-        const newCartItem: CartItem = {
-          id: Math.random().toString(36).substring(2, 15),
-          userId: userId,
-          courseId: course.courseId,
-          courseName: course.courseTitle,
-          courseInstructorName: course.courseCreator!,
-          courseImageUrl: course.courseImage!,
-          coursePrice: course.coursePrice!,
-          quantity: 1,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
+            return {
+              ...state,
+              cartItems: [...state.cartItems, newCartItem],
+              totalItems: state.totalItems + 1,
+              totalPrice: state.totalPrice + parseFloat(course.coursePrice!), // Ensure price is a number
+            };
+          }
+        });
+      },
 
-        return {
-          ...state,
-          cartItems: [...state.cartItems, newCartItem],
-          totalItems: state.totalItems + 1,
-          totalPrice: state.totalPrice + parseFloat(course.coursePrice!), // Ensure price is a number
-        };
-      }
-    });
-  },
+      removeFromCart: (courseId: string) => {
+        set((state) => ({
+          cartItems: state.cartItems.filter(
+            (item) => item.courseId !== courseId
+          ),
+          totalItems: Math.max(0, state.totalItems - 1), // Prevent negative total items
+          totalPrice: Math.max(
+            0,
+            state.totalPrice -
+              parseFloat(
+                get().cartItems.find((item) => item.courseId === courseId)
+                  ?.coursePrice! || "0"
+              )
+          ), // Ensure price is a number and handle missing item
+        }));
+      },
 
-  removeFromCart: (courseId: string) => {
-    set((state) => ({
-      cartItems: state.cartItems.filter((item) => item.courseId !== courseId),
-      totalItems: Math.max(0, state.totalItems - 1), // Prevent negative total items
-      totalPrice: Math.max(0, state.totalPrice - parseFloat(get().cartItems.find((item) => item.courseId === courseId)?.coursePrice! || '0')), // Ensure price is a number and handle missing item
-    }));
-  },
+      updateQuantity: (courseId: string, quantity: number) => {
+        if (quantity <= 0) {
+          // Remove item if quantity is 0 or less
+          return set((state) => ({
+            ...state,
+            cartItems: state.cartItems.filter(
+              (item) => item.courseId !== courseId
+            ),
+            totalItems: Math.max(0, state.totalItems - 1),
+            totalPrice: Math.max(
+              0,
+              state.totalPrice -
+                parseFloat(
+                  get().cartItems.find((item) => item.courseId === courseId)
+                    ?.coursePrice! || "0"
+                )
+            ), // Ensure price is a number and handle missing item
+          }));
+        }
 
-  updateQuantity: (courseId: string, quantity: number) => {
-    if (quantity <= 0) {
-      // Remove item if quantity is 0 or less
-      return set((state) => ({
-        ...state,
-        cartItems: state.cartItems.filter((item) => item.courseId !== courseId),
-        totalItems: Math.max(0, state.totalItems - 1),
-        totalPrice: Math.max(0, state.totalPrice - parseFloat(get().cartItems.find((item) => item.courseId === courseId)?.coursePrice! || '0')), // Ensure price is a number and handle missing item
-      }));
-    }
+        set((state) => {
+          const updatedCartItems = state.cartItems.map((item) =>
+            item.courseId === courseId ? { ...item, quantity } : item
+          );
+          const updatedTotalPrice = updatedCartItems.reduce(
+            (acc, item) => acc + parseFloat(item.coursePrice!) * item.quantity,
+            0
+          ); // Calculate total price
 
-    set((state) => {
-      const updatedCartItems = state.cartItems.map((item) =>
-        item.courseId === courseId ? { ...item, quantity } : item
-      );
-      const updatedTotalPrice = updatedCartItems.reduce((acc, item) => acc + parseFloat(item.coursePrice!) * item.quantity, 0); // Calculate total price
+          return {
+            ...state,
+            cartItems: updatedCartItems,
+            totalItems: state.cartItems.length, // Update total items based on remaining items
+            totalPrice: updatedTotalPrice,
+          };
+        });
+      },
 
-      return {
-        ...state,
-        cartItems: updatedCartItems,
-        totalItems: state.cartItems.length, // Update total items based on remaining items
-        totalPrice: updatedTotalPrice,
-      };
-    });
-  },
+      clearCart: () => {
+        set(() => initialState);
+      },
+    }),
+    { name: "Coursewave-Cart-Store", getStorage: () => localStorage }
+  )
+);
 
-  clearCart: () => {
-    set(() => initialState);
-  }
-}))
+export default useCartStore;

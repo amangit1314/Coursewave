@@ -18,8 +18,8 @@ export default function UserDashboardStats({
   totalOngoingCourses,
 }: AnalyticsStats) {
   return (
-    <ScrollArea className="w-full rounded-lg overflow-hidden">
-      <div className="grid grid-cols-4 gap-4">
+    <ScrollArea className="md:max-w-7xl w-full rounded-lg overflow-hidden">
+      <div className="w-full rounded-lg overflow-hidden grid grid-cols-4 gap-x-60 md:gap-x-6">
         <div className="w-full">
           <CardDataStats
             title="Total Time Spent"

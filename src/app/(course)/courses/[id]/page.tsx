@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import Image from "next/image";
 import { FaShare } from "react-icons/fa";
 import { RiCoupon3Line } from "react-icons/ri";
@@ -18,7 +18,7 @@ import { CourseBreadcrumb } from "../_components/sections/course-breadcrumb";
 import { MoreIntructorCreatedCourses } from "../_components/sections/more-instructor-created-courses";
 import { Footer } from "@/components/LandingPage/footer";
 import { Skeleton } from "@/components/ui/skeleton";
-import { generateUid } from "@/helpers/id_helper";
+// import { generateUid } from "@/helpers/id_helper";
 import {
   Dialog,
   DialogContent,
@@ -28,25 +28,27 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import axios from "axios";
+import { Loader } from "lucide-react";
 import { absoluteUrl } from "@/utils/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import toast, { Toaster } from "react-hot-toast";
 import { Button, Divider, Title } from "@tremor/react";
 import { usePathname } from "next/navigation";
-import useUserInfo from "@/hooks/use-user-info";
-import useCourseInfo from "@/hooks/use-course-info";
-import { useCartStore } from "@/zustand/cartStore";
 import { SiCrowdsource } from "react-icons/si";
 import { GoProjectTemplate } from "react-icons/go";
-import useInstructorInfo from "@/hooks/use-instructor-info";
 import { VscPreview } from "react-icons/vsc";
-import useCheckCourseIsPurchased from "@/hooks/use-check-course-is-puchased";
+//* zustand hooks
+import useCartStore from "@/zustand/cartStore";
 import useNotificationsStore from "@/zustand/notificationsStore";
-import axios from "axios";
-import { Loader } from "lucide-react";
+//* custom hooks
+import useUserInfo from "@/hooks/use-user-info";
+import useCourseInfo from "@/hooks/use-course-info";
+import useCheckCourseIsPurchased from "@/hooks/use-check-course-is-puchased";
+import useInstructorInfo from "@/hooks/use-instructor-info";
 
-function CoursePreview({ params }: { params: { id: string } }) {
+const CoursePreview = ({ params }: { params: { id: string } }) => {
   const courseId = params?.id;
   const courseData = useCourseInfo(courseId);
   const course: Course = courseData.courseInfo;
@@ -131,238 +133,28 @@ function CoursePreview({ params }: { params: { id: string } }) {
       <Footer />
     </div>
   );
-}
+};
 
 export default CoursePreview;
 
-// ------------------------------------- SKELETONS ------------------------------------
-
-function CourseSmallScreenSkeleton() {
-  return (
-    <div className="space-y-4 min-h-screen min-w-screen py-8">
-      <Skeleton className="h-[220px] w-full rounded-2xl" />
-      <div className="h-full col-span-2 w-full space-y-8">
-        <div className="flex space-x-2">
-          <Skeleton className="h-4 w-[100px] rounded-full" />
-          <FaAngleRight />
-          <Skeleton className="h-4 w-[100px] rounded-full" />
-        </div>
-
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Skeleton className="h-8 w-full rounded-md" />
-            <Skeleton className="h-8 w-[300px] rounded-md" />
-          </div>
-
-          <div className="flex space-x-2 justify-start items-center">
-            <FaStar className="text-yellow-500" />
-            <Skeleton className="h-4 w-[100px] rounded-full" />
-            <Skeleton className="h-4 w-[230px] rounded-full" />
-            <Skeleton className="h-4 w-[150px] rounded-md" />
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <Skeleton className="h-6 w-[260px] rounded-md" />
-          <div className="space-y-2">
-            <Skeleton className="h-4 mt-2 w-full rounded-full" />
-            <Skeleton className="h-4 w-full rounded-full" />
-            <Skeleton className="h-4 w-[320px] rounded-full" />
-          </div>
-        </div>
-
-        <div className="space-y-4 mt-4">
-          <div>
-            <Skeleton className="h-6 w-40  rounded-md" />
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex space-x-2">
-              <Skeleton className="h-4 w-4 rounded-full" />
-              <Skeleton className="h-4 w-full rounded-full" />
-            </div>
-            <div className="flex space-x-2">
-              <Skeleton className="h-4 w-4 rounded-full" />
-              <Skeleton className="h-4 w-full rounded-full" />
-            </div>
-            <div className="flex space-x-2">
-              <Skeleton className="h-4 w-4 rounded-full" />
-              <Skeleton className="h-4 w-full rounded-full" />
-            </div>
-            <div className="flex space-x-2">
-              <Skeleton className="h-4 w-4 rounded-full" />
-              <Skeleton className="h-4 w-full rounded-full" />
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <Skeleton className="h-6 w-[260px] rounded-md" />
-          <div className="space-y-2">
-            <Skeleton className="h-4 mt-2 w-full rounded-full" />
-            <Skeleton className="h-4 w-full rounded-full" />
-            <Skeleton className="h-4 w-[320px] rounded-full" />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function CourseBigScreenSkeleton() {
-  return (
-    <div className=" min-h-screen min-w-screen flex justify-center items-center py-8">
-      <div className="grid grid-cols-3 justify-between space-x-8 items-start min-h-screen h-full border border-stroke rounded-3xl p-4">
-        {/* left */}
-        <div className="h-full col-span-2 w-full space-y-8">
-          <div className="flex space-x-2">
-            <Skeleton className="h-4 w-[100px] rounded-full" />
-            <FaAngleRight />
-            <Skeleton className="h-4 w-[100px] rounded-full" />
-          </div>
-
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Skeleton className="h-8 w-full rounded-md" />
-              <Skeleton className="h-8 w-[300px] rounded-md" />
-            </div>
-
-            <div className="flex space-x-2 justify-start items-center">
-              <FaStar className="text-yellow-500" />
-              <Skeleton className="h-4 w-[100px] rounded-full" />
-              <Skeleton className="h-4 w-[230px] rounded-full" />
-              <Skeleton className="h-4 w-[150px] rounded-md" />
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <Skeleton className="h-6 w-[260px] rounded-md" />
-            <div className="space-y-2">
-              <Skeleton className="h-4 mt-2 w-full rounded-full" />
-              <Skeleton className="h-4 w-full rounded-full" />
-              <Skeleton className="h-4 w-[320px] rounded-full" />
-            </div>
-          </div>
-
-          <div className="space-y-4 mt-4">
-            <div>
-              <Skeleton className="h-6 w-40  rounded-md" />
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex space-x-2">
-                <Skeleton className="h-4 w-4 rounded-full" />
-                <Skeleton className="h-4 w-full rounded-full" />
-              </div>
-              <div className="flex space-x-2">
-                <Skeleton className="h-4 w-4 rounded-full" />
-                <Skeleton className="h-4 w-full rounded-full" />
-              </div>
-              <div className="flex space-x-2">
-                <Skeleton className="h-4 w-4 rounded-full" />
-                <Skeleton className="h-4 w-full rounded-full" />
-              </div>
-              <div className="flex space-x-2">
-                <Skeleton className="h-4 w-4 rounded-full" />
-                <Skeleton className="h-4 w-full rounded-full" />
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <Skeleton className="h-6 w-[260px] rounded-md" />
-            <div className="space-y-2">
-              <Skeleton className="h-4 mt-2 w-full rounded-full" />
-              <Skeleton className="h-4 w-full rounded-full" />
-              <Skeleton className="h-4 w-[320px] rounded-full" />
-            </div>
-          </div>
-        </div>
-
-        {/* right */}
-        <div className="h-full col-span-1 space-y-2 max-w-[22rem] w-full rounded-3xl border border-stroke p-4 ">
-          <Skeleton className="h-[220px] w-full rounded-2xl" />
-          <div className="flex justify-start items-center space-x-2">
-            <span className="text-blue-500 font-bold">$</span>
-            <Skeleton className="h-4 w-12 rounded-md" />{" "}
-            <Skeleton className="h-4 w-40 rounded-full" />
-          </div>
-
-          <Skeleton className="h-10 w-full rounded-md" />
-
-          <div className="space-y-8">
-            <div className="flex justify-center items-center mx-auto">
-              <Skeleton className="h-4 w-40 rounded-full" />
-            </div>
-
-            <div className="space-y-4 mt-4">
-              <div>
-                <Skeleton className="h-6 w-40 rounded-md" />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex space-x-2">
-                  <Skeleton className="h-4 w-4 rounded-full" />
-                  <Skeleton className="h-4 w-full rounded-full" />
-                </div>
-                <div className="flex space-x-2">
-                  <Skeleton className="h-4 w-4 rounded-full" />
-                  <Skeleton className="h-4 w-full rounded-full" />
-                </div>
-                <div className="flex space-x-2">
-                  <Skeleton className="h-4 w-4 rounded-full" />
-                  <Skeleton className="h-4 w-full rounded-full" />
-                </div>
-                <div className="flex space-x-2">
-                  <Skeleton className="h-4 w-4 rounded-full" />
-                  <Skeleton className="h-4 w-full rounded-full" />
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-center items-center space-x-4 mx-auto">
-              <Skeleton className="h-4 w-40 rounded-full" />
-              <Skeleton className="h-4 w-40 rounded-full" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function InstructorBadgeLoadingSkeleton() {
-  return (
-    <div className="flex justify-start items-center space-x-4">
-      <Skeleton className="rounded-full h-20 w-20" />
-
-      <div className="space-y-2">
-        <Skeleton className="h-6 w-full rounded-md" />
-        <Skeleton className="h-3 w-full rounded-md" />
-      </div>
-    </div>
-  );
-}
-
 //* ------------------------------------- SECTIONS -------------------------------------
 
-function CourseDetailsLeftSection({ course }: { course: Course }) {
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<String | null>(null);
-
-  const instructorId = course?.instructorID!;
+const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
   console.log(
-    `Instructor id in the course details left section: ${instructorId} `
+    `Instructor id in the course details left section: ${course?.instructorID!} `
   );
-  const instructor = useInstructorInfo(instructorId).instructor;
 
-  if (loading) {
+  const instructorInfo = useInstructorInfo(course?.instructorID!);
+
+  if (instructorInfo.isLoading) {
     return <InstructorBadgeLoadingSkeleton />;
   }
 
-  if (error) {
-    return <div>ERROR: {error}</div>;
+  if (instructorInfo.error) {
+    return <>ERROR: {instructorInfo.error.message}</>;
   }
+
+  const instructor = instructorInfo.instructor;
 
   return (
     <div className="mt-[3.125rem] flex flex-col text-red items-start justify-center text-start text-xl space-y-6 overflow-x-hidden">
@@ -523,29 +315,13 @@ function CourseDetailsLeftSection({ course }: { course: Course }) {
       <Prerequisits prerequisits={course?.prerequisits} />
     </div>
   );
-}
+};
 
-function CourseDetailsRightSection({ course }: { course: Course }) {
-  const pathname = usePathname();
-
-  const notify = (content: string) => toast(`${content}`);
-
-  const handleShare = () => {
-    const currentUrl = pathname;
-    navigator.clipboard.writeText(currentUrl).then(
-      () => {
-        console.log("URL copied to clipboard");
-        notify("✔ URL copied successfully!");
-      },
-      (err) => {
-        console.error("Failed to copy URL:", err);
-        notify("❌ Failed to copy URL!");
-      }
-    );
-  };
-
+const CourseDetailsRightSection = ({ course }: { course: Course }) => {
   return (
     <div className="w-auto h-auto hidden md:flex md:flex-col md:mt-12">
+      <Toaster />
+
       <div className="mx-auto shadow-xl max-w-md w-full rounded-3xl dark:bg-slate-800 h-auto">
         <Image
           className="h-60 max-w-[28rem] w-full bg-slate-700 rounded-t-3xl relative left-0 right-0"
@@ -624,37 +400,24 @@ function CourseDetailsRightSection({ course }: { course: Course }) {
 
           <Divider />
 
-          <Toaster />
-
           {/* share, gift, apply coupon code */}
           <div className="flex space-x-4 justify-center items-center">
-            <button
-              onClick={() => {
-                handleShare();
-              }}
-              className="flex justify-center items-center"
-            >
-              <FaShare />
-              <p className="pl-2 hover:cursor-pointer text-xs text-gray-400 hover:text-blue-500  hover:underline">
-                Share
-              </p>
-            </button>
-
+            <ShareButton />
             <ApplyCouponCode />
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 //? --------------------------------------- COMPONENTS ----------------------------------
 
-function CourseDescription({
+const CourseDescription = ({
   courseDescription,
 }: {
   courseDescription: string;
-}) {
+}) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
   const truncatedDescription = courseDescription.slice(0, 170);
   const [showFullDescription, setShowFullDescription] = React.useState(false);
@@ -692,15 +455,15 @@ function CourseDescription({
       )}
     </div>
   );
-}
+};
 
- function CourseEnrollButton({
+const CourseEnrollButton = ({
   course,
   courseId,
 }: {
   course: Course;
   courseId: string;
-}) {
+}) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const user = useUserInfo();
   const isCoursePurchased = useCheckCourseIsPurchased(user?.user?.id, courseId);
@@ -765,29 +528,28 @@ function CourseDescription({
       </Button>
     </div>
   );
-}
+};
 
-
-function AddToCartButton({ course }: { course: Course }) {
+const AddToCartButton = ({ course }: { course: Course }) => {
   const user = useUserInfo();
-  const cartItemId = generateUid();
+  // const cartItemId = generateUid();
 
   const [isInCart, setIsInCart] = React.useState(false);
   const { addToCart: handleAddToCart, removeFromCart: handleRemoveFromCart } =
     useCartStore();
 
-  const cartItemToAdd: CartItem = {
-    id: `cart_${cartItemId}`,
-    userId: user.user?.id,
-    courseId: course?.courseId,
-    courseName: course?.courseTitle,
-    courseInstructorName: course?.instructorName ?? "",
-    courseImageUrl: course?.courseImage ?? "./assets/images/images1.jpg",
-    coursePrice: course?.coursePrice!,
-    quantity: 1,
-    createdAt: null,
-    updatedAt: null,
-  };
+  // const cartItemToAdd: CartItem = {
+  //   id: `cart_${cartItemId}`,
+  //   userId: user.user?.id,
+  //   courseId: course?.courseId,
+  //   courseName: course?.courseTitle,
+  //   courseInstructorName: course?.instructorName ?? "",
+  //   courseImageUrl: course?.courseImage ?? "./assets/images/images1.jpg",
+  //   coursePrice: course?.coursePrice!,
+  //   quantity: 1,
+  //   createdAt: null,
+  //   updatedAt: null,
+  // };
 
   const toggleIsInCart = () => {
     if (isInCart) {
@@ -816,9 +578,43 @@ function AddToCartButton({ course }: { course: Course }) {
       )}
     </Button>
   );
-}
+};
 
-function ApplyCouponCode() {
+const ShareButton = () => {
+  const pathname = usePathname();
+
+  const notify = (content: string) => toast(`${content}`);
+
+  const handleShare = () => {
+    const currentUrl = pathname;
+    navigator.clipboard.writeText(currentUrl).then(
+      () => {
+        console.log("URL copied to clipboard");
+        notify("✔ URL copied successfully!");
+      },
+      (err) => {
+        console.error("Failed to copy URL:", err);
+        notify("❌ Failed to copy URL!");
+      }
+    );
+  };
+
+  return (
+    <>
+      <button
+        onClick={() => handleShare()}
+        className="flex justify-center items-center"
+      >
+        <FaShare />
+        <p className="pl-2 hover:cursor-pointer text-xs text-gray-400 hover:text-blue-500  hover:underline">
+          Share
+        </p>
+      </button>
+    </>
+  );
+};
+
+const ApplyCouponCode = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -857,4 +653,213 @@ function ApplyCouponCode() {
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+// ------------------------------------- SKELETONS ------------------------------------
+
+const CourseSmallScreenSkeleton = () => {
+  return (
+    <div className="space-y-4 min-h-screen min-w-screen py-8">
+      <Skeleton className="h-[220px] w-full rounded-2xl" />
+      <div className="h-full col-span-2 w-full space-y-8">
+        <div className="flex space-x-2">
+          <Skeleton className="h-4 w-[100px] rounded-full" />
+          <FaAngleRight />
+          <Skeleton className="h-4 w-[100px] rounded-full" />
+        </div>
+
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-full rounded-md" />
+            <Skeleton className="h-8 w-[300px] rounded-md" />
+          </div>
+
+          <div className="flex space-x-2 justify-start items-center">
+            <FaStar className="text-yellow-500" />
+            <Skeleton className="h-4 w-[100px] rounded-full" />
+            <Skeleton className="h-4 w-[230px] rounded-full" />
+            <Skeleton className="h-4 w-[150px] rounded-md" />
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-[260px] rounded-md" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 mt-2 w-full rounded-full" />
+            <Skeleton className="h-4 w-full rounded-full" />
+            <Skeleton className="h-4 w-[320px] rounded-full" />
+          </div>
+        </div>
+
+        <div className="space-y-4 mt-4">
+          <div>
+            <Skeleton className="h-6 w-40  rounded-md" />
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex space-x-2">
+              <Skeleton className="h-4 w-4 rounded-full" />
+              <Skeleton className="h-4 w-full rounded-full" />
+            </div>
+            <div className="flex space-x-2">
+              <Skeleton className="h-4 w-4 rounded-full" />
+              <Skeleton className="h-4 w-full rounded-full" />
+            </div>
+            <div className="flex space-x-2">
+              <Skeleton className="h-4 w-4 rounded-full" />
+              <Skeleton className="h-4 w-full rounded-full" />
+            </div>
+            <div className="flex space-x-2">
+              <Skeleton className="h-4 w-4 rounded-full" />
+              <Skeleton className="h-4 w-full rounded-full" />
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-[260px] rounded-md" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 mt-2 w-full rounded-full" />
+            <Skeleton className="h-4 w-full rounded-full" />
+            <Skeleton className="h-4 w-[320px] rounded-full" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const CourseBigScreenSkeleton = () => {
+  return (
+    <div className=" min-h-screen min-w-screen flex justify-center items-center py-8">
+      <div className="grid grid-cols-3 justify-between space-x-8 items-start min-h-screen h-full border border-stroke rounded-3xl p-4">
+        {/* left */}
+        <div className="h-full col-span-2 w-full space-y-8">
+          <div className="flex space-x-2">
+            <Skeleton className="h-4 w-[100px] rounded-full" />
+            <FaAngleRight />
+            <Skeleton className="h-4 w-[100px] rounded-full" />
+          </div>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Skeleton className="h-8 w-full rounded-md" />
+              <Skeleton className="h-8 w-[300px] rounded-md" />
+            </div>
+
+            <div className="flex space-x-2 justify-start items-center">
+              <FaStar className="text-yellow-500" />
+              <Skeleton className="h-4 w-[100px] rounded-full" />
+              <Skeleton className="h-4 w-[230px] rounded-full" />
+              <Skeleton className="h-4 w-[150px] rounded-md" />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <Skeleton className="h-6 w-[260px] rounded-md" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 mt-2 w-full rounded-full" />
+              <Skeleton className="h-4 w-full rounded-full" />
+              <Skeleton className="h-4 w-[320px] rounded-full" />
+            </div>
+          </div>
+
+          <div className="space-y-4 mt-4">
+            <div>
+              <Skeleton className="h-6 w-40  rounded-md" />
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex space-x-2">
+                <Skeleton className="h-4 w-4 rounded-full" />
+                <Skeleton className="h-4 w-full rounded-full" />
+              </div>
+              <div className="flex space-x-2">
+                <Skeleton className="h-4 w-4 rounded-full" />
+                <Skeleton className="h-4 w-full rounded-full" />
+              </div>
+              <div className="flex space-x-2">
+                <Skeleton className="h-4 w-4 rounded-full" />
+                <Skeleton className="h-4 w-full rounded-full" />
+              </div>
+              <div className="flex space-x-2">
+                <Skeleton className="h-4 w-4 rounded-full" />
+                <Skeleton className="h-4 w-full rounded-full" />
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <Skeleton className="h-6 w-[260px] rounded-md" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 mt-2 w-full rounded-full" />
+              <Skeleton className="h-4 w-full rounded-full" />
+              <Skeleton className="h-4 w-[320px] rounded-full" />
+            </div>
+          </div>
+        </div>
+
+        {/* right */}
+        <div className="h-full col-span-1 space-y-2 max-w-[22rem] w-full rounded-3xl border border-stroke p-4 ">
+          <Skeleton className="h-[220px] w-full rounded-2xl" />
+          <div className="flex justify-start items-center space-x-2">
+            <span className="text-blue-500 font-bold">$</span>
+            <Skeleton className="h-4 w-12 rounded-md" />{" "}
+            <Skeleton className="h-4 w-40 rounded-full" />
+          </div>
+
+          <Skeleton className="h-10 w-full rounded-md" />
+
+          <div className="space-y-8">
+            <div className="flex justify-center items-center mx-auto">
+              <Skeleton className="h-4 w-40 rounded-full" />
+            </div>
+
+            <div className="space-y-4 mt-4">
+              <div>
+                <Skeleton className="h-6 w-40 rounded-md" />
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex space-x-2">
+                  <Skeleton className="h-4 w-4 rounded-full" />
+                  <Skeleton className="h-4 w-full rounded-full" />
+                </div>
+                <div className="flex space-x-2">
+                  <Skeleton className="h-4 w-4 rounded-full" />
+                  <Skeleton className="h-4 w-full rounded-full" />
+                </div>
+                <div className="flex space-x-2">
+                  <Skeleton className="h-4 w-4 rounded-full" />
+                  <Skeleton className="h-4 w-full rounded-full" />
+                </div>
+                <div className="flex space-x-2">
+                  <Skeleton className="h-4 w-4 rounded-full" />
+                  <Skeleton className="h-4 w-full rounded-full" />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-center items-center space-x-4 mx-auto">
+              <Skeleton className="h-4 w-40 rounded-full" />
+              <Skeleton className="h-4 w-40 rounded-full" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const InstructorBadgeLoadingSkeleton = () => {
+  return (
+    <div className="flex justify-start items-center space-x-4">
+      <Skeleton className="rounded-full h-20 w-20" />
+
+      <div className="space-y-2">
+        <Skeleton className="h-6 w-full rounded-md" />
+        <Skeleton className="h-3 w-full rounded-md" />
+      </div>
+    </div>
+  );
+};

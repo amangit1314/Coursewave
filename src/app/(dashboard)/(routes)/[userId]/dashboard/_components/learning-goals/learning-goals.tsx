@@ -52,21 +52,23 @@ const LearningGoals = () => {
   const learningGoalsError = useZustandStore((state: any) => state.error);
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong tracking-tight">
+    <div className="space-y-4 w-full">
+      <div className="flex justify-center items-center w-full">
+        <h3 className="text-lg font-medium text-tremor-content-strong dark:text-gray-100 tracking-tight">
           Learning Goals
         </h3>
 
         {/* add goal button */}
-        <AddLearningGoalButton />
+       <div className="ml-auto">
+       <AddLearningGoalButton />
+       </div>
       </div>
 
       <div className="flex flex-col space-y-1">
         {isLearningGoalsLoading ? (
           <LearningGoalsSkeleton />
         ) : learningGoalsError ? (
-          <div className="text-red-400">Error fetching enrolled courses</div>
+          <div className="text-red-400 text-base">Error fetching enrolled courses</div>
         ) : (
           <div>
             {learningGoals?.length > 0 ? (
@@ -125,14 +127,14 @@ const AddLearningGoalButton = () => {
   };
 
   return (
-    <div className="max-h-[70vh] h-full max-w-[70vw] w-full rounded-3xl overflow-hidden">
+    <div className="">
       <Dialog>
         <DialogTrigger asChild>
           <div className="flex justify-center items-center text-blue-500 cursor-pointer font-medium hover:text-blue-600 transition-all duration-300">
-            <IoMdAddCircleOutline />
+            <IoMdAddCircleOutline className="h-[24px] w-[24px]" />
           </div>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] max-h-[70vh] h-full md:max-w-[70vw] w-full rounded-3xl overflow-hidden">
           <DialogHeader>
             <DialogTitle>Add Goal</DialogTitle>
             <DialogDescription>

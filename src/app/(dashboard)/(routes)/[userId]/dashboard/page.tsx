@@ -24,7 +24,6 @@ import DashboardHeader from "./_components/dashboard-header";
 import UserDashboardStats from "./_components/user-dashboard-stats";
 import LearningGoals from "./_components/learning-goals/learning-goals";
 
-
 const DashboardPage = ({ params }: { params: { userId: string } }) => {
   const userId = params?.userId!;
 
@@ -178,19 +177,24 @@ const SavedArticlesAndLearningGoals = ({ userId }: { userId: string }) => {
   const savedArticlesError = useZustandStore((state) => state.error);
 
   return (
-    <div className="grid grid-cols-3 justify-between gap-6 items-start mb-8 p-4 rounded-md border border-stroke ">
+    <div className="flex flex-col justify-start md:grid md:grid-cols-3 md:justify-between space-y-6 md:space-y-0 md:gap-6 items-start mb-8 p-4 rounded-md border border-stroke ">
       {/* create articles and saved articles tabs */}
-      <div className="space-y-4 col-span-2">
+      <div className="space-y-4 md:col-span-2 w-full">
         <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong tracking-tight">
           Articles
         </h3>
 
         <TabGroup className="space-y-2">
-          <TabList variant="line" defaultValue="1" color={"blue"} className="">
+          {/* variant="line" */}
+          <TabList
+            defaultValue="1"
+            color={"blue"}
+            className="p-2 rounded-xl dark:bg-zinc-800 overflow-hidden"
+          >
             <Tab
               value="1"
               className={cn(
-                "flex justify-center items-center rounded-md bg-transparent border border-stroke border-transparent text-blue-500 px-4 py-2 font-medium tracking-tight hover:text-white hover:bg-blue-500 hover:border-transparent active:text-white active:border-transparent active:bg-blue-500"
+                "flex justify-center items-center rounded-md bg-transparent border border-stroke border-transparent text-blue-500 px-4 py-2 font-medium tracking-tight hover:text-white hover:bg-blue-600 dark:hover:bg-zinc-700 hover:border-transparent active:text-white active:border-transparent active:bg-blue-600 overflow-hidden"
               )}
             >
               Saved Articles
@@ -198,7 +202,7 @@ const SavedArticlesAndLearningGoals = ({ userId }: { userId: string }) => {
             <Tab
               value="2"
               className={cn(
-                "flex justify-center items-center rounded-md  bg-transparent border border-stroke border-transparent text-blue-500 px-4 py-2 font-medium tracking-tight hover:text-white hover:bg-blue-500 hover:border-transparent active:text-white active:border-transparent active:bg-blue-500"
+                "flex justify-center items-center rounded-md bg-transparent border border-stroke border-transparent text-blue-500 px-4 py-2 font-medium tracking-tight hover:text-white hover:bg-blue-600 dark:hover:bg-zinc-700 hover:border-transparent active:text-white active:border-transparent active:bg-blue-600 overflow-hidden"
               )}
             >
               Created Articles
@@ -267,7 +271,7 @@ const SavedArticlesAndLearningGoals = ({ userId }: { userId: string }) => {
       </div>
 
       {/* learning goals */}
-      <div className="h-full w-full cols-span-1">
+      <div className=" w-full md:cols-span-1">
         <LearningGoals />
       </div>
     </div>
