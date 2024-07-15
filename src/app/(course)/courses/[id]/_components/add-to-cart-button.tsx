@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
-import { generateUid } from "@/helpers/id_helper";
-import useUserInfo from "@/hooks/use-user-info";
-import { useCartStore } from "@/zustand/cartStore";
-import { CartItem, Course } from "@prisma/client";
 import React from "react";
+import { Button } from "@/components/ui/button";
+import useUserInfo from "@/hooks/use-user-info";
+import useCartStore from "@/zustand/cartStore";
+import { CartItem, Course } from "@prisma/client";
+import { generateUid } from "@/helpers/id_helper";
 import { HiOutlineShoppingCart, HiShoppingCart } from "react-icons/hi";
 
 export const AddToCartButton = ({ course }: { course: Course }) => {
