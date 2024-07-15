@@ -16,7 +16,7 @@ import { ScrollArea } from "./ui/scroll-area";
 import { Button } from "./ui/button";
 import { FiShoppingCart } from "react-icons/fi";
 import Link from "next/link";
-import { useCartStore } from "@/zustand/cartStore";
+import useCartStore from "@/zustand/cartStore";
 import { RatingStars } from "@/app/(course)/courses/_components/rating-stars";
 import {
   Dialog,
@@ -240,21 +240,20 @@ const CartItem = ({
 };
 
 function AppyCouponCode() {
-    const [isCouponInputVisible, setIsCouponInputVisible] =
-      React.useState(false);
-    const [enteredCode, setEnteredCode] = React.useState("");
+  const [isCouponInputVisible, setIsCouponInputVisible] = React.useState(false);
+  const [enteredCode, setEnteredCode] = React.useState("");
 
-    const handleAddCouponClick = () => {
-      setIsCouponInputVisible(true);
-    };
+  const handleAddCouponClick = () => {
+    setIsCouponInputVisible(true);
+  };
 
-    const handleCodeChange = (event: any) => {
-      setEnteredCode(event!.target!.value);
-    };
+  const handleCodeChange = (event: any) => {
+    setEnteredCode(event!.target!.value);
+  };
 
-    const handleSubmit = (event: any) => {
-      event.preventDefault(); // Prevent default form submission
-    };
+  const handleSubmit = (event: any) => {
+    event.preventDefault(); // Prevent default form submission
+  };
 
   return (
     <Dialog>
