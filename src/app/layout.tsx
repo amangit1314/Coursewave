@@ -50,14 +50,14 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <GlobalQueryClientProvider>
-            <ClientProvider>
+            {/* <ClientProvider> */}
               <div className="dark:bg-zinc-800">
                 {hideSidebar && (
                   <LandingPageHeader handleLoginClick={handleLoginClick} />
                 )}
                 {children}
               </div>
-            </ClientProvider>
+            {/* </ClientProvider> */}
           </GlobalQueryClientProvider>
         </ThemeProvider>
       </body>
