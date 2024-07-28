@@ -34,7 +34,7 @@ import { absoluteUrl } from "@/utils/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import toast, { Toaster } from "react-hot-toast";
-import { Button, Divider, Title } from "@tremor/react";
+import { Button, Callout, Divider, Title } from "@tremor/react";
 import { usePathname } from "next/navigation";
 import { SiCrowdsource } from "react-icons/si";
 import { GoProjectTemplate } from "react-icons/go";
@@ -73,10 +73,10 @@ const CoursePreview = ({ params }: { params: { id: string } }) => {
 
   if (courseData.error) {
     return (
-      <div className="justify-center items-center">
-        <p className="flex align-middle items-center justify-center space-x-4 text-red-400">
-          ERROR: <span>{courseData.error.message}</span>
-        </p>
+      <div className="flex justify-center items-center mx-auto w-7xl align-middle">
+        <Callout className="" title="Failed to Fetch Course Info" color="red">
+          ERROR In Course id page: <span>{courseData.error.message}</span>
+        </Callout>
       </div>
     );
   }
@@ -88,11 +88,6 @@ const CoursePreview = ({ params }: { params: { id: string } }) => {
         <div className=" inset-y-0 w-full z-50 px-4 md:px-10 py-2 ">
           <CourseNavbar courseName={course.courseTitle} />
         </div>
-
-        {/* course breadcrumb */}
-        {/* <div className="visible md:hidden pl-8">
-          <CourseBreadcrumb course={course!} />
-        </div> */}
 
         {/* course content */}
         <div className="md:grid md:grid-cols-2 md:max-w-7xl pl-8 md:pl-[6rem] ">
@@ -120,7 +115,7 @@ const CoursePreview = ({ params }: { params: { id: string } }) => {
           </h3>
 
           {/* instructor card */}
-          <InstructorCard instructorId={course?.instructorID!} />
+          {/* <InstructorCard instructorId={course?.instructorID!} /> */}
 
           {/* more created courses by instructor */}
           <MoreIntructorCreatedCourses
@@ -480,7 +475,7 @@ const CourseEnrollButton = ({
       );
       if (isCoursePurchased.courseIsPurchased) {
         window.location.assign(
-          absoluteUrl(`/courses/${courseId}/courseContent`)
+          `/courses/${courseId}/courseContent`
         );
       } else {
         const response = await axios.post(`api/courses/${courseId}/checkout`, {

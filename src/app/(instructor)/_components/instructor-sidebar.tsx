@@ -7,7 +7,8 @@ import Link from "next/link";
 
 function InstructorSidebar() {
   const path = usePathname();
-  const isAnalyticsPage = !!path.includes("analytics");
+  const isAnalyticsPage = path.includes("analytics");
+  // const isAnalyticsPage = false;
   return (
     <div
       className="fixed border-r top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 shadow-sm bg-white overflow-y-auto"
@@ -35,6 +36,7 @@ function InstructorSidebar() {
             Coursewave
           </p>
         </Link>
+
         <InstructorSidebarRoutes />
       </div>
     </div>

@@ -7,7 +7,7 @@ import { BiSearchAlt } from "react-icons/bi";
 import { CiCircleRemove } from "react-icons/ci";
 import { Button } from "@/components/ui/button";
 
-export default function SearchButton() {
+const SearchButton = () => {
   const [isFormOpen, setIsFormOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
   const router = useRouter();
@@ -68,4 +68,6 @@ export default function SearchButton() {
       {isFormOpen ? form : searchButton}
     </div>
   );
-}
+};
+
+export default SearchButton;

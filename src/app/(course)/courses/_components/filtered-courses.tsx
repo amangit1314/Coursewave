@@ -20,10 +20,10 @@ interface FilteredCoursesComponentProps {
   categories: Category[];
 }
 
-export function FilteredCoursesComponent({
+export const FilteredCoursesComponent = ({
   activeCategory,
   categories,
-}: FilteredCoursesComponentProps) {
+}: FilteredCoursesComponentProps) => {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("q") || "";
   const { courses, fetchCourses, loading, error } = useCoursesStore();
@@ -106,7 +106,9 @@ export function FilteredCoursesComponent({
   if (error) {
     return (
       <div className="flex flex-col mx-auto my-auto justify-center items-center">
-        <p className="flex mx-auto items-center justify-center">ERROR: {error}</p>
+        <p className="flex mx-auto items-center justify-center">
+          ERROR: {error}
+        </p>
       </div>
     );
   }
@@ -142,9 +144,9 @@ export function FilteredCoursesComponent({
       )}
     </div>
   );
-}
+};
 
-function CoursesPagination({ currentPage, totalPages, onPageChange }: any) {
+const CoursesPagination = ({ currentPage, totalPages, onPageChange }: any) => {
   const handlePrevious = () => onPageChange(currentPage - 1);
   const handleNext = () => onPageChange(currentPage + 1);
   return (
@@ -180,10 +182,10 @@ function CoursesPagination({ currentPage, totalPages, onPageChange }: any) {
       </PaginationContent>
     </Pagination>
   );
-}
+};
 
 // <------------------------------------- SKELETON ---------------------------------------->
-function FilteredCoursesSkeleton() {
+const FilteredCoursesSkeleton = () => {
   return (
     <div className="md:max-w-7xl w-full justify-center md:mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-4">
       <FilteredCourseSkeleton />
@@ -194,9 +196,9 @@ function FilteredCoursesSkeleton() {
       <FilteredCourseSkeleton />
     </div>
   );
-}
+};
 
-function FilteredCourseSkeleton() {
+const FilteredCourseSkeleton = () => {
   return (
     <div className="flex flex-col space-y-3 mb-6">
       <Skeleton className="h-[125px] md:max-w-[250px] w-full rounded-xl" />
@@ -206,4 +208,4 @@ function FilteredCourseSkeleton() {
       </div>
     </div>
   );
-}
+};

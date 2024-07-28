@@ -58,7 +58,7 @@ const WriteArticlePage = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     await axios
-      .post(`/api/articles`, {
+      .post(`api/articles`, {
         authorId: userId,
         title: values.title,
         content: values.content,

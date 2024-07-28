@@ -91,7 +91,7 @@ const CreateCourseForm = ({ instructorId }: { instructorId: string }) => {
       .map((item: string) => item.trim());
 
     await axios
-      .post(`/api/instructor/${instructorId}/dashboard/courses`, {
+      .post(`api/instructor/${instructorId}/dashboard/courses`, {
         courseTitle: values.title,
         coursePrice: values.coursePrice,
         courseCreatorName: values.instructorName,

@@ -50,7 +50,7 @@ export const InstructorNameForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/instructor/${course.instructorID}/dashboard/courses/${course.courseId}`,
+        `api/instructor/${course.instructorID}/dashboard/courses/${course.courseId}`,
         { newInstructorName: values.instructorName }
       );
       toast.success("Course instructor name updated ...");

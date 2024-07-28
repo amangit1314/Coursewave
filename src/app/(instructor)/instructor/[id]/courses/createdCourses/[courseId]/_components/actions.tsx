@@ -26,10 +26,10 @@ export const Actions = ({ disabled, courseId, isPublished }: ActionsProps) => {
       setIsLoading(true);
 
       if (isPublished) {
-        await axios.patch(`/api/courses/${courseId}/unpublish`);
+        await axios.patch(`api/courses/${courseId}/unpublish`);
         toast.success("Course unpublished");
       } else {
-        await axios.patch(`/api/courses/${courseId}/publish`);
+        await axios.patch(`api/courses/${courseId}/publish`);
         toast.success("Course published");
         confetti.onOpen();
       }
@@ -46,7 +46,7 @@ export const Actions = ({ disabled, courseId, isPublished }: ActionsProps) => {
     try {
       setIsLoading(true);
 
-      await axios.delete(`/api/courses/${courseId}`);
+      await axios.delete(`api/courses/${courseId}`);
 
       toast.success("Course deleted");
       router.refresh();

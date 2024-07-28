@@ -11,7 +11,7 @@ interface InstructorLayoutProps {
 
 export default function InstructorLayout({ children }: InstructorLayoutProps) {
   const path = usePathname();
-  const isAnalyticsPage = !!path.includes("analytics");
+  const isAnalyticsPage = path.includes("analytics");
 
   return (
     <div
@@ -19,8 +19,8 @@ export default function InstructorLayout({ children }: InstructorLayoutProps) {
     >
       <div className="h-[60px] md:pl-64 fixed inset-y-0 w-full z-50 ">
         <InstructorNavbar />
-      </div>{" "}
-      <div className="hidden md:flex h-full fixed inset-y-0 z-50">
+      </div>
+      <div className="flex h-full md:fixed md:inset-y-0 md:z-50">
         <InstructorSidebar />
       </div>
       <div

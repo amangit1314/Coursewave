@@ -15,7 +15,7 @@ import useUserInfo from "@/hooks/use-user-info";
 import useInstructorInfo from "@/hooks/use-instructor-info";
 import { Instructor } from "@prisma/client";
 
-function InstructorSideBarRoutes() {
+const InstructorSideBarRoutes = () => {
   const user = useUserInfo();
   const userId = user.user?.id;
 
@@ -77,7 +77,7 @@ function InstructorSideBarRoutes() {
       })}
     </ul>
   );
-}
+};
 
 export default InstructorSideBarRoutes;
 
@@ -87,7 +87,7 @@ interface SidebarItemProps {
   href: string;
 }
 
-function InstructorSidebarItem({ href, icon, label }: SidebarItemProps) {
+const InstructorSidebarItem = ({ href, icon, label }: SidebarItemProps) => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -130,4 +130,4 @@ function InstructorSidebarItem({ href, icon, label }: SidebarItemProps) {
       />
     </button>
   );
-}
+};

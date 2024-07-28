@@ -1,16 +1,16 @@
 "use client";
 
-import { Button } from "./ui/button";
+// import { Button } from "./ui/button";
 import UserAvatar from "./user-avatar";
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { redirect, useParams, usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Josefin_Sans } from "next/font/google";
 import { ThemeModeToggle } from "./themeModeToggle";
 import useUserInfo from "@/hooks/use-user-info";
 import Notifications from "@/components/notification-button";
 import SearchButton from "@/components/search-button";
-import Cart from "@/components/cart-button";
+// import Cart from "@/components/cart-button";
 import InstructorButton from "./instructor-button";
 
 const josefinSans = Josefin_Sans({
@@ -18,7 +18,7 @@ const josefinSans = Josefin_Sans({
   subsets: ["latin"],
 });
 
-function NavbarRoutes() {
+const NavbarRoutes = () => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -77,6 +77,6 @@ function NavbarRoutes() {
       </div>
     </Suspense>
   );
-}
+};
 
 export default NavbarRoutes;

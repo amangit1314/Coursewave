@@ -21,10 +21,10 @@ const ChapterEditPage = async ({
     chapterId: string;
   };
 }) => {
-  const instructorId = params?.id;
-  const courseId = params?.courseId;
-  const sectionId = params?.sectionId;
-  const chapterId = params?.chapterId;
+  const instructorId = params?.id!;
+  const courseId = params?.courseId!;
+  const sectionId = params?.sectionId!;
+  const chapterId = params?.chapterId!;
 
   const instructor = await db.instructor.findUnique({
     where: {
@@ -159,9 +159,9 @@ const ChapterEditPage = async ({
               <ChapterVideoForm
                 chapterWithCloudinaryData={chapterWithCloudinaryData}
                 instructorId={instructorId}
-                // sectionId={sectionId}
-                // chapterId={chapterId}
-                // courseId={courseId}
+                sectionId={sectionId}
+                chapterId={chapterId}
+                courseId={courseId}
               />
             </div>
           </div>

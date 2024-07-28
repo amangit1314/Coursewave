@@ -49,7 +49,7 @@ export const DescriptionForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/instructor/${course.instructorID}/dashboard/courses/${course.courseId}`,
+        `api/instructor/${course.instructorID}/dashboard/courses/${course.courseId}`,
         {
           newCourseDescription: values.description,
         }

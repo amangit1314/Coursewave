@@ -28,7 +28,7 @@ const DashboardPage = ({ params }: { params: { userId: string } }) => {
   const userId = params?.userId!;
 
   const fetchUserEnrolledCourses = async () => {
-    const response = await fetch(`/api/profile/${userId}/enrolledCourses`);
+    const response = await fetch(`api/profile/${userId}/enrolledCourses`);
 
     if (!response.ok) {
       console.log("Failed to fetch user enrolled courses ...");
@@ -84,7 +84,7 @@ const DashboardPage = ({ params }: { params: { userId: string } }) => {
 
   // <-------------------------- Main ----------------------------------->
   return (
-    <div className="py-4 overflow-x-hidden">
+    <div className="py-4 px-6 overflow-x-hidden">
       {/* header */}
       <DashboardHeader />
 
@@ -126,7 +126,13 @@ const DashboardPage = ({ params }: { params: { userId: string } }) => {
                 <Skeleton className="h-16 w-full rounded-md" />
               </div>
             ) : error ? (
-              <div>Error fetching enrolled courses</div>
+              <Callout
+                className=""
+                title="Error Fetching Enrolled Courses"
+                color="red"
+              >
+                ERROR, {error.message} ...
+              </Callout>
             ) : (
               <div>
                 {enrolledCourses?.data?.length > 0 ? (
@@ -135,7 +141,13 @@ const DashboardPage = ({ params }: { params: { userId: string } }) => {
                     data={enrolledCoursesTableData}
                   />
                 ) : (
-                  <div>You haven't enrolled in any courses yet.</div>
+                  <Callout
+                    className=""
+                    title="No Enrolled Courses"
+                    color="yellow"
+                  >
+                    You haven't enrolled in any courses yet ...
+                  </Callout>
                 )}
               </div>
             )}
@@ -153,7 +165,7 @@ export default DashboardPage;
 
 const SavedArticlesAndLearningGoals = ({ userId }: { userId: string }) => {
   const fetchCreatedArticles = async () => {
-    const response = await fetch(`/api/profile/${userId}/createdArticles`);
+    const response = await fetch(`api/profile/${userId}/createdArticles`);
 
     if (!response.ok) {
       console.log("Failed to fetch user created articles ...");
@@ -216,7 +228,15 @@ const SavedArticlesAndLearningGoals = ({ userId }: { userId: string }) => {
                 {isSavedArticlesLoading ? (
                   <SavedArticlesSkeleton />
                 ) : savedArticlesError ? (
-                  <div>Error fetching enrolled courses</div>
+                  <Callout
+                    className=""
+                    title="Error Fetching Saved Articles"
+                    color="red"
+                  >
+                    We are facing below error while fetching saved artciles,{" "}
+                    {savedArticlesError}
+                    ...
+                  </Callout>
                 ) : (
                   <div>
                     {savedArticles?.length > 0 ? (
@@ -245,7 +265,15 @@ const SavedArticlesAndLearningGoals = ({ userId }: { userId: string }) => {
                 {isCreatedArticlesLoading ? (
                   <CreatedArticlesSkeleton />
                 ) : createdArticlesError ? (
-                  <div>Error fetching enrolled courses</div>
+                  <Callout
+                    className=""
+                    title="Error Fetching Created Articles"
+                    color="red"
+                  >
+                    We are facing below error while fetching created artciles,
+                    {createdArticlesError.message}
+                    ...
+                  </Callout>
                 ) : (
                   <div>
                     {createdArticles?.data?.length > 0 ? (

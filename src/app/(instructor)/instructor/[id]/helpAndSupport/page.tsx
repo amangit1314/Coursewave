@@ -234,7 +234,7 @@ const ContactForm = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post(`/api/profile/${userId}/contact`, {
+      await axios.post(`api/profile/${userId}/contact`, {
         fromEmail: values.email,
         toEmail: "gitaman8481@gmail.com",
         phone: values.phone,

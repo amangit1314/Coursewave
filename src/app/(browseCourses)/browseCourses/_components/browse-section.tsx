@@ -26,8 +26,10 @@ const BrowseSection: React.FC<BrowseSectionProps> = ({ children }) => {
 
   useEffect(() => {
     fetchCategories();
-
   }, [fetchCategories]);
+
+  console.log("Courses in browse section: ", courses);
+  console.log("Categories in browse section: ", categories);
 
   useEffect(() => {
     setCategories([

@@ -53,7 +53,7 @@ export const PrerequisitsForm = ({ course }: { course: Course }) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.post(
-        `/api/instructor/${course?.instructorID}/dashboard/courses/${course?.courseId}/attachments`,
+        `api/instructor/${course?.instructorID}/dashboard/courses/${course?.courseId}/attachments`,
         { newPrerequisits: values.prerequisits }
       );
       toast.success("Course categories updated ...");

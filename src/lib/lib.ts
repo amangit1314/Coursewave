@@ -7,23 +7,27 @@ import { verifyToken } from "@/helpers/jwt_helper";
 const secretKey = process.env.JWT_SECRET!;
 const key = new TextEncoder().encode(secretKey);
 
-export async function encrypt(payload: any) {
-  return await new SignJWT(payload).setProtectedHeader({ alg: "HS256" }).setIssuedAt().setExpirationTime("10 sec from now").sign(key);
-}
+export const encrypt = async (payload: any) => {
+  return await new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("10 sec from now")
+    .sign(key);
+};
 
-export async function decrypt(input: string): Promise<any> {
+export const decrypt = async (input: string): Promise<any> => {
   const { payload } = await jwtVerify(input, key, { algorithms: ["HS256"] });
   return payload;
-}
+};
 
-export async function getToken() {
+export const getToken = async () => {
   const cookies = getCookies();
   const token = cookies.token;
   if (!token) return null;
   return await decrypt(token);
-}
+};
 
-export async function updateToken(req: NextRequest) {
+export const updateToken = async (req: NextRequest) => {
   const cookies = getCookies();
   const token = cookies.token;
   if (!token) return;
@@ -38,9 +42,9 @@ export async function updateToken(req: NextRequest) {
     expires: parsed.expires,
   });
   return res;
-}
+};
 
-export async function getUserIdFromToken(token: string) {
+export const getUserIdFromToken = async (token: string) => {
   if (!token) return null;
   try {
     const payload = await verifyToken(token);
@@ -49,24 +53,23 @@ export async function getUserIdFromToken(token: string) {
     console.error("Error retrieving user ID from token:", error);
     return null;
   }
-}
+};
 
-export async function getUserById(id: string) {
+export const getUserById = async (id: string) => {
   try {
     const uid = id;
     const user = await db.user.findUnique({
       where: {
-        id: uid
-      }
+        id: uid,
+      },
     });
 
     if (!user) {
-      throw new Error(`No user found with this id: ${uid}`)
+      throw new Error(`No user found with this id: ${uid}`);
     }
 
     return user;
   } catch (error) {
-    throw new Error(`Failed to get user info by id: ${id}, Error: ${error}`)
+    throw new Error(`Failed to get user info by id: ${id}, Error: ${error}`);
   }
-
-}
+};

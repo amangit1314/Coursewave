@@ -10,14 +10,11 @@ import {
 
 export const MeetOurCoaches = () => {
   return (
-    <div className="w-auto">
-      <p className="text-2xl text-zinc-800 dark:text-white font-bold  pb-2">
+    <div className="w-auto space-y-4">
+      <p className="text-xl text-zinc-800 dark:text-white font-bold tracking-tight">
         Meet our Coaches
       </p>
-      {/* <div className="grid grid-cols-1 max-w-5xl lg:grid-cols-3 gap-2 my-6 justify-center mx-auto">
-          <CoachCard />
-          <CoachCard />
-        </div> */}
+
       <MeetOurCoachesCarousel />
     </div>
   );

@@ -4,7 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { absoluteUrl } from "@/utils/utils";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { LucideLoader2 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
@@ -32,13 +32,21 @@ const Login = () => {
   const onLogin = async () => {
     try {
       setLoading(true);
-      await axios.post((process.env.ENVIRONMENT === "DEVELOPMENT" ? absoluteUrl("/api/auth/login") : "api/auth/login"), user).then((res) => {
-        console.log("Login response: ", res.data);
-        setUser(res.data);
-      });
+      await axios
+        .post(
+          process.env.ENVIRONMENT === "DEVELOPMENT"
+            ? absoluteUrl("/api/auth/login")
+            : "api/auth/login",
+          user
+        )
+        .then((res) => {
+          console.log("Login response: ", res.data);
+          setUser(res.data);
+        });
 
       successNotification("Logged in successfully");
       router.push("/browseCourses");
+      // redirect('/browseCourses');
     } catch (error: any) {
       console.error("Login failed: ", error.message);
       errorNotification(error.message);

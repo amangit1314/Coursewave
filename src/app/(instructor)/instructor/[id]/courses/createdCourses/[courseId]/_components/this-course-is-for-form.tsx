@@ -55,7 +55,7 @@ export const ThisCourseIsForForm = ({ course }: { course: Course }) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.post(
-        `/api/instructor/${course?.instructorID}/dashboard/courses/${course?.courseId}/attachments`,
+        `api/instructor/${course?.instructorID}/dashboard/courses/${course?.courseId}/attachments`,
         { newThisCourseIsForPoints: values.thisCourseIsForPoints }
       );
       toast.success("Course who this course is for updated ...");

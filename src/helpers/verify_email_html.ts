@@ -1,5 +1,5 @@
 export const verifyEmailHtmlTemplate = () => {
-    const template = `<!DOCTYPE html>
+  const template = `<!DOCTYPE html>
     <html>
     <head>
     
@@ -260,7 +260,7 @@ export const verifyEmailHtmlTemplate = () => {
       <!-- end body -->
     
     </body>
-    </html>`
-    
-    return template;
-}
+    </html>`;
+
+  return template;
+};

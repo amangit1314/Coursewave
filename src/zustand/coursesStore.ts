@@ -1,16 +1,16 @@
-import { absoluteUrl } from '@/utils/utils';
-import { Course } from '@prisma/client';
-import { create } from 'zustand';
+import { absoluteUrl } from "@/utils/utils";
+import { Course } from "@prisma/client";
+import { create } from "zustand";
 
 type CoursesState = {
   courses: Course[];
   loading: boolean;
   error: string | null;
-}
+};
 
 type CoursesActions = {
   fetchCourses: () => Promise<void>;
-}
+};
 
 const useCoursesStore = create<CoursesState & CoursesActions>()((set) => ({
   courses: [],
@@ -22,10 +22,11 @@ const useCoursesStore = create<CoursesState & CoursesActions>()((set) => ({
 
       const response = await fetch(
         // process.env.ENVIRONMENT === 'DEVELOPMENT' ? "/api/courses" :
-         `api/courses`);
+        `api/courses`
+      );
 
       if (!response.ok) {
-        set({ loading: false, error: 'Failed to fetch courses ...' })
+        set({ loading: false, error: "Failed to fetch courses ..." });
       }
 
       const data = await response.json();
@@ -33,7 +34,7 @@ const useCoursesStore = create<CoursesState & CoursesActions>()((set) => ({
 
       set({ courses: courses, loading: false, error: null });
     } catch (error: any) {
-      console.error('Error fetching courses:', error);
+      console.error("Error fetching courses:", error);
       set({ loading: false, error: error.message });
     }
   },

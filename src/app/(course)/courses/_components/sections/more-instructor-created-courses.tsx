@@ -27,7 +27,7 @@ export const MoreIntructorCreatedCourses = ({
       try {
         setLoading(true);
         const response = await fetch(
-          `/api/instructor/${instructorId}/dashboard/courses`
+          `api/instructor/${instructorId}/dashboard/courses`
         );
 
         if (!response.ok) {

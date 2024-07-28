@@ -18,6 +18,7 @@ model User {
   shortSummary    String?
   isEmailVerified Boolean? @default(false)
   isInstructor    Boolean? @default(false)
+  preferences     Json     @default("{}")
 
   // TOKENS
   verifyToken                String?

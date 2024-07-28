@@ -19,7 +19,7 @@ export const CourseRatings = ({
   avgStarRatings?: number;
 }) => {
   const fetchCourseReviews = async () => {
-    const response = await fetch(`/api/courses/${courseId}/reviews`);
+    const response = await fetch(`api/courses/${courseId}/reviews`);
 
     if (!response.ok) {
       console.log("Failed to fetch course reviews from api ...");

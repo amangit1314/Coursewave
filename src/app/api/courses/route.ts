@@ -14,16 +14,20 @@ export async function OPTIONS(req: NextRequest) {
 // Get all courses
 export const GET = async (req: NextRequest) => {
     try {
-        const courses = await db.course.findMany({});
+        const courses = await db.course.findMany();
         return NextResponse.json({
             success: true,
+            status: "OK",
             data: courses,
+            message: "Courses successfully fetched ..."
         }, { status: 200 });
     } catch (error: any) {
-        console.log('ERROR in fetching courses: ', error.message);
+        console.log('ERROR in fetching courses from api/courses/route.ts: ', error.message);
         return NextResponse.json({
             success: false,
+            status: "ERROR",
             error: error.message,
+            message: "Failed to fetch courses from database in api/courses/route.ts ..."
         }, { status: 500 });
     }
 }

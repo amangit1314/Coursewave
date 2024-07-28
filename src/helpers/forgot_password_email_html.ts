@@ -1,6 +1,10 @@
-export const forgotPasswordHtmlTemplate = (siteUrl: string, resetPasswordUrl: string, email: string, logoUrl: string) => {
-
-    const forgotPasswordHtml = `
+export const forgotPasswordHtmlTemplate = (
+  siteUrl: string,
+  resetPasswordUrl: string,
+  email: string,
+  logoUrl: string
+) => {
+  const forgotPasswordHtml = `
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
     <html xmlns="http://www.w3.org/1999/xhtml">
@@ -61,5 +65,5 @@ export const forgotPasswordHtmlTemplate = (siteUrl: string, resetPasswordUrl: st
     </body>
     </html>`;
 
-    return forgotPasswordHtml;
-}
+  return forgotPasswordHtml;
+};

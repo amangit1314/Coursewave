@@ -51,14 +51,14 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/instructor/${initialData.instructorID}/dashboard/courses/${initialData.courseId}`,
-        { newCoursePrice : values.price}
+        `api/instructor/${initialData.instructorID}/dashboard/courses/${initialData.courseId}`,
+        { newCoursePrice: values.price }
       );
       toast.success("Course price updated ...");
       toggleEdit();
       router.refresh();
     } catch (err: any) {
-      console.log('Error in updating price: ', err.message);
+      console.log("Error in updating price: ", err.message);
       toast.error("Something went wrong");
     }
   };
@@ -88,7 +88,7 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
           )}
         >
           {Number(initialData?.coursePrice)
-            ? formatPrice(Number(initialData?.coursePrice))
+            ? formatPrice(Number(initialData?.coursePrice!), "USD")
             : "No price"}
         </p>
       )}

@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/use-toast";
-import { GrLinkNext } from "react-icons/gr";
 import { Card, Title } from "@tremor/react";
 import { Toaster } from "@/components/ui/toaster";
 import {
@@ -40,9 +39,10 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import useUserInfo from "@/hooks/use-user-info";
+import useNotificationPreferencesStore from "@/zustand/notificationPreferencesStore";
 
 const FormSchema = z.object({
-
   course_update_reminder: z.boolean().default(true).optional(),
   instructor_new_course_reminder: z.boolean().default(true).optional(),
   session_reminders: z.boolean().default(true).optional(),
@@ -52,21 +52,21 @@ const FormSchema = z.object({
   security_emails: z.boolean().default(true).optional(),
 });
 
-function Settings() {
+const Settings = () => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      course_update_reminder: true,
-      instructor_new_course_reminder: true,
-      // session_reminders: true,
-      qandAns_reminders: true,
-      course_updates: true,
-      marketing_emails: true,
-      security_emails: true,
-    },
   });
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+  const { preferences, updatePreferences } = useNotificationPreferencesStore();
+  const user = useUserInfo();
+  const userId = user?.user?.id!;
+
+  React.useEffect(() => {
+    form.reset(preferences);
+  }, [preferences, form]);
+
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    await updatePreferences(userId, data);
     toast({
       title: "You submitted the following values:",
       description: (
@@ -78,7 +78,7 @@ function Settings() {
   };
 
   return (
-    <div className="p-20">
+    <div className="px-26 py-20">
       <Toaster />
       <Form {...form}>
         <form
@@ -87,33 +87,10 @@ function Settings() {
         >
           <div>
             <div>
-              <h3 className="mb-4 text-lg font-semibold tracking-tight text-zinc-800 dark:text-white ">
+              <h3 className="mb-4 text-lg font-semibold tracking-tight text-zinc-800 dark:text-white">
                 Notifications
               </h3>
               <div className="space-y-4">
-                {/* <FormField
-                  control={form.control}
-                  name="session_reminders"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                      <div className="space-y-0.5">
-                        <FormLabel className="text-base">
-                          Session Reminders
-                        </FormLabel>
-                        <FormDescription>
-                          Receive notifications reminders regarding sessions in
-                          browser.
-                        </FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                /> */}
                 <FormField
                   control={form.control}
                   name="course_update_reminder"
@@ -171,7 +148,7 @@ function Settings() {
                         </FormLabel>
                         <FormDescription>
                           Receive emails about qna chat replies or new messages
-                          updates in the enrolled course
+                          updates in the enrolled course.
                         </FormDescription>
                       </div>
                       <FormControl>
@@ -198,11 +175,11 @@ function Settings() {
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base font-semibold tracking-tight text-zinc-800 dark:text-white">
-                          Course Updates{" "}
+                          Course Updates
                         </FormLabel>
                         <FormDescription>
                           Receive emails about new updates in the enrolled
-                          course
+                          course.
                         </FormDescription>
                       </div>
                       <FormControl>
@@ -269,7 +246,6 @@ function Settings() {
               </h3>
               <div className="space-x-.5 flex justify-start">
                 <ChangePasswordWidget />
-
                 <DeleteAccountWidget />
               </div>
             </div>
@@ -278,11 +254,11 @@ function Settings() {
       </Form>
     </div>
   );
-}
+};
 
 export default Settings;
 
-function DeleteAccountWidget() {
+const DeleteAccountWidget = () => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -291,13 +267,10 @@ function DeleteAccountWidget() {
             <Title className="text-base font-semibold text-zinc-800 dark:text-white group-hover:text-white ">
               Delete Account
             </Title>
-            {/* <p>Click here to delete your Coursewave account</p> */}
             <FormDescription className="group-hover:text-gray-200">
               Click here to delete your Coursewave account
             </FormDescription>
           </div>
-
-          {/* <GrLinkNext size={22} /> */}
         </div>
       </AlertDialogTrigger>
       <AlertDialogContent>
@@ -315,9 +288,9 @@ function DeleteAccountWidget() {
       </AlertDialogContent>
     </AlertDialog>
   );
-}
+};
 
-function ChangePasswordWidget() {
+const ChangePasswordWidget = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -326,40 +299,37 @@ function ChangePasswordWidget() {
             <Title className="text-base font-semibold text-zinc-800 dark:text-white  group-hover:text-white">
               Change Password
             </Title>
-            {/* <p>Receive emails about new products, features, and more</p> */}
             <FormDescription className="group-hover:text-gray-200">
               Receive emails about new products, features, and more.
             </FormDescription>
           </div>
-
-          {/* <GrLinkNext size={22} /> */}
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
+        <DialogHeader className="space-y-2">
           <DialogTitle>Change Password</DialogTitle>
           <DialogDescription>
             Make changes in your password here. Click save when youre done.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="space-y-2">
             <Label htmlFor="name" className="text-right">
               New Password
             </Label>
             <Input
               id="newPassword"
-              value="Enter your new password ..."
+              placeholder="Enter your new password ..."
               className="col-span-3"
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="space-y-2">
             <Label htmlFor="username" className="text-right">
               Confirm Password
             </Label>
             <Input
               id="confirmPassword"
-              value="Confirm your password ..."
+              placeholder="Confirm your password ..."
               className="col-span-3"
             />
           </div>
@@ -370,4 +340,4 @@ function ChangePasswordWidget() {
       </DialogContent>
     </Dialog>
   );
-}
+};

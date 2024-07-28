@@ -116,9 +116,8 @@ const SubscriptionPlanCard = ({
   return (
     <div
       className={cn(
-        `
-        flex flex-col cursor-pointer max-w-lg w-full rounded-3xl text-center border border-stroke border-gray-100 dark:border-gray-600 hover:border-6 hover:border-blue-600  shadow-sm hover:shadow-xl p-6 xl:p-2 text-gray-900 dark:text-white bg-white dark:bg-gray-800`,
-        isSelected! ? "drop-shadow-xl ring-1 ring-blue-600" : "",
+        `flex flex-col cursor-pointer max-w-lg w-full rounded-3xl text-center border border-stroke border-gray-100 dark:border-neutral-600 hover:border-6 hover:border-blue-600  shadow-sm hover:shadow-xl p-6 xl:p-2 text-gray-900 dark:text-white bg-white dark:bg-gray-800`,
+        isSelected ? "drop-shadow-xl bg-sky-600" : "",
         isCurrentPlan ? "drop-shadow-xl ring-2 ring-blue-600 " : ""
       )}
       onClick={onSelect}

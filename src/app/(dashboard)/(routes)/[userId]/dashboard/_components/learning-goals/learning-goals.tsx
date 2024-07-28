@@ -28,6 +28,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { generateUid } from "@/helpers/id_helper";
+import { Callout } from "@tremor/react";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -59,16 +60,24 @@ const LearningGoals = () => {
         </h3>
 
         {/* add goal button */}
-       <div className="ml-auto">
-       <AddLearningGoalButton />
-       </div>
+        <div className="ml-auto">
+          <AddLearningGoalButton />
+        </div>
       </div>
 
       <div className="flex flex-col space-y-1">
         {isLearningGoalsLoading ? (
           <LearningGoalsSkeleton />
         ) : learningGoalsError ? (
-          <div className="text-red-400 text-base">Error fetching enrolled courses</div>
+          <Callout
+            className=""
+            title="Error Fetching learning goals"
+            color="red"
+          >
+            ERROR,{" "}
+            {learningGoalsError}
+            ...
+          </Callout>
         ) : (
           <div>
             {learningGoals?.length > 0 ? (
@@ -80,9 +89,16 @@ const LearningGoals = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-sm text-yellow-400">
-                You don't have any goals, set some 🧐 ...
-              </div>
+              // <div className="text-sm text-yellow-400">
+              //   You don't have any goals, set some 🧐 ...
+              // </div>
+               <Callout
+               className=""
+               title="No Learning Goals"
+               color="yellow"
+             >
+               You don't have any goals, set some 🧐 ...
+             </Callout>
             )}
           </div>
         )}
@@ -225,7 +241,9 @@ const AddLearningGoalButton = () => {
               />
 
               <DialogFooter>
-                <Button type="submit" disabled={isSubmitting || !isValid}>Save changes</Button>
+                <Button type="submit" disabled={isSubmitting || !isValid}>
+                  Save changes
+                </Button>
               </DialogFooter>
             </form>
           </Form>

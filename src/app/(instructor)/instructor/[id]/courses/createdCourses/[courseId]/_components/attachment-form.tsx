@@ -100,7 +100,7 @@ export const AttachmentForm = ({
 
       await axios.post(
         absoluteUrl(
-          `/api/instructor/${course?.instructorID}/dashboard/courses/${course?.courseId}/attachments`
+          `api/instructor/${course?.instructorID}/dashboard/courses/${course?.courseId}/attachments`
         ),
         {
           resourceName: values.attachmentName,

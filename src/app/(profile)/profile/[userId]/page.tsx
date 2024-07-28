@@ -151,7 +151,8 @@ const ProfileImage = () => {
         <Image
           src={
             user
-              ? user.user?.profileImageUrl ?? "/assets/images/user/user-01.png"
+              ? (user.user?.profileImageUrl ??
+                "/assets/images/user/user-01.png")
               : "/assets/images/user/user-02.png"
           }
           width={160}
@@ -363,7 +364,7 @@ const SwitchToInstructorButton = () => {
 
   const setInstructor = async () => {
     try {
-      await axios.post(`/api/profile/${user?.id}/becomeInstructor`);
+      await axios.post(`api/profile/${user?.id}/becomeInstructor`);
       toast.success("You are now instructor ✔️ ");
     } catch (error: any) {
       toast.error(`Error: ${error.message}`);

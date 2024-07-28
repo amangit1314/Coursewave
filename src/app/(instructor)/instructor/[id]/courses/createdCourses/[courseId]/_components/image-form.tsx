@@ -28,7 +28,7 @@ export const ImageForm = ({ course }: {course: Course}) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/instructor/${course.instructorID}/dashboard/courses/${course.courseId}`,
+        `api/instructor/${course.instructorID}/dashboard/courses/${course.courseId}`,
         { newCourseImage : values.imageUrl}
       );
       toast.success("Course image updated ✔️ ...");

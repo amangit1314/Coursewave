@@ -83,7 +83,7 @@ export const CategoryForm = ({ course }: CategoryFormProps) => {
         .map((item: string) => item.trim());
 
       await axios.patch(
-        `/api/instructor/${course?.instructorID}/dashboard/courses/${course.courseId}/editCategories`,
+        `api/instructor/${course?.instructorID}/dashboard/courses/${course.courseId}/editCategories`,
         { categories: categoriesArray }
       );
       toast.success("Course categories updated ...");

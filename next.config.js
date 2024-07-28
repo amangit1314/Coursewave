@@ -1,5 +1,3 @@
-// const { withNextVideo } = require('next-video\process')
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -43,14 +41,10 @@ const nextConfig = {
       },
     ],
   },
-  // async redirects() {
-  //   return ;
-  // },
   redirects: [{ source: "/:path*", destination: "/:path*", permanent: false }],
   async headers() {
     return [
       {
-        // matching all API routes
         source: "/api/:path*",
         headers: [
           { key: "Access-Control-Allow-Credentials", value: "true" },
@@ -71,4 +65,3 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
-// withNextVideo(nextConfig);

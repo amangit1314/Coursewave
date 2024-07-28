@@ -2,15 +2,21 @@
 
 import React, { useEffect, useState } from "react";
 import About from "@/components/LandingPage/about";
-import {Footer} from "@/components/LandingPage/footer";
+import { Footer } from "@/components/LandingPage/footer";
 import { useRouter } from "next/navigation";
 import * as scrollAnimation from "./ScrollAnimation.json";
 import Offerings from "@/components/LandingPage/offerings";
 import LandingPageHeader from "@/components/LandingPage/header";
 import HeroSection from "@/components/LandingPage/hero-section";
 import Testimonials from "@/components/LandingPage/testimonials";
-import { firebaseClourdMessaging } from "@/config/firebase";
+
 import toast from "react-hot-toast";
+import RetroGrid from "@/components/magicui/retro-grid";
+import Newsletter from "@/components/LandingPage/newsletter";
+import LandingCoursewaveStats from "@/components/LandingPage/landingCoursewaveStats";
+import AchieveCodingGoals from "@/components/LandingPage/achieveCodingGoals";
+import HomeBrowseSection from "@/components/LandingPage/homeBrowseSection";
+import { VelocityScroll } from "@/components/magicui/scroll-based-velocity";
 
 const Home = () => {
   const router = useRouter();
@@ -20,22 +26,26 @@ const Home = () => {
   };
 
   return (
-    <main className="flex dark:bg-black dark:bg-opacity-80 h-full flex-col items-center justify-between overflow-hidden ">
+    <main className="relative flex dark:bg-black dark:bg-opacity-80 h-full flex-col items-center justify-between overflow-hidden ">
       <LandingPageHeader handleLoginClick={handleLoginClick} />
 
       <div className="p-10 h-full">
         <HeroSection scrollAnimation={scrollAnimation} />
 
+        <TextTape />
+
         <div className="space-y-32 h-full">
+          <LandingCoursewaveStats />
+
           <About />
 
           <Offerings />
 
-          {/* <SessionsSection /> */}
+          <HomeBrowseSection />
+
+          <AchieveCodingGoals />
 
           <Testimonials />
-
-          {/* <HomeBrowseSection /> */}
         </div>
       </div>
 
@@ -45,6 +55,18 @@ const Home = () => {
 };
 
 export default Home;
+
+const TextTape = () => {
+  return (
+    <div className="bg-blue-600 py-4 -rotate-12 my-32 w-screen">
+      <VelocityScroll
+        text="Coursewave"
+        default_velocity={5}
+        className="font-display text-center text-2xl font-bold tracking-[-0.02em] text-white drop-shadow-sm dark:text-white md:text-7xl md:leading-[5rem]"
+      />
+    </div>
+  );
+};
 
 // ? -------------------------------------------------------------------------
 // const [fcmToken, setFcmToken] = useState<string | (() => Promise<string | null>) | null | undefined>(undefined);

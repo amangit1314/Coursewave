@@ -45,7 +45,7 @@ export const TitleForm = ({ course}: {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/instructor/${course.instructorID}/dashboard/courses/${course.courseId}`,
+        `api/instructor/${course.instructorID}/dashboard/courses/${course.courseId}`,
         {"newCourseTitle": values.title}
       );
       toast.success("Course updated ...");

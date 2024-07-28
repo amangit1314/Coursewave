@@ -83,7 +83,7 @@ const OfferingsLinkItem = ({
       target="_blank"
       rel="noopener noreferrer"
     >
-      <div className="group rounded-3xl border h-[140px] w-[241px] border-transparent  hover:border-stroke hover:border-zinc-800 dark:hover:border-zinc-400 p-4 transition-all duration-300  hover:shadow-xl space-y-3">
+      <div className="group rounded-2xl border h-[140px] w-[241px] border-stroke hover:border-stroke hover:border-zinc-800 dark:hover:border-zinc-400 p-4 transition-all duration-300  hover:shadow-xl space-y-3">
         <h2 className="text-[1.2rem] tracking-tight text-zinc-800 dark:text-gray-50 font-semibold">
           {title ? title : "Courses"}
           <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none"></span>

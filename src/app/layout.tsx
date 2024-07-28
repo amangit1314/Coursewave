@@ -5,10 +5,10 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { usePathname, useRouter } from "next/navigation";
 import LandingPageHeader from "@/components/LandingPage/header";
-import { GlobalQueryClientProvider } from "@/providers/query-client-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { ToastProvider } from "@/providers/toaster-provider";
-import AuthProvider from "@/providers/auth-provider";
+import { GlobalQueryClientProvider } from "@/providers/query-client-provider";
+import ClientProvider from "./ClientProvider";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -37,36 +37,30 @@ export default function RootLayout({
   };
 
   const hideSidebar = pathname.match(
-    /courses\/enrolledCourses\/(undefined|null)/
+    /courses\/enrolledCourses\/(undefined|null)/,
   );
 
   return (
     <html lang="en">
-      {/* <AuthProvider> */}
-        <body className={poppins.className}>
-          {/* <CookiesProvider> */}
+      <body className={poppins.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <GlobalQueryClientProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <ToastProvider />
-
+            <ClientProvider>
               <div className="dark:bg-zinc-800">
                 {hideSidebar && (
                   <LandingPageHeader handleLoginClick={handleLoginClick} />
                 )}
                 {children}
               </div>
-            </ThemeProvider>
-
-            {/* </Provider> */}
+            </ClientProvider>
           </GlobalQueryClientProvider>
-          {/* </CookiesProvider> */}
-        </body>
-      {/* </AuthProvider> */}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

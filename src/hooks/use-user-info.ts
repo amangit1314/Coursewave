@@ -3,11 +3,11 @@ import { User } from "@prisma/client";
 import { absoluteUrl } from "../utils/utils";
 
 const fetchUser = async () => {
-  const url = "/api/auth/me";
+  const url = "api/auth/me";
   const response = await fetch(url);
 
   if (!response.ok) {
-    throw new Error("Failed to get user info ...");
+    console.log("Failed to get user info in use-user-info in response not ok case ...");
   }
 
   return await response.json();

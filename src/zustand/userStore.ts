@@ -52,7 +52,7 @@ export const useUserStore = create<UserState & UserActions>()(
       ) => {
         set({ loading: true, error: null });
         try {
-          const response = await fetch(`/api/profile/${userId}`, {
+          const response = await fetch(`api/profile/${userId}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -76,7 +76,7 @@ export const useUserStore = create<UserState & UserActions>()(
         set({ loading: true, error: null });
 
         try {
-          const response = await fetch("/api/becomeInstructor", {
+          const response = await fetch("api/becomeInstructor", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userId: userId }),
@@ -102,7 +102,7 @@ export const useUserStore = create<UserState & UserActions>()(
 
         try {
           const response = await fetch(
-            `/api/profile/${userId}/changePassword`,
+            `api/profile/${userId}/changePassword`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -129,7 +129,7 @@ export const useUserStore = create<UserState & UserActions>()(
         set({ loading: true, error: null });
 
         try {
-          const response = await fetch(`/api/profile/${userId}`, {
+          const response = await fetch(`api/profile/${userId}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
           });

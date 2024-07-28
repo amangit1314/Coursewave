@@ -62,7 +62,7 @@ export const ChaptersForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.post(
-        `/api/instructor/${instructorId}/dashboard/courses/${courseId}/sections/${section.courseSectionId}/chapters`,
+        `api/instructor/${instructorId}/dashboard/courses/${courseId}/sections/${section.courseSectionId}/chapters`,
         { chapterTitle: values.title }
       );
       toast.success("Chapter created");
@@ -79,7 +79,7 @@ export const ChaptersForm = ({
       setIsUpdating(true);
 
       await axios.put(
-        `/api/instructor/${instructorId}/dashboard/courses/${courseId}/sections/${section.courseSectionId}/chapters/reorder`,
+        `api/instructor/${instructorId}/dashboard/courses/${courseId}/sections/${section.courseSectionId}/chapters/reorder`,
         {
           list: updateData,
         }

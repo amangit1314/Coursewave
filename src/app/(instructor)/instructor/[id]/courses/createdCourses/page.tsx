@@ -42,7 +42,7 @@ export default function CreatedCourses({ params }: { params: { id: string } }) {
     const fetchCourses = async () => {
       try {
         const response = await fetch(
-          `/api/instructor/${instructorId}/dashboard/courses`
+          `api/instructor/${instructorId}/dashboard/courses`
         );
 
         if (!response.ok) {

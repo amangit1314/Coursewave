@@ -8,7 +8,7 @@ const BrowseSessions = () => {
   const queryClient = new QueryClient();
 
   return (
-    <div className="px-10 py-8 max-w-7xl overflow-x-hidden">
+    <div className="px-10 py-8 max-w-7xl overflow-x-hidden space-y-8">
       <MeetOurCoaches />
 
       <PopularTalksAndSessions />

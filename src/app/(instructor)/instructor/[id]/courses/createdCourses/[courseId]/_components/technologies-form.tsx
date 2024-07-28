@@ -53,7 +53,7 @@ export const TechnologiesForm = ({ course }: { course: Course }) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.post(
-        `/api/instructor/${course?.instructorID}/dashboard/courses/${course?.courseId}/attachments`,
+        `api/instructor/${course?.instructorID}/dashboard/courses/${course?.courseId}/attachments`,
         { newTechnologies: values.technologies }
       );
       toast.success("Course technologies updated ...");

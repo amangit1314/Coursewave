@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export const CourseContent = ({ courseId }: { courseId: string }) => {
   const fetchCourseSections = async () => {
-    const res = await fetch(`/api/courses/${courseId}/sections`);
+    const res = await fetch(`api/courses/${courseId}/sections`);
 
     if (!res.ok) {
       console.error("Failed to fetch sections ...");

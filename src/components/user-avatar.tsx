@@ -37,7 +37,7 @@ const UserAvatar = () => {
     try {
       setLoading(true);
       await axios
-        .post("/api/auth/logout", user)
+        .post("api/auth/logout", user)
         .then((res) => {
           setUser({
             id: "",
@@ -57,6 +57,7 @@ const UserAvatar = () => {
             refreshToken: "",
             refreshTokenExpiry: "",
             refreshTokenStatus: "",
+            preferences: [],
             accessTokenGenerationTime: null,
             accessToken: "",
             accessTokenExpiry: "",

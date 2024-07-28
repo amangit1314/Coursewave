@@ -58,7 +58,7 @@ export const ChapterDescriptionForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/instructor/${instructorId}/dashboard/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}`,
+        `api/instructor/${instructorId}/dashboard/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}`,
         values
       );
       toast.success("Chapter updated");

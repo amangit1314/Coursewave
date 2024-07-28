@@ -55,22 +55,22 @@ const CourseContentPage = ({ params }: { params: { id: string } }) => {
   // <--------------- Fetch Course ------------------------>
   const fetchCourseInfo = async () => {
     console.log("Course id in Course Content page.tsx:", courseId);
-    const response = await fetch(`/api/courses/${courseId}`);
+    const response = await fetch(`api/courses/${courseId}`);
 
     if (!response.ok) {
       console.log("Failed to fetch course content ...");
     }
 
-    const res = await response.json();
+    const data = await response.json();
 
     console.log(
       "Course id in courses/[courseId]/courseContent/page.tsx file:",
       courseId
     );
 
-    console.log("Resoponse of course inside fetCourseInfo: ", res);
+    console.log("Resoponse of course inside fetCourseInfo: ", data);
 
-    return res;
+    return data;
   };
 
   const {
@@ -83,16 +83,16 @@ const CourseContentPage = ({ params }: { params: { id: string } }) => {
     staleTime: 1000 * 60 * 10,
   });
 
-  const course: Course = courseData?.data;
+  const course: Course = courseData?.data as Course;
 
-  // <--------------- Fetch Course Chapter --------------->
+  // <--------------- Fetch Course Chapters --------------->
   const fetchCourseChapters = async () => {
     console.log(
       "Course id in Course Content page.tsx inside fetchCourseChapters:",
       courseId
     );
 
-    const response = await fetch(`/api/courses/${courseId}/chapters`);
+    const response = await fetch(`api/courses/${courseId}/chapters`);
 
     if (!response.ok) {
       console.log("Failed to fetch course chapters ...");
@@ -103,9 +103,9 @@ const CourseContentPage = ({ params }: { params: { id: string } }) => {
       courseId
     );
 
-    const res = await response.json();
-    console.log("Data of course chaoters inside fetchCourseChapters: ", res);
-    return res;
+    const data = await response.json();
+    console.log("Data of course chaoters inside fetchCourseChapters: ", data);
+    return data;
   };
 
   const {
@@ -118,17 +118,17 @@ const CourseContentPage = ({ params }: { params: { id: string } }) => {
     staleTime: 1000 * 60 * 10,
   });
 
-  const chapters: Chapter[] = chaptersData?.data;
+  const chapters: Chapter[] = chaptersData?.data! as Chapter[];
 
-  console.log(`Course: ${courseId}, Chapters: ${chaptersData}`);
-  console.log("Chapters data", chapters);
+  console.log(`Course: ${courseId}, Chapters: `, chaptersData);
+  console.log("Chapters data in courseContent/page.tsx: ", chapters);
 
   // <----------- Get muxId from cookies ----------->
-  const cookies = useCookies();
-  const muxCookie = cookies?.get("muxData");
-  const muxViewerIdString = muxCookie?.split("&")[0];
-  const muxViewerId = muxViewerIdString?.split("=")[1];
-  console.log("User mux viewer id: ", muxViewerId);
+  // const cookies = useCookies();
+  // const muxCookie = cookies?.get("muxData");
+  // const muxViewerIdString = muxCookie?.split("&")[0];
+  // const muxViewerId = muxViewerIdString?.split("=")[1];
+  // console.log("User mux viewer id: ", muxViewerId);
 
   // <----------- Instructor ----------->
   const instructor: Instructor = useInstructorInfo(
@@ -168,7 +168,7 @@ const CourseContentPage = ({ params }: { params: { id: string } }) => {
         courseId={courseId}
         isChaptersLoading={isChaptersLoading}
         chaptersError={chaptersError}
-        muxViewerId={muxViewerId!}
+        // muxViewerId={muxViewerId!}
       />
 
       <div className="h-12 w-2" />
@@ -188,7 +188,6 @@ type CourseDetailsProps = {
   courseId: string;
   isChaptersLoading: boolean;
   chaptersError: Error | null;
-  muxViewerId: string;
 };
 
 const CourseDetails: React.FC<CourseDetailsProps> = ({
@@ -198,28 +197,26 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
   courseId,
   isChaptersLoading,
   chaptersError,
-  muxViewerId,
 }) => {
   const user = useUserInfo();
   const userId = user.user?.id;
 
   const { updateCourseProgress } = useCourseProgressStore();
+  // useEffect(() => {
+  //   updateCourseProgress(userId, courseId, chapterId);
+  // }, [updateCourseProgress, userId, courseId, chapterId]);
 
   const [activeChapterIndex, setActiveChapterIndex] = React.useState<number>(0);
   const [showFullDescription, setShowFullDescription] = React.useState(false);
 
-  const activeChapter = chapters?.length ? chapters[activeChapterIndex] : null;
-  const chapterId = activeChapter?.id!;
+  const activeChapter = chapters[activeChapterIndex] ?? chapters[0];
+  const chapterId = activeChapter?.id;
 
   const aboutChapter = activeChapter
-    ? activeChapter.description ?? sampleText
+    ? (activeChapter.description ?? sampleText)
     : sampleText;
 
   console.log("Chapters inside course details: ", chapters);
-
-  // useEffect(() => {
-  //   updateCourseProgress(userId, courseId, chapterId);
-  // }, [updateCourseProgress, userId, courseId, chapterId]);
 
   const handleProgressChange = () => {
     updateCourseProgress(userId, courseId, chapterId);
@@ -242,13 +239,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
 
           {/* video component */}
           <div className="w-xl md:w-[45rem] h-auto md:h-[360px]">
-            {
-              <CourseVideo
-                // viewerUserId={muxViewerId!}
-                activeChapter={activeChapter!}
-                videoPlaybackId="" // TODO: do this and generate the videoPlaybackId by uploading course video to cloudinary
-              />
-            }
+            {<CourseVideo activeChapter={activeChapter!} />}
           </div>
 
           {/* [NOT FOR MOBILE] Mark as Completed btn */}
@@ -307,12 +298,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
             <h3 className="text-xl md:text-lg mt-4 text-gray-950 dark:text-gray-300  font-semibold tracking-tight">
               About Instructor
             </h3>
-            <InstructorCard
-              // instructorId={
-              //   instructorId ? instructorId : "No instructor id provided ..."
-              // }
-              instructor={instructor}
-            />
+            <InstructorCard instructor={instructor} />
           </div>
         </div>
       </div>
@@ -738,7 +724,7 @@ const CourseNotes = () => {
 
 const CourseAttachments = ({ courseId }: { courseId: string }) => {
   const fetchCourseAttachments = async () => {
-    const response = await fetch(`/api/courses/${courseId}/attachments`);
+    const response = await fetch(`api/courses/${courseId}/attachments`);
     if (!response.ok) {
       console.log("Failed to fetch course attachments ...");
     }
@@ -835,8 +821,8 @@ const InstructorCard = ({ instructor }: { instructor: Instructor }) => {
         <Image
           src={
             instructor
-              ? instructor?.instructorProfilePicUrl ??
-                "/assets/images/user/user-01.png"
+              ? (instructor?.instructorProfilePicUrl ??
+                "/assets/images/user/user-01.png")
               : "/assets/images/user/user-01.png"
           }
           alt={`Image`}
@@ -849,12 +835,12 @@ const InstructorCard = ({ instructor }: { instructor: Instructor }) => {
         <div className="flex flex-col justify-start items-start mr-auto text-base">
           <p className="text-lg text-gray-800 dark:text-slate-200 tracking-tight font-semibold">
             {instructor
-              ? instructor?.instructorName ?? "CourseWave"
+              ? (instructor?.instructorName ?? "CourseWave")
               : "CourseWave"}
           </p>
           <p className="text-md text-base line-clamp-2 tracking-tight text-gray-700 dark:text-gray-400 font-thin ">
             {instructor
-              ? instructor?.instructorTag ?? "Full Stack Engineer"
+              ? (instructor?.instructorTag ?? "Full Stack Engineer")
               : "Full Stack Engineer"}
           </p>
         </div>
@@ -862,10 +848,10 @@ const InstructorCard = ({ instructor }: { instructor: Instructor }) => {
 
       <p className="text-md  text-start text-base  md:text-md md:p-0  w-auto line-clamp-3 font-noraml text-gray-700 dark:text-gray-400">
         {instructor
-          ? instructor.aboutInstructor ??
+          ? (instructor.aboutInstructor ??
             `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Provident eos
         odit nam quae repellat quis cumque reiciendis autem ab expedita
-        Provident eos odit nam quae repellat`
+        Provident eos odit nam quae repellat`)
           : `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Provident eos
         odit nam quae repellat quis cumque reiciendis autem ab expedita
         Provident eos odit nam quae repellat`}

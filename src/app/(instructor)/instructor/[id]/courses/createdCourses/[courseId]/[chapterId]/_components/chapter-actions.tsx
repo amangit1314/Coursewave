@@ -31,12 +31,12 @@ export const ChapterActions = ({
 
       if (isPublished) {
         await axios.patch(
-          `/api/courses/${courseId}/chapters/${chapterId}/unpublish`
+          `api/courses/${courseId}/chapters/${chapterId}/unpublish`
         );
         toast.success("Chapter unpublished");
       } else {
         await axios.patch(
-          `/api/courses/${courseId}/chapters/${chapterId}/publish`
+          `api/courses/${courseId}/chapters/${chapterId}/publish`
         );
         toast.success("Chapter published");
       }
@@ -53,7 +53,7 @@ export const ChapterActions = ({
     try {
       setIsLoading(true);
 
-      await axios.delete(`/api/courses/${courseId}/chapters/${chapterId}`);
+      await axios.delete(`api/courses/${courseId}/chapters/${chapterId}`);
 
       toast.success("Chapter deleted");
       router.refresh();

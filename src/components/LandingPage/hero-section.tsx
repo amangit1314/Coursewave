@@ -5,44 +5,52 @@ import Lottie from "lottie-react";
 import Image from "next/image";
 import { PiInfinityBold } from "react-icons/pi";
 import { IoArrowForwardCircle } from "react-icons/io5";
+import BoxReveal from "../magicui/box-reveal";
+import ShimmerButton from "../magicui/shimmer-button";
+import RetroGrid from "../magicui/retro-grid";
 
 const HeroSection = ({ scrollAnimation }: any) => {
   const largeScreenLayout = (
-    <div className="h-screen pt-15 relative flex flex-col place-items-center -z-1">
-      {/* <Image
-    className="relative hidden md:flex"
-    src="/women-with-laptop.png"
-    alt="Hero Image"
-    width={200}
-    height={45}
-    priority
-  /> */}
-
+    <div className="h-screen w-screen pt-15 relative flex flex-col place-items-center -z-1">
+      {/* bold and sub texts */}
       <div className="max-w-3xl w-full mx-auto">
-        <h1 className="pt-16 text-[48px] text-zinc-950 dark:text-white tracking-tighter md:text-[52px] text-center leading-10 font-extrabold align-middle">
-          <div className="flex ml-16">
-            Unlock Your{" "}
-            <PiInfinityBold size={48} className="text-blue-500 mx-[8px]" />
-            Learning
-          </div>
-          Potential with
-          <span className="text-blue-500 text-[56px] tracking-tighter ml-2 lg:text-4xl xl:text-5xl font-extrabold">
-            Coursewave!
-          </span>
-        </h1>
-        <p className="pt-4 text-[1rem] text-[#333333] dark:text-gray-200 text-center">
-          Unlock Your Infinte Learning and Professional Potential with our wide
-          range of courses on different aspects.{" "}
-          {/* <span className="text-blue-600">Coursewave!</span> */}
-        </p>
+        <div className="flex justify-center items-center mx-auto pt-16 align-middle text-center">
+          <BoxReveal boxColor={"#5046e6"} duration={0.5}>
+            <h1 className=" text-[48px] text-zinc-950 dark:text-white tracking-tighter md:text-[52px] text-center leading-10 font-extrabold ">
+              <div className="flex ml-16">
+                Unlock Your{" "}
+                <PiInfinityBold size={48} className="text-blue-500 mx-[8px]" />
+                Learning
+              </div>
+              Potential with
+              <span className="text-blue-500 text-[56px] tracking-tighter ml-2 lg:text-4xl xl:text-5xl font-extrabold">
+                Coursewave!
+              </span>
+            </h1>
+          </BoxReveal>
+        </div>
+
+        <div className="flex justify-center items-center mx-auto pt-4 text-center">
+          <BoxReveal boxColor={"#5046e6"} duration={0.5}>
+            <p className="pt-4 text-[1rem] text-[#333333] dark:text-gray-200 text-center">
+              Unlock Your Infinte Learning and Professional Potential with our
+              wide range of courses on different aspects.
+            </p>
+          </BoxReveal>
+        </div>
       </div>
 
       {/* Browse Course Button */}
-      {/* <button className="group flex items-center gap-2 bg-blue-500 hover:bg-blue-600  text-white px-4 py-2 rounded-full mt-4 transition-all duration-300 tracking-tight font-extrabold"> */}
-      <button className="group flex items-center gap-2 hover:bg-gradient-to-r hover:from-blue-500  hover:to-sky-400  bg-blue-500 text-white px-4 py-2 rounded-full mt-4 transition-all duration-300 tracking-tight font-extrabold">
-        Unlock Your Potential
-        <IoArrowForwardCircle className="hidden text-white group-hover:flex group-hover:animate-pulse group-hover:anim transition-all duration-300" />
-      </button>
+      <div className="group flex items-center gap-2 mt-4 transition-all duration-300">
+        <BoxReveal>
+          <ShimmerButton className="mt-4 p-0 bg-transparent" color="blue">
+            <button className="group flex items-center gap-2 hover:bg-gradient-to-r hover:from-blue-500  hover:to-sky-400  bg-transparent text-white px-4 py-2 rounded-full  transition-all duration-300 tracking-tight font-semibold">
+              Unlock Your Potential
+              <IoArrowForwardCircle className="hidden text-white group-hover:flex group-hover:animate-pulse group-hover:anim transition-all duration-300" />
+            </button>
+          </ShimmerButton>
+        </BoxReveal>
+      </div>
 
       {/* scroll to bottom animation */}
       <div>
@@ -67,6 +75,8 @@ const HeroSection = ({ scrollAnimation }: any) => {
           loop={true}
         />
       </div>
+
+      <RetroGrid />
     </div>
   );
 

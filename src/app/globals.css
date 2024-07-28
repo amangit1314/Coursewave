@@ -8,16 +8,16 @@
 
 /* Target all scrollbars or specific elements as needed */
 body::-webkit-scrollbar {
-  width: 4px;  /* Adjust scrollbar width */
+  width: 1rem;  
 }
 
 body::-webkit-scrollbar-track {
-  background: #f1f1f1;  /* Track color */
+  background: #c4c4c4;  
 }
 
 body::-webkit-scrollbar-thumb {
-  background: #0050cb;  /* Thumb color */
-  border-radius: 5rem;  /* Thumb border radius */
+  background: #0050cb;  
+  border-radius: 5rem;  
 }
 
 @layer base {
@@ -31,20 +31,20 @@ body::-webkit-scrollbar-thumb {
 }
 
 
-@layer utilities {
-  /* Chrome, Safari and Opera */
+/* @layer utilities {
+
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
 
   .no-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; 
+    scrollbar-width: none; 
   }
   .inbox-height {
     @apply h-[calc(100vh_-_8.125rem)] lg:h-[calc(100vh_-_5.625rem)];
   }
-}
+} */
 
 /* ----------------------------- */
 

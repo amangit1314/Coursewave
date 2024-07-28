@@ -68,7 +68,7 @@ export const SectionsForm = ({
     try {
       const sectionNumber = Number(values.sectionNumber);
       await axios.post(
-        `/api/instructor/${course.instructorID}/dashboard/courses/${courseId}/sections`,
+        `api/instructor/${course.instructorID}/dashboard/courses/${courseId}/sections`,
         {
           courseSectionTitle: values.title,
           courseSectionNumber: sectionNumber,
@@ -88,7 +88,7 @@ export const SectionsForm = ({
     try {
       setIsUpdating(true);
 
-      await axios.put(`/api/courses/${courseId}/chapters/reorder`, {
+      await axios.put(`api/courses/${courseId}/chapters/reorder`, {
         list: updateData,
       });
       toast.success("Chapters reordered");
@@ -102,7 +102,7 @@ export const SectionsForm = ({
 
   const onEdit = (id: string) => {
     router.push(
-      `/api/instructor/${course.instructorID}/dashboard/courses/${courseId}/chapters/${id}`
+      `api/instructor/${course.instructorID}/dashboard/courses/${courseId}/chapters/${id}`
     );
   };
 

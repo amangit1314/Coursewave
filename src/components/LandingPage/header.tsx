@@ -13,6 +13,24 @@ interface TestimonialItemProps {
 const LandingPageHeader: React.FC<TestimonialItemProps> = ({
   handleLoginClick,
 }) => {
+  const links = [
+    {
+      name: "Courses",
+      link: "/browseCourses",
+    },
+    {
+      name: "Articles",
+      link: "/articles",
+    },
+    {
+      name: "Sessions",
+      link: "/browseSessions",
+    },
+    {
+      name: "Contact",
+      link: "/contact",
+    },
+  ];
   return (
     <div className="bg-transparent border-b sticky z-10 top-0 backdrop-blur-xl  p-[2rem] max-w-7xl h-[64px] w-full mx-auto flex justify-between items-center py-auto overflow-x-hidden overflow-y-hidden ">
       {/* coursewave logo and text */}
@@ -31,40 +49,17 @@ const LandingPageHeader: React.FC<TestimonialItemProps> = ({
 
       {/* navigate links */}
       <div className="hidden lg:flex lg:visible justify-around lg:space-x-4">
-        {/* <Link
-          href=""
-          className="text-[14px] text-gray-400 hover:text-blue-500 cursor-point font-medium"
-        >
-          About
-        </Link> */}
-        <Link
-          // href={absoluteUrl('/browseCourses')}
-          href={"/browseCourses"}
-          className="text-[14px] text-gray-400 hover:text-blue-500 cursor-point font-medium"
-        >
-          Courses
-        </Link>
-        <Link
-            // href={absoluteUrl('/browseArticles')}
-            href={"/articles"}
-            className="text-[1rem] text-gray-400 hover:text-blue-500 cursor-point font-medium"
-          >
-            Articles
-          </Link>
-        {/* 
-          <Link
-            href="/browseSessions"
-            className="text-[14px] text-gray-400 hover:text-blue-500 cursor-point font-medium"
-          >
-            Sessions
-          </Link> */}
-        <Link
-          // href={absoluteUrl('/helpAndSupport')}
-          href={"/helpAndSupport"}
-          className="text-[14px] text-gray-400 hover:text-blue-500 cursor-point font-medium"
-        >
-          Contact
-        </Link>
+        {links.map((link, index) => {
+          return (
+            <Link
+              key={index}
+              href={link.link}
+              className="text-[14px] text-gray-700 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-500 cursor-pointer font-medium transition-all duration-100"
+            >
+              {link.name}
+            </Link>
+          );
+        })}
       </div>
 
       {/* theme and other icons */}
@@ -87,7 +82,7 @@ const LandingPageHeader: React.FC<TestimonialItemProps> = ({
         </Link>
 
         <Button className="visible group md:hidden flex justify-center items-center h-10 w-10 rounded-md dark:bg-transparent dark:hover:bg-zinc-800 transition-all duration-200 border border-stroke">
-          <Grip className="scale-100 md:scale-0 transition-all duration-200 text-black group-hover:text-white dark:text-white h-[1.2rem] w-[1.2rem]"  />
+          <Grip className="scale-100 md:scale-0 transition-all duration-200 text-black group-hover:text-white dark:text-white h-[1.2rem] w-[1.2rem]" />
         </Button>
       </div>
     </div>

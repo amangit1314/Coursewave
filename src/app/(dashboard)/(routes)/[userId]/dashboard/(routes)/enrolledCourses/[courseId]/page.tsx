@@ -29,7 +29,7 @@ function CoursePreview({ params }: any) {
 
   useEffect(() => {
     // https://localhost:3000
-    fetch(`/api/courses/${params.id}`)
+    fetch(`api/courses/${params.id}`)
       .then((res) => {
         if (res.ok) {
           return res.json();

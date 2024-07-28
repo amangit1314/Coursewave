@@ -56,7 +56,7 @@ export const WhatYouWillLearnForm = ({ course }: { course: Course }) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.post(
-        `/api/instructor/${course?.instructorID}/dashboard/courses/${course?.courseId}/attachments`,
+        `api/instructor/${course?.instructorID}/dashboard/courses/${course?.courseId}/attachments`,
         { newWhatYouWillLearnPoints: values.whatYouWillLearn }
       );
       toast.success("Course whatYouWillLearn updated ...");

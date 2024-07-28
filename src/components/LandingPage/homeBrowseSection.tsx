@@ -8,6 +8,7 @@ import { Badge } from "../ui/badge";
 import { useRouter } from "next/navigation";
 import { FaStar } from "react-icons/fa6";
 import Link from "next/link";
+import { IoArrowForwardCircle } from "react-icons/io5";
 
 const courseCategories = [
   {
@@ -32,7 +33,7 @@ const courses = [
     courseImage: "assets/illustrations/course_illus.png",
     courseId: "course_0xx1",
     isFree: false,
-    coursePrice: "₹300",
+    coursePrice: "300",
     courseTitle: "Become React Hero",
     avgStarRatings: 4.8,
     instructorName: "Aman Soni",
@@ -41,7 +42,7 @@ const courses = [
     courseImage: "assets/images/images1.jpg",
     courseId: "course_0xx2",
     isFree: false,
-    coursePrice: "₹200",
+    coursePrice: "200",
     courseTitle: "Full Stack Bootcamp",
     avgStarRatings: 4.8,
     instructorName: "Aman Soni",
@@ -50,7 +51,7 @@ const courses = [
     courseImage: "assets/images/images2.jpg",
     courseId: "course_0xx3",
     isFree: false,
-    coursePrice: "₹270",
+    coursePrice: "270",
     courseTitle: "Git & Github Master Class",
     avgStarRatings: 4.8,
     instructorName: "Aman Soni",
@@ -59,7 +60,7 @@ const courses = [
     courseImage: "assets/images/images3.jpg",
     courseId: "course_0xx4",
     isFree: false,
-    coursePrice: "₹470",
+    coursePrice: "470",
     courseTitle: "API Testing with Postman",
     avgStarRatings: 4.8,
     instructorName: "Aman Soni",
@@ -68,7 +69,7 @@ const courses = [
     courseImage: "/nextjs.png",
     courseId: "course_0xx5",
     isFree: false,
-    coursePrice: "₹27",
+    coursePrice: "27",
     courseTitle: "Intro to Data Science",
     avgStarRatings: 4.8,
     instructorName: "Aman Soni",
@@ -81,12 +82,12 @@ const HomeBrowseSection = () => {
   return (
     <div className="min-h-screen h-auto mt-[14rem] md:mt-[1rem] mb-2 max-w-7xl place-items-center items-center w-full overflow-x-hidden">
       {/* heading */}
-      <p className="text-2xl font-bold text-center text-[#333333] dark:text-white">
+      <p className="text-2xl font-bold text-center text-zinc-800 dark:text-white">
         Browse Different Course Categories
       </p>
 
       {/* subtext */}
-      <p className="pt-4 text-md opacity-80 text-center">
+      <p className="pt-4 text-md text-[#333333] dark:text-gray-200 text-center">
         Browse different courses according to the selected course <br />{" "}
         categories on <span className="text-blue-500">Coursewave!</span>
       </p>
@@ -124,15 +125,19 @@ const HomeBrowseSection = () => {
       </div>
 
       {/* Courses Button */}
-      <button className="flex justify-center px-6 mb-16 py-2 bg-blue-500 rounded-full place-items-center mx-auto font-bold text-sm text-white">
-        Explore Courses
-      </button>
+      <Link href={'/browseCourses'} className="group flex justify-center items-center mx-auto gap-2 mt-4 transition-all duration-300">
+        <button className="group flex items-center gap-2 hover:bg-gradient-to-r hover:from-blue-500  hover:to-sky-400  bg-blue-500 text-white px-4 py-2 rounded-full  transition-all duration-300 tracking-tight font-semibold">
+          Explore
+          <IoArrowForwardCircle className="hidden text-white group-hover:flex group-hover:animate-pulse group-hover:anim transition-all duration-300" />
+        </button>
+      </Link>
     </div>
   );
 };
 
 export default HomeBrowseSection;
 
+//  --------------------- course item components ----------------------------
 type CourseItemProps = {
   course: {
     courseImage: string;

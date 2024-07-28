@@ -29,16 +29,16 @@ const SideBarRoutes = () => {
       label: "Articles",
       href: `/articles`,
     },
-    // {
-    //   icon: <BiBroadcast size={22} />,
-    //   label: "Sessions",
-    //   href: `/browseSessions`,
-    // },
-    // {
-    //   icon: <PiChatsTeardropFill size={22} />,
-    //   label: "Community Chat",
-    //   href: `/${user.user?.id}/communityChat`,
-    // },
+    {
+      icon: <BiBroadcast size={22} />,
+      label: "Sessions",
+      href: `/browseSessions`,
+    },
+    {
+      icon: <PiChatsTeardropFill size={22} />,
+      label: "Community Chat",
+      href: `/${user.user?.id}/communityChat`,
+    },
     {
       icon: <AiOutlineTransaction size={22} />,
       label: "Subscription",

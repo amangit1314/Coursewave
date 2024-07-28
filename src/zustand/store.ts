@@ -152,6 +152,7 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(
       courseSectionChapterInfo: null,
       chapterNotes: [],
       courseReviews: [],
+      userSettingsPreferences: [],
       error: null,
       loading: false,
       setUser: (user: User | null) => set({ loading: false, user: user }),
@@ -205,7 +206,6 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(
         try {
           set((state) => ({ loading: true }));
 
-          // 2. Call API endpoint to save the course (assuming user authentication)
           const response = await fetch(`api/profile/${userId}/wishlist`, {
             method: "POST",
             headers: {
@@ -221,7 +221,6 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(
             }));
           }
 
-          // 3. Update local state (if successful)
           set((state) => ({
             wishListedCourses: [...state.wishListedCourses, course],
           }));
@@ -318,12 +317,13 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(
             console.error(
               "Failed to get course for course with this courseId ..."
             );
+            set({ loading: false, error: `Failed to fetch course info for course with this courseId ${courseId}  ...` });
           }
 
-          const course = await response.json();
-          // const course: Course = data.data;
-
-          set({ selectedCourse: course.data, loading: false, error: null });
+          const data = await response.json();
+          const course: Course = data?.data! as Course;
+          console.log("Course info in @zustand/store.ts, course:", course);
+          set({ selectedCourse: course, loading: false, error: null });
         } catch (error: any) {
           console.error(
             `Failed to fetch course info for given courseId in @/zustand/store.ts, ERROR: ${error.message} ...`

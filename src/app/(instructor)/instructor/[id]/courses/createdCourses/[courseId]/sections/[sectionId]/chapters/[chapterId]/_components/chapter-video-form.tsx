@@ -11,16 +11,16 @@ import { useRouter } from "next/navigation";
 import { Chapter, CloudinaryData, MuxData } from "@prisma/client";
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/file-upload";
-import { CldUploadButton, CldUploadWidget } from "next-cloudinary";
+import { CldUploadButton, CldUploadWidget, CloudinaryUploadWidgetResults } from "next-cloudinary";
 
 interface ChapterVideoFormProps {
   chapterWithCloudinaryData: Chapter & {
     cloudinaryData?: CloudinaryData | null;
   };
   instructorId: string;
-  // courseId: string;
-  // sectionId: string;
-  // chapterId: string;
+  courseId: string;
+  sectionId: string;
+  chapterId: string;
 }
 
 const formSchema = z.object({
@@ -30,12 +30,50 @@ const formSchema = z.object({
 export const ChapterVideoForm = ({
   chapterWithCloudinaryData,
   instructorId,
-  // courseId,
-  // sectionId,
-  // chapterId,
+  courseId,
+  sectionId,
+  chapterId,
 }: ChapterVideoFormProps) => {
+  // const [isEditing, setIsEditing] = useState(false);
+  // const [videoUrl, setVideoUrl] = useState("https://res.cloudinary.com/df2g8tcxq/video/upload/c_limit,h_60,w_90/v1721627293/sa5aozwunf2lkmzfejyr.jpg");
+
+  // const toggleEdit = () => setIsEditing((current) => !current);
+
+  // const router = useRouter();
+
+  // const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  //   try {
+  //     // ${chapterWithCloudinaryData?.courseId!},
+  //     // ${chapterWithCloudinaryData.courseSectionId},
+  //     // ${chapterWithCloudinaryData?.id!}
+  //     await axios.patch(
+  //       `/api/instructor/${instructorId}/dashboard/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}`,
+  //       { videoUrl: values.videoUrl }
+  //     );
+  //     toast.success("Chapter updated successfully ...");
+  //     toggleEdit();
+  //     router.refresh();
+  //   } catch {
+  //     toast.error("Something went wrong");
+  //   }
+  // };
+
+  // const handleUpload = (error: any, result: any) => {
+  //   if (error) {
+  //     toast.error(`Error in uploading video: ${error.message}`);
+  //   } else {
+  //     const uploadedUrl = result?.info?.url;
+  //     setVideoUrl(uploadedUrl);
+  //     onSubmit({ videoUrl: uploadedUrl });
+  //     console.log("Uploaded video url: ", videoUrl);
+  //     toast.success("Video successfully uploaded!");
+  //   }
+  // };
+
   const [isEditing, setIsEditing] = useState(false);
-  const [videoUrl, setVideoUrl] = useState("");
+  const [videoUrl, setVideoUrl] = useState(
+    chapterWithCloudinaryData?.videoUrl || ""
+  );
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -44,8 +82,8 @@ export const ChapterVideoForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/instructor/${instructorId}/dashboard/courses/${chapterWithCloudinaryData.courseId}/sections/${chapterWithCloudinaryData.courseSectionId}/chapters/${chapterWithCloudinaryData.id}`,
-        values
+        `/api/instructor/${instructorId}/dashboard/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}`,
+        { videoUrl: values.videoUrl }
       );
       toast.success("Chapter updated successfully ...");
       toggleEdit();
@@ -55,15 +93,15 @@ export const ChapterVideoForm = ({
     }
   };
 
-  const handleUpload = (error: any, result: any) => {
-    if (error) {
-      toast.error(`Error in uploading video: ${error.message}`);
-    } else {
-      const uploadedUrl = result?.info?.url;
-      setVideoUrl(uploadedUrl);
-      onSubmit({ videoUrl: uploadedUrl });
-      console.log("Uploaded video url: ", videoUrl);
+  const handleUpload = (result: CloudinaryUploadWidgetResults) => {
+    if (result?.event === "success") {
+      const uploadedUrl = result?.info!;
+      console.log('Video upload result: ', uploadedUrl);
+      // setVideoUrl(uploadedUrl);
+      // onSubmit({ videoUrl: uploadedUrl });
       toast.success("Video successfully uploaded!");
+    } else {
+      toast.error("Error in uploading video.");
     }
   };
 
@@ -102,17 +140,21 @@ export const ChapterVideoForm = ({
               playbackId={chapterWithCloudinaryData?.muxData?.playbackId || ""}
             /> */}
 
-            <Video className="rounded-xl overflow-hidden" src={videoUrl} />
+            {/* <Video className="rounded-xl overflow-hidden" src={videoUrl} /> */}
 
-            {/* <iframe
+            <iframe
               className="rounded-xl overflow-hidden"
+              // src={videoUrl}
               src={
-                // chapterWithCloudinaryData?.cloudinaryData?.publicId!
-                //   ?
-                `https://player.cloudinary.com/embed/?cloud_name=df2g8tcxq&public_id=${chapterWithCloudinaryData?.cloudinaryData?.publicId!}`
-                // : ``
+                "https://res.cloudinary.com/df2g8tcxq/video/upload/c_limit,h_60,w_90/v1721627293/sa5aozwunf2lkmzfejyr.jpg"
               }
-            /> */}
+              // src={
+              // chapterWithCloudinaryData?.cloudinaryData?.publicId!
+              //   ?
+              // `https://player.cloudinary.com/embed/?cloud_name=df2g8tcxq&public_id=${chapterWithCloudinaryData?.cloudinaryData?.publicId!}`
+              // : ``
+              // }
+            />
           </div>
         ))}
 
@@ -139,7 +181,7 @@ export const ChapterVideoForm = ({
                 `Video successfully uploaded, and result: `,
                 JSON.stringify(result)
               );
-              handleUpload(null, result);
+              handleUpload(result);
             }}
           >
             {({ open }) => {
