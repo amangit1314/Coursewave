@@ -43,16 +43,16 @@ const ArticleContentPage = ({ params }: { params: { articleId: string } }) => {
     fetchSelectedArticle(articleId);
   }, [fetchSelectedArticle, articleId]);
 
-  const { saveArticle, unsaveArticle, loading, error } = useUserStore();
+  const { saveArticle, unsaveArticle, loadingState } = useUserStore();
 
   const article: BlogWithComments = selectedArticle!;
   console.log("Article info: ", article);
 
-  if (loading) {
+  if (loadingState.loading) {
     return <ArticleContentLoadingSkeleton article={article!} />;
   }
 
-  if (error && !article) {
+  if (loadingState.error && !article) {
     // return (
     //   <div className="text-red-500">
     //     Error in getting the article information ...
@@ -66,7 +66,7 @@ const ArticleContentPage = ({ params }: { params: { articleId: string } }) => {
           title="Failed to fetch Article Info 🚨❌"
           color="red"
         >
-          <span>ERROR: {error} 🚨❌ ...</span>
+          <span>ERROR: {loadingState.error} 🚨❌ ...</span>
         </Callout>
       </div>
     );
