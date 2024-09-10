@@ -2,7 +2,7 @@ import Stripe from "stripe";
 import { db } from "@/lib/db";
 import { stripe } from "@/config/stripe";
 import { NextRequest, NextResponse } from "next/server";
-import { generateUid } from "@/helpers/id_helper";
+import { generateUid } from "@/helpers/id-helper";
 export const dynamic = 'force-dynamic';
 
 import cors, { runMiddleware } from '@/lib/cors';

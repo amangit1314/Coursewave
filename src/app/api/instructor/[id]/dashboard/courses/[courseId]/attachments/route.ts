@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateUid } from "@/helpers/id_helper";
+import { generateUid } from "@/helpers/id-helper";
 import { db } from "@/lib/db";
 
 import cors, { runMiddleware } from '@/lib/cors';

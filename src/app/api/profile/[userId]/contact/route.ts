@@ -1,4 +1,4 @@
-import { sendContactEmail } from "@/helpers/send_email_helper";
+import { sendContactEmail } from "@/helpers/send-email-helper";
 import { NextRequest, NextResponse } from "next/server";
 
 import cors, { runMiddleware } from '@/lib/cors';

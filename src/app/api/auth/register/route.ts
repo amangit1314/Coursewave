@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { db } from "@/lib/db";
-import { generateUid } from "@/helpers/id_helper";
-import { sendEmail } from "@/helpers/send_email_helper";
+import { generateUid } from "@/helpers/id-helper";
+import { sendEmail } from "@/helpers/send-email-helper";
 import { NextRequest, NextResponse } from "next/server";
 import { generateVerificationToken } from "@/helpers/jwt-helper";
 import cors, { runMiddleware } from '@/lib/cors';

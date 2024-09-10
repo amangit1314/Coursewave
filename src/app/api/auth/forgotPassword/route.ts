@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 
 import { NextRequest, NextResponse } from "next/server";
-import { sendEmail } from "@/helpers/send_email_helper";
+import { sendEmail } from "@/helpers/send-email-helper";
 import { generateResetToken } from "@/helpers/jwt-helper";
 import { forgotPasswordHtmlTemplate } from "@/helpers/forgot-password-email-html-template";
 

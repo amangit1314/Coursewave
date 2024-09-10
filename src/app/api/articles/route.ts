@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { generateUid } from "@/helpers/id_helper";
+import { generateUid } from "@/helpers/id-helper";
 import cors, { runMiddleware } from '@/lib/cors';
 
 // Handle the OPTIONS request
