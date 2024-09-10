@@ -101,15 +101,15 @@ export default function ManageUserSubscriptionButton({
         disabled={isPending}
         // focus:ring-blue-500 dark:focus:ring-blue-500
         className={cn(
-          "text-white bg-zinc-700 w-full mb-1 hover:bg-blue-600 focus:ring-4 font-medium rounded-2xl text-sm px-5 py-2.5 text-center dark:text-white overflow-hidden",
+          "mb-1 w-full overflow-hidden rounded-2xl bg-zinc-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-600 focus:ring-4 dark:text-white",
           isSelected
-            ? "bg-blue-500 text-white focus:ring-4 focus:ring-blue-300 "
+            ? "bg-blue-500 text-white focus:ring-4 focus:ring-blue-300"
             : "",
-          isCurrentPlan ? "bg-blue-500 text-white ring-2 ring-blue-600" : ""
+          isCurrentPlan ? "bg-blue-500 text-white ring-2 ring-blue-600" : "",
         )}
       >
         {isPending && (
-          <Loader2 className="mr-2 h-4 w-4animate-spin transition-all duration-300" />
+          <Loader2 className="w-4animate-spin mr-2 h-4 transition-all duration-300" />
         )}
         {isCurrentPlan ? "Manage Subscription" : "Subscribe"}
       </Button>

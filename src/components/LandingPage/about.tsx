@@ -11,14 +11,14 @@ const avatarUrls = [
 
 const About = () => {
   return (
-    <div className="flex justify-center items-center mx-auto max-w-7xl w-full h-full">
-      <div className="flex flex-col space-y-8 w-full">
+    <div className="mx-auto flex h-full w-full max-w-7xl items-center justify-center">
+      <div className="flex w-full flex-col space-y-8 px-[0.75rem] md:px-0">
         {/* about bold text and subtext */}
         <div>
-          <div className="font-bold tracking-tight text-zinc-900 dark:text-white text-center text-2xl">
+          <div className="text-center text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
             About
           </div>
-          <p className="pt-4 text-base text-center text-zinc-700 dark:text-gray-200">
+          <p className="pt-4 text-center text-base text-zinc-700 dark:text-gray-200">
             Ride the Wave of Knowledge with
             <span className="text-blue-500"> Coursewave!</span> Where
             <br />
@@ -26,48 +26,54 @@ const About = () => {
           </p>
         </div>
 
-        {/* vido and texts for small screen */}
-        <div className="flex flex-col justify-start w-full md:place-items-center space-y-4 md:hidden">
-          {/* video */}
-          <div className="smooth-wrapper space-y-2">
-            <video
-              className="smooth-content h-[12rem] rounded-lg object-cover w-full md:w-[24rem] bg-blue-200"
-              width="384"
-              height="192"
-              loop
-              autoPlay
-            >
-              <source
-                className="bg-cover"
-                src="assets/videos/vid.mp4"
-                type="video/mp4"
-              />
-            </video>
-            <div className="smooth-content ">
-              <p className="font-semibold tracking-tight text-zinc-900 dark:text-gray-200 text-base">
-                About Courewave
-              </p>
-              <p className="text-sm text-[#333333] dark:text-gray-200 opacity-80">
-                2 min
-              </p>
-            </div>
-          </div>
+        {/* for mobile screens */}
+        <div className="visible md:hidden">
+          {/* vido and texts for small screen */}
+          <div className="flex w-full flex-col justify-start space-y-4 md:hidden md:place-items-center">
+            {/* video */}
+            <div className="smooth-wrapper space-y-2">
+              {/* video */}
+              <video
+                className="smooth-content max-w-screen mx-[0.75rem] h-[12rem] w-full rounded-lg bg-blue-200 object-cover md:w-[24rem]"
+                width="384"
+                height="192"
+                loop
+                autoPlay
+              >
+                <source
+                  className="bg-cover"
+                  src="assets/videos/vid.mp4"
+                  type="video/mp4"
+                />
+              </video>
 
-          {/* text and avatars */}
-          <div className="w-9/12 space-y-1 ">
-            <div className="text-left text-base text-md text-[#333333] dark:text-gray-200  w-9/12 ">
-              Build a never-before skill set by taking our courses and interact
-              with our extensive community! We have a great success with
-              delivering high-quality, value-for-money content in our courses,
-              and we take pride in our commitment to excellence in education.
-              Our courses are meticulously designed to meet the diverse learning
-              needs of our students, ensuring that each course offers
-              substantial and practical knowledge that can be applied in
-              real-world scenarios.
+              {/* texts */}
+              <div className="">
+                <h3 className="dark:text-gray-white font-semibold tracking-tight text-zinc-800">
+                  About Courewave
+                </h3>
+                <p className="text-sm text-[#333333] opacity-80 dark:text-gray-200">
+                  2 min
+                </p>
+              </div>
             </div>
 
-            <div className="flex justify-start items-center space-x-4 w-9/12">
-              <div className="flex items-start pt-8 justify-end flex-col w-full space-y-1">
+            {/* text and avatars */}
+            <div className="w-full space-y-4">
+              {/* text */}
+              <div className="text-md w-9/12 text-left text-base text-zinc-700 dark:text-gray-200">
+                Build a never-before skill set by taking our courses and
+                interact with our extensive community! We have a great success
+                with delivering high-quality, value-for-money content in our
+                courses, and we take pride in our commitment to excellence in
+                education. Our courses are meticulously designed to meet the
+                diverse learning needs of our students, ensuring that each
+                course offers substantial and practical knowledge that can be
+                applied in real-world scenarios.
+              </div>
+
+              {/* avatar */}
+              <div className="flex w-full flex-col items-start justify-end space-y-1 md:w-9/12">
                 <AvatarCircles numPeople={200} avatarUrls={avatarUrls} />
                 <p className="text-[14px] text-zinc-800 dark:text-gray-200">
                   Happy Customers
@@ -75,56 +81,163 @@ const About = () => {
               </div>
             </div>
           </div>
+
+          {/* video and texts for big screens */}
+          <div className="mx-24 hidden items-center justify-center space-x-8 md:visible md:flex">
+            {/* video */}
+            <div className="smooth-wrapper space-y-2">
+              <video
+                className="smooth-content h-[12rem] w-full rounded-xl bg-blue-200 object-cover md:w-[24rem]"
+                width="384"
+                height="192"
+                loop
+                autoPlay
+              >
+                <source
+                  className="bg-cover"
+                  src="assets/videos/vid.mp4"
+                  type="video/mp4"
+                />
+              </video>
+              <div className="smooth-content">
+                <p className="text-base font-semibold tracking-tight text-zinc-900 dark:text-gray-200">
+                  About Courewave
+                </p>
+                <p className="text-sm text-[#333333] opacity-80 dark:text-gray-200">
+                  2 min
+                </p>
+              </div>
+            </div>
+
+            {/* text and avatars */}
+            <div className="w-9/12 space-y-1">
+              {/* about text */}
+              <div className="text-md w-full text-left text-base text-[#333333] opacity-80 dark:text-gray-200">
+                Build a never-before skill set by taking our courses and
+                interact with our extensive community! We have a great success
+                with delivering high-quality, value-for-money content in our
+                courses, and we take pride in our commitment to excellence in
+                education. Our courses are meticulously designed to meet the
+                diverse learning needs of our students, ensuring that each
+                course offers substantial and practical knowledge that can be
+                applied in real-world scenarios.
+              </div>
+
+              {/* avatars and happy customers text */}
+              <div className="flex w-9/12 items-center justify-start space-x-4">
+                <div className="flex w-full flex-col items-start justify-end space-y-1 pt-8">
+                  <AvatarCircles numPeople={200} avatarUrls={avatarUrls} />
+                  <p className="text-[14px] text-zinc-800 opacity-80 dark:text-gray-200">
+                    Happy Customers
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* video and texts for big screens */}
-        <div className="hidden md:flex md:visible justify-center items-center space-x-8 mx-24">
-          {/* video */}
-          <div className="smooth-wrapper space-y-2">
-            <video
-              className="smooth-content h-[12rem] rounded-xl object-cover w-full md:w-[24rem] bg-blue-200"
-              width="384"
-              height="192"
-              loop
-              autoPlay
-            >
-              <source
-                className="bg-cover"
-                src="assets/videos/vid.mp4"
-                type="video/mp4"
-              />
-            </video>
-            <div className="smooth-content ">
-              <p className="font-semibold tracking-tight text-zinc-900 dark:text-gray-200 text-base">
-                About Courewave
-              </p>
-              <p className="text-sm text-[#333333] dark:text-gray-200 opacity-80">
-                2 min
-              </p>
+        {/* for big screens */}
+        <div className="hidden md:visible md:flex">
+          {/* vido and texts for small screen */}
+          <div className="flex w-full flex-col justify-start space-y-4 md:hidden md:place-items-center">
+            {/* video */}
+            <div className="smooth-wrapper space-y-2">
+              <video
+                className="smooth-content h-[12rem] w-full rounded-lg bg-blue-200 object-cover md:w-[24rem]"
+                width="384"
+                height="192"
+                loop
+                autoPlay
+              >
+                <source
+                  className="bg-cover"
+                  src="assets/videos/vid.mp4"
+                  type="video/mp4"
+                />
+              </video>
+              <div className="smooth-content">
+                <p className="text-base font-semibold tracking-tight text-zinc-900 dark:text-gray-200">
+                  About Courewave
+                </p>
+                <p className="text-sm text-[#333333] opacity-80 dark:text-gray-200">
+                  2 min
+                </p>
+              </div>
+            </div>
+
+            {/* text and avatars */}
+            <div className="w-9/12 space-y-4">
+              {/* text */}
+              <div className="text-md w-9/12 text-left text-base text-zinc-700 dark:text-gray-200">
+                Build a never-before skill set by taking our courses and
+                interact with our extensive community! We have a great success
+                with delivering high-quality, value-for-money content in our
+                courses, and we take pride in our commitment to excellence in
+                education. Our courses are meticulously designed to meet the
+                diverse learning needs of our students, ensuring that each
+                course offers substantial and practical knowledge that can be
+                applied in real-world scenarios.
+              </div>
+
+              {/* avatar */}
+              <div className="flex w-full flex-col items-start justify-end space-y-1 md:w-9/12">
+                <AvatarCircles numPeople={200} avatarUrls={avatarUrls} />
+                <p className="text-[14px] text-zinc-800 dark:text-gray-200">
+                  Happy Customers
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* text and avatars */}
-          <div className="w-9/12 space-y-1 ">
-            {/* about text */}
-            <div className="text-left text-base text-md text-[#333333] dark:text-gray-200 w-full opacity-80">
-              Build a never-before skill set by taking our courses and interact
-              with our extensive community! We have a great success with
-              delivering high-quality, value-for-money content in our courses,
-              and we take pride in our commitment to excellence in education.
-              Our courses are meticulously designed to meet the diverse learning
-              needs of our students, ensuring that each course offers
-              substantial and practical knowledge that can be applied in
-              real-world scenarios.
+          {/* video and texts for big screens */}
+          <div className="mx-24 hidden items-center justify-center space-x-8 md:visible md:flex">
+            {/* video */}
+            <div className="smooth-wrapper space-y-2">
+              <video
+                className="smooth-content h-[12rem] w-full rounded-xl bg-blue-200 object-cover md:w-[24rem]"
+                width="384"
+                height="192"
+                loop
+                autoPlay
+              >
+                <source
+                  className="bg-cover"
+                  src="assets/videos/vid.mp4"
+                  type="video/mp4"
+                />
+              </video>
+              <div className="smooth-content">
+                <p className="text-base font-semibold tracking-tight text-zinc-900 dark:text-gray-200">
+                  About Courewave
+                </p>
+                <p className="text-sm text-[#333333] opacity-80 dark:text-gray-200">
+                  2 min
+                </p>
+              </div>
             </div>
 
-            {/* avatars and happy customers text */}
-            <div className="flex justify-start items-center space-x-4 w-9/12">
-              <div className="flex items-start pt-8 justify-end flex-col w-full space-y-1">
-                <AvatarCircles numPeople={200} avatarUrls={avatarUrls} />
-                <p className="text-[14px] text-zinc-800 dark:text-gray-200 opacity-80">
-                  Happy Customers
-                </p>
+            {/* text and avatars */}
+            <div className="w-9/12 space-y-1">
+              {/* about text */}
+              <div className="text-md w-full text-left text-base text-[#333333] opacity-80 dark:text-gray-200">
+                Build a never-before skill set by taking our courses and
+                interact with our extensive community! We have a great success
+                with delivering high-quality, value-for-money content in our
+                courses, and we take pride in our commitment to excellence in
+                education. Our courses are meticulously designed to meet the
+                diverse learning needs of our students, ensuring that each
+                course offers substantial and practical knowledge that can be
+                applied in real-world scenarios.
+              </div>
+
+              {/* avatars and happy customers text */}
+              <div className="flex w-9/12 items-center justify-start space-x-4">
+                <div className="flex w-full flex-col items-start justify-end space-y-1 pt-8">
+                  <AvatarCircles numPeople={200} avatarUrls={avatarUrls} />
+                  <p className="text-[14px] text-zinc-800 opacity-80 dark:text-gray-200">
+                    Happy Customers
+                  </p>
+                </div>
               </div>
             </div>
           </div>

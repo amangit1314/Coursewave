@@ -1,4 +1,4 @@
-export function RatingStars({ courseStarRatings }: any) {
+const RatingStars = ({ courseStarRatings }: any) => {
   return (
     <div className="flex justify-start items-center">
       <p className="mr-2 text-md text-base font-semibold text-yellow-400">
@@ -23,3 +23,5 @@ export function RatingStars({ courseStarRatings }: any) {
     </div>
   );
 }
+
+export default RatingStars;

@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Category } from "@prisma/client";
 import CategoriesComponent from "@/app/(course)/courses/_components/courses-categories-component";
 import { FilteredCoursesComponent } from "@/app/(course)/courses/_components/filtered-courses";
-import useUserInfo from "@/hooks/use-user-info";
-import useCoursesStore from "@/zustand/coursesStore";
-import { useZustandStore } from "@/zustand/store";
+
+import { useUserStore } from "@/zustand/userStore";
+import { useCoursesStore } from "@/zustand/coursesStore";
+import { useCategoriesStore } from "@/zustand/categoriesStore";
+
 
 interface BrowseSectionProps {
   children: React.ReactNode;
@@ -17,8 +19,9 @@ const BrowseSection: React.FC<BrowseSectionProps> = ({ children }) => {
     React.useState<number>(0);
   const [categoriesData, setCategories] = React.useState<Category[]>([]);
 
-  const { courses, fetchCourses } = useCoursesStore();
-  const { loading, categories, fetchCategories } = useZustandStore();
+  const { courses, fetchCourses, fetchCourseCategories } = useCoursesStore();
+  const { loading, error, categories, fetchCategories } = useCategoriesStore();
+  const { user, loadingState } = useUserStore();
 
   useEffect(() => {
     fetchCourses();
@@ -31,33 +34,32 @@ const BrowseSection: React.FC<BrowseSectionProps> = ({ children }) => {
   console.log("Courses in browse section: ", courses);
   console.log("Categories in browse section: ", categories);
 
-  useEffect(() => {
-    setCategories([
+  const categoriesWithData = useMemo(() => {
+    return [
       { name: "All", createdAt: null, updatedAt: null },
       ...categories,
-    ]);
+    ];
   }, [setCategories, categories]);
 
   const handleClick = (index: number) => {
     setActiveCategoryIndex(index);
   };
 
-  const activeCategory = categoriesData[activeCategoryIndex]?.name || "All";
+  const activeCategory = categoriesWithData[activeCategoryIndex]?.name ?? "All";
 
-  const user = useUserInfo();
-  console.log("User: ", user);
+  console.log("User in browse-section.tsx: ", user);
 
   return (
-    <div className="py-16 md:py-12 space-y-6 md:space-y-0 w-full px-6 md:px-12 overflow-x-hidden">
+    <div className="w-full space-y-6 overflow-x-hidden px-6 py-16 md:space-y-0 md:px-12 md:py-12">
       <CategoriesComponent
         activeCategory={activeCategoryIndex}
         setActiveCategory={handleClick}
-        categories={categoriesData}
+        categories={categoriesWithData}
         loading={loading}
       />
       <FilteredCoursesComponent
         activeCategory={activeCategory}
-        categories={categoriesData}
+        categories={categoriesWithData}
       />
     </div>
   );

@@ -13,11 +13,11 @@ interface EditorProps {
 export const Editor = ({ onChange, value }: EditorProps) => {
   const ReactQuill = useMemo(
     () => dynamic(() => import("react-quill"), { ssr: false }),
-    []
+    [],
   );
 
   return (
-    <div className="bg-white dark:bg-zinc-900 transition-all duration-300 dark:text-gray-300  overflow-hidden">
+    <div className="overflow-hidden bg-white transition-all duration-300 dark:bg-zinc-900 dark:text-gray-300">
       <ReactQuill theme="snow" value={value} onChange={onChange} />
     </div>
   );

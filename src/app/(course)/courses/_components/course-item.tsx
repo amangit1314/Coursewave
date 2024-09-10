@@ -32,13 +32,13 @@ export const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
     <div
       key={course.courseId}
       onClick={onViewDetails}
-      className={`group cursor-pointer rounded-2xl max-w-[15rem] w-auto dark:hover:bg-zinc-800 p-2.5 transition-colors hover:border-blue-500 hover:bg-white hover:dark:border-neutral-700 dark:bg-neutral-800/30`}
+      className={`group w-auto max-w-[15rem] cursor-pointer rounded-2xl p-2.5 transition-colors hover:border-blue-500 hover:bg-white dark:bg-neutral-800/30 hover:dark:border-neutral-700 dark:hover:bg-zinc-800`}
     >
       {/* Course Image */}
       <div className="relative">
         <Image
-          className="h-40 w-[15rem] bg-slate-700 rounded-xl relative left-0 right-0"
-          src={course.courseImage ?? './assets/images/images1.jpg'}
+          className="relative left-0 right-0 h-40 w-[15rem] rounded-xl bg-slate-700"
+          src={course.courseImage ?? "./assets/images/images1.jpg"}
           alt="Next.js Logo"
           width={250}
           height={35}
@@ -51,27 +51,27 @@ export const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
         </Badge>
       </div>
 
-      {/* <p
-                className='mt-2 text-xs bg-transparent text-blue-500 font-normal border-blue-500'>{course.courseCategories ? course.courseCategories[0] : 'Default'}
-            </p> */}
+      {/* <p className="mt-2 border-blue-500 bg-transparent text-xs font-normal text-blue-500">
+        {course.courseCategories ? course.courseCategories[0] : "Default"}
+      </p> */}
 
-      <div className="flex justify-between mt-2">
+      <div className="mt-2 flex justify-between">
         <p className="text-xs">10 Classes</p>
         <p className="pl-1 text-xs">48 hours</p>
       </div>
 
       {/* Course Title */}
-      <p className="text-md text-[#333333] dark:text-white tracking-tight mt-1 mr-3 font-semibold line-clamp-2">
+      <p className="text-md mr-3 mt-1 line-clamp-2 font-semibold tracking-tight text-[#333333] dark:text-white">
         {course.courseTitle ? course.courseTitle : "Aman Soni"}
       </p>
 
-      <div className="flex justify-between items-center">
-        <div className="flex items-center py-auto">
-          <div className="flex justify-start items-center">
-            <p className="text-xs text-gray-600 tracking-tight dark:text-gray-400">
+      <div className="flex items-center justify-between">
+        <div className="py-auto flex items-center">
+          <div className="flex items-center justify-start">
+            <p className="text-xs tracking-tight text-gray-600 dark:text-gray-400">
               By
             </p>
-            <p className="text-xs font-medium hover:underline text-gray-600 ml-[4px] tracking-tight dark:text-gray-400">
+            <p className="ml-[4px] text-xs font-medium tracking-tight text-gray-600 hover:underline dark:text-gray-400">
               {course.instructorName ? course.instructorName : "Aman Soni"}
             </p>
           </div>
@@ -79,7 +79,7 @@ export const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
 
         {/* bookmark icon */}
         <div
-          className={`h-7 hover:bg-blue-600 w-7 p-1 items-center cursor-pointer flex py-auto justify-center rounded-full ${
+          className={`py-auto flex h-7 w-7 cursor-pointer items-center justify-center rounded-full p-1 hover:bg-blue-600 ${
             isBookmarked ? "bg-blue-600" : "bg-blue-400"
           }`}
           onClick={toggleBookmark}

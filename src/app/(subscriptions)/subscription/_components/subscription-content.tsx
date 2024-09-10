@@ -95,10 +95,10 @@
 // New try
 
 import React, { useState, useEffect } from "react";
-import { storeSubscriptionPlans } from "@/lib/subscriptions";
+import { storeSubscriptionPlans } from "@/lib/subscriptionPlans";
 import { createStripeUrl } from "../../../../../actions/create-stripe-checkout-url";
 import toast from "react-hot-toast";
-import useUserInfo from "@/hooks/use-user-info";
+import { useUserInfo } from "@/hooks/useUserInfo";
 import SubscriptionPlanCard from "./subscription-plan-card";
 
 type SubscriptionPlan = {
@@ -137,26 +137,26 @@ const SubscriptionContent = ({
 
   const [selectedPlan, setSelectedPlan] = useState<string | null>(() => {
     const currentPlan = storeSubscriptionPlans.find(
-      (plan) => plan.stripePriceId === subscriptionPlan?.stripePriceId
+      (plan) => plan.stripePriceId === subscriptionPlan?.stripePriceId,
     );
     const freePlan = storeSubscriptionPlans.find(
-      (plan) => plan.name === "Free"
+      (plan) => plan.name === "Free",
     );
     return currentPlan?.id || freePlan?.id || null;
   });
 
   useEffect(() => {
     const currentPlan = storeSubscriptionPlans.find(
-      (plan) => plan.stripePriceId === subscriptionPlan?.stripePriceId
+      (plan) => plan.stripePriceId === subscriptionPlan?.stripePriceId,
     );
     const freePlan = storeSubscriptionPlans.find(
-      (plan) => plan.name === "Free"
+      (plan) => plan.name === "Free",
     );
     setSelectedPlan(currentPlan?.id || freePlan?.id || null);
   }, [subscriptionPlan]);
 
   return (
-    <div className="space-y-8 lg:grid lg:grid-cols-2 gap-6 md:mx-[4rem] lg:space-y-0 mx-[1rem]">
+    <div className="mx-[1rem] gap-6 space-y-8 md:mx-[4rem] lg:grid lg:grid-cols-2 lg:space-y-0">
       {storeSubscriptionPlans.map((subscription) => {
         const isCurrentPlan =
           subscriptionPlan?.stripePriceId === subscription.stripePriceId;

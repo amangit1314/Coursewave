@@ -60,12 +60,12 @@ const helpLinks = [
 
 export const CourseFooter = () => {
   return (
-    <div className="flex bottom-0 dark:bg-black flex-col py-2 md:flex-row h-auto w-full px-4 items-center justify-between">
-      <div className="flex flex-row md:flex-row justify-center md:justify-between items-start  md:items-center py-auto mb-6 md:mb-0">
+    <div className="bottom-0 flex h-auto w-full flex-col items-center justify-between px-4 py-2 dark:bg-black md:flex-row">
+      <div className="py-auto mb-6 flex flex-row items-start justify-center md:mb-0 md:flex-row md:items-center md:justify-between">
         {/* coursewave logo */}
         <Link
           href="https://flowbite.com/"
-          className="flex items-center py-auto"
+          className="py-auto flex items-center"
         >
           <Image
             src="/courseWaveFaviconColored.png"
@@ -74,20 +74,20 @@ export const CourseFooter = () => {
             height={28}
             width={30}
           />
-          <span className="self-center hidden md:visible text-sm font-bold text-blue-500 dark:text-blue-500 pl-1 pr-4">
+          <span className="hidden self-center pl-1 pr-4 text-sm font-bold text-blue-500 dark:text-blue-500 md:visible">
             CourseWave
           </span>
         </Link>
 
         {/* copyright and privacy policy text */}
-        <span className="flex flex-col md:flex-row justify-start">
-          <p className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
+        <span className="flex flex-col justify-start md:flex-row">
+          <p className="text-sm text-gray-500 dark:text-gray-400 sm:text-center">
             © 2023
             <Link href="https://flowbite.com/" className="hover:underline">
               Coursewave™
             </Link>
           </p>
-          <p className="text-sm text-gray-500 sm:text-center dark:text-gray-400">
+          <p className="text-sm text-gray-500 dark:text-gray-400 sm:text-center">
             . All Rights Reserved.
           </p>
         </span>
@@ -95,13 +95,13 @@ export const CourseFooter = () => {
 
       {/* social icons */}
       <div className="flex items-center justify-between">
-        <div className="flex mt-4 space-x-5 sm:justify-center sm:mt-0">
+        <div className="mt-4 flex space-x-5 sm:mt-0 sm:justify-center">
           <Link
             href="#"
             className="text-gray-500 hover:text-gray-900 dark:hover:text-white"
           >
             <svg
-              className="w-4 h-4"
+              className="h-4 w-4"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -120,7 +120,7 @@ export const CourseFooter = () => {
             className="text-gray-500 hover:text-gray-900 dark:hover:text-white"
           >
             <svg
-              className="w-4 h-4"
+              className="h-4 w-4"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -135,7 +135,7 @@ export const CourseFooter = () => {
             className="text-gray-500 hover:text-gray-900 dark:hover:text-white"
           >
             <svg
-              className="w-4 h-4"
+              className="h-4 w-4"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -154,7 +154,7 @@ export const CourseFooter = () => {
             className="text-gray-500 hover:text-gray-900 dark:hover:text-white"
           >
             <svg
-              className="w-4 h-4"
+              className="h-4 w-4"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -173,7 +173,7 @@ export const CourseFooter = () => {
             className="text-gray-500 hover:text-gray-900 dark:hover:text-white"
           >
             <svg
-              className="w-4 h-4"
+              className="h-4 w-4"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
@@ -195,19 +195,19 @@ export const CourseFooter = () => {
 
 export const Footer = () => {
   return (
-    <footer className="w-full h-auto md:p-4 bg-zinc-900  text-slate-700 md:mt-22">
+    <footer className="md:mt-22 h-auto w-full bg-zinc-900 text-slate-700 md:p-4">
       {/* newsletter */}
-      <div className="flex justify-center items-center bg-transparent">
+      <div className="flex items-center justify-center bg-transparent">
         <Newsletter />
       </div>
 
       {/* options */}
-      <div className="flex w-full flex-col md:flex-row justify-start md:justify-between items-center border-t border-storke border-neutral-700 pt-4">
+      <div className="border-storke flex w-full flex-col items-center justify-start border-t border-neutral-700 pt-4 md:flex-row md:justify-between">
         {/* other options */}
-        <div className="flex flex-col md:flex-row md:p-4 justify-start ">
+        <div className="flex flex-col justify-start md:flex-row md:p-4">
           {/* coursewave logo */}
-          <div className="flex flex-col space-y-4 mt-6 md:mt-0 border-r pr-8 mr-8 border-stroke">
-            <div className="flex cursor-pointer items-center py-auto">
+          <div className="border-stroke mr-8 mt-6 flex flex-col space-y-4 border-r pr-8 md:mt-0">
+            <div className="py-auto flex cursor-pointer items-center">
               <Image
                 src="/assets/images/logo/coursewave-favicon-color.png"
                 alt="CourseWave Logo"
@@ -215,25 +215,25 @@ export const Footer = () => {
                 height={8}
                 priority
               />
-              <p className="pl-2 text-blue-500 font-mono tracking-tight font-extrabold capitalize text-[1rem]">
+              <p className="pl-2 font-mono text-[1rem] font-extrabold capitalize tracking-tight text-blue-500">
                 Coursewave
               </p>
             </div>
           </div>
 
           {/* Get Help and  Quick Links) */}
-          <div className="hidden md:visible md:flex flex-col md:flex-row mt-4 md:mt-0 ">
+          <div className="mt-4 hidden flex-col md:visible md:mt-0 md:flex md:flex-row">
             {/* Get Help */}
-            <div className="md:mx-8 space-y-4 border-r pr-8 border-stroke border-neutral-700">
-              <p className="uppercase font-bold text-sm cursor-pointer text-slate-100 tracking-tight">
+            <div className="border-stroke space-y-4 border-r border-neutral-700 pr-8 md:mx-8">
+              <p className="cursor-pointer text-sm font-bold uppercase tracking-tight text-slate-100">
                 Get Help
               </p>
 
-              <ul className="list-none flex flex-col space-y-3">
+              <ul className="flex list-none flex-col space-y-3">
                 {helpLinks.map((helpLink, index) => {
                   return (
                     <Link key={index} href={helpLink.link}>
-                      <p className="text-sm tracking-tight text-slate-400 hover:text-slate-100 cursor-pointer">
+                      <p className="cursor-pointer text-sm tracking-tight text-slate-400 hover:text-slate-100">
                         {helpLink.name}
                       </p>
                     </Link>
@@ -243,16 +243,16 @@ export const Footer = () => {
             </div>
 
             {/* Quick Links */}
-            <div className="mt-4 md:mt-0 space-y-4">
-              <p className="uppercase font-bold text-sm tracking-tight  text-slate-100">
+            <div className="mt-4 space-y-4 md:mt-0">
+              <p className="text-sm font-bold uppercase tracking-tight text-slate-100">
                 Quick Links
               </p>
 
-              <ul className="list-none flex flex-col space-y-3">
+              <ul className="flex list-none flex-col space-y-3">
                 {quickLinks.map((quickLink, index) => {
                   return (
                     <Link key={index} href={quickLink.link}>
-                      <p className="text-sm tracking-tight text-slate-400 hover:text-slate-100 cursor-pointer">
+                      <p className="cursor-pointer text-sm tracking-tight text-slate-400 hover:text-slate-100">
                         {quickLink.name}
                       </p>
                     </Link>
@@ -269,45 +269,45 @@ export const Footer = () => {
         </div>
 
         {/* social icons links */}
-        <div className="flex items-center justify-between mt-6 mr-8 mb-auto">
-          <div className="flex mt-4 space-x-5 sm:justify-center sm:mt-0">
+        <div className="mb-auto mr-8 mt-6 flex items-center justify-between">
+          <div className="mt-4 flex space-x-5 sm:mt-0 sm:justify-center">
             <Link
               href="https://discord.gg/gemZ3T6r"
-              className="text-gray-500 hover:text-blue-500 "
+              className="text-gray-500 hover:text-blue-500"
             >
-              <SiLinkedin className="w-4 h-4" />
+              <SiLinkedin className="h-4 w-4" />
               <span className="sr-only">LinkedIn</span>
             </Link>
             <Link
               href="https://discord.gg/gemZ3T6r"
-              className="text-gray-500 hover:text-blue-500 "
+              className="text-gray-500 hover:text-blue-500"
             >
-              <SiDiscord className="w-4 h-4" />
+              <SiDiscord className="h-4 w-4" />
               <span className="sr-only">Discord community</span>
             </Link>
             <Link
               href="https://x.com/soni07_aman"
-              className="text-gray-500 hover:text-blue-500 "
+              className="text-gray-500 hover:text-blue-500"
             >
-              <FaSquareXTwitter className="w-4 h-4" />
+              <FaSquareXTwitter className="h-4 w-4" />
               <span className="sr-only">Twitter page</span>
             </Link>
             <Link
               href="https://github.com/amangit1314"
-              className="text-gray-500 hover:text-blue-500 "
+              className="text-gray-500 hover:text-blue-500"
             >
-              <SiGithub className="w-4 h-4" />
+              <SiGithub className="h-4 w-4" />
               <span className="sr-only">GitHub account</span>
             </Link>
-            <Link href="#" className="text-gray-500 hover:text-blue-500 ">
-              <SiDribbble className="w-4 h-4" />
+            <Link href="#" className="text-gray-500 hover:text-blue-500">
+              <SiDribbble className="h-4 w-4" />
               <span className="sr-only">Dribbble account</span>
             </Link>
             <Link
               href="https://discord.gg/gemZ3T6r"
-              className="text-gray-500 hover:text-blue-500 "
+              className="text-gray-500 hover:text-blue-500"
             >
-              <FaYoutube className="w-4 h-4" />
+              <FaYoutube className="h-4 w-4" />
               <span className="sr-only">Youtube channel</span>
             </Link>
           </div>
@@ -315,24 +315,24 @@ export const Footer = () => {
       </div>
 
       {/* copywright text, changelog, refund policy, privacy policy, licence  */}
-      <div className="flex flex-col md:flex-row justify-between mt-8 items-center p-4 bg-zinc-900">
+      <div className="mt-8 flex flex-col items-center justify-between bg-zinc-900 p-4 md:flex-row">
         <CopyRightText />
 
         {/* changelog, refund policy, privacy policy, licence */}
-        <div className="justify-end space-x-2 mt-1 md:mt-0 flex items-center ">
-          <Link href="" className="text-xs  hover:text-blue-500 text-slate-400">
+        <div className="mt-1 flex items-center justify-end space-x-2 md:mt-0">
+          <Link href="" className="text-xs text-slate-400 hover:text-blue-500">
             Changelog
           </Link>
 
-          <Link href="" className="text-xs  hover:text-blue-500 text-slate-400">
+          <Link href="" className="text-xs text-slate-400 hover:text-blue-500">
             Refund Policy
           </Link>
 
-          <Link href="" className="text-xs hover:text-blue-500 text-slate-400">
+          <Link href="" className="text-xs text-slate-400 hover:text-blue-500">
             Privacy Policy
           </Link>
 
-          <Link href="" className="text-xs hover:text-blue-500 text-slate-400">
+          <Link href="" className="text-xs text-slate-400 hover:text-blue-500">
             Licence
           </Link>
         </div>
@@ -343,9 +343,9 @@ export const Footer = () => {
 
 const CopyRightText = () => {
   return (
-    <p className=" text-slate-100 text-xs text-center">
+    <p className="text-center text-xs text-slate-100">
       &copy; 2023{" "}
-      <strong className="text-blue-500 text-xs font-bold">Coursewave</strong> by
+      <strong className="text-xs font-bold text-blue-500">Coursewave</strong> by
       Aman Soni. All rights reserved.
     </p>
   );
@@ -370,7 +370,7 @@ export const MobileFooterAccordionSection = () => {
             return (
               <div
                 key={index}
-                className="text-sm  hover:text-slate-100 cursor-pointer"
+                className="cursor-pointer text-sm hover:text-slate-100"
               >
                 {point}
               </div>
@@ -381,13 +381,13 @@ export const MobileFooterAccordionSection = () => {
 
       <AccordionItem value="item-2">
         <AccordionTrigger>
-          <p className="text-slate-100 mr-[10rem]">About Coursewave </p>
+          <p className="mr-[10rem] text-slate-100">About Coursewave </p>
         </AccordionTrigger>
         <AccordionContent className="space-y-2 text-zinc-400">
-          <p className="text-sm hover:text-slate-100 cursor-pointer">
+          <p className="cursor-pointer text-sm hover:text-slate-100">
             About Page
           </p>
-          <p className="text-sm hover:text-slate-100 cursor-pointer">
+          <p className="cursor-pointer text-sm hover:text-slate-100">
             Newsletter
           </p>
         </AccordionContent>

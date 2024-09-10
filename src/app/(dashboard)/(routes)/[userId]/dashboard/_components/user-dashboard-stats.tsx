@@ -1,5 +1,5 @@
 import React from "react";
-import CardDataStats from "@/components/CardDataStats";
+import CardDataStats from "@/components/card-data-stats";
 import { AiOutlineSolution } from "react-icons/ai";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { GrInProgress } from "react-icons/gr";
@@ -18,8 +18,8 @@ export default function UserDashboardStats({
   totalOngoingCourses,
 }: AnalyticsStats) {
   return (
-    <ScrollArea className="md:max-w-7xl w-full rounded-lg overflow-hidden">
-      <div className="w-full rounded-lg overflow-hidden grid grid-cols-4 gap-x-60 md:gap-x-6">
+    <ScrollArea className="w-full overflow-hidden rounded-lg md:max-w-7xl">
+      <div className="grid w-full grid-cols-4 gap-x-60 overflow-hidden rounded-lg md:gap-x-6">
         <div className="w-full">
           <CardDataStats
             title="Total Time Spent"
@@ -28,7 +28,7 @@ export default function UserDashboardStats({
             // levelUp
           >
             {/* dark:bg-blue-500 dark:text-blue-200 */}
-            <div className="p-1.5 h-[2.5rem] w-[2.5rem] flex justify-center items-center rounded-full bg-orange-200 text-orange-500  bg-opacity-30">
+            <div className="flex h-[2.5rem] w-[2.5rem] items-center justify-center rounded-full bg-orange-200 bg-opacity-30 p-1.5 text-orange-500">
               <CgTimelapse size={22} />
             </div>
           </CardDataStats>
@@ -42,7 +42,7 @@ export default function UserDashboardStats({
             // levelUp
           >
             {/* dark:bg-blue-500 dark:text-blue-200 */}
-            <div className="p-1.5 h-[2.5rem] w-[2.5rem] flex justify-center items-center rounded-full bg-blue-200 text-blue-500  bg-opacity-30">
+            <div className="flex h-[2.5rem] w-[2.5rem] items-center justify-center rounded-full bg-blue-200 bg-opacity-30 p-1.5 text-blue-500">
               <AiOutlineSolution size={22} />
             </div>
           </CardDataStats>
@@ -56,7 +56,7 @@ export default function UserDashboardStats({
             // levelUp
           >
             {/* dark:bg-yellow-500 dark:text-yellow-200 */}
-            <div className="p-1.5 h-[2.5rem] w-[2.5rem] flex justify-center items-center rounded-full bg-yellow-200 text-yellow-500  bg-opacity-30">
+            <div className="flex h-[2.5rem] w-[2.5rem] items-center justify-center rounded-full bg-yellow-200 bg-opacity-30 p-1.5 text-yellow-500">
               {/* <BsPersonVideo2 /> */}
               <GrInProgress />
             </div>
@@ -73,7 +73,7 @@ export default function UserDashboardStats({
             // levelDown
           >
             {/* dark:bg-green-500 dark:text-green-200 */}
-            <div className="p-1.5 h-[2.5rem] w-[2.5rem] flex justify-center items-center rounded-full bg-green-200 text-green-500  bg-opacity-30  ">
+            <div className="flex h-[2.5rem] w-[2.5rem] items-center justify-center rounded-full bg-green-200 bg-opacity-30 p-1.5 text-green-500">
               <TiTick size={22} />
             </div>
           </CardDataStats>

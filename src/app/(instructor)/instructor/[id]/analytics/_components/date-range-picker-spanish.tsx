@@ -14,7 +14,7 @@ export default function DateRangePickerSpanish() {
 
   return (
     <DateRangePicker
-      className="max-w-md mx-auto"
+      className="mx-auto max-w-md"
       value={value}
       onValueChange={setValue}
       locale={es}

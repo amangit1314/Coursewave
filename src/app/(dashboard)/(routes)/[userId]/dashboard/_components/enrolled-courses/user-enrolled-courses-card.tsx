@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
 import { Card } from "@tremor/react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const UserEnrolledCoursesCard = ({
   courseId,
@@ -20,16 +21,18 @@ const UserEnrolledCoursesCard = ({
 
   return (
     <Card
-      className="flex cursor-pointer flex-col justify-start rounded-xl dark:bg-zinc-900 dark:hover:bg-zinc-800 shadow-xl transition-all duration-300 border dark:border-gray-600 hover:border-none dark:border-opacity-25"
+      className="flex cursor-pointer flex-col justify-start rounded-xl border shadow-xl transition-all duration-300 hover:border-none dark:border-gray-600 dark:border-opacity-25 dark:bg-zinc-900 dark:hover:bg-zinc-800"
       onClick={onClick}
     >
-      <div className="flex justify-start items-center space-x-4">
-        <img
+      <div className="flex items-center justify-start space-x-4">
+        <Image
           className="h-12 w-12 rounded-md"
           src={courseImage || "/assets/images/images1.jpg"}
-          alt="yo"
+          height={12}
+          width={12}
+          alt="courseImage..."
         />
-        <p className=" text-lg line-clamp-2 overflow-ellipsis text-gray-700 dark:text-gray-200 font-semibold ">
+        <p className="line-clamp-2 overflow-ellipsis text-lg font-semibold text-gray-700 dark:text-gray-200">
           {courseName || "Version Control System with  Git & GitHub"}
         </p>
       </div>
@@ -57,7 +60,7 @@ const UserEnrolledCoursesCard = ({
         </div>
       </div> */}
 
-      <div className="text-sm text-gray-800 dark:text-gray-500 my-1">
+      <div className="my-1 text-sm text-gray-800 dark:text-gray-500">
         <span className="text-blue-500 dark:text-blue-600">{"70 %"} </span>
         Completed
       </div>
@@ -66,7 +69,7 @@ const UserEnrolledCoursesCard = ({
         value={courseProgress || "70"}
         max="100"
         color="blue"
-      ></progress>
+      />
     </Card>
   );
 };

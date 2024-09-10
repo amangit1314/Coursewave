@@ -7,8 +7,8 @@ interface ProfileLayoutProps {
 
 export default function ProfileLayout({ children }: ProfileLayoutProps) {
   return (
-    <div className="min-h-screen h-full dark:bg-zinc-900">
-      <div className="max-w-3xl px-[1.5xl] mx-auto items-center h-full">
+    <div className="h-full min-h-screen dark:bg-zinc-900">
+      <div className="mx-auto h-full max-w-3xl items-center px-[1.5xl]">
         {children}
       </div>
     </div>

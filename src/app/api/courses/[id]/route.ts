@@ -66,8 +66,6 @@ export const GET = async (
         prerequisits: true,
         whatYouWillLearn: true,
         categoryId: true,
-        createdAt: true,
-        updatedAt: true,
         userId: true,
         reviews: true,
         enrollments: true,
@@ -78,6 +76,13 @@ export const GET = async (
         categories: true,
         chapters: true,
         instructorEarningsFromThisCourse: true,
+        CourseProgress: true,
+        MuxData: true,
+        Instructor: true,
+        WishList: true,
+        createdAt: true,
+        updatedAt: true,
+        CloudinaryData: true, 
       },
     });
 

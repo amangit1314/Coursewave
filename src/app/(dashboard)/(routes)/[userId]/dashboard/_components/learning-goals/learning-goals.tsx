@@ -27,7 +27,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { generateUid } from "@/helpers/id_helper";
+import { generateUid } from "@/helpers/id-helper";
 import { Callout } from "@tremor/react";
 
 const formSchema = z.object({
@@ -53,13 +53,12 @@ const LearningGoals = () => {
   const learningGoalsError = useZustandStore((state: any) => state.error);
 
   return (
-    <div className="space-y-4 w-full">
-      <div className="flex justify-center items-center w-full">
-        <h3 className="text-lg font-medium text-tremor-content-strong dark:text-gray-100 tracking-tight">
+    <div className="w-full space-y-4">
+      <div className="flex w-full items-center justify-center">
+        <h3 className="text-lg font-medium tracking-tight text-tremor-content-strong dark:text-gray-100">
           Learning Goals
         </h3>
 
-        {/* add goal button */}
         <div className="ml-auto">
           <AddLearningGoalButton />
         </div>
@@ -71,34 +70,25 @@ const LearningGoals = () => {
         ) : learningGoalsError ? (
           <Callout
             className=""
-            title="Error Fetching learning goals"
+            title="Error Fetching learning goals 🚨❌"
             color="red"
           >
-            ERROR,{" "}
-            {learningGoalsError}
-            ...
+            {learningGoalsError} 🚨❌ ...
           </Callout>
         ) : (
-          <div>
+          <div className="space-y-2">
             {learningGoals?.length > 0 ? (
-              <div className="space-y-2">
+              <>
                 {learningGoals.map((goal: LearningGoal) => (
                   <div key={goal.id}>
                     <LearningGoalCard learningGoal={goal} />
                   </div>
                 ))}
-              </div>
+              </>
             ) : (
-              // <div className="text-sm text-yellow-400">
-              //   You don't have any goals, set some 🧐 ...
-              // </div>
-               <Callout
-               className=""
-               title="No Learning Goals"
-               color="yellow"
-             >
-               You don't have any goals, set some 🧐 ...
-             </Callout>
+              <Callout className="" title="No Learning Goals" color="yellow">
+                You don't have any goals, set some 🧐 ...
+              </Callout>
             )}
           </div>
         )}
@@ -115,7 +105,7 @@ const AddLearningGoalButton = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    inputRef.current?.focus(); // Focus the input element when the component mounts
+    inputRef.current?.focus();
   }, []);
 
   const form = useForm({
@@ -143,113 +133,119 @@ const AddLearningGoalButton = () => {
   };
 
   return (
-    <div className="">
-      <Dialog>
-        <DialogTrigger asChild>
-          <div className="flex justify-center items-center text-blue-500 cursor-pointer font-medium hover:text-blue-600 transition-all duration-300">
-            <IoMdAddCircleOutline className="h-[24px] w-[24px]" />
-          </div>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px] max-h-[70vh] h-full md:max-w-[70vw] w-full rounded-3xl overflow-hidden">
-          <DialogHeader>
-            <DialogTitle>Add Goal</DialogTitle>
-            <DialogDescription>
-              Add a learning goal and click save when done.
-            </DialogDescription>
-          </DialogHeader>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="grid gap-4 py-4 overflow-y-scroll"
-            >
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <div>
-                    <FormItem className="mt-8">
-                      <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
-                        Learning Goal
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={isSubmitting}
-                          className="bg-transparent border-gray-700 dark:border-gray-400 "
-                          placeholder="i.e. 'Write an article', etc..."
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription className="">
-                        What will you name your goal?
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  </div>
-                )}
-              />
+    <Dialog>
+      {/* dialog trigger */}
+      <DialogTrigger asChild>
+        <div className="flex cursor-pointer items-center justify-center font-medium text-blue-500 transition-all duration-300 hover:text-blue-600">
+          <IoMdAddCircleOutline className="h-[24px] w-[24px]" />
+        </div>
+      </DialogTrigger>
 
-              <FormField
-                control={form.control}
-                name="tag"
-                render={({ field }) => (
-                  <div>
-                    <FormItem className="mt-8">
-                      <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
-                        Tag
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={isSubmitting}
-                          className="bg-transparent border-gray-700 dark:border-gray-400 "
-                          placeholder="i.e. 'task', etc..."
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription className="">
-                        Give your goal a tag
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  </div>
-                )}
-              />
+      {/* dialog content */}
+      <DialogContent className="h-full max-h-[70vh] w-full max-w-[425px] overflow-hidden rounded-full md:max-w-screen-md">
+        {/* dialog header */}
+        <DialogHeader className="px-4 pt-4">
+          <DialogTitle className="text-zinc-900 dark:text-white">
+            Add Goal
+          </DialogTitle>
+          <DialogDescription className="text-zinc-700 dark:text-gray-300">
+            Add a learning goal and click save when done.
+          </DialogDescription>
+        </DialogHeader>
 
-              <FormField
-                control={form.control}
-                name="time"
-                render={({ field }) => (
-                  <div>
-                    <FormItem className="mt-8">
-                      <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
-                        Time
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={isSubmitting}
-                          className="bg-transparent border-gray-700 dark:border-gray-400 "
-                          placeholder="i.e. '9:00 AM', etc..."
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription className="">
-                        Select your deadline time for that goal
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  </div>
-                )}
-              />
+        {/* learning goal form */}
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-2 overflow-y-scroll px-4 pb-4"
+          >
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <div>
+                  <FormItem className="">
+                    <FormLabel className="text-base tracking-tight text-gray-800 dark:text-gray-100">
+                      Learning Goal
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isSubmitting}
+                        className="border-gray-700 bg-transparent dark:border-gray-400"
+                        placeholder="i.e. 'Write an article', etc..."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription className="">
+                      What will you name your goal?
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                </div>
+              )}
+            />
 
-              <DialogFooter>
-                <Button type="submit" disabled={isSubmitting || !isValid}>
-                  Save changes
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
-    </div>
+            <FormField
+              control={form.control}
+              name="tag"
+              render={({ field }) => (
+                <div>
+                  <FormItem className="">
+                    <FormLabel className="text-base tracking-tight text-gray-800 dark:text-gray-100">
+                      Tag
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isSubmitting}
+                        className="border-gray-700 bg-transparent dark:border-gray-400"
+                        placeholder="i.e. 'task', etc..."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription className="">
+                      Give your goal a tag
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                </div>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="time"
+              render={({ field }) => (
+                <div>
+                  <FormItem className="">
+                    <FormLabel className="text-base tracking-tight text-gray-800 dark:text-gray-100">
+                      Time
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isSubmitting}
+                        className="border-gray-700 bg-transparent dark:border-gray-400"
+                        placeholder="i.e. '9:00 AM', etc..."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription className="">
+                      Select your deadline time for that goal
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                </div>
+              )}
+            />
+
+            <DialogFooter>
+              <Button type="submit" disabled={isSubmitting || !isValid}>
+                Save changes
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 };
 

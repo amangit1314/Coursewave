@@ -20,7 +20,7 @@ import {
 import { FaSort } from "react-icons/fa";
 import { Course } from "@prisma/client";
 
-export default function BestSellingCourses({ courses}: { courses: Course[]}) {
+export default function BestSellingCourses({ courses }: { courses: Course[] }) {
   const data = [
     {
       name: "Viola Amherd",
@@ -74,16 +74,16 @@ export default function BestSellingCourses({ courses}: { courses: Course[]}) {
   ];
 
   return (
-    <div className="w-[22rem] my-[25px] border  border-stroke  rounded-lg justify-start items-center py-auto overflow-hidden">
+    <div className="border-stroke py-auto my-[25px] w-[22rem] items-center justify-start overflow-hidden rounded-lg border">
       <Title className="flex justify-between px-4 pt-4">
         <div>
-          <p className="text-base tracking-tight text-zinc-800 dark:text-white font-medium">
+          <p className="text-base font-medium tracking-tight text-zinc-800 dark:text-white">
             Best Selling Courses
           </p>
-          <p className="text-xs dark:text-zinc-400 text-zinc-600">All Time</p>
+          <p className="text-xs text-zinc-600 dark:text-zinc-400">All Time</p>
         </div>
 
-        <Badge color="blue" className="text-xs cursor-pointer" icon={FaSort}>
+        <Badge color="blue" className="cursor-pointer text-xs" icon={FaSort}>
           sort
         </Badge>
       </Title>
@@ -91,19 +91,19 @@ export default function BestSellingCourses({ courses}: { courses: Course[]}) {
       <Table className="mt-5">
         <TableHead>
           <TableRow>
-            <TableHeaderCell className="text-xs dark:text-zinc-400 text-zinc-600">
+            <TableHeaderCell className="text-xs text-zinc-600 dark:text-zinc-400">
               Name
             </TableHeaderCell>
-            <TableHeaderCell className="text-xs dark:text-zinc-400 text-zinc-600">
+            <TableHeaderCell className="text-xs text-zinc-600 dark:text-zinc-400">
               Published
             </TableHeaderCell>
-            <TableHeaderCell className="text-xs dark:text-zinc-400 text-zinc-600">
+            <TableHeaderCell className="text-xs text-zinc-600 dark:text-zinc-400">
               Total Sales
             </TableHeaderCell>
-            <TableHeaderCell className="text-xs dark:text-zinc-400 text-zinc-600">
+            <TableHeaderCell className="text-xs text-zinc-600 dark:text-zinc-400">
               Enrollements
             </TableHeaderCell>
-            <TableHeaderCell className="text-xs dark:text-zinc-400 text-zinc-600">
+            <TableHeaderCell className="text-xs text-zinc-600 dark:text-zinc-400">
               Status
             </TableHeaderCell>
           </TableRow>
@@ -133,7 +133,7 @@ export default function BestSellingCourses({ courses}: { courses: Course[]}) {
           ))} */}
           {courses.map(
             (
-              course: Course // Use the correct type from Prisma
+              course: Course, // Use the correct type from Prisma
             ) => (
               <TableRow key={course.courseId!}>
                 {" "}
@@ -144,17 +144,21 @@ export default function BestSellingCourses({ courses}: { courses: Course[]}) {
                 </TableCell>{" "}
                 {/* Handle potential null value for publishedAt */}
                 <TableCell>
-                  <div className="text-xs">{course.avgStarRatings || "N/A"}</div>{" "}
+                  <div className="text-xs">
+                    {course.avgStarRatings || "N/A"}
+                  </div>{" "}
                   {/* Handle potential null value for totalSales */}
                 </TableCell>
                 <TableCell>
-                  <div className="text-xs">{course.instructorName || "N/A"}</div>{" "}
+                  <div className="text-xs">
+                    {course.instructorName || "N/A"}
+                  </div>{" "}
                   {/* Handle potential null value for enrollments */}
                 </TableCell>
                 <TableCell>
                   <Badge
                     color="purple"
-                    className="bg-purple-400 rounded-full dark:text-purple-300 dark:bg-purple-700 text-purple-700 text-xs py-1"
+                    className="rounded-full bg-purple-400 py-1 text-xs text-purple-700 dark:bg-purple-700 dark:text-purple-300"
                     icon={RiRadioButtonLine}
                   >
                     {course.isPublished || "N/A"}
@@ -162,7 +166,7 @@ export default function BestSellingCourses({ courses}: { courses: Course[]}) {
                   </Badge>
                 </TableCell>
               </TableRow>
-            )
+            ),
           )}
         </TableBody>
       </Table>

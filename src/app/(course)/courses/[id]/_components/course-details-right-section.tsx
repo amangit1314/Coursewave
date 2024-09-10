@@ -7,8 +7,8 @@ import { CartItem, Course, Review } from "@prisma/client";
 import toast, { Toaster } from "react-hot-toast";
 import { Button, Divider, Title } from "@tremor/react";
 import { usePathname } from "next/navigation";
-import { CourseEnrollButton } from "./course-enroll-button";
-import { ApplyCouponCode } from "./apply-coupon-code";
+import CourseEnrollButton from "./course-enroll-button";
+import ApplyCouponCode from "./apply-coupon-code";
 
 export const CourseDetailsRightSection = ({ course }: { course: Course }) => {
   const pathname = usePathname();
@@ -25,15 +25,15 @@ export const CourseDetailsRightSection = ({ course }: { course: Course }) => {
       (err) => {
         console.error("Failed to copy URL:", err);
         notify("❌ Failed to copy URL!");
-      }
+      },
     );
   };
 
   return (
-    <div className="w-auto h-auto hidden md:flex md:flex-col md:mt-12">
-      <div className="mx-auto shadow-xl max-w-md w-full rounded-3xl dark:bg-slate-800 h-auto">
+    <div className="hidden h-auto w-auto md:mt-12 md:flex md:flex-col">
+      <div className="mx-auto h-auto w-full max-w-md rounded-3xl shadow-xl dark:bg-slate-800">
         <Image
-          className="h-60 max-w-[28rem] w-full bg-slate-700 rounded-t-3xl relative left-0 right-0"
+          className="relative left-0 right-0 h-60 w-full max-w-[28rem] rounded-t-3xl bg-slate-700"
           src={
             course?.courseImage ??
             "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210301154221/System-Design-Live-Course-By-GeeksforGeeks.png"
@@ -48,22 +48,22 @@ export const CourseDetailsRightSection = ({ course }: { course: Course }) => {
         />
 
         <div className="p-4">
-          <div className="flex py-auto items-center">
-            <span className="text-blue-500 font-bold mr-1">$</span>
+          <div className="py-auto flex items-center">
+            <span className="mr-1 font-bold text-blue-500">$</span>
             <p className="text-lg font-semibold tracking-tight text-gray-950 dark:text-gray-200">
               {course?.coursePrice ?? 499}
             </p>
-            <p className=" pl-1 text-xs dark:text-gray-400">
+            <p className="pl-1 text-xs dark:text-gray-400">
               (life time access)
             </p>
           </div>
 
-          <div className="flex flex-col justify-start space-y-1 px-2 items-center w-full">
+          <div className="flex w-full flex-col items-center justify-start space-y-1 px-2">
             <CourseEnrollButton course={course!} courseId={course?.courseId} />
             {/* <AddToCartButton course={course!} /> */}
           </div>
 
-          <p className="text-center text-xs pt-2 text-gray-400 font-thin">
+          <p className="pt-2 text-center text-xs font-thin text-gray-400">
             30 Day money back guarantee
           </p>
 
@@ -71,10 +71,10 @@ export const CourseDetailsRightSection = ({ course }: { course: Course }) => {
 
           {/* what you will get in this course */}
           <div className="space-y-2">
-            <h3 className=" tracking-tight text-lg dark:text-xl text-gray-900 dark:text-gray-200 font-semibold">
+            <h3 className="text-lg font-semibold tracking-tight text-gray-900 dark:text-xl dark:text-gray-200">
               What you will get?
             </h3>
-            <ul className="pl-4 flex flex-col text-gray-700 dark:text-gray-400 text-sm justify-between pb-2 list-disc space-y-2">
+            <ul className="flex list-disc flex-col justify-between space-y-2 pb-2 pl-4 text-sm text-gray-700 dark:text-gray-400">
               <li>
                 On demand{" "}
                 {course?.courseDuration ? course?.courseDuration : "2 hour"} of
@@ -83,7 +83,7 @@ export const CourseDetailsRightSection = ({ course }: { course: Course }) => {
               <li>Certificate for Completion</li>
               <li>A Complete Project Included</li>
               <li>
-                <div className="flex justify-start items-center space-x-2">
+                <div className="flex items-center justify-start space-x-2">
                   <p>You will learn about: </p>
                   {course?.technologiesYouAreGoingToLearn ? (
                     course?.technologiesYouAreGoingToLearn
@@ -91,7 +91,7 @@ export const CourseDetailsRightSection = ({ course }: { course: Course }) => {
                       .map((tech: any, index: any) => {
                         return (
                           <div
-                            className="px-2 py-1 flex items-center bg-slate-200 text-black rounded-md"
+                            className="flex items-center rounded-md bg-slate-200 px-2 py-1 text-black"
                             key={index}
                           >
                             {tech}
@@ -112,15 +112,15 @@ export const CourseDetailsRightSection = ({ course }: { course: Course }) => {
           <Toaster />
 
           {/* share, gift, apply coupon code */}
-          <div className="flex space-x-4 justify-center items-center">
+          <div className="flex items-center justify-center space-x-4">
             <button
               onClick={() => {
                 handleShare();
               }}
-              className="flex justify-center items-center"
+              className="flex items-center justify-center"
             >
               <FaShare />
-              <p className="pl-2 hover:cursor-pointer text-xs text-gray-400 hover:text-blue-500  hover:underline">
+              <p className="pl-2 text-xs text-gray-400 hover:cursor-pointer hover:text-blue-500 hover:underline">
                 Share
               </p>
             </button>

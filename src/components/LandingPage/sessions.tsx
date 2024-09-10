@@ -4,20 +4,20 @@ import { BsFillArrowRightCircleFill } from "react-icons/bs";
 
 function SessionsSection() {
   return (
-    <div className="h-screen mb-12 max-w-7xl w-full">
+    <div className="mb-12 h-screen w-full max-w-7xl">
       <div>
-        <p className="text-2xl font-bold tracking-tight text-center text-[#333333] dark:text-white ">
+        <p className="text-center text-2xl font-bold tracking-tight text-[#333333] dark:text-white">
           Upcomming Sessions
         </p>
-        <p className="pt-4 text-[1rem] text-[#333333] dark:text-white text-center">
+        <p className="pt-4 text-center text-[1rem] text-[#333333] dark:text-white">
           Stay with us we will be back with more interesting and <br /> helpful
           sessions on <span className="text-blue-500">Trendy Tech!</span>
         </p>
       </div>
 
-      <div className="w-full h-auto pt-12 mb-16 relative lg:flex justify-center mx-auto grid grid-cols-2 gap-3 lg:gap-4 place-items-center lg:grid-cols-4 ">
+      <div className="relative mx-auto mb-16 grid h-auto w-full grid-cols-2 place-items-center justify-center gap-3 pt-12 lg:flex lg:grid-cols-4 lg:gap-4">
         <Image
-          className="mb-3 lg:mb-0 mx-3 h-40 hover:cursor-pointer bg-blue-300 rounded-lg relative "
+          className="relative mx-3 mb-3 h-40 rounded-lg bg-blue-300 hover:cursor-pointer lg:mb-0"
           src="/web3.png"
           alt="Next.js Logo"
           width={200}
@@ -28,7 +28,7 @@ function SessionsSection() {
           priority
         />
         <Image
-          className="mb-3 lg:mb-0 mx-3 h-40 hover:cursor-pointer bg-blue-300 rounded-lg relative "
+          className="relative mx-3 mb-3 h-40 rounded-lg bg-blue-300 hover:cursor-pointer lg:mb-0"
           src="/android-jetpack.png"
           alt="Next.js Logo"
           width={200}
@@ -39,7 +39,7 @@ function SessionsSection() {
           priority
         />
         <Image
-          className="mb-3 lg:mb-0 mx-3 hover:cursor-pointer h-40 bg-blue-300 rounded-lg relative "
+          className="relative mx-3 mb-3 h-40 rounded-lg bg-blue-300 hover:cursor-pointer lg:mb-0"
           src="/nextjs.png"
           alt="Next.js Logo"
           width={200}
@@ -49,8 +49,8 @@ function SessionsSection() {
           }}
           priority
         />
-        <div className="h-40 w-auto  bg-blue-100 cursor-pointer lg:mx-3 hover:text-white text-blue-500 rounded-lg border border-dashed justify-center place-items-center hover:border-blue-500 hover:bg-blue-500">
-          <a className="pl-12 flex flex-col lg:flex-row justify-center items-center align-middle mx-auto pt-16 pr-12 ">
+        <div className="h-40 w-auto cursor-pointer place-items-center justify-center rounded-lg border border-dashed bg-blue-100 text-blue-500 hover:border-blue-500 hover:bg-blue-500 hover:text-white lg:mx-3">
+          <a className="mx-auto flex flex-col items-center justify-center pl-12 pr-12 pt-16 align-middle lg:flex-row">
             <BsFillArrowRightCircleFill size={20} />
             <div className="pl-1"></div>
             See All

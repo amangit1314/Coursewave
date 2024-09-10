@@ -1,19 +1,19 @@
 "use client";
 
 import React from "react";
-
+import { Callout } from "@tremor/react";
+import { useQuery } from "@tanstack/react-query";
 import { FaRegCirclePlay } from "react-icons/fa6";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { Chapter, CourseSection } from "@prisma/client";
-import { useQuery } from "@tanstack/react-query";
 
 export const CourseContent = ({ courseId }: { courseId: string }) => {
   const fetchCourseSections = async () => {
+    // TODO:
     const res = await fetch(`api/courses/${courseId}/sections`);
 
     if (!res.ok) {
       console.error("Failed to fetch sections ...");
-      // toast.error("Failed to fetch sections ...");
     }
 
     const data = await res.json();
@@ -29,56 +29,62 @@ export const CourseContent = ({ courseId }: { courseId: string }) => {
   } = useQuery({
     queryKey: ["courseSections"],
     queryFn: fetchCourseSections,
-    staleTime: 4,
   });
 
   const courseSections: CourseSection[] = sections?.data as CourseSection[];
   console.log("Course Sections: ", courseSections);
 
   if (isLoading) {
-    return <div>Loading course content...</div>;
+    return (
+      <Callout
+        className=""
+        title="⏳ Loading course sections & chapters ..."
+        color="yellow"
+      >
+        ⏳ Loading course sections and chapters ...
+      </Callout>
+    );
   }
 
   if (error) {
     console.log("ERROR: in sections and chapters", error.message);
     return (
-      <p className="mt-4 text-red-600 text-md text-base">
-        Error in loading sections & chapters: {error.message}
-      </p>
+      <Callout
+        className=""
+        title="Error loading course sections & chapters 🚨❌"
+        color="red"
+      >
+        {error.message} 🚨❌ ...
+      </Callout>
     );
   }
 
   return (
-    <div className="mt-4 space-y-4 pr-8 md:pr-0 md:p-0 max-w-3xl w-full">
-      <div className="flex justify-between items-center">
-        <h3 className="tracking-tight text-xl font-semibold text-gray-800 dark:text-slate-200">
+    <div className="mt-4 w-full max-w-3xl space-y-4 pr-8 md:p-0 md:pr-0">
+      {/* heading and number of sections */}
+      <div className="flex items-center justify-between">
+        <h3 className="text-xl font-semibold tracking-tight text-gray-800 dark:text-slate-200">
           Course Content:
         </h3>
 
         <div className="flex justify-between">
-          <ul className="flex pl-4 list-disc space-x-6 flex-wrap md:flex justify-evenly text-gray-700 dark:text-gray-400">
+          <ul className="flex list-disc flex-wrap justify-evenly space-x-6 pl-4 text-gray-700 dark:text-gray-400 md:flex">
             <li className="text-sm">
               {courseSections ? courseSections.length : 0} sections
             </li>
-
-            {/* <li className="text-sm">
-              {sectionChapters ? sectionChapters.length : 0} lectures
-              lectures
-            </li> */}
-
-            {/* <li className="text-sm">3 min total length</li> */}
           </ul>
-
-          {/* <div className="font-normal text-blue-500 text-sm">
-            Expand all sections
-          </div> */}
         </div>
       </div>
 
+      {/* accordion */}
       <SectionsAndChaptersAccordion sections={courseSections} />
     </div>
   );
 };
+
+export default CourseContent;
+
+// --------------------------- components --------------------------------
 
 const SectionsAndChaptersAccordion = ({
   sections,
@@ -91,23 +97,23 @@ const SectionsAndChaptersAccordion = ({
     setExpandedSections(
       expandedSections.includes(sectionId)
         ? expandedSections.filter((id) => id !== sectionId)
-        : [...expandedSections, sectionId]
+        : [...expandedSections, sectionId],
     );
   };
 
   return (
     <div>
       {sections ? (
-        <div className="bg-slate-100 list my-1 dark:bg-gray-800 py-1 rounded-xl border dark:border-gray-700">
+        <div className="list my-1 rounded-xl border bg-slate-100 py-1 dark:border-gray-700 dark:bg-gray-800">
           {sections.map((section: CourseSection) => {
             const isExpanded = expandedSections.includes(
-              section.courseSectionNumber
+              section.courseSectionNumber,
             );
 
             return (
               <div
                 key={section.courseSectionId}
-                className="dark:border-gray-300 border-b-1"
+                className="border-b-1 dark:border-gray-300"
               >
                 <AccordionSectionItem
                   section={section}
@@ -136,26 +142,23 @@ const AccordionSectionItem = ({
   item: { active: number };
   setItem: (any: any) => void;
 }) => {
+  const courseId = section.courseId!;
+  const courseSectionId = section.courseSectionId!;
+
   const toggleActiveItem = () => {
     let newActive = item.active === 1 ? 0 : 1;
     setItem({ ...item, active: newActive });
   };
 
-  const courseId = section.courseId;
-  const courseSectionId = section.courseSectionId;
-
   const fetchChaptersForSection = async () => {
     const res = await fetch(
-      `/api/courses/${courseId}/sections/${courseSectionId}/chapters`
+      `/api/courses/${courseId}/sections/${courseSectionId}/chapters`,
     );
 
     if (!res.ok) {
       console.log(
-        "ERROR, Failed to fetch chapters for a sectionId from api ..."
+        "ERROR, Failed to fetch chapters for a sectionId from api ...",
       );
-      // toast.error(
-      //   `Error: Failed to fetch chapters for section: ${courseSectionId}`
-      // );
     }
 
     const data = await res.json();
@@ -167,57 +170,75 @@ const AccordionSectionItem = ({
   const { data, isLoading, error } = useQuery({
     queryKey: ["sectionChapters"],
     queryFn: fetchChaptersForSection,
-    staleTime: 4,
   });
+
+  if (isLoading) {
+    return (
+      <Callout
+        className=""
+        title="⏳ Loading course section chapters ..."
+        color="yellow"
+      >
+        ⏳ Loading course section chapters ...
+      </Callout>
+    );
+  }
+
+  if (error) {
+    console.log("ERROR: in loading section chapters", error.message);
+    return (
+      <Callout
+        className=""
+        title="Error loading section chapters 🚨❌"
+        color="red"
+      >
+        {error.message} 🚨❌ ...
+      </Callout>
+    );
+  }
 
   const chapters: Chapter[] = data?.data as Chapter[];
   console.log(`Section Chapters for sectionId: ${courseSectionId}`, chapters);
 
   return (
     <div
-      className={` bg-slate-100 p-3 md:p-5 transition-all duration-200  group rounded-md dark:bg-gray-800 ${
+      className={`group rounded-md bg-slate-100 p-3 transition-all duration-200 dark:bg-gray-800 md:p-5 ${
         item.active === 1 ? "activated" : ""
       }`}
     >
-      {/* <Toaster /> */}
-
-      <div className="flex items-center py-auto justify-between">
-        <div className="flex items-center py-auto" onClick={toggleActiveItem}>
-          <div className="px-1 cursor-pointer group-[.activated]:rotate-180">
+      <div className="py-auto flex items-center justify-between">
+        <div className="py-auto flex items-center" onClick={toggleActiveItem}>
+          <div className="cursor-pointer px-1 group-[.activated]:rotate-180">
             <IoMdArrowDropdown size={20} />
           </div>
-          <div className="pl-1 group-[.activated]:text-indigo-500 hover:text-indigo-500 group-[.activated]:font-semibold cursor-pointer text-xs md:text-sm line-clamp-1 overflow-clip">
+          <div className="line-clamp-1 cursor-pointer overflow-clip pl-1 text-xs group-[.activated]:font-semibold group-[.activated]:text-indigo-500 hover:text-indigo-500 md:text-sm">
             {section.courseSectionTitle}
           </div>
         </div>
 
-        <ul className="hidden  md:flex md:visible space-x-6 items-center justify-end">
-          {/* lectures */}
+        <ul className="hidden items-center justify-end space-x-6 md:visible md:flex">
           <li className="text-xs text-gray-600 dark:text-gray-400">
             {chapters?.filter(
-              (chapter) => chapter.courseSectionId === section.courseSectionId
+              (chapter) => chapter.courseSectionId === section.courseSectionId,
             )
               ? chapters?.filter(
                   (chapter) =>
-                    chapter.courseSectionId === section.courseSectionId
+                    chapter.courseSectionId === section.courseSectionId,
                 ).length
               : 1}{" "}
             lecture
           </li>
-
-          {/* total length */}
-          {/* <li className="text-xs text-gray-600 dark:text-gray-400">3 min</li> */}
         </ul>
 
-        <p className="text-xs visible md:hidden">
+        <p className="visible text-xs md:hidden">
           {chapters && chapters.length}{" "}
           {chapters ? (chapters.length === 1 ? "chapter" : "chapters") : ""}
         </p>
       </div>
 
-      <div className="overflow-hidden group-[.activated]:max-h-[120px] max-h-0 text-sm">
+      <div className="max-h-0 overflow-hidden text-sm group-[.activated]:max-h-[120px]">
         {chapters ? (
-          <div className="mt-2 ml-8">
+          <div className="ml-8 mt-2">
             {chapters.map((chapter: Chapter) => {
               return (
                 <div key={chapter.id}>
@@ -245,16 +266,11 @@ const AccordionItemDescriptionItem = ({
   duration: string;
 }) => {
   return (
-    <div className="flex justify-between items-center py-1">
-      <div className="flex justify-start items-center space-x-2">
-        <FaRegCirclePlay size={18} />
-        <p className="text-xs md:text-sm text-gray-700 dark:text-gray-300">
-          {name}
-        </p>
-      </div>
-      {/* <p className="text-xs md:text-sm text-gray-700 dark:text-gray-300">
-        {duration}
-      </p> */}
+    <div className="flex items-center justify-start space-x-2 py-1">
+      <FaRegCirclePlay size={18} />
+      <p className="text-xs text-gray-700 dark:text-gray-300 md:text-sm">
+        {name}
+      </p>
     </div>
   );
 };

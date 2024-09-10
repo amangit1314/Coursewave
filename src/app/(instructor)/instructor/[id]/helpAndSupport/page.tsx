@@ -30,65 +30,65 @@ import {
 import { MdEmail } from "react-icons/md";
 import { RiInstagramFill } from "react-icons/ri";
 import axios from "axios";
-import useUserInfo from "@/hooks/use-user-info";
+import { useUserInfo } from "@/hooks/useUserInfo";
 
 const HelpAndSupport = () => {
   return (
-    <div className="px-8 py-16 h-full ">
+    <div className="h-full px-8 py-16">
       {/* <StoreHeader /> */}
-      <div className="items-center max-w-7xl w-full h-full mx-auto p-4 space-y-8">
-        <div className="flex flex-col justify-center items-center mx-auto pr-8 md:pr-0">
+      <div className="mx-auto h-full w-full max-w-7xl items-center space-y-8 p-4">
+        <div className="mx-auto flex flex-col items-center justify-center pr-8 md:pr-0">
           <p className="text-2xl font-bold tracking-tight text-gray-800 dark:text-gray-100">
             Contact Us
           </p>
-          <p className="text-base mt-1">
+          <p className="mt-1 text-base">
             Any questions or remarks? Just write us a message!
           </p>
         </div>
 
         {/* mobile screen */}
         <div className="visible md:hidden">
-          <div className="flex flex-col md:flex-row md:justify-start md:items-center dark:bg-zinc-800  w-auto h-full md:h-[62vh] rounded-xl bg-white p-4">
+          <div className="flex h-full w-auto flex-col rounded-xl bg-white p-4 dark:bg-zinc-800 md:h-[62vh] md:flex-row md:items-center md:justify-start">
             {/* left section */}
-            <div className="h-auto p-8 w-auto space-y-6 bg-blue-50 dark:bg-zinc-900 rounded-xl text-blue-500">
-              <div className=" space-y-1">
-                <p className="text-xl md:text-2xl font-bold tracking-tight text-blue-600 dark:text-white">
+            <div className="h-auto w-auto space-y-6 rounded-xl bg-blue-50 p-8 text-blue-500 dark:bg-zinc-900">
+              <div className="space-y-1">
+                <p className="text-xl font-bold tracking-tight text-blue-600 dark:text-white md:text-2xl">
                   Contact Information
                 </p>
-                <p className="text-sm md:text-md md:text-base text-blue-500 dark:text-gray-300 ">
+                <p className="md:text-md text-sm text-blue-500 dark:text-gray-300 md:text-base">
                   Fill up the form and our Team will get back to you within 24
                   hours
                 </p>
               </div>
 
-              <ul className=" space-y-3">
-                <li className="flex justify-start space-x-2 items-center ">
-                  <div className="flex justify-center items-center text-blue-500">
+              <ul className="space-y-3">
+                <li className="flex items-center justify-start space-x-2">
+                  <div className="flex items-center justify-center text-blue-500">
                     <PhoneCallIcon size={18} />
                   </div>
-                  <p className="text-sm md:text-md md:text-base text-zinc-700 dark:text-white ">
+                  <p className="md:text-md text-sm text-zinc-700 dark:text-white md:text-base">
                     +919649477393
                   </p>
                 </li>
-                <li className="flex justify-start space-x-2  items-center ">
-                  <div className="flex justify-center items-center text-blue-500">
+                <li className="flex items-center justify-start space-x-2">
+                  <div className="flex items-center justify-center text-blue-500">
                     <MdEmail size={18} />
                   </div>
-                  <p className="text-sm md:text-md md:text-base text-zinc-700 dark:text-white ">
+                  <p className="md:text-md text-sm text-zinc-700 dark:text-white md:text-base">
                     gitaman8481@gmail.com
                   </p>
                 </li>
-                <li className="flex justify-start space-x-2  items-center ">
-                  <div className="flex justify-center items-center text-blue-500">
+                <li className="flex items-center justify-start space-x-2">
+                  <div className="flex items-center justify-center text-blue-500">
                     <FaAddressCard size={18} />
                   </div>
-                  <p className="text-sm md:text-md md:text-base text-zinc-700 dark:text-white ">
+                  <p className="md:text-md text-sm text-zinc-700 dark:text-white md:text-base">
                     Churu, Rajasthan
                   </p>
                 </li>
               </ul>
 
-              <div className=" flex justify-start">
+              <div className="flex justify-start">
                 <SocialLinks />
               </div>
             </div>
@@ -102,55 +102,55 @@ const HelpAndSupport = () => {
 
         {/* large screen */}
         <div className="hidden md:flex">
-          <div className="flex justify-between items-center dark:bg-zinc-800  w-auto h-full rounded-xl bg-white p-4 space-x-6">
+          <div className="flex h-full w-auto items-center justify-between space-x-6 rounded-xl bg-white p-4 dark:bg-zinc-800">
             {/* left section */}
-            <div className="md:flex md:flex-col md:justify-between md:items-start h-auto md:h-[82vh] p-8 w-auto md:w-[40vw] space-y-6 bg-blue-50 dark:bg-zinc-900 rounded-xl text-blue-500">
-              <div className=" space-y-1">
-                <p className="text-xl md:text-2xl font-bold tracking-tight text-blue-600 dark:text-white">
+            <div className="h-auto w-auto space-y-6 rounded-xl bg-blue-50 p-8 text-blue-500 dark:bg-zinc-900 md:flex md:h-[82vh] md:w-[40vw] md:flex-col md:items-start md:justify-between">
+              <div className="space-y-1">
+                <p className="text-xl font-bold tracking-tight text-blue-600 dark:text-white md:text-2xl">
                   Contact Information
                 </p>
-                <p className="text-sm md:text-md md:text-base text-blue-500 dark:text-gray-300 ">
+                <p className="md:text-md text-sm text-blue-500 dark:text-gray-300 md:text-base">
                   Fill up the form and our Team will get back to you within 24
                   hours
                 </p>
               </div>
 
               <div className="space-y-6">
-                <ul className=" space-y-3">
-                  <li className="flex justify-start space-x-2 items-center ">
-                    <div className="flex justify-center items-center text-blue-500">
+                <ul className="space-y-3">
+                  <li className="flex items-center justify-start space-x-2">
+                    <div className="flex items-center justify-center text-blue-500">
                       <PhoneCallIcon size={18} />
                     </div>
-                    <p className="text-sm md:text-md md:text-base text-zinc-700 dark:text-white ">
+                    <p className="md:text-md text-sm text-zinc-700 dark:text-white md:text-base">
                       +919649477393
                     </p>
                   </li>
-                  <li className="flex justify-start space-x-2  items-center ">
-                    <div className="flex justify-center items-center text-blue-500">
+                  <li className="flex items-center justify-start space-x-2">
+                    <div className="flex items-center justify-center text-blue-500">
                       <MdEmail size={18} />
                     </div>
-                    <p className="text-sm md:text-md md:text-base text-zinc-700 dark:text-white ">
+                    <p className="md:text-md text-sm text-zinc-700 dark:text-white md:text-base">
                       gitaman8481@gmail.com
                     </p>
                   </li>
-                  <li className="flex justify-start space-x-2  items-center ">
-                    <div className="flex justify-center items-center text-blue-500">
+                  <li className="flex items-center justify-start space-x-2">
+                    <div className="flex items-center justify-center text-blue-500">
                       <FaAddressCard size={18} />
                     </div>
-                    <p className="text-sm md:text-md md:text-base text-zinc-700 dark:text-white ">
+                    <p className="md:text-md text-sm text-zinc-700 dark:text-white md:text-base">
                       Churu, Rajasthan
                     </p>
                   </li>
                 </ul>
 
-                <div className=" flex justify-start">
+                <div className="flex justify-start">
                   <SocialLinks />
                 </div>
               </div>
             </div>
 
             {/* right section */}
-            <div className="overflow-y-auto p-4 ">
+            <div className="overflow-y-auto p-4">
               <ContactForm />
             </div>
           </div>
@@ -165,40 +165,40 @@ export default HelpAndSupport;
 const SocialLinks = () => {
   return (
     <div className="flex items-center justify-between">
-      <div className="flex space-x-4 justify-center ">
+      <div className="flex justify-center space-x-4">
         <Link
           href="#"
-          className="text-blue-500 transition-all duration-300 p-2 hover:rounded-full flex justify-center items-center hover:bg-blue-600 hover:text-white dark:hover:text-white"
+          className="flex items-center justify-center p-2 text-blue-500 transition-all duration-300 hover:rounded-full hover:bg-blue-600 hover:text-white dark:hover:text-white"
         >
-          <FaFacebook className="w-4 h-4" />
+          <FaFacebook className="h-4 w-4" />
           <span className="sr-only">Facebook page</span>
         </Link>
         <Link
           href="#"
-          className="text-blue-500 transition-all duration-300 p-2 hover:rounded-full flex justify-center items-center hover:bg-blue-600 hover:text-white dark:hover:text-white"
+          className="flex items-center justify-center p-2 text-blue-500 transition-all duration-300 hover:rounded-full hover:bg-blue-600 hover:text-white dark:hover:text-white"
         >
-          <FaDiscord className="w-4 h-4" />
+          <FaDiscord className="h-4 w-4" />
           <span className="sr-only">Discord community</span>
         </Link>
         <Link
           href="#"
-          className="text-blue-500 transition-all duration-300 p-2 hover:rounded-full flex justify-center items-center hover:bg-blue-600 hover:text-white dark:hover:text-white"
+          className="flex items-center justify-center p-2 text-blue-500 transition-all duration-300 hover:rounded-full hover:bg-blue-600 hover:text-white dark:hover:text-white"
         >
-          <FaXTwitter className="w-4 h-4" />
+          <FaXTwitter className="h-4 w-4" />
           <span className="sr-only">Twitter page</span>
         </Link>
         <Link
           href="#"
-          className="text-blue-500 transition-all duration-300 p-2 hover:rounded-full flex justify-center items-center hover:bg-blue-600 hover:text-white dark:hover:text-white"
+          className="flex items-center justify-center p-2 text-blue-500 transition-all duration-300 hover:rounded-full hover:bg-blue-600 hover:text-white dark:hover:text-white"
         >
-          <FaGithub className="w-4 h-4" />
+          <FaGithub className="h-4 w-4" />
           <span className="sr-only">GitHub account</span>
         </Link>
         <Link
           href="#"
-          className="text-blue-500 transition-all duration-300 p-2 hover:rounded-full flex justify-center items-center hover:bg-blue-600 hover:text-white dark:hover:text-white"
+          className="flex items-center justify-center p-2 text-blue-500 transition-all duration-300 hover:rounded-full hover:bg-blue-600 hover:text-white dark:hover:text-white"
         >
-          <RiInstagramFill className="w-4 h-4" />
+          <RiInstagramFill className="h-4 w-4" />
           <span className="sr-only">Dribbble account</span>
         </Link>
       </div>
@@ -215,7 +215,6 @@ const formSchema = z.object({
 });
 
 const ContactForm = () => {
-
   const user = useUserInfo();
   const userId = user.user?.id!;
 
@@ -234,17 +233,20 @@ const ContactForm = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post(`api/profile/${userId}/contact`, {
-        fromEmail: values.email,
-        toEmail: "gitaman8481@gmail.com",
-        phone: values.phone,
-        name: `${values.firstName} ${values.lastName}`,
-        message: values.message,
-      }).then(() => {
-        console.log('Contact email sent successfully ...');
-      }).catch((err) => {
-        console.error('ERROR in [SENDING CONTACT EMAIL]: ', err.message);
-      });
+      await axios
+        .post(`api/profile/${userId}/contact`, {
+          fromEmail: values.email,
+          toEmail: "gitaman8481@gmail.com",
+          phone: values.phone,
+          name: `${values.firstName} ${values.lastName}`,
+          message: values.message,
+        })
+        .then(() => {
+          console.log("Contact email sent successfully ...");
+        })
+        .catch((err) => {
+          console.error("ERROR in [SENDING CONTACT EMAIL]: ", err.message);
+        });
     } catch (error: any) {
       console.error("Error: ", error.message);
       toast.error("Something went wrong ...");
@@ -253,10 +255,9 @@ const ContactForm = () => {
 
   return (
     <Form {...form}>
-
       <Toaster />
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 ">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {/*first name*/}
           <FormField
             control={form.control}
@@ -290,7 +291,7 @@ const ContactForm = () => {
             render={({ field }) => (
               <div>
                 <FormItem>
-                  <FormLabel className=" text-base text-gray-800 dark:text-gray-100">
+                  <FormLabel className="text-base text-gray-800 dark:text-gray-100">
                     Last Name
                   </FormLabel>
                   <FormControl>
@@ -316,7 +317,7 @@ const ContactForm = () => {
             render={({ field }) => (
               <div>
                 <FormItem>
-                  <FormLabel className=" text-base text-gray-800 dark:text-gray-100">
+                  <FormLabel className="text-base text-gray-800 dark:text-gray-100">
                     Email
                   </FormLabel>
                   <FormControl>
@@ -369,7 +370,7 @@ const ContactForm = () => {
           render={({ field }) => (
             <div>
               <FormItem className="">
-                <FormLabel className="mb-4 text-base text-gray-800 dark:text-gray-100 ">
+                <FormLabel className="mb-4 text-base text-gray-800 dark:text-gray-100">
                   Your Message
                 </FormLabel>
                 <FormControl>
@@ -389,11 +390,11 @@ const ContactForm = () => {
         />
 
         {/* buttons */}
-        <div className="flex items-center gap-x-2 mb-4">
+        <div className="mb-4 flex items-center gap-x-2">
           <Button
             type="submit"
             disabled={!isValid || isSubmitting}
-            className="disabled:bg-blue-300 w-full bg-blue-500 text-white"
+            className="w-full bg-blue-500 text-white disabled:bg-blue-300"
           >
             Submit
           </Button>

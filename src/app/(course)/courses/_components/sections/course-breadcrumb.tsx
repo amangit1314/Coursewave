@@ -1,9 +1,9 @@
 import { Course } from "@prisma/client";
 import Link from "next/link";
 
-export const CourseBreadcrumb = ({ course }: { course: Course }) => {
+const CourseBreadcrumb = ({ course }: { course: Course }) => {
   return (
-    <div className="text-sm breadcrumbs">
+    <div className="breadcrumbs text-sm">
       <ul className="text-white">
         <li>
           <Link href={""}>
@@ -11,7 +11,7 @@ export const CourseBreadcrumb = ({ course }: { course: Course }) => {
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              className="w-4 h-4 stroke-current  mr-1 text-white"
+              className="mr-1 h-4 w-4 stroke-current text-white"
             >
               <path
                 strokeLinecap="round"
@@ -24,12 +24,12 @@ export const CourseBreadcrumb = ({ course }: { course: Course }) => {
           </Link>
         </li>
         <li>
-          <span className="inline-flex mr-1 gap-2 items-center">
+          <span className="mr-1 inline-flex items-center gap-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              className="w-4 h-4 stroke-current text-white"
+              className="h-4 w-4 stroke-current text-white"
             >
               <path
                 strokeLinecap="round"
@@ -45,3 +45,5 @@ export const CourseBreadcrumb = ({ course }: { course: Course }) => {
     </div>
   );
 };
+
+export default CourseBreadcrumb;

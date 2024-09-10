@@ -13,10 +13,10 @@ export default function HelpAndSupportLayout({
       {/* <div className="h-[60px] md:pl-56 fixed inset-y-0 w-full z-50 ">
             <Navbar />
         </div> */}
-      <div className="hidden md:flex h-full fixed inset-y-0 z-50">
+      <div className="fixed inset-y-0 z-50 hidden h-full md:flex">
         <Sidebar />
       </div>
-      <div className="md:pl-64  h-full">{children}</div>
+      <div className="h-full md:pl-64">{children}</div>
     </div>
   );
 }

@@ -1,8 +1,8 @@
-import { storeSubscriptionPlans } from "./subscriptions";
+import { storeSubscriptionPlans } from "./subscriptionPlans";
 import { stripe } from "../config/stripe";
 import { db } from "@/lib/db";
 import { cookies } from "next/headers";
-import { decrypt } from "@/helpers/jwt_helper";
+import { decrypt } from "@/helpers/jwt-helper";
 
 export const getUserSubscriptionPlan = async () => {
   const token = cookies().get("token")?.value;

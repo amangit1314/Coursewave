@@ -43,12 +43,11 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+    [],
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
-   const [rowSelection, setRowSelection] = React.useState({});
-
+  const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
     data,
@@ -71,7 +70,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="rounded-md border dark:bg-zinc-900">
-      <div className="flex items-center py-4 mx-4">
+      <div className="mx-4 flex items-center py-4">
         <Input
           placeholder="Filter emails..."
           value={table.getColumn("email")?.getFilterValue() as string}
@@ -119,7 +118,7 @@ export function DataTable<TData, TValue>({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                   </TableHead>
                 );
@@ -151,7 +150,7 @@ export function DataTable<TData, TValue>({
         </TableBody>
       </Table>
 
-      <div className="flex items-center justify-end space-x-2 py-4 mx-4">
+      <div className="mx-4 flex items-center justify-end space-x-2 py-4">
         <Button
           variant="outline"
           size="sm"

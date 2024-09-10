@@ -63,7 +63,7 @@ const VisitorsAnalyticsChart: React.FC = () => {
   });
 
   return (
-    <div className="col-span-12 rounded-lg border border-stroke p-8 md:p-5 xl:col-span-5">
+    <div className="border-stroke col-span-12 rounded-lg border p-8 md:p-5 xl:col-span-5">
       <div className="mb-3 justify-between gap-4 sm:flex">
         <div>
           <h5 className="text-md font-semibold tracking-tight text-black dark:text-white">
@@ -80,7 +80,7 @@ const VisitorsAnalyticsChart: React.FC = () => {
               <option value="">Monthly</option>
               <option value="">Yearly</option>
             </select>
-            <span className="absolute top-1/2 right-3 z-10 -translate-y-1/2">
+            <span className="absolute right-3 top-1/2 z-10 -translate-y-1/2">
               <svg
                 width="10"
                 height="6"

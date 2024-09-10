@@ -10,11 +10,11 @@ const defaults = [
 
 const Default = () => {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4 p-2 md:p-0 text-left">
+    <div className="grid grid-cols-2 gap-2 p-2 text-left md:grid-cols-3 md:gap-4 md:p-0">
       {defaults.map((point: any, index: any) => (
         <li key={index} className="flex items-center space-x-3">
           <svg
-            className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+            className="h-5 w-5 flex-shrink-0 text-green-500 dark:text-green-400"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -34,18 +34,20 @@ const Default = () => {
 
 export const WhatYouWillLearn = ({ whatYouWillLearn }: any) => {
   return (
-    <div className="mt-2 md:max-w-3xl w-full md:mt-0 md:p-0 pr-8 flex ">
-      <div className="flex flex-col md:max-w-3xl space-y-4 w-full text-start text-gray-900 bg-white dark:bg-transparent dark:text-white">
-        <h3 className=" text-xl tracking-tight font-semibold text-gray-800 dark:text-slate-200">
+    <div className="mt-2 flex w-full pr-8 md:mt-0 md:max-w-3xl md:p-0">
+      <div className="flex w-full flex-col space-y-4 bg-white text-start text-gray-900 dark:bg-transparent dark:text-white md:max-w-3xl">
+        <h3 className="text-xl font-semibold tracking-tight text-gray-800 dark:text-slate-200">
           What you will learn!
         </h3>
 
         {whatYouWillLearn ? (
-          <div className="grid grid-cols-1 gap-2 md:gap-2 md:p-0 text-left">
+          <div className="grid grid-cols-1 gap-2 text-left md:gap-2 md:p-0">
             {whatYouWillLearn.map((point: string, index: any) => (
               <li key={index} className="flex items-center space-x-3">
-                <TbPoint className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" />
-                <span className="text-md text-base dark:text-gray-400">{point}</span>
+                <TbPoint className="h-5 w-5 flex-shrink-0 text-green-500 dark:text-green-400" />
+                <span className="text-md text-base dark:text-gray-400">
+                  {point}
+                </span>
               </li>
             ))}
           </div>
@@ -56,3 +58,5 @@ export const WhatYouWillLearn = ({ whatYouWillLearn }: any) => {
     </div>
   );
 };
+
+export default WhatYouWillLearn;

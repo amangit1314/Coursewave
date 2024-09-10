@@ -3,7 +3,6 @@ import { ApexOptions } from "apexcharts";
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 
-
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
@@ -149,8 +148,6 @@ const ChartOne: React.FC = () => {
     ],
   });
 
-  
-
   // NextJS Requirement
   const isWindowAvailable = () => typeof window !== "undefined";
 
@@ -160,14 +157,14 @@ const ChartOne: React.FC = () => {
     setState((prevState) => ({
       ...prevState,
     }));
-  };// Invoke the function
+  }; // Invoke the function
 
   return (
-    <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
+    <div className="border-stroke pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 col-span-12 rounded-sm border bg-white px-5 pb-5 xl:col-span-8">
       <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
         <div className="flex w-full flex-wrap gap-3 sm:gap-5">
           <div className="flex min-w-[11.875rem]">
-            <span className="mt-1 mr-2 flex h-4 w-4 max-w-4 items-center justify-center rounded-full border border-primary">
+            <span className="mr-2 mt-1 flex h-4 w-4 max-w-4 items-center justify-center rounded-full border border-primary">
               <span className="block h-2.5 w-2.5 max-w-2.5 rounded-full bg-primary"></span>
             </span>
             <div className="w-full">
@@ -176,7 +173,7 @@ const ChartOne: React.FC = () => {
             </div>
           </div>
           <div className="flex min-w-[11.875rem]">
-            <span className="mt-1 mr-2 flex h-4 w-4 max-w-4 items-center justify-center rounded-full border border-secondary">
+            <span className="mr-2 mt-1 flex h-4 w-4 max-w-4 items-center justify-center rounded-full border border-secondary">
               <span className="block h-2.5 w-2.5 max-w-2.5 rounded-full bg-secondary"></span>
             </span>
             <div className="w-full">
@@ -186,14 +183,14 @@ const ChartOne: React.FC = () => {
           </div>
         </div>
         <div className="flex w-full max-w-[11.25rem] justify-end">
-          <div className="inline-flex items-center rounded-md bg-white p-1.5 dark:bg-meta-4">
-            <button className="rounded bg-white py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark">
+          <div className="dark:bg-meta-4 inline-flex items-center rounded-md bg-white p-1.5">
+            <button className="dark:bg-boxdark dark:hover:bg-boxdark rounded bg-white px-3 py-1 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:text-white">
               Day
             </button>
-            <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
+            <button className="dark:hover:bg-boxdark rounded px-3 py-1 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white">
               Week
             </button>
-            <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
+            <button className="dark:hover:bg-boxdark rounded px-3 py-1 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white">
               Month
             </button>
           </div>

@@ -13,9 +13,9 @@ import Testimonials from "@/components/LandingPage/testimonials";
 import toast from "react-hot-toast";
 import RetroGrid from "@/components/magicui/retro-grid";
 import Newsletter from "@/components/LandingPage/newsletter";
-import LandingCoursewaveStats from "@/components/LandingPage/landingCoursewaveStats";
-import AchieveCodingGoals from "@/components/LandingPage/achieveCodingGoals";
-import HomeBrowseSection from "@/components/LandingPage/homeBrowseSection";
+import LandingCoursewaveStats from "@/components/LandingPage/landing-stats";
+import AchieveCodingGoals from "@/components/LandingPage/achieve-coding-goals";
+import HomeBrowseSection from "@/components/LandingPage/home-browse-section";
 import { VelocityScroll } from "@/components/magicui/scroll-based-velocity";
 
 const Home = () => {
@@ -32,7 +32,7 @@ const Home = () => {
       <div className="p-10 h-full">
         <HeroSection scrollAnimation={scrollAnimation} />
 
-        <TextTape />
+        {/* <TextTape /> */}
 
         <div className="space-y-32 h-full">
           <LandingCoursewaveStats />

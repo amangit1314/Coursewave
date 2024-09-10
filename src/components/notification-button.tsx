@@ -14,8 +14,8 @@ import {
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import { RiCheckboxCircleLine } from "react-icons/ri";
-import useNotificationsStore from "@/zustand/notificationsStore";
-import NotificationItem from "./notifications/NotificationItem";
+import { useNotificationsStore } from "@/zustand/notificationsStore";
+import NotificationItem from "./notifications/notification-item";
 
 type Notification = {
   id: string;
@@ -31,7 +31,7 @@ export default function Notifications() {
   const setValues = useNotificationsStore((state) => state.setNotification);
 
   const clearValues = useNotificationsStore(
-    (state) => state.clearNotifications
+    (state) => state.clearNotifications,
   );
 
   const [notifications, setNotifications] = React.useState<Notification[]>(
@@ -52,7 +52,7 @@ export default function Notifications() {
           "All systems are currently within their default operating ranges.",
         isReaded: false,
       },
-    ]
+    ],
   );
 
   console.log("Notifications: ", notifications);
@@ -63,14 +63,14 @@ export default function Notifications() {
           className="relative h-10 w-10 rounded-md transition-all duration-200 ease-in-out dark:bg-transparent dark:hover:bg-zinc-800"
           aria-label="Notification"
         >
-          <div className="cursor-pointer rounded-md p-3 text-center items-center bg-transparent hover:bg-slate-50 border dark:hover:bg-zinc-800 border-opacity-10 dark:hover:border-opacity-100 transition-all duration-200">
+          <div className="cursor-pointer items-center rounded-md border border-opacity-10 bg-transparent p-3 text-center transition-all duration-200 hover:bg-slate-50 dark:hover:border-opacity-100 dark:hover:bg-zinc-800">
             <IoNotificationsOutline size={16} />
           </div>
 
           {/* length of unread notification */}
           {notifications.length > 0 ? (
-            <span className="absolute inset-0 object-right-top -mr-6">
-              <div className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-semibold leading-4 bg-blue-500 text-white">
+            <span className="absolute inset-0 -mr-6 object-right-top">
+              <div className="inline-flex items-center rounded-full bg-blue-500 px-1.5 py-0.5 text-xs font-semibold leading-4 text-white">
                 {notifications.length}
               </div>
             </span>
@@ -80,7 +80,7 @@ export default function Notifications() {
         </button>
       </SheetTrigger>
 
-      <ScrollArea className="max-h-[70vh] h-full">
+      <ScrollArea className="h-full max-h-[70vh]">
         <SheetContent>
           <SheetHeader>
             <SheetTitle>Notifications</SheetTitle>
@@ -120,7 +120,7 @@ export default function Notifications() {
                 type="submit"
                 color="red"
                 onClick={clearValues}
-                className="text-white font-semibold dark:text-black"
+                className="font-semibold text-white dark:text-black"
               >
                 Clear Notifications
               </Button>

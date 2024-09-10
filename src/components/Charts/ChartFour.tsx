@@ -133,7 +133,7 @@ const ChartFour: React.FC = () => {
   };
 
   return (
-    <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-gray-800  sm:px-7.5">
+    <div className="border-stroke pt-7.5 shadow-default dark:border-strokedark sm:px-7.5 col-span-12 rounded-sm border bg-white px-5 pb-5 dark:bg-gray-800">
       <div>
         <h3 className="text-xl font-semibold text-black dark:text-white">
           Visitors Analytics

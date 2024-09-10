@@ -2,7 +2,9 @@
 import { ApexOptions } from "apexcharts";
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
-const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
+const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+  ssr: false,
+});
 
 interface ChartThreeState {
   series: number[];
@@ -49,14 +51,13 @@ const options: ApexOptions = {
   ],
 };
 
-
 const ChartThree: React.FC = () => {
   const [state, setState] = useState<ChartThreeState>({
     series: [65, 34, 12, 56],
   });
 
   return (
-    <div className="col-span-12 rounded-sm border border-gray-300 bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-gray-700 dark:bg-gray-800  sm:px-7.5 xl:col-span-5">
+    <div className="pt-7.5 shadow-default sm:px-7.5 col-span-12 rounded-sm border border-gray-300 bg-white px-5 pb-5 dark:border-gray-700 dark:bg-gray-800 xl:col-span-5">
       <div className="mb-3 flex justify-between gap-4 sm:flex">
         <div>
           <h5 className="text-xl font-semibold text-black dark:text-white">
@@ -73,7 +74,7 @@ const ChartThree: React.FC = () => {
               <option value="">Monthly</option>
               <option value="">Yearly</option>
             </select>
-            <span className="absolute top-1/2 right-3 -translate-y-1/2">
+            <span className="absolute right-3 top-1/2 -translate-y-1/2">
               <svg
                 width="10"
                 height="6"

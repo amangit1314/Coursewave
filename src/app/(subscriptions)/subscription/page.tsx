@@ -117,14 +117,14 @@ export default async function Subscription() {
 
   return (
     <div className="mt-16 md:mt-0">
-      <section className="bg-white dark:bg-zinc-900 py-8">
-        <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-          <div className="mx-auto space-y-6 max-w-screen-md text-center mb-8 lg:mb-12">
-            <p className=" text-[42px] tracking-tight font-bold text-gray-900 dark:text-white">
+      <section className="bg-white py-8 dark:bg-zinc-900">
+        <div className="mx-auto max-w-screen-xl px-4 py-8 lg:px-6 lg:py-16">
+          <div className="mx-auto mb-8 max-w-screen-md space-y-6 text-center lg:mb-12">
+            <p className="text-[42px] font-bold tracking-tight text-gray-900 dark:text-white">
               Choose a plan for <span className="text-blue-600">yourself!</span>{" "}
             </p>
 
-            <p className="font-light text-base text-gray-500 sm:text-xl dark:text-gray-400">
+            <p className="text-base font-light text-gray-500 dark:text-gray-400 sm:text-xl">
               Here at Courewave we are building a platform where technology,
               innovation, and capital can unlock long-term value and drive
               economic growth.

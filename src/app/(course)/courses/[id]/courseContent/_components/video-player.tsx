@@ -8,8 +8,8 @@ import { useRouter } from "next/navigation";
 import { Loader2, Lock } from "lucide-react";
 
 import { cn } from "@/utils/utils";
-import { useConfettiStore } from "@/hooks/use-confetti-store";
-import useUserInfo from "@/hooks/use-user-info";
+import { useConfettiStore } from "@/hooks/useConfettiStore";
+import { useUserInfo } from "@/hooks/useUserInfo";
 
 interface VideoPlayerProps {
   playbackId: string;
@@ -42,7 +42,7 @@ export const VideoPlayer = ({
           `/api/profile/${user.user.id}/enrolledCourses/${courseId}/sections/sectionId/chapters/${chapterId}/progress`,
           {
             isCompleted: true,
-          }
+          },
         );
 
         // if (!nextChapterId) {
@@ -71,7 +71,7 @@ export const VideoPlayer = ({
         </div>
       )}
       {isLocked && (
-        <div className="absolute inset-0 flex items-center justify-center bg-slate-800 flex-col gap-y-2 text-secondary">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-y-2 bg-slate-800 text-secondary">
           <Lock className="h-8 w-8" />
           <p className="text-sm">This chapter is locked</p>
         </div>

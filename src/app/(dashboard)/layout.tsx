@@ -12,23 +12,23 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname();
 
   const hideSidebar = pathname.match(
-    /dashboard\/enrolledCourses\/(undefined|null)/
+    /dashboard\/enrolledCourses\/(undefined|null)/,
   );
 
   return (
-    <div className="min-h-screen h-full dark:bg-zinc-900">
-      <div className="h-[64px] fixed inset-y-0 w-full z-50 ">
+    <div className="h-full min-h-screen dark:bg-zinc-900">
+      <div className="fixed inset-y-0 z-50 h-[64px] w-full">
         <Navbar />
       </div>
 
       <div
         id="cta-button-sidebar"
-        className="hidden md:flex h-full fixed inset-y-0 z-50"
+        className="fixed inset-y-0 z-50 hidden h-full md:flex"
       >
         <Sidebar />
       </div>
 
-      <div className="md:pl-72 h-full">{children}</div>
+      <div className="h-full md:pl-72">{children}</div>
     </div>
   );
 }

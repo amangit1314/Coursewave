@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 
-import { generateAccessToken, generateRefreshToken } from "@/helpers/jwt_helper";
+import { generateAccessToken, generateRefreshToken } from "@/helpers/jwt-helper";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import cors, { runMiddleware } from '@/lib/cors';

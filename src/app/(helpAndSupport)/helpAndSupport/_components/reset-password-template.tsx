@@ -18,9 +18,9 @@ interface DropboxResetPasswordEmailProps {
 }
 
 const baseUrl = process.env.VERCEL_URL
-? `https://${process.env.VERCEL_URL}`
-  // ? `https://localhost:3000`
-  : "";
+  ? `https://${process.env.VERCEL_URL}`
+  : // ? `https://localhost:3000`
+    "";
 
 export const ResetPasswordTemplate = ({
   userFirstName,

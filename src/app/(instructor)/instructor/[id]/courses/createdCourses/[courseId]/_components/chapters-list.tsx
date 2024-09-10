@@ -12,7 +12,7 @@ import { Grip, Pencil } from "lucide-react";
 import { cn } from "@/utils/utils";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
-import useCourseInfo from "@/hooks/use-course-info";
+import { useCourseInfo } from "@/hooks/useCourseInfo";
 
 interface ChaptersListProps {
   items: Chapter[];
@@ -66,11 +66,11 @@ export const ChaptersList = ({
     instructorId: string,
     courseId: string,
     sectionId: string,
-    id: string
+    id: string,
   ) => {
     setIsEditing(true);
     router.push(
-      `/instructor/${instructorId}/courses/createdCourses/${courseId}/sections/${sectionId}/chapters/${id}`
+      `/instructor/${instructorId}/courses/createdCourses/${courseId}/sections/${sectionId}/chapters/${id}`,
     );
   };
 
@@ -94,18 +94,18 @@ export const ChaptersList = ({
                     {!isEditing ? (
                       <div
                         className={cn(
-                          "flex items-center gap-x-2 bg-slate-200 border-slate-200 border text-slate-700 dark:text-gray-400 dark:bg-zinc-800 dark:border-none rounded-md mb-4 text-sm  transition-all duration-300",
+                          "mb-4 flex items-center gap-x-2 rounded-md border border-slate-200 bg-slate-200 text-sm text-slate-700 transition-all duration-300 dark:border-none dark:bg-zinc-800 dark:text-gray-400",
                           chapter.isPublished &&
-                            "bg-blue-100 border-blue-200 text-blue-600  transition-all duration-300"
+                            "border-blue-200 bg-blue-100 text-blue-600 transition-all duration-300",
                         )}
                         // ref={provided.innerRef}{...provided.draggableProps}
                       >
                         {/* grip icon */}
                         <div
                           className={cn(
-                            "px-2 py-3 border-r border-r-slate-200 hover:bg-slate-300 rounded-l-md  transition-all duration-300",
+                            "rounded-l-md border-r border-r-slate-200 px-2 py-3 transition-all duration-300 hover:bg-slate-300",
                             chapter.isPublished &&
-                              "border-r hover:bg-blue-200 dark:hover:bg-zinc-950  transition-all duration-300"
+                              "border-r transition-all duration-300 hover:bg-blue-200 dark:hover:bg-zinc-950",
                           )}
                           {...provided.dragHandleProps}
                         >
@@ -113,20 +113,19 @@ export const ChaptersList = ({
                         </div>
 
                         {/* chapter title */}
-                       <p className="not-italic">
-                       {chapter.title}
-                       </p>
+                        <p className="not-italic">{chapter.title}</p>
 
                         {/* isFree badge, published or in draft badge, pencil icon */}
-                        <div className="ml-auto pr-2 flex items-center gap-x-2">
+                        <div className="ml-auto flex items-center gap-x-2 pr-2">
                           {/* isFree badge */}
                           {chapter.isFree && <Badge>Free</Badge>}
 
                           {/* published or in draft badge */}
                           <Badge
                             className={cn(
-                              "bg-zinc-500 dark:text-gray-400 dark:bg-zinc-800 not-italic text-xs  transition-all duration-300",
-                              chapter.isPublished && "bg-zinc-500 dark:bg-zinc-800 cursor-not-allowed  transition-all duration-300"
+                              "bg-zinc-500 text-xs not-italic transition-all duration-300 dark:bg-zinc-800 dark:text-gray-400",
+                              chapter.isPublished &&
+                                "cursor-not-allowed bg-zinc-500 transition-all duration-300 dark:bg-zinc-800",
                             )}
                           >
                             {chapter.isPublished ? "Published" : "Draft"}
@@ -139,10 +138,10 @@ export const ChaptersList = ({
                                 instructorId,
                                 chapter.courseId,
                                 chapter.courseSectionId!,
-                                chapter.id
+                                chapter.id,
                               )
                             }
-                            className="w-4 h-4 hover:text-black dark:hover:text-white cursor-pointer transition-all duration-300"
+                            className="h-4 w-4 cursor-pointer transition-all duration-300 hover:text-black dark:hover:text-white"
                           />
                         </div>
                       </div>

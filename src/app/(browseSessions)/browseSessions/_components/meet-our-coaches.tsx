@@ -11,7 +11,7 @@ import {
 export const MeetOurCoaches = () => {
   return (
     <div className="w-auto space-y-4">
-      <p className="text-xl text-zinc-800 dark:text-white font-bold tracking-tight">
+      <p className="text-xl font-bold tracking-tight text-zinc-800 dark:text-white">
         Meet our Coaches
       </p>
 

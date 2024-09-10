@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function EnrolledSessions() {
-    return (
-        <div>EnrolledSessions</div>
-    )
+  return <div>EnrolledSessions</div>;
 }
 
-export default EnrolledSessions
+export default EnrolledSessions;

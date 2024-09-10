@@ -4,9 +4,13 @@ import Navbar from "../(browseCourses)/browseCourses/_components/navbar";
 import Sidebar from "../(browseCourses)/browseCourses/_components/sidebar";
 import React from "react";
 import UserAvatar from "@/components/user-avatar";
-import { ThemeModeToggle } from "@/components/themeModeToggle";
-import useUserInfo from "@/hooks/use-user-info";
+import { ThemeModeToggle } from "@/components/theme-mode-toggle";
+import { useUserInfo } from "@/hooks/useUserInfo";
 import Notifications from "@/components/notification-button";
+import { usePathname, useRouter } from "next/navigation";
+import { useUserStore } from "@/zustand/userStore";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "react-hot-toast";
 
 interface BrowseSessionsLayoutProps {
   children: React.ReactNode;
@@ -14,15 +18,15 @@ interface BrowseSessionsLayoutProps {
 
 const BrowseSessionsLayout = ({ children }: BrowseSessionsLayoutProps) => {
   return (
-    <div className="min-h-screen h-full dark:bg-zinc-900">
-      <div className="h-[64px] md:pl-56 inset-y-0 w-full z-50 ">
+    <div className="h-full min-h-screen dark:bg-zinc-900">
+      <div className="inset-y-0 z-50 h-[64px] w-full md:pl-56">
         <SessionsNavbar />
       </div>
 
-      <div className="hidden md:flex h-full fixed inset-y-0 z-50">
+      <div className="fixed inset-y-0 z-50 hidden h-full md:flex">
         <Sidebar />
       </div>
-      <div className="md:pl-64 h-full">{children}</div>
+      <div className="h-full md:pl-64">{children}</div>
     </div>
   );
 };
@@ -31,7 +35,7 @@ export default BrowseSessionsLayout;
 
 const SessionsNavbar = () => {
   return (
-    <div className="px-6 md:px-0 border-b w-full h-full flex justify-start items-center dark:bg-transparent bg-white shadow-sm">
+    <div className="flex h-full w-full items-center justify-start border-b bg-white px-6 shadow-sm dark:bg-transparent md:px-0">
       {/* <InstructorMobileSidebar /> */}
       <SessionsNavbarRoutes />
     </div>
@@ -39,20 +43,66 @@ const SessionsNavbar = () => {
 };
 
 const SessionsNavbarRoutes = ({ name }: { name?: string }) => {
-  const user = useUserInfo();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // const user = useUserInfo();
+  const { user, loadingState } = useUserStore();
+
+  // Move these calls before the if statement
+  const [isInstructor, setIsInstructor] = React.useState<boolean>(
+    user?.isInstructor ?? false,
+  );
+
+  if (loadingState.loading) {
+    return <Skeleton className="h-12 w-12 rounded-md" />;
+  }
+
+  const switchToInstructorView = () => {
+    if (!user?.id) {
+      toast.error("Please provide user id ⚠ ...");
+    } else if (isInstructor) {
+      setIsInstructor(true);
+      router.push(`/instructor/${user?.id}/analytics`);
+    } else {
+      setIsInstructor(false);
+      toast.error("You are not an instructor ...");
+      router.push(`/profile/${user?.id}`);
+    }
+
+    //! ---- for TESTING ONLY AFTER TESTING REMOVE BELOW CODE ---
+    // router.push(`/instructor/${userId}/analytics`);
+  };
+
+  const gotToSignIn = () => {
+    router.push("/login");
+  };
+
+  const isBrowseCoursesScreen = pathname.match("/browseCourses");
+
 
   return (
-    <div className="w-full ml-auto md:mr-8 md:ml-16 flex justify-between items-center">
-      <div className="hidden md:flex md:mr-auto text-black dark:text-white  tracking-tight items-center bg-transparent">
+    <div className="ml-auto flex w-full items-center justify-between md:ml-16 md:mr-8">
+      <div className="hidden items-center bg-transparent tracking-tight text-black dark:text-white md:mr-auto md:flex">
         <p className="text-md text-base font-bold">Hello, </p>
-        <span className="text-blue-600 ml-1 text-xl font-bold">
-          {user.user?.name}
+        <span className="ml-1 text-xl font-bold text-blue-600">
+          {user?.name ?? '{Your Username}'}
         </span>
       </div>
-      <div className="ml-auto flex justify-end items-center gap-x-2">
+      <div className="ml-auto flex items-center justify-end gap-x-2">
         <ThemeModeToggle />
         <Notifications />
-        <UserAvatar />
+        {/* user profile */}
+        {user ? (
+            <UserAvatar />
+          ) : (
+            <button
+              onClick={gotToSignIn}
+              className="text-base hover:text-blue-600"
+            >
+              Sign In
+            </button>
+          )}
       </div>
     </div>
   );

@@ -7,12 +7,12 @@ import DateRange from "@/components/date-range";
 const ScheduledSessions = () => {
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <div className="font-semibold text-gray-700 text-lg dark:text-gray-200">
+      <div className="mb-6 flex items-center justify-between">
+        <div className="text-lg font-semibold text-gray-700 dark:text-gray-200">
           Scheduled Sessions
         </div>
 
-        <div className="flex justify-center items-center bg-blue-500 text-white hover:bg-blue-700 text-sm cursor-pointer font-medium space-x-1 rounded-md px-4 py-2">
+        <div className="flex cursor-pointer items-center justify-center space-x-1 rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
           <IoMdAdd />
           <p>Book a session</p>
         </div>
@@ -22,8 +22,8 @@ const ScheduledSessions = () => {
       <DateRange />
 
       {/* <DatePickerDemo /> */}
-      <ScrollArea className="flex p-1 justify-start items-center space-x-2 max-w-7xl w-full">
-        <div className="flex space-x-2 max-w-7xl w-full">
+      <ScrollArea className="flex w-full max-w-7xl items-center justify-start space-x-2 p-1">
+        <div className="flex w-full max-w-7xl space-x-2">
           <ScheduledSessionCard />
           <ScheduledSessionCard />
           <ScheduledSessionCard />

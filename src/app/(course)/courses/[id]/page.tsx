@@ -1,24 +1,11 @@
 "use client";
 
-import React from "react";
+import axios from "axios";
+import React, { useEffect } from "react";
 import Image from "next/image";
-import { FaShare } from "react-icons/fa";
-import { RiCoupon3Line } from "react-icons/ri";
-import { FaAngleRight, FaCircleCheck, FaStar } from "react-icons/fa6";
-import { HiOutlineShoppingCart, HiShoppingCart } from "react-icons/hi";
-import { CourseNavbar } from "../_components/course-navbar";
-import { CartItem, Course, Review } from "@prisma/client";
-import { CourseContent } from "../_components/course-content";
-import { Prerequisits } from "../_components/sections/prerequisits";
-import { InstructorCard } from "../_components/sections/instructor-info";
-import { WhatYouWillLearn } from "../_components/sections/what-you-will-learn";
-import { CourseRatings } from "../_components/sections/ratings/course-ratings";
-import { WhoThisCourseIsFor } from "../_components/sections/who-this-course-is-for";
-import { CourseBreadcrumb } from "../_components/sections/course-breadcrumb";
-import { MoreIntructorCreatedCourses } from "../_components/sections/more-instructor-created-courses";
-import { Footer } from "@/components/LandingPage/footer";
-import { Skeleton } from "@/components/ui/skeleton";
-// import { generateUid } from "@/helpers/id_helper";
+import { usePathname } from "next/navigation";
+
+//* Shadcn ui components
 import {
   Dialog,
   DialogContent,
@@ -28,100 +15,133 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import axios from "axios";
-import { Loader } from "lucide-react";
-import { absoluteUrl } from "@/utils/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-dropdown-menu";
+
+//* hot toast
 import toast, { Toaster } from "react-hot-toast";
-import { Button, Callout, Divider, Title } from "@tremor/react";
-import { usePathname } from "next/navigation";
+
+//* tremor icons
+import { Button, Callout, Divider } from "@tremor/react";
+import { Course } from "@prisma/client";
+
+//* icons
+import { Loader } from "lucide-react";
+import { FaShare } from "react-icons/fa";
+import { VscPreview } from "react-icons/vsc";
+import { RiCoupon3Line } from "react-icons/ri";
 import { SiCrowdsource } from "react-icons/si";
 import { GoProjectTemplate } from "react-icons/go";
-import { VscPreview } from "react-icons/vsc";
+import { FaAngleRight, FaStar } from "react-icons/fa6";
+import { HiOutlineShoppingCart, HiShoppingCart } from "react-icons/hi";
+
 //* zustand hooks
-import useCartStore from "@/zustand/cartStore";
-import useNotificationsStore from "@/zustand/notificationsStore";
+import { useCartStore } from "@/zustand/cartStore";
+import { useNotificationsStore } from "@/zustand/notificationsStore";
+
 //* custom hooks
-import useUserInfo from "@/hooks/use-user-info";
-import useCourseInfo from "@/hooks/use-course-info";
-import useCheckCourseIsPurchased from "@/hooks/use-check-course-is-puchased";
-import useInstructorInfo from "@/hooks/use-instructor-info";
+import { useUserInfo } from "@/hooks/useUserInfo";
+import { useCoursesStore } from "@/zustand/coursesStore";
+import { useInstructorInfo } from "@/hooks/useInstructorInfo";
+import { useCheckCourseIsPurchased } from "@/hooks/useCheckCourseIsPuchased";
+
+// * Custom Components
+import CourseNavbar from "../_components/course-navbar";
+import CourseContent from "../_components/course-content";
+import Prerequisits from "../_components/sections/prerequisits";
+import InstructorCard from "../_components/sections/instructor-info";
+import CourseBreadcrumb from "../_components/sections/course-breadcrumb";
+import WhatYouWillLearn from "../_components/sections/what-you-will-learn";
+import WhoThisCourseIsFor from "../_components/sections/who-this-course-is-for";
+import InstructorBadgeLoadingSkeleton from "./_components/skeletons/instructor-badge-loading-skeleton";
+import CourseSmallScreenSkeleton from "./_components/skeletons/course-small-screen-skeleton";
+import CourseBigScreenSkeleton from "./_components/skeletons/course-big-screen-skeleton";
+
+//* Custom Components which are not default exports because multiple components are exported from these files
+import { Footer } from "@/components/LandingPage/footer";
+import { CourseRatings } from "../_components/sections/ratings/course-ratings";
+import { MoreIntructorCreatedCourses } from "../_components/sections/more-instructor-created-courses";
 
 const CoursePreview = ({ params }: { params: { id: string } }) => {
-  const courseId = params?.id;
-  const courseData = useCourseInfo(courseId);
-  const course: Course = courseData.courseInfo;
+  const courseId = params?.id!;
 
-  console.log(
-    `Course data for courseId:${courseId} in course id detail page: `,
-    course
-  );
+  const { course, loadingState, fetchCourse, fetchCourseReviews, reviews } =
+    useCoursesStore();
 
-  if (courseData.isLoading) {
+  useEffect(() => {
+    fetchCourse(courseId);
+    fetchCourseReviews(courseId);
+  }, [fetchCourse, fetchCourseReviews, courseId]);
+
+  if (loadingState.loading) {
     return (
       <>
-        <div className="visible flex mx-auto items-center justify-center md:hidden align-middle my-auto">
+        <div className="visible mx-auto my-auto flex items-center justify-center align-middle md:hidden">
           <CourseSmallScreenSkeleton />
         </div>
-        <div className="hidden md:flex md:items-center md:justify-center md:mx-auto">
+        <div className="hidden md:mx-auto md:flex md:items-center md:justify-center">
           <CourseBigScreenSkeleton />
         </div>
       </>
     );
   }
 
-  if (courseData.error) {
+  if (loadingState.error) {
     return (
-      <div className="flex justify-center items-center mx-auto w-7xl align-middle">
-        <Callout className="" title="Failed to Fetch Course Info" color="red">
-          ERROR In Course id page: <span>{courseData.error.message}</span>
+      <div className="w-7xl mx-auto flex items-center justify-center align-middle">
+        <Callout
+          className=""
+          title="Failed to Fetch Course Info 🚨❌"
+          color="red"
+        >
+          ERROR In Course id page: <span>{loadingState.error} 🚨❌ ...</span>
         </Callout>
       </div>
     );
   }
 
+  console.log(
+    `Course data for courseId:${courseId} in course id detail page: `,
+    course,
+  );
+
   return (
-    <div className="overflow-x-hidden">
-      <div className="flex flex-col pb-[6rem] overflow-x-hidden">
+    <div className="space-y-[6rem] overflow-x-hidden">
+      <div className="flex flex-col overflow-x-hidden">
         {/* course navbar */}
-        <div className=" inset-y-0 w-full z-50 px-4 md:px-10 py-2 ">
-          <CourseNavbar courseName={course.courseTitle} />
+        <div className="inset-y-0 z-50 w-full px-4 py-2 md:px-10">
+          <CourseNavbar courseName={course?.courseTitle!} />
         </div>
 
         {/* course content */}
-        <div className="md:grid md:grid-cols-2 md:max-w-7xl pl-8 md:pl-[6rem] ">
-          {/* left part */}
+        <div className="pl-8 md:grid md:max-w-7xl md:grid-cols-2 md:pl-[6rem]">
           <CourseDetailsLeftSection course={course!} />
-
-          {/* right part */}
-          <div className="sticky">
-            <CourseDetailsRightSection course={course!} />
-          </div>
+          <CourseDetailsRightSection course={course!} />
         </div>
 
         {/* course ratings */}
-        <div className="max-w-7xl md:mt-4 px-2 md:px-[6rem] flex justify-start items-center w-full ">
-          <CourseRatings
-            courseId={courseId}
-            avgStarRatings={course?.avgStarRatings ?? 4.9}
-          />
+        <div className="flex w-full max-w-7xl items-center justify-start px-2 md:mt-4 md:px-[6rem]">
+          <CourseRatings reviews={reviews} />
         </div>
 
         {/* Instructor Info */}
-        <div className="max-w-7xl w-full dark:bg-transparent border-y flex flex-col justify-start mt-4 px-8 md:px-[6rem] py-8">
-          <h3 className="mb-4 text-xl text-gray-800 dark:text-slate-200 tracking-tight font-semibold">
+        <div className="mt-4 flex w-full max-w-7xl flex-col justify-start border-y px-8 py-8 dark:bg-transparent md:px-[6rem]">
+          <h3 className="mb-4 text-xl font-semibold tracking-tight text-gray-800 dark:text-slate-200">
             Meet Your Instructor
           </h3>
 
-          {/* instructor card */}
-          {/* <InstructorCard instructorId={course?.instructorID!} /> */}
-
-          {/* more created courses by instructor */}
-          <MoreIntructorCreatedCourses
-            instructorId={course?.instructorID!}
-            instructorName={course?.courseCreator!}
-          />
+          {!course?.instructorID ? (
+            <div>
+              <InstructorCard instructorId={course?.instructorID!} />
+sss
+              <MoreIntructorCreatedCourses
+                instructorId={course?.instructorID!}
+                instructorName={course?.courseCreator!}
+              />s
+            </div>
+          ) : (
+            <div></div>
+          )}
         </div>
       </div>
 
@@ -136,7 +156,7 @@ export default CoursePreview;
 
 const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
   console.log(
-    `Instructor id in the course details left section: ${course?.instructorID!} `
+    `Instructor id in the course details left section: ${course?.instructorID!} `,
   );
 
   const instructorInfo = useInstructorInfo(course?.instructorID!);
@@ -146,26 +166,33 @@ const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
   }
 
   if (instructorInfo.error) {
-    return <>ERROR: {instructorInfo.error.message}</>;
+    return (
+      <div>
+        <Callout
+          className=""
+          title="Failed to Fetch Instructor Info 🚨❌"
+          color="red"
+        >
+          <span>{instructorInfo.error.message} 🚨❌ ...</span>
+        </Callout>
+      </div>
+    );
   }
 
   const instructor = instructorInfo.instructor;
 
   return (
-    <div className="mt-[3.125rem] flex flex-col text-red items-start justify-center text-start text-xl space-y-6 overflow-x-hidden">
+    <div className="text-red mt-[3.125rem] flex flex-col items-start justify-center space-y-6 overflow-x-hidden text-start text-xl">
       {/* course title, description, ratings,*/}
-      <div className="space-y-4 mr-8">
-        <div className=" rounded-3xl py-4 pl-4 pr-4 md:pr-4 backdrop-blur-sm bg-gradient-to-br from-purple-500 to-blue-500 dark:from-zinc-900 dark:to-blue-500 md:w-[590px] space-y-4 md:mr-0 w-full">
+      <div className="mr-8 space-y-4">
+        <div className="w-full space-y-4 rounded-3xl bg-gradient-to-br from-purple-500 to-blue-500 py-4 pl-4 pr-4 backdrop-blur-sm dark:from-zinc-900 dark:to-blue-500 md:mr-0 md:w-[590px] md:pr-4">
           <div className="space-y-1">
-            {/* course breadcrumb */}
-            <div className="">
-              <CourseBreadcrumb course={course!} />
-            </div>
+            <CourseBreadcrumb course={course!} />
 
             {/* course image only for mobile screen */}
-            <div className="visible md:hidden pr-8 my-4 max-w-screen-2xl w-full mr-8">
+            <div className="visible my-4 mr-8 w-full max-w-screen-2xl pr-8 md:hidden">
               <Image
-                className="visible md:hidden h-60 w-full bg-slate-700 rounded-3xl shadow-md"
+                className="visible h-60 w-full rounded-3xl bg-slate-700 shadow-md md:hidden"
                 src={
                   course?.courseImage ??
                   "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210301154221/System-Design-Live-Course-By-GeeksforGeeks.png"
@@ -181,16 +208,14 @@ const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
             </div>
 
             {/* title */}
-            {/* text-gray-800 */}
-            <h1 className="dark:text-white tracking-tight text-white  font-semibold text-2xl md:text-4xl">
+            <h1 className="text-2xl font-semibold tracking-tight text-white dark:text-white md:text-4xl">
               {course?.courseTitle}
             </h1>
 
             {/* rating stars */}
-            <div className="flex flex-row justify-start items-start md:items-center">
+            <div className="flex flex-row items-start justify-start md:items-center">
               <div className="flex items-center justify-start space-x-1">
-                {/* text-zinc-800 */}
-                <div className="text-sm font-semibold tracking-tight text-white  dark:text-white">
+                <div className="text-sm font-semibold tracking-tight text-white dark:text-white">
                   {course?.avgStarRatings?.toFixed(1) ?? 4.8}
                 </div>
                 <FaStar className="text-yellow-500" size={12} />
@@ -198,7 +223,7 @@ const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
 
               {/* number of students enrolled badge */}
               <div className="flex flex-row items-center">
-                <div className="mx-1 flex rounded-full  justify-center items-center text-xs font-medium text-white space-x-[4px] bg-slate-900 dark:bg-blue-600 px-2 py-1 ">
+                <div className="mx-1 flex items-center justify-center space-x-[4px] rounded-full bg-slate-900 px-2 py-1 text-xs font-medium text-white dark:bg-blue-600">
                   <VscPreview size={16} />
                   <span className="text-xs">{`${156} reviews`}</span>
                 </div>
@@ -207,9 +232,9 @@ const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
           </div>
 
           {/* instructor info tile */}
-          <div className=" flex flex-row justify-start flex-shrink-0 w-auto transition-all duration-200 rounded-lg cursor-pointer align-center items-center md:items-start backdrop-filter-blur ">
+          <div className="align-center backdrop-filter-blur flex w-auto flex-shrink-0 cursor-pointer flex-row items-center justify-start rounded-lg transition-all duration-200 md:items-start">
             <Image
-              className="items-center bg-white rounded-full w-12 h-12"
+              className="h-12 w-12 items-center rounded-full bg-white"
               src={instructor?.instructorProfilePicUrl!}
               alt={instructor?.instructorName}
               height={12}
@@ -217,16 +242,14 @@ const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
               unoptimized
             />
 
-            <div className="w-full ml-1 px-2 pt-1 md:pt-0 my-1 md:my-0 flex flex-col">
-              <div className="flex justify-between items-center py-auto rating">
-                {/* text-zinc-800  */}
-                <p className="text-md text-base tracking-tight font-semibold text-gray-100 dark:text-gray-200">
+            <div className="my-1 ml-1 flex w-full flex-col px-2 pt-1 md:my-0 md:pt-0">
+              <div className="py-auto rating flex items-center justify-between">
+                <p className="text-md text-base font-semibold tracking-tight text-gray-100 dark:text-gray-200">
                   {instructor?.instructorName}
                 </p>
               </div>
 
-              {/* text-gray-700 */}
-              <p className="text-sm text-gray-300  dark:text-gray-400">
+              <p className="text-sm text-gray-300 dark:text-gray-400">
                 Instructor of this course
               </p>
             </div>
@@ -235,13 +258,8 @@ const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
       </div>
 
       {/* no of reviews and projects */}
-      <div className="flex justify-start space-x-6 items-center md:max-w-7xl w-full pr-8 md:pr-0 md:mr-0">
-        {/* backdrop-blur-sm bg-gradient-to-r from-purple-500 to-red-400 */}
-        {/* dark:from-purple-700 dark:to-[#64E9FF] */}
-        <div
-          className="p-4 space-y-2 h-50 rounded-3xl backdrop-blur-sm bg-gradient-to-br from-purple-500 to-blue-500  dark:from-zinc-900 dark:to-blue-500
-         "
-        >
+      <div className="flex w-full items-center justify-start space-x-6 pr-8 md:mr-0 md:max-w-7xl md:pr-0">
+        <div className="h-50 space-y-2 rounded-3xl bg-gradient-to-br from-purple-500 to-blue-500 p-4 backdrop-blur-sm dark:from-zinc-900 dark:to-blue-500">
           <div className="space-y-1">
             <SiCrowdsource size={24} className="text-white" />
             <p className="text-4xl font-bold tracking-tighter text-white">
@@ -249,18 +267,18 @@ const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
             </p>
           </div>
 
-          <p className="text-gray-200 text-md text-base">
+          <p className="text-md text-base text-gray-200">
             Number of peoples enrolled in this course just after launch
           </p>
         </div>
 
-        <div className="p-4 space-y-2 h-50 rounded-3xl backdrop-blur-sm bg-gradient-to-br from-purple-500 to-blue-500 dark:from-zinc-900 dark:to-blue-500">
+        <div className="h-50 space-y-2 rounded-3xl bg-gradient-to-br from-purple-500 to-blue-500 p-4 backdrop-blur-sm dark:from-zinc-900 dark:to-blue-500">
           <div className="space-y-1">
             <GoProjectTemplate size={24} className="text-white" />
             <p className="text-4xl font-bold tracking-tighter text-white">5</p>
           </div>
 
-          <p className=" text-gray-200 text-md text-base">
+          <p className="text-md text-base text-gray-200">
             We will build 5 big projects together and will learn a lot of
             concepts.
           </p>
@@ -268,8 +286,8 @@ const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
       </div>
 
       {/* only for mobile screen */}
-      <div className="visible md:hidden pr-8 mr-8 py-4 md:pr-0 space-y-4">
-        <div className="space-y-2 mr-8">
+      <div className="visible mr-8 space-y-4 py-4 pr-8 md:hidden md:pr-0">
+        <div className="mr-8 space-y-2">
           <p className="text-sm font-medium text-blue-500">Buy course</p>
           <p className="text-sm text-gray-700 dark:text-gray-400">
             Get access to this course forever when you buy it. Learn at your own
@@ -277,18 +295,18 @@ const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
           </p>
         </div>
 
-        <p className="font-bold text-2xl text-gray-800 dark:text-white tracking-tight">
+        <p className="text-2xl font-bold tracking-tight text-gray-800 dark:text-white">
           ${course?.coursePrice!}
         </p>
 
-        <div className="flex flex-col justify-center items-center space-y-2 mr-4">
+        <div className="mr-4 flex flex-col items-center justify-center space-y-2">
           <CourseEnrollButton course={course!} courseId={course?.courseId} />
           <ApplyCouponCode />
         </div>
       </div>
 
       {/* course description */}
-      <div className="my-4 md:my-0 md:mt-16 md:mb-8 w-full">
+      <div className="my-4 w-full md:my-0 md:mb-8 md:mt-16">
         <CourseDescription
           courseDescription={
             course?.courseDescription ??
@@ -297,16 +315,12 @@ const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
         />
       </div>
 
-      {/* what you will learn */}
       <WhatYouWillLearn whatYouWillLearn={course?.whatYouWillLearn} />
 
-      {/* course content (chapters, sections) */}
       <CourseContent courseId={course?.courseId} />
 
-      {/* who this course is for? */}
       <WhoThisCourseIsFor thisCourseIsFor={course?.thisCourseIsFor} />
 
-      {/* pre-requisits */}
       <Prerequisits prerequisits={course?.prerequisits} />
     </div>
   );
@@ -314,12 +328,12 @@ const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
 
 const CourseDetailsRightSection = ({ course }: { course: Course }) => {
   return (
-    <div className="w-auto h-auto hidden md:flex md:flex-col md:mt-12">
+    <div className="hidden h-auto w-auto md:mt-12 md:flex md:flex-col">
       <Toaster />
 
-      <div className="mx-auto shadow-xl max-w-md w-full rounded-3xl dark:bg-slate-800 h-auto">
+      <div className="mx-auto h-auto w-full max-w-md rounded-3xl shadow-xl dark:bg-slate-800">
         <Image
-          className="h-60 max-w-[28rem] w-full bg-slate-700 rounded-t-3xl relative left-0 right-0"
+          className="relative left-0 right-0 h-60 w-full max-w-[28rem] rounded-t-3xl bg-slate-700"
           src={
             course?.courseImage ??
             "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210301154221/System-Design-Live-Course-By-GeeksforGeeks.png"
@@ -334,22 +348,22 @@ const CourseDetailsRightSection = ({ course }: { course: Course }) => {
         />
 
         <div className="p-4">
-          <div className="flex py-auto items-center">
-            <span className="text-blue-500 font-bold mr-1">$</span>
+          <div className="py-auto flex items-center">
+            <span className="mr-1 font-bold text-blue-500">$</span>
             <p className="text-lg font-semibold tracking-tight text-gray-950 dark:text-gray-200">
               {course?.coursePrice ?? 499}
             </p>
-            <p className=" pl-1 text-xs dark:text-gray-400">
+            <p className="pl-1 text-xs dark:text-gray-400">
               (life time access)
             </p>
           </div>
 
-          <div className="flex flex-col justify-start space-y-1 px-2 items-center w-full">
+          <div className="flex w-full flex-col items-center justify-start space-y-1 px-2">
             <CourseEnrollButton course={course!} courseId={course?.courseId} />
             {/* <AddToCartButton course={course!} /> */}
           </div>
 
-          <p className="text-center text-xs pt-2 text-gray-400 font-thin">
+          <p className="pt-2 text-center text-xs font-thin text-gray-400">
             30 Day money back guarantee
           </p>
 
@@ -357,10 +371,10 @@ const CourseDetailsRightSection = ({ course }: { course: Course }) => {
 
           {/* what you will get in this course */}
           <div className="space-y-2">
-            <h3 className=" tracking-tight text-lg dark:text-xl text-gray-900 dark:text-gray-200 font-semibold">
+            <h3 className="text-lg font-semibold tracking-tight text-gray-900 dark:text-xl dark:text-gray-200">
               What you will get?
             </h3>
-            <ul className="pl-4 flex flex-col text-gray-700 dark:text-gray-400 text-sm justify-between pb-2 list-disc space-y-2">
+            <ul className="flex list-disc flex-col justify-between space-y-2 pb-2 pl-4 text-sm text-gray-700 dark:text-gray-400">
               <li>
                 On demand{" "}
                 {course?.courseDuration ? course?.courseDuration : "2 hour"} of
@@ -369,7 +383,7 @@ const CourseDetailsRightSection = ({ course }: { course: Course }) => {
               <li>Certificate for Completion</li>
               <li>A Complete Project Included</li>
               <li>
-                <div className="flex justify-start items-center space-x-2">
+                <div className="flex items-center justify-start space-x-2">
                   <p>You will learn about: </p>
                   {course?.technologiesYouAreGoingToLearn ? (
                     course?.technologiesYouAreGoingToLearn
@@ -377,7 +391,7 @@ const CourseDetailsRightSection = ({ course }: { course: Course }) => {
                       .map((tech: any, index: any) => {
                         return (
                           <div
-                            className="px-2 py-1 flex items-center bg-slate-200 text-black rounded-md"
+                            className="flex items-center rounded-md bg-slate-200 px-2 py-1 text-black"
                             key={index}
                           >
                             {tech}
@@ -396,7 +410,7 @@ const CourseDetailsRightSection = ({ course }: { course: Course }) => {
           <Divider />
 
           {/* share, gift, apply coupon code */}
-          <div className="flex space-x-4 justify-center items-center">
+          <div className="flex items-center justify-center space-x-4">
             <ShareButton />
             <ApplyCouponCode />
           </div>
@@ -413,27 +427,18 @@ const CourseDescription = ({
 }: {
   courseDescription: string;
 }) => {
-  const [isExpanded, setIsExpanded] = React.useState(false);
-  const truncatedDescription = courseDescription.slice(0, 170);
   const [showFullDescription, setShowFullDescription] = React.useState(false);
 
   return (
-    <div className="w-full h-auto space-y-4 mt-2">
-      <h3 className="tracking-tight text-xl font-semibold text-zinc-800 dark:text-slate-200">
+    <div className="mt-2 h-auto w-full space-y-4">
+      <h3 className="text-xl font-semibold tracking-tight text-zinc-800 dark:text-slate-200">
         About This Course
       </h3>
-      {/* <p
-        className={`text-md text-base md:text-md md:p-0 md:pr-[8rem] w-auto line-clamp-5 md:line-clamp-3 font-noraml text-gray-700 dark:text-gray-400 ${
-          isExpanded ? "text-clamp-4" : ""
-        }`}
-      >
-        {truncatedDescription}
-      </p> */}
 
       <p
         className={`${
           showFullDescription ? "" : "line-clamp-4"
-        } text-md text-base text-slate-700 dark:text-gray-400 py-4 md:py-2 md:text-md md:p-0 w-auto   ${
+        } text-md md:text-md w-auto py-4 text-base text-slate-700 dark:text-gray-400 md:p-0 md:py-2 ${
           showFullDescription ? "" : "overflow-hidden"
         }`}
       >
@@ -442,7 +447,7 @@ const CourseDescription = ({
 
       {courseDescription.length > 250 && (
         <div
-          className="expand-toggle cursor-pointer text-blue-500 text-md text-base"
+          className="expand-toggle text-md cursor-pointer text-base text-blue-500"
           onClick={() => setShowFullDescription(!showFullDescription)}
         >
           {showFullDescription ? "Show Less" : "Show More"}
@@ -463,7 +468,7 @@ const CourseEnrollButton = ({
   const user = useUserInfo();
   const isCoursePurchased = useCheckCourseIsPurchased(user?.user?.id, courseId);
   const setNotification = useNotificationsStore(
-    (state) => state.setNotification
+    (state) => state.setNotification,
   );
 
   const enrollInCourse = async () => {
@@ -471,12 +476,10 @@ const CourseEnrollButton = ({
       setIsLoading(true);
       console.log(
         "Is course already purchased? : ",
-        isCoursePurchased.courseIsPurchased
+        isCoursePurchased.courseIsPurchased,
       );
       if (isCoursePurchased.courseIsPurchased) {
-        window.location.assign(
-          `/courses/${courseId}/courseContent`
-        );
+        window.location.assign(`/courses/${courseId}/courseContent`);
       } else {
         const response = await axios.post(`api/courses/${courseId}/checkout`, {
           userId: user?.user?.id!,
@@ -486,11 +489,11 @@ const CourseEnrollButton = ({
 
         setNotification(
           "Course Enrollment Successful 🎉",
-          `Congratulations! You have successfully enrolled in "${course?.courseTitle}" course?.`
+          `Congratulations! You have successfully enrolled in "${course?.courseTitle}" course?.`,
         );
 
         toast.success(
-          `Congratulations 🎉! You have successfully enrolled in "${course?.courseTitle}" course`
+          `Congratulations 🎉! You have successfully enrolled in "${course?.courseTitle}" course`,
         );
       }
     } catch (error) {
@@ -501,7 +504,17 @@ const CourseEnrollButton = ({
   };
 
   if (isCoursePurchased.error) {
-    return <div>Error: {isCoursePurchased.error.message}</div>;
+    return (
+      <div className="mt-2">
+        <Callout
+          className=""
+          title="Failed to check course is purchased or not 🚨❌"
+          color="red"
+        >
+          <span>{isCoursePurchased.error.message} 🚨❌ ...</span>
+        </Callout>
+      </div>
+    );
   }
 
   return (
@@ -511,7 +524,7 @@ const CourseEnrollButton = ({
         disabled={isLoading}
         size="sm"
         color="blue"
-        className="mt-2 text-center text-white bg-blue-500 w-[28rem] md:w-[26rem] mr-8 md:mr-0 rounded-md hover:bg-blue-700 text-sm  font-semibold p-2"
+        className="mr-8 mt-2 w-[28rem] rounded-md bg-blue-500 p-2 text-center text-sm font-semibold text-white hover:bg-blue-700 md:mr-0 md:w-[26rem]"
       >
         {isCoursePurchased.isLoading ? (
           <Loader className="animate-spin" />
@@ -560,14 +573,14 @@ const AddToCartButton = ({ course }: { course: Course }) => {
       onClick={toggleIsInCart}
       size="sm"
       color="blue"
-      className={`mt-2 text-center text-white bg-blue-500 w-[26rem] rounded-md hover:bg-blue-700 text-sm  font-semibold m-2 ${isInCart ? "bg-blue-600" : "bg-blue-500"}`}
+      className={`m-2 mt-2 w-[26rem] rounded-md bg-blue-500 text-center text-sm font-semibold text-white hover:bg-blue-700 ${isInCart ? "bg-blue-600" : "bg-blue-500"}`}
     >
       {isInCart ? (
-        <div className="flex justify-center items-center">
+        <div className="flex items-center justify-center">
           <HiShoppingCart size={22} /> Remove from cart
         </div>
       ) : (
-        <div className="flex justify-center items-center">
+        <div className="flex items-center justify-center">
           <HiOutlineShoppingCart size={22} /> Add to cart
         </div>
       )}
@@ -590,7 +603,7 @@ const ShareButton = () => {
       (err) => {
         console.error("Failed to copy URL:", err);
         notify("❌ Failed to copy URL!");
-      }
+      },
     );
   };
 
@@ -598,10 +611,10 @@ const ShareButton = () => {
     <>
       <button
         onClick={() => handleShare()}
-        className="flex justify-center items-center"
+        className="flex items-center justify-center"
       >
         <FaShare />
-        <p className="pl-2 hover:cursor-pointer text-xs text-gray-400 hover:text-blue-500  hover:underline">
+        <p className="pl-2 text-xs text-gray-400 hover:cursor-pointer hover:text-blue-500 hover:underline">
           Share
         </p>
       </button>
@@ -613,16 +626,16 @@ const ApplyCouponCode = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="flex justify-center items-center">
+        <div className="flex items-center justify-center">
           <RiCoupon3Line />
-          <p className="pl-2 hover:cursor-pointer text-xs text-gray-400 hover:text-blue-500  hover:underline">
+          <p className="pl-2 text-xs text-gray-400 hover:cursor-pointer hover:text-blue-500 hover:underline">
             Apply Coupon
           </p>
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="text-gray-800 dark:text-white font-semibold">
+          <DialogTitle className="font-semibold text-gray-800 dark:text-white">
             Enter coupon code below
           </DialogTitle>
           <DialogDescription>
@@ -632,7 +645,7 @@ const ApplyCouponCode = () => {
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="items-center">
-            <Label className="text-left text-gray-800 dark:text-white font-semibold mb-1">
+            <Label className="mb-1 text-left font-semibold text-gray-800 dark:text-white">
               Coupon Code
             </Label>
             <Input
@@ -647,214 +660,5 @@ const ApplyCouponCode = () => {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-};
-
-// ------------------------------------- SKELETONS ------------------------------------
-
-const CourseSmallScreenSkeleton = () => {
-  return (
-    <div className="space-y-4 min-h-screen min-w-screen py-8">
-      <Skeleton className="h-[220px] w-full rounded-2xl" />
-      <div className="h-full col-span-2 w-full space-y-8">
-        <div className="flex space-x-2">
-          <Skeleton className="h-4 w-[100px] rounded-full" />
-          <FaAngleRight />
-          <Skeleton className="h-4 w-[100px] rounded-full" />
-        </div>
-
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Skeleton className="h-8 w-full rounded-md" />
-            <Skeleton className="h-8 w-[300px] rounded-md" />
-          </div>
-
-          <div className="flex space-x-2 justify-start items-center">
-            <FaStar className="text-yellow-500" />
-            <Skeleton className="h-4 w-[100px] rounded-full" />
-            <Skeleton className="h-4 w-[230px] rounded-full" />
-            <Skeleton className="h-4 w-[150px] rounded-md" />
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <Skeleton className="h-6 w-[260px] rounded-md" />
-          <div className="space-y-2">
-            <Skeleton className="h-4 mt-2 w-full rounded-full" />
-            <Skeleton className="h-4 w-full rounded-full" />
-            <Skeleton className="h-4 w-[320px] rounded-full" />
-          </div>
-        </div>
-
-        <div className="space-y-4 mt-4">
-          <div>
-            <Skeleton className="h-6 w-40  rounded-md" />
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex space-x-2">
-              <Skeleton className="h-4 w-4 rounded-full" />
-              <Skeleton className="h-4 w-full rounded-full" />
-            </div>
-            <div className="flex space-x-2">
-              <Skeleton className="h-4 w-4 rounded-full" />
-              <Skeleton className="h-4 w-full rounded-full" />
-            </div>
-            <div className="flex space-x-2">
-              <Skeleton className="h-4 w-4 rounded-full" />
-              <Skeleton className="h-4 w-full rounded-full" />
-            </div>
-            <div className="flex space-x-2">
-              <Skeleton className="h-4 w-4 rounded-full" />
-              <Skeleton className="h-4 w-full rounded-full" />
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <Skeleton className="h-6 w-[260px] rounded-md" />
-          <div className="space-y-2">
-            <Skeleton className="h-4 mt-2 w-full rounded-full" />
-            <Skeleton className="h-4 w-full rounded-full" />
-            <Skeleton className="h-4 w-[320px] rounded-full" />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const CourseBigScreenSkeleton = () => {
-  return (
-    <div className=" min-h-screen min-w-screen flex justify-center items-center py-8">
-      <div className="grid grid-cols-3 justify-between space-x-8 items-start min-h-screen h-full border border-stroke rounded-3xl p-4">
-        {/* left */}
-        <div className="h-full col-span-2 w-full space-y-8">
-          <div className="flex space-x-2">
-            <Skeleton className="h-4 w-[100px] rounded-full" />
-            <FaAngleRight />
-            <Skeleton className="h-4 w-[100px] rounded-full" />
-          </div>
-
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Skeleton className="h-8 w-full rounded-md" />
-              <Skeleton className="h-8 w-[300px] rounded-md" />
-            </div>
-
-            <div className="flex space-x-2 justify-start items-center">
-              <FaStar className="text-yellow-500" />
-              <Skeleton className="h-4 w-[100px] rounded-full" />
-              <Skeleton className="h-4 w-[230px] rounded-full" />
-              <Skeleton className="h-4 w-[150px] rounded-md" />
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <Skeleton className="h-6 w-[260px] rounded-md" />
-            <div className="space-y-2">
-              <Skeleton className="h-4 mt-2 w-full rounded-full" />
-              <Skeleton className="h-4 w-full rounded-full" />
-              <Skeleton className="h-4 w-[320px] rounded-full" />
-            </div>
-          </div>
-
-          <div className="space-y-4 mt-4">
-            <div>
-              <Skeleton className="h-6 w-40  rounded-md" />
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex space-x-2">
-                <Skeleton className="h-4 w-4 rounded-full" />
-                <Skeleton className="h-4 w-full rounded-full" />
-              </div>
-              <div className="flex space-x-2">
-                <Skeleton className="h-4 w-4 rounded-full" />
-                <Skeleton className="h-4 w-full rounded-full" />
-              </div>
-              <div className="flex space-x-2">
-                <Skeleton className="h-4 w-4 rounded-full" />
-                <Skeleton className="h-4 w-full rounded-full" />
-              </div>
-              <div className="flex space-x-2">
-                <Skeleton className="h-4 w-4 rounded-full" />
-                <Skeleton className="h-4 w-full rounded-full" />
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <Skeleton className="h-6 w-[260px] rounded-md" />
-            <div className="space-y-2">
-              <Skeleton className="h-4 mt-2 w-full rounded-full" />
-              <Skeleton className="h-4 w-full rounded-full" />
-              <Skeleton className="h-4 w-[320px] rounded-full" />
-            </div>
-          </div>
-        </div>
-
-        {/* right */}
-        <div className="h-full col-span-1 space-y-2 max-w-[22rem] w-full rounded-3xl border border-stroke p-4 ">
-          <Skeleton className="h-[220px] w-full rounded-2xl" />
-          <div className="flex justify-start items-center space-x-2">
-            <span className="text-blue-500 font-bold">$</span>
-            <Skeleton className="h-4 w-12 rounded-md" />{" "}
-            <Skeleton className="h-4 w-40 rounded-full" />
-          </div>
-
-          <Skeleton className="h-10 w-full rounded-md" />
-
-          <div className="space-y-8">
-            <div className="flex justify-center items-center mx-auto">
-              <Skeleton className="h-4 w-40 rounded-full" />
-            </div>
-
-            <div className="space-y-4 mt-4">
-              <div>
-                <Skeleton className="h-6 w-40 rounded-md" />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex space-x-2">
-                  <Skeleton className="h-4 w-4 rounded-full" />
-                  <Skeleton className="h-4 w-full rounded-full" />
-                </div>
-                <div className="flex space-x-2">
-                  <Skeleton className="h-4 w-4 rounded-full" />
-                  <Skeleton className="h-4 w-full rounded-full" />
-                </div>
-                <div className="flex space-x-2">
-                  <Skeleton className="h-4 w-4 rounded-full" />
-                  <Skeleton className="h-4 w-full rounded-full" />
-                </div>
-                <div className="flex space-x-2">
-                  <Skeleton className="h-4 w-4 rounded-full" />
-                  <Skeleton className="h-4 w-full rounded-full" />
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-center items-center space-x-4 mx-auto">
-              <Skeleton className="h-4 w-40 rounded-full" />
-              <Skeleton className="h-4 w-40 rounded-full" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const InstructorBadgeLoadingSkeleton = () => {
-  return (
-    <div className="flex justify-start items-center space-x-4">
-      <Skeleton className="rounded-full h-20 w-20" />
-
-      <div className="space-y-2">
-        <Skeleton className="h-6 w-full rounded-md" />
-        <Skeleton className="h-3 w-full rounded-md" />
-      </div>
-    </div>
   );
 };

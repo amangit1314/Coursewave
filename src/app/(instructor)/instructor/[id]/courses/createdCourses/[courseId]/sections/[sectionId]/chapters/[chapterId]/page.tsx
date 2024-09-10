@@ -51,7 +51,7 @@ const ChapterEditPage = async ({
     toast.error("No chapter found with this id ...");
     <Toaster />;
     return redirect(
-      `/instructor/${instructorId}/courses/createdCourses/${courseId}`
+      `/instructor/${instructorId}/courses/createdCourses/${courseId}`,
     );
   }
 
@@ -74,7 +74,7 @@ const ChapterEditPage = async ({
   const isComplete = requiredFields.every(Boolean);
 
   return (
-    <div className="pt-[80px] px-8">
+    <div className="px-8 pt-[80px]">
       <div>
         {!chapter.isPublished && (
           <Callout
@@ -84,16 +84,18 @@ const ChapterEditPage = async ({
         )}
 
         <div className="p-6">
+          {/* back to course and text */}
           <div className="flex items-center justify-between">
             <div className="w-full">
               <Link
                 href={``}
-                className="flex items-center text-sm hover:opacity-75 transition mb-6"
+                className="mb-6 flex items-center text-sm transition hover:opacity-75"
               >
-                <ArrowLeft className="h-4 w-4 mr-2" />
+                <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to course setup
               </Link>
-              <div className="flex items-center justify-between w-full">
+
+              <div className="flex w-full items-center justify-between">
                 <div className="flex flex-col gap-y-2">
                   <h1 className="text-2xl font-semibold tracking-tight text-zinc-800 dark:text-white">
                     Chapter Creation
@@ -112,8 +114,10 @@ const ChapterEditPage = async ({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
+          {/* forms and change video */}
+          <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="space-y-4">
+              {/* customize / edit chapter info (title, description, isFree) */}
               <div className="space-y-4">
                 <div className="flex items-center gap-x-2">
                   <h2 className="text-xl font-semibold tracking-tight text-zinc-800 dark:text-white">
@@ -135,12 +139,15 @@ const ChapterEditPage = async ({
                 />
               </div>
 
+              {/* access settings chapter access form */}
               <div className="space-y-4">
                 <div className="flex items-center gap-x-2">
                   <h2 className="text-xl font-semibold tracking-tight text-zinc-800 dark:text-white">
                     Access Settings
                   </h2>
                 </div>
+
+                {/* chapter access form */}
                 <ChapterAccessForm
                   initialData={chapter}
                   courseId={params.courseId}
@@ -149,9 +156,10 @@ const ChapterEditPage = async ({
               </div>
             </div>
 
+            {/* add a video */}
             <div className="space-y-4">
               <div className="flex items-center gap-x-2">
-                <h2 className="text-xl font-semibold tracking-tight  text-zinc-800 dark:text-white">
+                <h2 className="text-xl font-semibold tracking-tight text-zinc-800 dark:text-white">
                   Add a video
                 </h2>
               </div>

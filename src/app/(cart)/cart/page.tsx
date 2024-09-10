@@ -1,7 +1,7 @@
 import Navbar from "@/app/(browseCourses)/browseCourses/_components/navbar";
 import InstructorButton from "@/components/instructor-button";
 import Notifications from "@/components/notification-button";
-import { ThemeModeToggle } from "@/components/themeModeToggle";
+import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 import { Toaster } from "@/components/ui/toaster";
 import UserAvatar from "@/components/user-avatar";
 import React from "react";

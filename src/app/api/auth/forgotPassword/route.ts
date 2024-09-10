@@ -2,8 +2,8 @@ import bcrypt from "bcrypt";
 
 import { NextRequest, NextResponse } from "next/server";
 import { sendEmail } from "@/helpers/send_email_helper";
-import { generateResetToken } from "@/helpers/jwt_helper";
-import { forgotPasswordHtmlTemplate } from "@/helpers/forgot_password_email_html";
+import { generateResetToken } from "@/helpers/jwt-helper";
+import { forgotPasswordHtmlTemplate } from "@/helpers/forgot-password-email-html-template";
 
 import { db } from "@/lib/db";
 import cors, { runMiddleware } from '@/lib/cors';

@@ -18,7 +18,7 @@ const formSchema = z.object({
   }),
 });
 
-export const ImageForm = ({ course }: {course: Course}) => {
+export const ImageForm = ({ course }: { course: Course }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -29,7 +29,7 @@ export const ImageForm = ({ course }: {course: Course}) => {
     try {
       await axios.patch(
         `api/instructor/${course.instructorID}/dashboard/courses/${course.courseId}`,
-        { newCourseImage : values.imageUrl}
+        { newCourseImage: values.imageUrl },
       );
       toast.success("Course image updated ✔️ ...");
       toggleEdit();
@@ -40,20 +40,20 @@ export const ImageForm = ({ course }: {course: Course}) => {
   };
 
   return (
-    <div className="mt-6 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4">
-      <div className="font-medium flex items-center justify-between">
+    <div className="mt-6 rounded-2xl border bg-slate-100 p-4 dark:bg-zinc-700">
+      <div className="flex items-center justify-between font-medium">
         Course image
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing && <>Cancel</>}
           {!isEditing && !course?.courseImage && (
             <>
-              <PlusCircle className="h-4 w-4 mr-2" />
+              <PlusCircle className="mr-2 h-4 w-4" />
               Add an image
             </>
           )}
           {!isEditing && course?.courseImage && (
             <>
-              <Pencil className="h-4 w-4 mr-2" />
+              <Pencil className="mr-2 h-4 w-4" />
               Edit image
             </>
           )}
@@ -61,15 +61,15 @@ export const ImageForm = ({ course }: {course: Course}) => {
       </div>
       {!isEditing &&
         (!course?.courseImage ? (
-          <div className="flex items-center justify-center h-60 bg-slate-200 mt-4 dark:bg-zinc-800 rounded-2xl">
+          <div className="mt-4 flex h-60 items-center justify-center rounded-2xl bg-slate-200 dark:bg-zinc-800">
             <ImageIcon className="h-10 w-10 text-gray-500 dark:text-gray-400" />
           </div>
         ) : (
-          <div className="relative aspect-video mt-2">
+          <div className="relative mt-2 aspect-video">
             <Image
               alt="Upload"
               fill
-              className="object-cover rounded-2xl"
+              className="rounded-2xl object-cover"
               src={course?.courseImage}
             />
           </div>
@@ -84,7 +84,7 @@ export const ImageForm = ({ course }: {course: Course}) => {
               }
             }}
           />
-          <div className="text-xs text-muted-foreground mt-4">
+          <div className="mt-4 text-xs text-muted-foreground">
             16:9 aspect ratio recommended
           </div>
         </div>

@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { Josefin_Sans } from "next/font/google";
-import SideBarRoutes from './sidebarRoutes';
+import SideBarRoutes from './sidebar-routes';
 import Link from 'next/link';
 
 const josefinSans = Josefin_Sans({

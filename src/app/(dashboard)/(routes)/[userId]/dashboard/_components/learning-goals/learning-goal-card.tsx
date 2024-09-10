@@ -40,22 +40,22 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 
-// const LearningGoalCardDropdownMenu = ({
-//   learningGoal,
-// }: {
-//   learningGoal: LearningGoal;
-// }) => {
-//   return (
-//     <DropdownMenu>
-//       <DropdownMenuTrigger asChild>
-//         <EllipsisVertical size={16} />
-//       </DropdownMenuTrigger>
-//       <DropdownMenuContent className="">
-//         <EditLearningGoal learningGoal={learningGoal} />
-//       </DropdownMenuContent>
-//     </DropdownMenu>
-//   );
-// };
+const LearningGoalCardDropdownMenu = ({
+  learningGoal,
+}: {
+  learningGoal: LearningGoal;
+}) => {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <EllipsisVertical size={16} />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="">
+        <EditLearningGoal learningGoal={learningGoal} />
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 const formSchema = z.object({
   title: z.string().optional(),
@@ -92,7 +92,7 @@ const EditLearningGoal = ({ learningGoal }: { learningGoal: LearningGoal }) => {
       learningGoal.id,
       values.title ?? learningGoal.title,
       values.tag ?? learningGoal.tag,
-      values.time ?? learningGoal.time.toString()
+      values.time ?? learningGoal.time.toString(),
     );
   };
 
@@ -112,7 +112,7 @@ const EditLearningGoal = ({ learningGoal }: { learningGoal: LearningGoal }) => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="grid gap-4 py-4 overflow-y-scroll"
+            className="grid gap-4 overflow-y-scroll py-4"
           >
             <FormField
               control={form.control}
@@ -126,7 +126,7 @@ const EditLearningGoal = ({ learningGoal }: { learningGoal: LearningGoal }) => {
                     <FormControl>
                       <Input
                         disabled={isSubmitting}
-                        className="bg-transparent border-gray-700 dark:border-gray-400 "
+                        className="border-gray-700 bg-transparent dark:border-gray-400"
                         placeholder={learningGoal.title}
                         {...field}
                       />
@@ -152,7 +152,7 @@ const EditLearningGoal = ({ learningGoal }: { learningGoal: LearningGoal }) => {
                     <FormControl>
                       <Input
                         disabled={isSubmitting}
-                        className="bg-transparent border-gray-700 dark:border-gray-400 "
+                        className="border-gray-700 bg-transparent dark:border-gray-400"
                         placeholder={learningGoal.tag}
                         {...field}
                       />
@@ -178,7 +178,7 @@ const EditLearningGoal = ({ learningGoal }: { learningGoal: LearningGoal }) => {
                     <FormControl>
                       <Input
                         disabled={isSubmitting}
-                        className="bg-transparent border-gray-700 dark:border-gray-400 "
+                        className="border-gray-700 bg-transparent dark:border-gray-400"
                         placeholder={learningGoal.time.toString()}
                         {...field}
                       />
@@ -222,8 +222,8 @@ const LearningGoalCard = ({ learningGoal }: { learningGoal: LearningGoal }) => {
   };
 
   return (
-    <div className="flex justify-between items-center ">
-      <div className="flex justify-start items-start space-x-2 ">
+    <div className="flex items-center justify-between">
+      <div className="flex items-start justify-start space-x-2">
         <Checkbox
           className="mt-1"
           checked={learningGoal.isDone}
@@ -231,20 +231,20 @@ const LearningGoalCard = ({ learningGoal }: { learningGoal: LearningGoal }) => {
         />
         <div className="">
           {learningGoal.isDone ? (
-            <p className="text-sm transition-all line-through font-medium text-zinc-800 dark:text-gray-50 tracking-tight line-clamp-1">
+            <p className="line-clamp-1 text-sm font-medium tracking-tight text-zinc-800 line-through transition-all dark:text-gray-50">
               {learningGoal.title ?? "Task need to done"}
             </p>
           ) : (
-            <p className="text-sm transition-all font-medium text-zinc-800 dark:text-gray-50 tracking-tight line-clamp-1">
+            <p className="line-clamp-1 text-sm font-medium tracking-tight text-zinc-800 transition-all dark:text-gray-50">
               {learningGoal.title ?? "Task need to done"}
             </p>
           )}
-          <div className="flex justify-start items-center space-x-2 line-clamp-1">
-            <p className="text-xs font-thin text-gray-400 dark:text-gray-300 line-clamp-1">
+          <div className="line-clamp-1 flex items-center justify-start space-x-2">
+            <p className="line-clamp-1 text-xs font-thin text-gray-400 dark:text-gray-300">
               {learningGoal.tag ?? "Tag"}
             </p>
 
-            <p className="text-xs border-l border-stroke font-medium pl-2 text-blue-500">
+            <p className="border-stroke border-l pl-2 text-xs font-medium text-blue-500">
               {learningGoal.time.toLocaleString()}
             </p>
           </div>

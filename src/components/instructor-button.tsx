@@ -4,7 +4,7 @@ import React from "react";
 import toast from "react-hot-toast";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import useUserInfo from "@/hooks/use-user-info";
+import { useUserInfo } from "@/hooks/useUserInfo";
 
 const InstructorButton = () => {
   const router = useRouter();
@@ -33,7 +33,7 @@ const InstructorButton = () => {
   return (
     <Button
       onClick={switchToInstructorView}
-      className="hidden md:flex cursor-pointer border-opacity-10 hover:bg-slate-50 dark:hover:border-opacity-100 dark:border-opacity-10 hover:border-opacity-100 dark:hover:bg-zinc-800 border px-4 border-black text-black text-xs dark:border-white dark:text-white bg-transparent rounded-md mx-auto transition-all duration-200 items-center"
+      className="mx-auto hidden cursor-pointer items-center rounded-md border border-black border-opacity-10 bg-transparent px-4 text-xs text-black transition-all duration-200 hover:border-opacity-100 hover:bg-slate-50 dark:border-white dark:border-opacity-10 dark:text-white dark:hover:border-opacity-100 dark:hover:bg-zinc-800 md:flex"
     >
       {isInstructor ? "Instructor View" : "Become Instructor"}
     </Button>

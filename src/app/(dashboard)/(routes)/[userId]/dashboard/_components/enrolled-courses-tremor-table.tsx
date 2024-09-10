@@ -1,4 +1,3 @@
-
 import {
   Badge,
   Card,
@@ -13,8 +12,6 @@ import {
 import Link from "next/link";
 import { Course, User } from "@prisma/client";
 import { RiFlag2Line, RiCheckLine, RiPlayFill } from "react-icons/ri";
-import { AiTwotoneCopy } from "react-icons/ai";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 import React from "react";
 
 type EnrolledCourse = {
@@ -29,14 +26,16 @@ type EnrolledCourse = {
 
 export function EnrolledCoursesTremorTable({
   data,
-}: { data: EnrolledCourse[] }) {
-  const [copiedText, setCopiedText] = React.useState('');
+}: {
+  data: EnrolledCourse[];
+}) {
+  const [copiedText, setCopiedText] = React.useState("");
   return (
-    <div className="border border-stroke dark:bg-zinc-800 rounded-3xl overflow-hidden dark:border dark:border-transparent">
+    <div className="border-stroke overflow-hidden rounded-3xl border dark:border dark:border-transparent dark:bg-zinc-800">
       {/* <h3 className="text-tremor-content-strong dark:text-dark-tremor-content-strong  font-semibold">
         User Enrolled Courses
       </h3> */}
-      <Table className="p-5 rounded-3xl">
+      <Table className="rounded-3xl p-5">
         <TableHead>
           <TableRow>
             <TableHeaderCell>Course Name</TableHeaderCell>
@@ -65,7 +64,7 @@ export function EnrolledCoursesTremorTable({
               </TableCell> */}
               <TableCell>
                 <Link
-                  className="hover:text-blue-500 transition-all duration-300 cursor-pointer"
+                  className="cursor-pointer transition-all duration-300 hover:text-blue-500"
                   href={`/courses/${item.course.courseId}/courseContent`}
                 >
                   {item.course.courseTitle}
@@ -77,7 +76,7 @@ export function EnrolledCoursesTremorTable({
               </TableCell>
               <TableCell>
                 <Link
-                  className="hover:text-blue-500 transition-all duration-300 cursor-pointer"
+                  className="cursor-pointer transition-all duration-300 hover:text-blue-500"
                   href={""}
                 >
                   Certificate
@@ -99,13 +98,9 @@ export function EnrolledCoursesTremorTable({
   );
 }
 
-const CourseProgressItem = ({item, progress}: any) => {
-  return (
-    <div>
-      {75}%
-    </div>
-  );
-}
+const CourseProgressItem = ({ item, progress }: any) => {
+  return <div>{75}%</div>;
+};
 
 const ColoredBadgeComponent = ({ item }: any) => {
   let badgeColor;

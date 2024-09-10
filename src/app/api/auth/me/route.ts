@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import dotenv from "dotenv";
 dotenv.config();
 import { db } from "@/lib/db";
-import { decrypt, verifyToken } from "@/helpers/jwt_helper";
+import { decrypt, verifyToken } from "@/helpers/jwt-helper";
 import cors, { runMiddleware } from '@/lib/cors';
 
 // Handle the OPTIONS request

@@ -13,7 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export function DatePickerDemo() {
+const DatePickerDemo = () => {
   const [date, setDate] = React.useState<Date>();
 
   return (
@@ -23,10 +23,10 @@ export function DatePickerDemo() {
           variant={"outline"}
           className={cn(
             "w-[240px] justify-start text-left font-normal",
-            !date && "text-muted-foreground"
+            !date && "text-muted-foreground",
           )}
         >
-          <FaCalendarAlt  className="mr-2 h-4 w-4" />
+          <FaCalendarAlt className="mr-2 h-4 w-4" />
           {date ? format(date, "PPP") : <span>Pick a date</span>}
         </Button>
       </PopoverTrigger>
@@ -40,4 +40,6 @@ export function DatePickerDemo() {
       </PopoverContent>
     </Popover>
   );
-}
+};
+
+export default DatePickerDemo;

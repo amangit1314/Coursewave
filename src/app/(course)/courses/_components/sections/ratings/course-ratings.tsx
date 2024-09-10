@@ -2,80 +2,44 @@
 
 import React from "react";
 import { FaStar } from "react-icons/fa6";
-
 import Reviewcard from "../reviews/review-card";
-import { ProgressBar } from "@tremor/react";
+import { Callout, ProgressBar } from "@tremor/react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Review } from "@prisma/client";
-import getUserInfoById from "@/helpers/getUserInfoById";
+import getUserInfoById from "@/helpers/get_user_info_by_id";
 import { absoluteUrl } from "@/utils/utils";
 import { useQuery } from "@tanstack/react-query";
 
 export const CourseRatings = ({
-  courseId,
+  // courseId,
+  reviews,
 }: {
-  courseId: string;
+  // courseId: string;
+  reviews: Review[];
   avgStarRatings?: number;
 }) => {
-  const fetchCourseReviews = async () => {
-    const response = await fetch(`api/courses/${courseId}/reviews`);
-
-    if (!response.ok) {
-      console.log("Failed to fetch course reviews from api ...");
-    }
-
-    const data = await response.json();
-    console.log("Course reviews: ", JSON.stringify(data));
-    return data;
-  };
-
-  const {
-    data: reviewsData,
-    error,
-    isLoading,
-  } = useQuery({
-    queryKey: ["courseReviews"],
-    queryFn: fetchCourseReviews,
-    staleTime: 4,
-  });
-
-  if (isLoading) {
-    return (
-      <ScrollArea className="w-full md:w-[1080px] whitespace-nowrap">
-        <div className="grid grid-cols-3 w-max space-x-4 pb-4">
-          <ReviewsLoadingSkeleton />
-        </div>
-
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
-    );
-  }
-
-  const reviews: Review[] = reviewsData?.data ?? [];
-
-  if (error) {
-    return <div>ERROR: ${error.message}</div>;
-  }
+  // Ensure reviews exist and have valid ratings
 
   // Calculate average star rating
   const avgStarRatings =
-    reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length ??
-    0;
+    reviews.length > 0
+      ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
+      : 0;
 
   return (
-    <div className="group md:mt-4 p-6 md:p-0 max-w-7xl w-full items-center justify-start">
-      <div className="flex items-center justify-start mb-4 text-xl tracking-tight font-semibold">
+    <div className="group w-full max-w-7xl items-center justify-start p-6 md:mt-4 md:p-0">
+      <div className="mb-4 flex items-center justify-start text-xl font-semibold tracking-tight">
         <FaStar className="text-gray-800 dark:text-white" />
         <p className="pl-2 text-gray-800 dark:text-white">
           {avgStarRatings.toFixed(1)} Star Ratings
         </p>
       </div>
 
-      <div className="flex flex-col  justify-start items-start w-full">
+      <div className="flex w-full flex-col items-start justify-start">
         <ReviewAnalysis reviews={reviews} avgStarRatings={avgStarRatings} />
 
-        <div className="max-h-md h-full overflow-y-hidden ">
+        <div className="max-h-md h-full overflow-y-hidden">
           <ReviewsMassionaryGrid reviews={reviews} />
         </div>
       </div>
@@ -84,53 +48,6 @@ export const CourseRatings = ({
 };
 
 //* <--------------------------------- Components ------------------------------------->
-// const ReviewAnalysis = ({
-//   reviews,
-//   avgStarRatings,
-// }: {
-//   reviews: Review[];
-//   avgStarRatings: number;
-// }) => {
-//   return (
-//     <div className="bg-zinc-800 rounded-3xl p-6 md:p-8 grid grid-cols-1 items-start space-y-4 max-w-md w-full mb-4 mr-4">
-//       <div>
-//         <p className="text-white text-xl font-bold">
-//           <strong className="text-2xl">{avgStarRatings.toFixed(1)}</strong>/5.0
-//         </p>
-//         <p className="text-gray-400 text-sm">
-//           Based on {reviews.length} reviews
-//         </p>
-//         <RatingStarsWithoutText
-//           courseStarRatings={parseFloat(avgStarRatings.toFixed(1))}
-//         />
-//       </div>
-
-//       <div>
-//         <ul className="space-y-2 max-w-md w-full">
-//           {[
-//             { stars: "5 star", percentage: 100 },
-//             { stars: "4 star", percentage: 0 },
-//             { stars: "3 star", percentage: 0 },
-//             { stars: "2 star", percentage: 0 },
-//             { stars: "1 star", percentage: 0 },
-//           ].map((rating, index) => {
-//             return (
-//               <li
-//                 key={index}
-//                 className="w-full flex flex-col md:flex-row space-y-1 md:space-y-0 md:space-x-4 md:justify-start md:items-center"
-//               >
-//                 <p className="text-[14px] text-gray-400">{rating.stars}</p>
-//                 <div className="md:max-w-xs w-full">
-//                   <ProgressBar value={rating.percentage} color="yellow" />
-//                 </div>
-//               </li>
-//             );
-//           })}
-//         </ul>
-//       </div>
-//     </div>
-//   );
-// };
 
 const ReviewAnalysis = ({
   reviews,
@@ -141,15 +58,21 @@ const ReviewAnalysis = ({
 }) => {
   const totalReviews = reviews.length;
 
-  // Round ratings according to the given approximation rules
-  const roundedRatings = reviews.map((review) => {
-    if (review.rating >= 4.5) return 5;
-    if (review.rating >= 3.5) return 4;
-    if (review.rating >= 2.5) return 3;
-    if (review.rating >= 1.5) return 2;
-    return 1;
-  });
+  // Ensure reviews exist and have valid ratings
+  const roundedRatings = Array.isArray(reviews)
+    ? reviews.map((review) => {
+        if (typeof review.rating !== "number") {
+          return 0; // Default to 0 if rating is not a number
+        }
+        if (review.rating >= 4.5) return 5;
+        if (review.rating >= 3.5) return 4;
+        if (review.rating >= 2.5) return 3;
+        if (review.rating >= 1.5) return 2;
+        return 1;
+      })
+    : [];
 
+  // Ensure roundedRatings is an array before calling filter
   const starRatingsCount = {
     5: roundedRatings.filter((rating) => rating === 5).length,
     4: roundedRatings.filter((rating) => rating === 4).length,
@@ -167,19 +90,19 @@ const ReviewAnalysis = ({
   };
 
   return (
-    <div className="bg-zinc-800 rounded-3xl p-6 md:p-8 grid grid-cols-1 items-start space-y-4 max-w-md w-full mb-4 mr-4">
+    <div className="mb-4 mr-4 grid w-full max-w-md grid-cols-1 items-start space-y-4 rounded-3xl bg-zinc-800 p-6 md:p-8">
       <div>
-        <p className="text-white text-xl font-bold">
+        <p className="text-xl font-bold text-white">
           <strong className="text-2xl">{avgStarRatings.toFixed(1)}</strong>/5.0
         </p>
-        <p className="text-gray-400 text-sm">Based on {totalReviews} reviews</p>
+        <p className="text-sm text-gray-400">Based on {totalReviews} reviews</p>
         <RatingStarsWithoutText
           courseStarRatings={parseFloat(avgStarRatings.toFixed(1))}
         />
       </div>
 
       <div>
-        <ul className="space-y-2 max-w-md w-full">
+        <ul className="w-full max-w-md space-y-2">
           {[
             { stars: "5 star", percentage: starRatingsPercentage[5] },
             { stars: "4 star", percentage: starRatingsPercentage[4] },
@@ -189,10 +112,10 @@ const ReviewAnalysis = ({
           ].map((rating, index) => (
             <li
               key={index}
-              className="w-full flex flex-col md:flex-row space-y-1 md:space-y-0 md:space-x-4 md:justify-start md:items-center"
+              className="flex w-full flex-col space-y-1 md:flex-row md:items-center md:justify-start md:space-x-4 md:space-y-0"
             >
               <p className="text-[14px] text-gray-400">{rating.stars}</p>
-              <div className="md:max-w-xs w-full">
+              <div className="w-full md:max-w-xs">
                 <ProgressBar value={rating.percentage} color="yellow" />
               </div>
             </li>
@@ -214,7 +137,7 @@ const ReviewsMassionaryGrid = ({ reviews }: { reviews: Review[] }) => {
     <div>
       {reviews && reviews.length > 0 ? (
         <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {reviews.map(async (review: Review) => {
               const user = await getUserInfoById(review.userId);
               return (
@@ -237,7 +160,7 @@ const ReviewsMassionaryGrid = ({ reviews }: { reviews: Review[] }) => {
 
           <div
             onClick={toggleItemsVisibility}
-            className="cursor-pointer text-xs text-blue-500 hover:text-blue-700 transition-all duration-200"
+            className="cursor-pointer text-xs text-blue-500 transition-all duration-200 hover:text-blue-700"
           >
             {showAllItems ? "Show less" : "Show all"}
           </div>
@@ -250,33 +173,6 @@ const ReviewsMassionaryGrid = ({ reviews }: { reviews: Review[] }) => {
     </div>
   );
 };
-
-// export const RatingStarsWithoutText = ({
-//   courseStarRatings,
-// }: {
-//   courseStarRatings: number;
-// }) => {
-//   return (
-//     <div className="flex justify-start items-center">
-//       {Array.from({ length: 5 }, (_, i) => (
-//         <svg
-//           key={i}
-//           className={`w-4 h-4 me-1 mb-1 ${
-//             i < Math.floor(courseStarRatings)
-//               ? "text-yellow-400"
-//               : "text-gray-300"
-//           }`}
-//           aria-hidden="true"
-//           xmlns="http://www.w3.org/2000/svg"
-//           fill="currentColor"
-//           viewBox="0 0 22 20"
-//         >
-//           <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-//         </svg>
-//       ))}
-//     </div>
-//   );
-// };
 
 export const RatingStarsWithoutText = ({
   courseStarRatings,
@@ -305,11 +201,11 @@ export const RatingStarsWithoutText = ({
   }
 
   return (
-    <div className="flex justify-start items-center">
+    <div className="flex items-center justify-start">
       {starPaths.map((path, i) => (
         <svg
           key={i}
-          className={`w-4 h-4 me-1 mb-1 ${
+          className={`mb-1 me-1 h-4 w-4 ${
             path !== getStarPath(0) ? "text-yellow-400" : "text-gray-300"
           }`}
           aria-hidden="true"
@@ -327,8 +223,8 @@ export const RatingStarsWithoutText = ({
 //? <------------------------------- Skeletons ----------------------------------------->
 const ReviewsLoadingSkeleton = () => {
   return (
-    <ScrollArea className="w-full md:w-[1080px] whitespace-nowrap">
-      <div className="grid grid-cols-3 gap-x-4 pb-4 w-full">
+    <ScrollArea className="w-full whitespace-nowrap md:w-[1080px]">
+      <div className="grid w-full grid-cols-3 gap-x-4 pb-4">
         <ReviewItemLoadingSkeleton />
         <ReviewItemLoadingSkeleton />
         <ReviewItemLoadingSkeleton />
@@ -341,7 +237,7 @@ const ReviewsLoadingSkeleton = () => {
 
 const ReviewItemLoadingSkeleton = () => {
   return (
-    <div className="flex flex-col space-y-3 mb-6">
+    <div className="mb-6 flex flex-col space-y-3">
       <Skeleton className="h-[125px] w-[250px] rounded-xl" />
 
       <div className="space-y-2">

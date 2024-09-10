@@ -104,23 +104,23 @@ export default function Testimonials() {
   const firstRow = testimonials.slice(0, Math.floor(testimonials.length / 2));
   const secondRow = testimonials.slice(
     Math.floor(testimonials.length / 2),
-    Math.floor((2 * testimonials.length) / 2)
+    Math.floor((2 * testimonials.length) / 2),
   );
 
   return (
-    <div className=" max-w-7xl w-full h-full">
+    <div className="h-full w-full max-w-7xl">
       {/* bold text and subtext */}
       <div>
-        <p className="text-2xl tracking-tight font-bold text-[#333333] dark:text-white text-center">
+        <p className="text-center text-2xl font-bold tracking-tight text-[#333333] dark:text-white">
           Testimonials
         </p>
-        <p className="pt-4 text-[1rem] text-[#333333] dark:text-white  mb-4  text-center">
+        <p className="mb-4 pt-4 text-center text-[1rem] text-[#333333] dark:text-white">
           See what our students say about our courses and mentorship sessions.
         </p>
       </div>
 
       {/* testimonials marque */}
-      <div className="relative flex h-[400px] w-full flex-col items-center justify-center overflow-hidden rounded-lg  bg-background md:dark:shadow-xl">
+      <div className="relative flex h-[400px] w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-background md:dark:shadow-xl">
         <Marquee pauseOnHover className="[--duration:20s]">
           {firstRow.map((testimonial) => (
             <TestimonialItem key={testimonial.name} {...testimonial} />

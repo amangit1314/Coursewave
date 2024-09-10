@@ -107,7 +107,7 @@ const CreateCourseForm = ({ instructorId }: { instructorId: string }) => {
         console.log("Form Values: ", values);
         console.log("Response data after creating course: ", response);
         router.push(
-          `/instructor/${instructorId}/courses/createdCourses/${response.data.data?.courseId!}`
+          `/instructor/${instructorId}/courses/createdCourses/${response.data.data?.courseId!}`,
         );
         toast.success("Course Created successfully ...");
       })
@@ -119,7 +119,7 @@ const CreateCourseForm = ({ instructorId }: { instructorId: string }) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 ">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         {/* course title */}
         <FormField
           control={form.control}
@@ -133,7 +133,7 @@ const CreateCourseForm = ({ instructorId }: { instructorId: string }) => {
                 <FormControl>
                   <Input
                     disabled={isSubmitting}
-                    className="bg-transparent border-gray-700 dark:border-gray-400 "
+                    className="border-gray-700 bg-transparent dark:border-gray-400"
                     placeholder="i.e. 'Full Stack Bootcamp', etc..."
                     {...field}
                   />
@@ -187,7 +187,7 @@ const CreateCourseForm = ({ instructorId }: { instructorId: string }) => {
                       alt="Uploaded course image"
                       height={180}
                       width={180}
-                      className="m-1 object-cover rounded-xl"
+                      className="m-1 rounded-xl object-cover"
                     />
                   </div>
                 ) : (
@@ -210,7 +210,7 @@ const CreateCourseForm = ({ instructorId }: { instructorId: string }) => {
                 </FormLabel>
                 <FormControl>
                   <Textarea
-                    className="bg-transparent border-gray-700 dark:border-gray-400 "
+                    className="border-gray-700 bg-transparent dark:border-gray-400"
                     placeholder="i.e. This is a full stack dev course, etc ..."
                     {...field}
                   />
@@ -231,13 +231,13 @@ const CreateCourseForm = ({ instructorId }: { instructorId: string }) => {
           render={({ field }) => (
             <div>
               <FormItem className="mt-8">
-                <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100 ">
+                <FormLabel className="my-4 text-base text-gray-800 dark:text-gray-100">
                   Instructor Name
                 </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="i.e. Aman Soni, etc ..."
-                    className="bg-transparent border-gray-700 dark:border-gray-400 "
+                    className="border-gray-700 bg-transparent dark:border-gray-400"
                     {...field}
                   />
                 </FormControl>
@@ -257,13 +257,13 @@ const CreateCourseForm = ({ instructorId }: { instructorId: string }) => {
           render={({ field }) => (
             <div>
               <FormItem className="mt-4">
-                <FormLabel className="my-4 flex justify-start space-x-1 items-center text-base text-gray-800 dark:text-gray-100 ">
+                <FormLabel className="my-4 flex items-center justify-start space-x-1 text-base text-gray-800 dark:text-gray-100">
                   Course Categories
                   <TbCategory2 />
                 </FormLabel>
                 <FormControl>
                   <Input
-                    className="dark:bg-transparent w-full border-gray-700 dark:border-gray-400  "
+                    className="w-full border-gray-700 dark:border-gray-400 dark:bg-transparent"
                     type="text"
                     placeholder="i.e. Next.js, Flutter etc ..."
                     {...field}
@@ -284,12 +284,12 @@ const CreateCourseForm = ({ instructorId }: { instructorId: string }) => {
           render={({ field }) => (
             <div>
               <FormItem className="mt-4">
-                <FormLabel className="flex justify-start items-center text-base text-gray-800 dark:text-gray-100 ">
+                <FormLabel className="flex items-center justify-start text-base text-gray-800 dark:text-gray-100">
                   <span>This Course is for</span> <QuestionMarkIcon />
                 </FormLabel>
                 <FormControl>
                   <Input
-                    className="dark:bg-transparent w-full border-gray-700 dark:border-gray-400  "
+                    className="w-full border-gray-700 dark:border-gray-400 dark:bg-transparent"
                     type="text"
                     placeholder="i.e. If you want to learn, etc ..."
                     {...field}
@@ -310,12 +310,12 @@ const CreateCourseForm = ({ instructorId }: { instructorId: string }) => {
           render={({ field }) => (
             <div>
               <FormItem className="mt-4">
-                <FormLabel className="flex justify-start items-center text-base text-gray-800 space-x-[2px] dark:text-gray-100 ">
+                <FormLabel className="flex items-center justify-start space-x-[2px] text-base text-gray-800 dark:text-gray-100">
                   <span>Prerequisits</span> <Asterisk size={16} />
                 </FormLabel>
                 <FormControl>
                   <Input
-                    className="dark:bg-transparent w-full border-gray-700 dark:border-gray-400  "
+                    className="w-full border-gray-700 dark:border-gray-400 dark:bg-transparent"
                     type="text"
                     placeholder="i.e. You must have a laptop, etc ...,"
                     {...field}
@@ -336,12 +336,12 @@ const CreateCourseForm = ({ instructorId }: { instructorId: string }) => {
           render={({ field }) => (
             <div>
               <FormItem className="mt-4">
-                <FormLabel className="flex justify-start items-center text-base text-gray-800 space-x-[2px] dark:text-gray-100 ">
+                <FormLabel className="flex items-center justify-start space-x-[2px] text-base text-gray-800 dark:text-gray-100">
                   <span>What you&apos;ll learn</span> <BiBulb size={16} />
                 </FormLabel>
                 <FormControl>
                   <Input
-                    className="dark:bg-transparent w-full border-gray-700 dark:border-gray-400  "
+                    className="w-full border-gray-700 dark:border-gray-400 dark:bg-transparent"
                     type="text"
                     placeholder="i.e. You'll learn how to design responsive web pages, etc ..."
                     {...field}
@@ -363,13 +363,13 @@ const CreateCourseForm = ({ instructorId }: { instructorId: string }) => {
           render={({ field }) => (
             <div>
               <FormItem className="mt-4">
-                <FormLabel className="flex justify-start items-center text-base text-gray-800 space-x-[2px] dark:text-gray-100 ">
+                <FormLabel className="flex items-center justify-start space-x-[2px] text-base text-gray-800 dark:text-gray-100">
                   <span>Technologies you&apos;ll learn</span>{" "}
                   <IoIosCodeWorking size={20} />
                 </FormLabel>
                 <FormControl>
                   <Input
-                    className="dark:bg-transparent w-full border-gray-700 dark:border-gray-400  "
+                    className="w-full border-gray-700 dark:border-gray-400 dark:bg-transparent"
                     type="text"
                     placeholder="i.e. Next.js, Flutter, etc ..."
                     {...field}
@@ -390,17 +390,17 @@ const CreateCourseForm = ({ instructorId }: { instructorId: string }) => {
           name="coursePrice"
           render={({ field }) => (
             <div>
-              <FormItem className="flex flex-col mt-4">
+              <FormItem className="mt-4 flex flex-col">
                 <FormLabel
                   htmlFor="priceMin"
-                  className="text-gray-800 text-base dark:text-gray-100"
+                  className="text-base text-gray-800 dark:text-gray-100"
                 >
                   Course price ($)
                 </FormLabel>
                 <Input
                   type="number"
                   id="priceMin"
-                  className="rounded-md border border-gray-700 dark:border-gray-400 shadow-sm focus:border-blue-500 bg-transparent focus:shadow-outline-blue px-3 py-2"
+                  className="focus:shadow-outline-blue rounded-md border border-gray-700 bg-transparent px-3 py-2 shadow-sm focus:border-blue-500 dark:border-gray-400"
                   min={0}
                   max={500}
                   {...field}
@@ -416,7 +416,7 @@ const CreateCourseForm = ({ instructorId }: { instructorId: string }) => {
         />
 
         {/* buttons */}
-        <div className="flex items-center gap-x-2 mb-4">
+        <div className="mb-4 flex items-center gap-x-2">
           <Link href="/">
             <Button variant="ghost" type="button">
               Cancel

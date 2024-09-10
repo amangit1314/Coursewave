@@ -100,12 +100,12 @@ export const AttachmentForm = ({
 
       await axios.post(
         absoluteUrl(
-          `api/instructor/${course?.instructorID}/dashboard/courses/${course?.courseId}/attachments`
+          `api/instructor/${course?.instructorID}/dashboard/courses/${course?.courseId}/attachments`,
         ),
         {
           resourceName: values.attachmentName,
           resourceUrl: values.attachmentUrl,
-        }
+        },
       );
       toast.success("Course courseAttachments updated ...");
       toggleEdit();
@@ -122,14 +122,14 @@ export const AttachmentForm = ({
   };
 
   return (
-    <div className="mt-6 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4">
-      <div className="font-medium flex items-center justify-between mb-2">
+    <div className="mt-6 rounded-2xl border bg-slate-100 p-4 dark:bg-zinc-700">
+      <div className="mb-2 flex items-center justify-between font-medium">
         Course Attachments
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing && <>Cancel</>}
           {!isEditing && (
             <>
-              <PlusCircle className="h-4 w-4 mr-2" />
+              <PlusCircle className="mr-2 h-4 w-4" />
               Add a point
             </>
           )}
@@ -139,7 +139,7 @@ export const AttachmentForm = ({
       {!isEditing && (
         <>
           {courseAttachmentsPoints.length === 0 && (
-            <p className="text-sm mt-2 text-gray-500 dark:text-gray-400 italic">
+            <p className="mt-2 text-sm italic text-gray-500 dark:text-gray-400">
               No attachments yet
             </p>
           )}
@@ -151,12 +151,12 @@ export const AttachmentForm = ({
                 (attachment: CourseAttachment, index: any) => (
                   <div
                     key={index}
-                    className="flex items-center p-3 w-full bg-sky-100 dark:bg-zinc-800 border-sky-200 dark:border-none border text-sky-700 dark:text-gray-100 rounded-xl"
+                    className="flex w-full items-center rounded-xl border border-sky-200 bg-sky-100 p-3 text-sky-700 dark:border-none dark:bg-zinc-800 dark:text-gray-100"
                   >
-                    <Pencil className="h-4 w-4 mr-2 flex-shrink-0" />
+                    <Pencil className="mr-2 h-4 w-4 flex-shrink-0" />
                     <Link
                       href={attachment.url}
-                      className="text-[12px] line-clamp-1"
+                      className="line-clamp-1 text-[12px]"
                     >
                       {attachment.name}
                     </Link>
@@ -168,13 +168,13 @@ export const AttachmentForm = ({
                     {deletingId !== index && (
                       <button
                         onClick={() => onDelete(index)}
-                        className="ml-auto hover:opacity-75 transition"
+                        className="ml-auto transition hover:opacity-75"
                       >
                         <X className="h-4 w-4" />
                       </button>
                     )}
                   </div>
-                )
+                ),
               )}
             </div>
           )}
@@ -185,7 +185,7 @@ export const AttachmentForm = ({
         <Form {...form}>
           <form
             onSubmit={() => form.handleSubmit(onSubmit)}
-            className="space-y-4 mt-4"
+            className="mt-4 space-y-4"
           >
             {/* <FormField
               control={form.control}
@@ -249,7 +249,7 @@ export const AttachmentForm = ({
                 <div>
                   <FormControl>
                     <Input
-                      className="dark:bg-transparent w-full border-gray-700 dark:border-gray-400"
+                      className="w-full border-gray-700 dark:border-gray-400 dark:bg-transparent"
                       type="text"
                       placeholder="Attachment Name"
                       {...field}
@@ -266,7 +266,7 @@ export const AttachmentForm = ({
                 <div>
                   <FormControl>
                     <Input
-                      className="dark:bg-transparent w-full border-gray-700 dark:border-gray-400"
+                      className="w-full border-gray-700 dark:border-gray-400 dark:bg-transparent"
                       type="text"
                       placeholder="Attachment url"
                       {...field}

@@ -1,4 +1,4 @@
-import { decrypt } from "@/helpers/jwt_helper";
+import { decrypt } from "@/helpers/jwt-helper";
 import { db } from "@/lib/db";
 import { cookies } from "next/headers";
 import { createUploadthing, type FileRouter } from "uploadthing/next";

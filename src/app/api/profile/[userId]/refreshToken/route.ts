@@ -1,4 +1,4 @@
-import { generateAccessToken } from "@/helpers/jwt_helper";
+import { generateAccessToken } from "@/helpers/jwt-helper";
 import { NextRequest, NextResponse } from "next/server";
 export const dynamic = 'force-dynamic';
 

@@ -4,33 +4,33 @@ import React from "react";
 const Newsletter = () => {
   return (
     <section className="bg-zinc-900">
-      <div className="py-8 px-4 mx-auto w-full lg:py-16 lg:px-6">
+      <div className="mx-auto w-full px-4 py-8 lg:px-6 lg:py-16">
         <div className="mx-auto max-w-screen-md sm:text-center">
           {/* heading text */}
-          <h2 className="mb-4 text-3xl tracking-tight font-extrabold text-white sm:text-4xl dark:text-white">
+          <h2 className="mb-4 text-3xl font-extrabold tracking-tight text-white dark:text-white sm:text-4xl">
             Sign up for our newsletter
           </h2>
 
           {/* sub text */}
-          <p className="mx-auto mb-8 max-w-2xl font-light md:mb-12 sm:text-xl text-gray-400 text-base">
+          <p className="mx-auto mb-8 max-w-2xl text-base font-light text-gray-400 sm:text-xl md:mb-12">
             Stay up to date with the roadmap progress, announcements and
             exclusive discounts feel free to sign up with your email.
           </p>
 
-        {/* form */}
+          {/* form */}
           <form action="#">
-            <div className="items-center mx-auto mb-3 space-y-4 max-w-screen-sm sm:flex sm:space-y-0">
+            <div className="mx-auto mb-3 max-w-screen-sm items-center space-y-4 sm:flex sm:space-y-0">
               <div className="relative w-full">
                 <label
                   htmlFor="email"
-                  className="hidden mb-2 text-sm font-medium text-gray-300"
+                  className="mb-2 hidden text-sm font-medium text-gray-300"
                 >
                   Email address
                 </label>
 
-                <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <svg
-                    className="w-5 h-5 text-gray-400"
+                    className="h-5 w-5 text-gray-400"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +40,7 @@ const Newsletter = () => {
                   </svg>
                 </div>
                 <input
-                  className="block p-3 pl-10 w-full text-sm rounded-lg border sm:rounded-none sm:rounded-l-lg bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full rounded-lg border border-gray-600 bg-gray-700 p-3 pl-10 text-sm text-white placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500 sm:rounded-none sm:rounded-l-lg"
                   placeholder="Enter your email"
                   type="email"
                   id="email"
@@ -51,17 +51,17 @@ const Newsletter = () => {
               <div>
                 <button
                   type="submit"
-                  className="py-3 px-5 w-full text-sm font-medium text-center text-white rounded-lg border cursor-pointer border-blue-600 sm:rounded-none sm:rounded-r-lg hover:bg-blue-800 focus:ring-4 bg-blue-600 dark:hover:blue-700 focus:ring-blue-800"
+                  className="dark:hover:blue-700 w-full cursor-pointer rounded-lg border border-blue-600 bg-blue-600 px-5 py-3 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-800 sm:rounded-none sm:rounded-r-lg"
                 >
                   Subscribe
                 </button>
               </div>
             </div>
-            <div className="mx-auto max-w-screen-sm text-sm text-left text-gray-500 newsletter-form-footer dark:text-gray-300">
+            <div className="newsletter-form-footer mx-auto max-w-screen-sm text-left text-sm text-gray-500 dark:text-gray-300">
               We care about the protection of your data.{" "}
               <Link
                 href="#"
-                className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                className="font-medium text-blue-600 hover:underline dark:text-blue-500"
               >
                 Read our Privacy Policy
               </Link>

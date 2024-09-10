@@ -12,20 +12,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-export const ApplyCouponCode = () => {
+const ApplyCouponCode = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="flex justify-center items-center">
+        <div className="flex items-center justify-center">
           <RiCoupon3Line />
-          <p className="pl-2 hover:cursor-pointer text-xs text-gray-400 hover:text-blue-500  hover:underline">
+          <p className="pl-2 text-xs text-gray-400 hover:cursor-pointer hover:text-blue-500 hover:underline">
             Apply Coupon
           </p>
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="text-gray-800 dark:text-white font-semibold">
+          <DialogTitle className="font-semibold text-gray-800 dark:text-white">
             Enter coupon code below
           </DialogTitle>
           <DialogDescription>
@@ -35,7 +35,7 @@ export const ApplyCouponCode = () => {
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="items-center">
-            <Label className="text-left text-gray-800 dark:text-white font-semibold mb-1">
+            <Label className="mb-1 text-left font-semibold text-gray-800 dark:text-white">
               Coupon Code
             </Label>
             <Input
@@ -51,4 +51,6 @@ export const ApplyCouponCode = () => {
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default ApplyCouponCode;

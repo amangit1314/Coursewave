@@ -166,7 +166,7 @@ export default function InstructorSettings() {
             </div>
 
             <div>
-              <h3 className="mb-4 mt-4 text-lg font-semibold tracking-tight text-zinc-800 dark:text-white ">
+              <h3 className="mb-4 mt-4 text-lg font-semibold tracking-tight text-zinc-800 dark:text-white">
                 Email Notifications
               </h3>
               <div className="space-y-4">
@@ -263,9 +263,9 @@ function DeleteAccountWidget() {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <div className="flex flex-col ml-4 cursor-pointer hover:bg-red-600 items-center justify-between rounded-lg border p-4 transition-all duration-300 group">
+        <div className="group ml-4 flex cursor-pointer flex-col items-center justify-between rounded-lg border p-4 transition-all duration-300 hover:bg-red-600">
           <div className="space-y-0.5">
-            <Title className="text-base font-semibold text-zinc-800 dark:text-white group-hover:text-white ">
+            <Title className="text-base font-semibold text-zinc-800 group-hover:text-white dark:text-white">
               Delete Account
             </Title>
             {/* <p>Click here to delete your Coursewave account</p> */}
@@ -298,9 +298,9 @@ function ChangePasswordWidget() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="flex flex-col cursor-pointer hover:bg-green-600 items-center justify-between rounded-lg border p-4 transition-all duration-300 group">
+        <div className="group flex cursor-pointer flex-col items-center justify-between rounded-lg border p-4 transition-all duration-300 hover:bg-green-600">
           <div className="space-y-0.5">
-            <Title className="text-base font-semibold text-zinc-800 dark:text-white  group-hover:text-white">
+            <Title className="text-base font-semibold text-zinc-800 group-hover:text-white dark:text-white">
               Change Password
             </Title>
             {/* <p>Receive emails about new products, features, and more</p> */}

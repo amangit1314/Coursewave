@@ -16,8 +16,8 @@ import { ScrollArea } from "./ui/scroll-area";
 import { Button } from "./ui/button";
 import { FiShoppingCart } from "react-icons/fi";
 import Link from "next/link";
-import useCartStore from "@/zustand/cartStore";
-import { RatingStars } from "@/app/(course)/courses/_components/rating-stars";
+import { useCartStore } from "@/zustand/cartStore";
+import RatingStars from "@/app/(course)/courses/_components/rating-stars";
 import {
   Dialog,
   DialogContent,
@@ -50,14 +50,14 @@ const Cart = () => {
     <Sheet>
       <SheetTrigger asChild>
         <button
-          className="relative  rounded-md  transition-all duration-200 ease-in-out dark:bg-transparent dark:hover:bg-zinc-800"
+          className="relative rounded-md transition-all duration-200 ease-in-out dark:bg-transparent dark:hover:bg-zinc-800"
           aria-label="Cart"
         >
-          <div className="cursor-pointer rounded-md p-3 text-center items-center bg-transparent hover:bg-slate-50 border dark:hover:bg-zinc-800   border-opacity-10 dark:hover:border-opacity-100 transition-all duration-200">
+          <div className="cursor-pointer items-center rounded-md border border-opacity-10 bg-transparent p-3 text-center transition-all duration-200 hover:bg-slate-50 dark:hover:border-opacity-100 dark:hover:bg-zinc-800">
             <FiShoppingCart size={16} />
           </div>
-          <span className="absolute inset-0 object-right-top -mr-6">
-            <div className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-semibold leading-4 bg-blue-500 text-white">
+          <span className="absolute inset-0 -mr-6 object-right-top">
+            <div className="inline-flex items-center rounded-full bg-blue-500 px-1.5 py-0.5 text-xs font-semibold leading-4 text-white">
               {cartItems.length > 0 ? cartItems.length : 0}
             </div>
           </span>
@@ -74,7 +74,7 @@ const Cart = () => {
           </SheetHeader>
 
           {/* Cart items list */}
-          <div className="space-y-4 md:pr-4 pt-6 h-auto ">
+          <div className="h-auto space-y-4 pt-6 md:pr-4">
             {cartItems && cartItems.length > 0 ? (
               cartItems.map((item: CartItem) => (
                 <CartItem
@@ -100,12 +100,12 @@ const Cart = () => {
             <CouponCode />
           </div> */}
 
-          <div className=" py-3 px-6 md:px-0">
+          <div className="px-6 py-3 md:px-0">
             {/* subtotal, items count and total price */}
             <div className="flex justify-between text-base font-medium text-gray-900">
               <p className="dark:text-white">
                 Subtotal
-                <span className="text-sm ml-1 font-thin text-blue-400">
+                <span className="ml-1 text-sm font-thin text-blue-400">
                   [{totalItems} items]
                 </span>
               </p>
@@ -120,14 +120,14 @@ const Cart = () => {
             </p>
 
             {/* coupon code */}
-            <div className="flex justify-center items-center mx-auto mt-2">
+            <div className="mx-auto mt-2 flex items-center justify-center">
               <CouponCode />
             </div>
 
             {/* checkout button */}
             <Link
               href="#"
-              className="flex mt-3 items-center justify-center rounded-md border border-transparent bg-blue-600 px-6 text-base font-medium text-white shadow-sm hover:bg-blue-700"
+              className="mt-3 flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-6 text-base font-medium text-white shadow-sm hover:bg-blue-700"
             >
               Checkout
             </Link>
@@ -149,7 +149,7 @@ const Cart = () => {
 
           <SheetFooter>
             <SheetClose asChild>
-              <p className="flex justify-center items-center mx-auto text-red-500 text-sm font-semibold cursor-pointer hover:text-red-red-600 transition-all duration-100">
+              <p className="hover:text-red-red-600 mx-auto flex cursor-pointer items-center justify-center text-sm font-semibold text-red-500 transition-all duration-100">
                 Clear Cart
               </p>
             </SheetClose>
@@ -184,10 +184,10 @@ const CartItem = ({
   const totalPrice = quantity * price;
 
   return (
-    <div key={id} className="flex justify-start items-center py-auto ">
+    <div key={id} className="py-auto flex items-center justify-start">
       {/* image */}
       <Image
-        className="h-[4.5rem] md:h-[4.5rem] w-[4.5rem] md:w-[4.5rem] object-cover rounded-md"
+        className="h-[4.5rem] w-[4.5rem] rounded-md object-cover md:h-[4.5rem] md:w-[4.5rem]"
         src={image}
         alt=""
         width={72}
@@ -198,13 +198,13 @@ const CartItem = ({
       {/* other data */}
       <div className="ml-4">
         {/* by */}
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           {/* product name */}
-          <p className="text-base text-md line-clamp-2 font-semibold tracking-tight leading-5 rounded-sm overflow-clip text-gray-800 dark:text-white">
+          <p className="text-md line-clamp-2 overflow-clip rounded-sm text-base font-semibold leading-5 tracking-tight text-gray-800 dark:text-white">
             {name}
           </p>
           {/* total price according to quanitity */}
-          <p className="text-lg text-blue-500 tracking-tight font-bold">
+          <p className="text-lg font-bold tracking-tight text-blue-500">
             ${totalPrice}
           </p>
         </div>
@@ -220,9 +220,9 @@ const CartItem = ({
         {/* quantity and delete from cart stuff */}
         <div className="flex">
           {/* delete from cart button */}
-          <div className=" hover:shadow-2xl border-slate-300  hover:border-none cursor-pointer hover:text-red-600">
+          <div className="cursor-pointer border-slate-300 hover:border-none hover:text-red-600 hover:shadow-2xl">
             <p
-              className="text-xs text-blue-600 hover:text-indigo-600 transition-all duration-200"
+              className="text-xs text-blue-600 transition-all duration-200 hover:text-indigo-600"
               onClick={removeFromCart}
             >
               Remove
@@ -260,14 +260,14 @@ function AppyCouponCode() {
       <DialogTrigger asChild>
         <button
           // onClick={handleAddCouponClick}
-          className="text-blue-500 font-medium text-sm opacity-50 hover:no-underline  cursor-pointer hover:opacity-100 transition-all duration-100"
+          className="cursor-pointer text-sm font-medium text-blue-500 opacity-50 transition-all duration-100 hover:no-underline hover:opacity-100"
         >
           Add a coupon
         </button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="text-gray-800 dark:text-white font-semibold">
+          <DialogTitle className="font-semibold text-gray-800 dark:text-white">
             Enter coupon code below
           </DialogTitle>
           <DialogDescription>
@@ -277,7 +277,7 @@ function AppyCouponCode() {
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="items-center">
-            <Label className="text-left text-gray-800 dark:text-white font-semibold mb-1">
+            <Label className="mb-1 text-left font-semibold text-gray-800 dark:text-white">
               Coupon Code
             </Label>
             <Input
@@ -317,31 +317,31 @@ function CouponCode() {
   return (
     <div
       className={`flex ${
-        enteredCode ? "flex-col justify-start items-center" : "flex-row"
-      } border-t pt-4 border-gray-200 justify-between items-center`}
+        enteredCode ? "flex-col items-center justify-start" : "flex-row"
+      } items-center justify-between border-t border-gray-200 pt-4`}
     >
       {!isCouponInputVisible && (
         <button
           onClick={handleAddCouponClick}
-          className="text-blue-500 font-medium text-sm opacity-50 dark:opacity-80 hover:no-underline  cursor-pointer hover:opacity-100 transition-all duration-100"
+          className="cursor-pointer text-sm font-medium text-blue-500 opacity-50 transition-all duration-100 hover:no-underline hover:opacity-100 dark:opacity-80"
         >
           Add a coupon
         </button>
       )}
       {isCouponInputVisible && (
-        <div className="flex justify-between items-center relative">
+        <div className="relative flex items-center justify-between">
           <input
             type="text"
             aria-label="Enter Coupon Code"
             placeholder="Enter code here ..."
             value={enteredCode}
             onChange={handleCodeChange}
-            className="mt-2 py-2 text-gray-700 border border-gray-200 rounded-lg pl-4 pr-8"
+            className="mt-2 rounded-lg border border-gray-200 py-2 pl-4 pr-8 text-gray-700"
           />
           <button
             type="submit"
             form="coupon-form"
-            className="absolute text-xs bg-blue-300 rounded-lg px-4 font-semibold flex mt-2 text-blue-500 hover:bg-blue-500 hover:text-white items-center justify-center right-0 top-0 bottom-0 mr-4"
+            className="absolute bottom-0 right-0 top-0 mr-4 mt-2 flex items-center justify-center rounded-lg bg-blue-300 px-4 text-xs font-semibold text-blue-500 hover:bg-blue-500 hover:text-white"
           >
             Apply
           </button>

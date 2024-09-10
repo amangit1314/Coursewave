@@ -1,14 +1,13 @@
 import React, { useEffect } from "react";
 import { Josefin_Sans } from "next/font/google";
-import { ThemeModeToggle } from "@/components/themeModeToggle";
-import { ProgressCircle } from "@tremor/react";
+import { ThemeModeToggle } from "@/components/theme-mode-toggle";
+import { Callout, ProgressCircle } from "@tremor/react";
 import UserAvatar from "@/components/user-avatar";
-import { Course, CourseProgress, Enrollment } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import Notifications from "@/components/notification-button";
-import useCourseProgressStore from "@/zustand/courseProgressStore";
-import useUserInfo from "@/hooks/use-user-info";
+import { useUserInfo } from "@/hooks/useUserInfo";
+import { useCoursesStore } from "@/zustand/coursesStore";
 
 const josefinSans = Josefin_Sans({
   weight: ["400", "500", "600", "700"],
@@ -18,7 +17,7 @@ const josefinSans = Josefin_Sans({
 async function CourseContentNavbar({ course }: any) {
   console.log("Course in the course content navbar: ", course);
 
-  const { courseProgress, fetchCourseProgress } = useCourseProgressStore();
+  const { courseProgress, fetchCourseProgress, loadingState } = useCoursesStore();
   const user = useUserInfo();
   const userId = user.user?.id;
   const courseId = course?.courseId!;
@@ -27,26 +26,30 @@ async function CourseContentNavbar({ course }: any) {
     fetchCourseProgress(userId, courseId);
   }, [fetchCourseProgress, userId, courseId]);
 
-  if (!courseProgress) {
-    return <p>Loading course progress ...</p>;
+  if (loadingState.loading) {
+    return <p className="text-[8px] text-yellow-500 font-medium">Loading course progress ...</p>;
+  }
+
+  if(loadingState.error) {
+    return <p className="text-[8px] text-red-500 font-medium">{loadingState.error} ...</p>;
   }
 
   console.log("Course Progress Data: ", courseProgress);
 
   return (
-    <div className="flex md:h-[64px] px-4 md:px-8 justify-between items-center w-full">
+    <div className="flex w-full items-center justify-between px-4 md:h-[64px] md:px-8">
       <div className="hidden md:flex">
-        <div className="text-sm breadcrumbs">
+        <div className="breadcrumbs text-sm">
           <ul>
             <li className="">
               <Link
                 href=""
-                className={`text-blue-500 font-bold text-xl ${josefinSans.className} `}
+                className={`text-xl font-bold text-blue-500 ${josefinSans.className} `}
               >
                 <Image
                   src="/assets/images/logo/coursewave-favicon-color.png"
                   alt="CourseWave Logo"
-                  className="mr-1 mb-2"
+                  className="mb-2 mr-1"
                   width={30}
                   height={8}
                   priority
@@ -55,7 +58,7 @@ async function CourseContentNavbar({ course }: any) {
               </Link>
             </li>
             <li>
-              <span className="inline-flex mr-1 gap-2 items-center">
+              <span className="mr-1 inline-flex items-center gap-2">
                 {course?.courseTitle}
               </span>
             </li>
@@ -75,10 +78,10 @@ async function CourseContentNavbar({ course }: any) {
       </Link>
 
       <div className="ml-auto flex items-center justify-end space-x-3 py-2">
-        <div className="flex flex-row justify-center items-center space-x-2">
-          <ProgressCircle value={courseProgress.progress ?? 0} size="sm">
+        <div className="flex flex-row items-center justify-center space-x-2">
+          <ProgressCircle value={courseProgress?.completedPercentage ?? 0} size="sm">
             <span className="text-[10px] font-medium text-slate-700 dark:text-slate-50">
-              {courseProgress.progress ?? 0}%
+              {courseProgress?.completedPercentage ?? 0} %
             </span>
           </ProgressCircle>
           <p className="text-xs">Completed</p>

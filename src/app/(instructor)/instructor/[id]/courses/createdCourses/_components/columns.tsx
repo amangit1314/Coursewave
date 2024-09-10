@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import Link from 'next/link';
+import Link from "next/link";
 
 type CreatedCourseProps = {
   id: string;

@@ -10,8 +10,8 @@ function InstructorNavbar() {
   return (
     <div
       className={cn(
-        "px-6 md:px-0 border-b w-full h-full flex justify-start items-center bg-white shadow-sm",
-        isAnalyticsPage ? "dark:bg-zinc-800" : "dark:bg-zinc-800"
+        "flex h-full w-full items-center justify-start border-b bg-white px-6 shadow-sm md:px-0",
+        isAnalyticsPage ? "dark:bg-zinc-800" : "dark:bg-zinc-800",
       )}
     >
       <InstructorMobileSidebar />

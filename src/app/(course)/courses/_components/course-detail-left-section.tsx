@@ -13,10 +13,9 @@ export default function CourseDetailLeftSection({
 }: CourseDetailLeftSectionParams) {
   const iconStyle = { color: "white" };
   return (
-    // <div className="w-[30rem] ml-[8rem] mt-[60px]"></div>
-    <div className="hidden md:flex md:flex-col relative w-[30rem] ml-[8rem] mt-[75px] shadow-lg z-99 shadow-gray-950 rounded-xl bg-slate-800 border-gray-500 max-h-[23rem]">
+    <div className="z-99 relative ml-[8rem] mt-[75px] hidden max-h-[23rem] w-[30rem] rounded-xl border-gray-500 bg-slate-800 shadow-lg shadow-gray-950 md:flex md:flex-col">
       <Image
-        className="h-60 w-[20rem] bg-slate-700 rounded-t-xl relative left-0 right-0"
+        className="relative left-0 right-0 h-60 w-[20rem] rounded-t-xl bg-slate-700"
         src={
           "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210301154221/System-Design-Live-Course-By-GeeksforGeeks.png"
         }
@@ -31,7 +30,7 @@ export default function CourseDetailLeftSection({
 
       <Badge
         onClick={toggleIsInCart}
-        className="flex justify-center items-center rounded-full h-10 w-10 bg-indigo-500 absolute mt-1 bottom-29 hover:bg-indigo-600 right-2"
+        className="bottom-29 absolute right-2 mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-indigo-500 hover:bg-indigo-600"
       >
         {isInCart ? (
           <HiOutlineShoppingCart style={iconStyle} />
@@ -41,19 +40,19 @@ export default function CourseDetailLeftSection({
       </Badge>
 
       <div className="p-4">
-        <div className="flex py-auto items-center">
+        <div className="py-auto flex items-center">
           <p className="text-lg font-semibold dark:text-gray-200">$ 499</p>
-          <p className="font-bold pl-1 text-sm dark:text-gray-400">/mo</p>
+          <p className="pl-1 text-sm font-bold dark:text-gray-400">/mo</p>
         </div>
 
         <button
           type="submit"
-          className="mt-2 bg-indigo-500 w-[18rem] rounded-lg hover:bg-indigo-700 text-sm text-white font-semibold p-2"
+          className="mt-2 w-[18rem] rounded-lg bg-indigo-500 p-2 text-sm font-semibold text-white hover:bg-indigo-700"
         >
           Buy Now
         </button>
 
-        <p className="text-center text-xs py-2 text-gray-400 font-thin">
+        <p className="py-2 text-center text-xs font-thin text-gray-400">
           30 Day money back guarantee
         </p>
 

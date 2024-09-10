@@ -3,15 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { FaNoteSticky, FaLink } from "react-icons/fa6";
-import { Button } from "@tremor/react";
-import CourseContentNavbar from "./_components/course-content-navbar";
-import { Chapter, Course, CourseAttachment, Instructor } from "@prisma/client";
-import { FaPauseCircle, FaPlayCircle } from "react-icons/fa";
-import { IoMdAddCircleOutline } from "react-icons/io";
-import { MdModeEditOutline } from "react-icons/md";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Footer } from "@/components/LandingPage/footer";
 import {
   Dialog,
   DialogContent,
@@ -34,20 +26,28 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useQuery } from "@tanstack/react-query";
-import { courseChapters, sampleText } from "@/lib/mockData";
-import useInstructorInfo from "@/hooks/use-instructor-info";
-import CourseContentScreenSkeleton from "./_components/course-content-screen-skeleton";
-import CourseChaptersSkeleton from "./_components/course-chapters-skeleton";
-import CourseResourcesSkeleton from "./_components/course-resources-skeleton";
-import { absoluteUrl } from "@/utils/utils";
-import CourseVideo from "./_components/course-video";
-import useUserInfo from "@/hooks/use-user-info";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useCookies } from "next-client-cookies";
+import { Button, Callout } from "@tremor/react";
+import { Chapter, Course, CourseAttachment, Instructor } from "@prisma/client";
+import { FaNoteSticky, FaLink } from "react-icons/fa6";
+import { FaPauseCircle, FaPlayCircle } from "react-icons/fa";
+import { IoMdAddCircleOutline } from "react-icons/io";
+import { MdModeEditOutline } from "react-icons/md";
 import { TiTick, TiTickOutline } from "react-icons/ti";
-import useCourseProgressStore from "@/zustand/courseProgressStore";
-import { useZustandStore } from "@/zustand/store";
+
+//* -------------------- Custom Hooks ------------------------------
+import { useQuery } from "@tanstack/react-query";
+import { useUserInfo } from "@/hooks/useUserInfo";
+import { courseChapters, sampleText } from "@/lib/mockData";
+import { useInstructorInfo } from "@/hooks/useInstructorInfo";
+
+
+//? -------------------- Custom Components ------------------------------
+import CourseContentScreenSkeleton from "./_components/skeletons/course-content-screen-skeleton";
+import CourseResourcesSkeleton from "./_components/skeletons/course-resources-skeleton";
+import CourseContentNavbar from "./_components/course-content-navbar";
+import CourseVideo from "./_components/course-video";
+import { Footer } from "@/components/LandingPage/footer";
+import { useCoursesStore } from "@/zustand/coursesStore";
 
 const CourseContentPage = ({ params }: { params: { id: string } }) => {
   const courseId = params?.id!;
@@ -65,7 +65,7 @@ const CourseContentPage = ({ params }: { params: { id: string } }) => {
 
     console.log(
       "Course id in courses/[courseId]/courseContent/page.tsx file:",
-      courseId
+      courseId,
     );
 
     console.log("Resoponse of course inside fetCourseInfo: ", data);
@@ -89,7 +89,7 @@ const CourseContentPage = ({ params }: { params: { id: string } }) => {
   const fetchCourseChapters = async () => {
     console.log(
       "Course id in Course Content page.tsx inside fetchCourseChapters:",
-      courseId
+      courseId,
     );
 
     const response = await fetch(`api/courses/${courseId}/chapters`);
@@ -100,7 +100,7 @@ const CourseContentPage = ({ params }: { params: { id: string } }) => {
 
     console.log(
       `Course id in courses/${courseId}/courseContent/page.tsx file inside fetchCourseChapters: `,
-      courseId
+      courseId,
     );
 
     const data = await response.json();
@@ -132,32 +132,34 @@ const CourseContentPage = ({ params }: { params: { id: string } }) => {
 
   // <----------- Instructor ----------->
   const instructor: Instructor = useInstructorInfo(
-    course?.instructorID!
+    course?.instructorID!,
   ).instructor;
   const isInstructorInfoLoading = useInstructorInfo(
-    course?.instructorID!
+    course?.instructorID!,
   ).isLoading;
   const instructorInfoError = useInstructorInfo(course?.instructorID!).error;
 
   // <----------- Loading or error ----------->
-  if (isLoading && isChaptersLoading && isInstructorInfoLoading)
+  if (isLoading && isChaptersLoading && isInstructorInfoLoading) {
     return <CourseContentScreenSkeleton />;
-  if (error || chaptersError || instructorInfoError)
+  }
+
+  if (error || chaptersError || instructorInfoError) {
+    const errorMessage = error || chaptersError || instructorInfoError;
     return (
-      <div>
-        Error:{" "}
-        {error
-          ? error.message
-          : chaptersError
-            ? chaptersError.message
-            : instructorInfoError?.message}
-      </div>
+      <Callout
+        color={"red"}
+        title={`Error in fetching ${errorMessage?.message}`}
+      >
+        Error: {errorMessage?.message} 🚨❌ ...
+      </Callout>
     );
+  }
 
   // <----------- Main return ----------->
   return (
-    <div className="overflow-x-hidden h-auto">
-      <div className="inset-y-0 w-full z-50 ">
+    <div className="h-auto overflow-x-hidden">
+      <div className="inset-y-0 z-50 w-full">
         <CourseContentNavbar course={course} />
       </div>
 
@@ -201,10 +203,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
   const user = useUserInfo();
   const userId = user.user?.id;
 
-  const { updateCourseProgress } = useCourseProgressStore();
-  // useEffect(() => {
-  //   updateCourseProgress(userId, courseId, chapterId);
-  // }, [updateCourseProgress, userId, courseId, chapterId]);
+  const { updateCourseProgress } = useCoursesStore();
 
   const [activeChapterIndex, setActiveChapterIndex] = React.useState<number>(0);
   const [showFullDescription, setShowFullDescription] = React.useState(false);
@@ -223,13 +222,13 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
   };
 
   return (
-    <div className="flex flex-col md:flex-row justify-start items-center md:items-start h-full max-w-7xl w-full mx-auto px-8 md:px-[3rem] space-x-8 overflow-x-hidden">
+    <div className="mx-auto flex h-full w-full max-w-7xl flex-col items-center justify-start space-x-8 overflow-x-hidden px-8 md:flex-row md:items-start md:px-[3rem]">
       {/* {COLUMN 1} with [Video And Course Metadata] */}
-      <div className="mt-6 md:max-w-[45rem] w-full space-y-4">
+      <div className="mt-6 w-full space-y-4 md:max-w-[45rem]">
         {/* video, show chapters btn(for mobile only) and mark as visited btn */}
-        <div className="max-w-xl md:max-w-[45rem] w-full h-auto space-y-4 flex flex-col items-start justify-between">
+        <div className="flex h-auto w-full max-w-xl flex-col items-start justify-between space-y-4 md:max-w-[45rem]">
           {/* [ONLY FOR MOBILE SCREENS] show chapters button */}
-          <div className="flex justify-start items-start md:hidden md:pb-0">
+          <div className="flex items-start justify-start md:hidden md:pb-0">
             <ShowChapters
               chapters={chapters}
               activeChapterIndex={activeChapterIndex}
@@ -238,7 +237,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
           </div>
 
           {/* video component */}
-          <div className="w-xl md:w-[45rem] h-auto md:h-[360px]">
+          <div className="w-xl h-auto md:h-[360px] md:w-[45rem]">
             {<CourseVideo activeChapter={activeChapter!} />}
           </div>
 
@@ -246,7 +245,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
           <Button
             color="green"
             onClick={handleProgressChange}
-            className="cursor-pointer hidden border border-stroke md:flex dark:text-white md:items-center md:justify-center h-10 w-10 rounded-full mt-4 text-zinc-800 hover:text-white hover:bg-green-600 transition-all duration-300 hover:border-none overflow-hidden"
+            className="border-stroke mt-4 hidden h-10 w-10 cursor-pointer overflow-hidden rounded-full border text-zinc-800 transition-all duration-300 hover:border-none hover:bg-green-600 hover:text-white dark:text-white md:flex md:items-center md:justify-center"
           >
             {activeChapter && activeChapter?.isCompleted ? (
               <TiTick />
@@ -257,10 +256,10 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
         </div>
 
         {/* {COLUMN} WITH [about class, class notes and about instructor] */}
-        <div className="max-w-[45rem] w-full space-y-6">
+        <div className="w-full max-w-[45rem] space-y-6">
           {/* about this class with show more btn */}
           <div>
-            <p className="text-xl md:text-lg mt-4 text-gray-950 dark:text-gray-300 font-semibold tracking-tight">
+            <p className="mt-4 text-xl font-semibold tracking-tight text-gray-950 dark:text-gray-300 md:text-lg">
               About This Class
             </p>
 
@@ -268,7 +267,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
             <p
               className={`${
                 showFullDescription ? "" : "line-clamp-4"
-              } text-md text-base text-slate-700 dark:text-gray-400 py-4 md:py-2 md:text-md md:p-0 w-auto   ${
+              } text-md md:text-md w-auto py-4 text-base text-slate-700 dark:text-gray-400 md:p-0 md:py-2 ${
                 showFullDescription ? "" : "overflow-hidden"
               }`}
             >
@@ -278,7 +277,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
             {/* show more text button */}
             {aboutChapter.length > 250 ? (
               <button
-                className="text-sm tracking-tighter mt-2 font-medium hover:text-blue-600 dark:hover:text-blue-700 text-blue-500 dark:text-blue-600 underline .leading-relaxed"
+                className=".leading-relaxed mt-2 text-sm font-medium tracking-tighter text-blue-500 underline hover:text-blue-600 dark:text-blue-600 dark:hover:text-blue-700"
                 onClick={() => setShowFullDescription(!showFullDescription)}
               >
                 Show More
@@ -295,7 +294,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
 
           {/* About Instructor */}
           <div>
-            <h3 className="text-xl md:text-lg mt-4 text-gray-950 dark:text-gray-300  font-semibold tracking-tight">
+            <h3 className="mt-4 text-xl font-semibold tracking-tight text-gray-950 dark:text-gray-300 md:text-lg">
               About Instructor
             </h3>
             <InstructorCard instructor={instructor} />
@@ -304,7 +303,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
       </div>
 
       {/* {COLUMN 2} with [Course Sections/Chapters, Course Resources ] */}
-      <div className="mt-8 md:max-w-[27rem] w-full md:ml-[1rem] md:space-y-12">
+      <div className="mt-8 w-full md:ml-[1rem] md:max-w-[27rem] md:space-y-12">
         {/* course sections and chapters */}
         <div className="hidden md:flex md:flex-col">
           <CourseSectionsAndChapters
@@ -318,7 +317,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
 
         {/* course resources */}
         <div>
-          <p className="text-xl md:text-lg md:mt-4 text-gray-950 dark:text-gray-300  font-semibold tracking-tight">
+          <p className="text-xl font-semibold tracking-tight text-gray-950 dark:text-gray-300 md:mt-4 md:text-lg">
             Course Resources
           </p>
           <CourseAttachments courseId={courseId} />
@@ -337,12 +336,12 @@ const ShowChapters = ({
   return (
     <Sheet key={"left"}>
       <SheetTrigger asChild>
-        <p className="w-auto text-sm font-medium text-blue-500 cursor-pointer transition-all duration-300">
+        <p className="w-auto cursor-pointer text-sm font-medium text-blue-500 transition-all duration-300">
           Show Chapters
         </p>
       </SheetTrigger>
       <ScrollArea>
-        <SheetContent side={"right"} className=" h-full w-auto text-left">
+        <SheetContent side={"right"} className="h-full w-auto text-left">
           <SheetHeader>
             <SheetTitle>Chapters</SheetTitle>
             <SheetDescription>
@@ -352,7 +351,7 @@ const ShowChapters = ({
           </SheetHeader>
 
           {/* chapters list */}
-          <div className="space-y-4 mt-6">
+          <div className="mt-6 space-y-4">
             {chapters && chapters.length > 0 ? (
               <ul className="space-y-2">
                 {chapters?.map((chapter: Chapter, index: any) => {
@@ -382,7 +381,7 @@ const ShowChapters = ({
                       isFree: boolean;
                       position: number;
                     },
-                    index: any
+                    index: any,
                   ) => {
                     return (
                       <li
@@ -398,7 +397,7 @@ const ShowChapters = ({
                         />
                       </li>
                     );
-                  }
+                  },
                 )}
               </ul>
             )}
@@ -427,12 +426,12 @@ const CourseSectionsAndChapters = ({
   return (
     <div>
       {chapters && chapters.length > 0 ? (
-        <div className="max-w-xl w-full md:h-[360px] md:mt-2 h-full ">
-          <ScrollArea className="max-w-xl w-full max-h-[512px] h-full p-4 rounded-xl border border-stroke">
+        <div className="h-full w-full max-w-xl md:mt-2 md:h-[360px]">
+          <ScrollArea className="border-stroke h-full max-h-[512px] w-full max-w-xl rounded-xl border p-4">
             <div>
               {/* course chapters text & total chapters count */}
-              <div className="flex justify-between items-center">
-                <p className="text-lg font-semibold text-gray-900 dark:text-gray-200 ">
+              <div className="flex items-center justify-between">
+                <p className="text-lg font-semibold text-gray-900 dark:text-gray-200">
                   Course Chapters
                 </p>
 
@@ -495,8 +494,8 @@ const CourseSectionsAndChapters = ({
       ) : (
         <div>
           {/* course chapters text & total chapters count */}
-          <div className="flex justify-between items-center">
-            <p className="text-lg font-semibold text-gray-900 dark:text-gray-200 ">
+          <div className="flex items-center justify-between">
+            <p className="text-lg font-semibold text-gray-900 dark:text-gray-200">
               Course Chapters
             </p>
 
@@ -558,32 +557,32 @@ const ChapterItem = ({
 
   return (
     <div
-      className={`flex cursor-pointer hover:border-blue-500 justify-between hover:bg-blue-500 items-center py-2 px-2 text-base text-md tracking-tight hover:text-white rounded-badge border transition-all duration-300 ${
-        activeChapterIndex === index ? "text-white bg-blue-500" : ""
+      className={`text-md flex cursor-pointer items-center justify-between rounded-badge border px-2 py-2 text-base tracking-tight transition-all duration-300 hover:border-blue-500 hover:bg-blue-500 hover:text-white ${
+        activeChapterIndex === index ? "bg-blue-500 text-white" : ""
       } `}
     >
-      <div className="flex justify-start items-center space-x-2">
+      <div className="flex items-center justify-start space-x-2">
         <div onClick={() => setVideoPlaying(!videoPlaying)}>
           {videoPlaying ? (
             <FaPauseCircle
-              className="cursor-pointer hover:bg-blue-700 p-1 rounded-full"
+              className="cursor-pointer rounded-full p-1 hover:bg-blue-700"
               size={24}
             />
           ) : (
             <FaPlayCircle
-              className="cursor-pointer hover:bg-blue-700 p-1 rounded-full"
+              className="cursor-pointer rounded-full p-1 hover:bg-blue-700"
               size={24}
             />
           )}
         </div>
-        <div className="link-clamp-1 overflow-hidden text-md text-base max-lines-1 line-clamp-1">
+        <div className="link-clamp-1 text-md max-lines-1 line-clamp-1 overflow-hidden text-base">
           {title}
         </div>
       </div>
 
-      <div className="flex justify-start items-center space-x-2">
+      <div className="flex items-center justify-start space-x-2">
         {/* {isChapterFree ? <div></div> : <FaLock />} */}
-        <p className="text-xs rounded-badge px-2 py-1 mr-1 text-center bg-white text-black font-normal">
+        <p className="mr-1 rounded-badge bg-white px-2 py-1 text-center text-xs font-normal text-black">
           {duration ? duration : time}
         </p>
       </div>
@@ -597,9 +596,9 @@ const CourseNotes = () => {
     "Node.js Installation Steps",
   ]);
   return (
-    <ScrollArea className="max-w-[45rem] max-h-[300px] h-full  overflow-hidden w-full  md:mt-4 p-4 rounded-xl border border-storke">
-      <div className="flex justify-between items-center ">
-        <p className="text-lg text-gray-950 dark:text-gray-300 font-semibold tracking-tight">
+    <ScrollArea className="border-storke h-full max-h-[300px] w-full max-w-[45rem] overflow-hidden rounded-xl border p-4 md:mt-4">
+      <div className="flex items-center justify-between">
+        <p className="text-lg font-semibold tracking-tight text-gray-950 dark:text-gray-300">
           Your Notes
         </p>
 
@@ -607,7 +606,7 @@ const CourseNotes = () => {
           <DialogTrigger asChild>
             <IoMdAddCircleOutline
               size={20}
-              className="hover:text-blue-500 cursor-pointer"
+              className="cursor-pointer hover:text-blue-500"
             />
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
@@ -643,7 +642,7 @@ const CourseNotes = () => {
               <Button
                 type="submit"
                 color="gray"
-                className="w-full border border-stroke bg-black hover:bg-blue-500 text-white"
+                className="border-stroke w-full border bg-black text-white hover:bg-blue-500"
               >
                 Save changes
               </Button>
@@ -653,16 +652,16 @@ const CourseNotes = () => {
       </div>
       <p className="mb-4 text-sm">These are you notes for this class</p>
 
-      <ul className="list-none max-h-[380px] h-full space-y-1">
+      <ul className="h-full max-h-[380px] list-none space-y-1">
         {notes.map((note, index) => {
           return (
             <li
               key={index}
-              className="flex  justify-between items-center py-2 px-4 text-base text-md tracking-tight rounded-md border"
+              className="text-md flex items-center justify-between rounded-md border px-4 py-2 text-base tracking-tight"
             >
-              <div className="flex justify-start items-center space-x-2">
+              <div className="flex items-center justify-start space-x-2">
                 <FaNoteSticky />
-                <p className="text-sm cursor-pointer hover:text-blue-500 hover:underline">
+                <p className="cursor-pointer text-sm hover:text-blue-500 hover:underline">
                   {note}
                 </p>
               </div>
@@ -670,7 +669,7 @@ const CourseNotes = () => {
               <Dialog>
                 <DialogTrigger asChild>
                   <MdModeEditOutline
-                    className="cursor-pointer hover:bg-blue-700 p-1 rounded-full"
+                    className="cursor-pointer rounded-full p-1 hover:bg-blue-700"
                     size={24}
                   />
                 </DialogTrigger>
@@ -707,7 +706,7 @@ const CourseNotes = () => {
                     <Button
                       type="submit"
                       color="gray"
-                      className="w-full border border-stroke bg-black hover:bg-blue-500 text-white"
+                      className="border-stroke w-full border bg-black text-white hover:bg-blue-500"
                     >
                       Save changes
                     </Button>
@@ -749,7 +748,7 @@ const CourseAttachments = ({ courseId }: { courseId: string }) => {
   return (
     <div>
       {courseAttachments && courseAttachments.data.length > 0 ? (
-        <ul className=" md:ml-4 list-disc py-4 md:py-2 md:p-0 w-full font-normal">
+        <ul className="w-full list-disc py-4 font-normal md:ml-4 md:p-0 md:py-2">
           {courseAttachments.data.map((attachment: CourseAttachment) => (
             <CourseAttachmentItem
               key={attachment.id}
@@ -760,7 +759,7 @@ const CourseAttachments = ({ courseId }: { courseId: string }) => {
           ))}
         </ul>
       ) : (
-        <ul className="text-md ml-4 list-disc text-base py-4 md:py-2 md:text-md md:p-0  w-auto  font-noraml text-gray-700 dark:text-gray-400">
+        <ul className="text-md md:text-md font-noraml ml-4 w-auto list-disc py-4 text-base text-gray-700 dark:text-gray-400 md:p-0 md:py-2">
           <li className="pb-1">
             <Link href="">
               Connect with Martin on YouTube, Instagram, Spotify, and his
@@ -794,11 +793,11 @@ const CourseAttachmentItem = ({
 }) => {
   return (
     <div
-      className="flex group justify-between items-center pb-1 hover text-md text-base text-gray-700  dark:text-gray-400 hover:rounded-md hover:text-blue-500 cursor-pointer transition-all duration-200"
+      className="text-md group hover flex cursor-pointer items-center justify-between pb-1 text-base text-gray-700 transition-all duration-200 hover:rounded-md hover:text-blue-500 dark:text-gray-400"
       key={id}
     >
       <Link
-        className="tracking-tight text-sm group-hover:font-medium dark:hover:text-blue-500"
+        className="text-sm tracking-tight group-hover:font-medium dark:hover:text-blue-500"
         href={url}
       >
         {name}
@@ -810,14 +809,14 @@ const CourseAttachmentItem = ({
 
 const InstructorCard = ({ instructor }: { instructor: Instructor }) => {
   console.log(
-    `Instructor id in the instructor-info.tsx: ${instructor?.instructorID!} `
+    `Instructor id in the instructor-info.tsx: ${instructor?.instructorID!} `,
   );
 
   console.log("Instructor Info in instructor card: ", instructor!);
 
   return (
-    <div className="max-w-3xl py-4 md:py-2  w-full flex flex-col justify-start items-start  rounded-xl space-y-4">
-      <div className="flex space-x-4 justify-start items-center">
+    <div className="flex w-full max-w-3xl flex-col items-start justify-start space-y-4 rounded-xl py-4 md:py-2">
+      <div className="flex items-center justify-start space-x-4">
         <Image
           src={
             instructor
@@ -829,16 +828,16 @@ const InstructorCard = ({ instructor }: { instructor: Instructor }) => {
           height={50}
           width={50}
           objectFit="cover"
-          className="rounded-full flex items-center justify-center h-[50px] w-[50px] ring-1 ring-white"
+          className="flex h-[50px] w-[50px] items-center justify-center rounded-full ring-1 ring-white"
         />
 
-        <div className="flex flex-col justify-start items-start mr-auto text-base">
-          <p className="text-lg text-gray-800 dark:text-slate-200 tracking-tight font-semibold">
+        <div className="mr-auto flex flex-col items-start justify-start text-base">
+          <p className="text-lg font-semibold tracking-tight text-gray-800 dark:text-slate-200">
             {instructor
               ? (instructor?.instructorName ?? "CourseWave")
               : "CourseWave"}
           </p>
-          <p className="text-md text-base line-clamp-2 tracking-tight text-gray-700 dark:text-gray-400 font-thin ">
+          <p className="text-md line-clamp-2 text-base font-thin tracking-tight text-gray-700 dark:text-gray-400">
             {instructor
               ? (instructor?.instructorTag ?? "Full Stack Engineer")
               : "Full Stack Engineer"}
@@ -846,7 +845,7 @@ const InstructorCard = ({ instructor }: { instructor: Instructor }) => {
         </div>
       </div>
 
-      <p className="text-md  text-start text-base  md:text-md md:p-0  w-auto line-clamp-3 font-noraml text-gray-700 dark:text-gray-400">
+      <p className="text-md md:text-md font-noraml line-clamp-3 w-auto text-start text-base text-gray-700 dark:text-gray-400 md:p-0">
         {instructor
           ? (instructor.aboutInstructor ??
             `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Provident eos

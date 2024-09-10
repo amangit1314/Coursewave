@@ -52,9 +52,13 @@ const ResetPassword = () => {
   const { isSubmitting, isValid } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const url =
+    process.env.ENVIRONMENT === "DEVELOPMENT"
+      ? "/api/auth/resetPassword"
+      : "api/auth/resetPassword";
     await axios
       .patch(
-        `api/auth/resetPassword`,
+        url,
         JSON.stringify({ token: token!, newPassword: values.password })
       )
       .then(() => {
@@ -74,6 +78,7 @@ const ResetPassword = () => {
           onSubmit={form.handleSubmit(onSubmit)}
           className=" max-w-3xl w-full space-y-4  rounded-3xl bg-gray-900 p-8 flex flex-col align-middle mx-auto "
         >
+          {/* title */}
           <div>
             <h1 className="text-xl font-semibold tracking-tight">
               Reset Password

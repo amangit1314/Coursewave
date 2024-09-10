@@ -39,11 +39,9 @@
 
 //       <h3 className="my-4 text-2xl font-bold tracking-tight">{name}</h3>
 
-
 //       <p className="font-light px-2 text-gray-500 text-lg md:text-md md:text-base  dark:text-gray-400">
 //         {description}
 //       </p>
-
 
 //       <div className="flex justify-center items-baseline my-8">
 //         <span className="mr-2 text-5xl font-bold tracking-tighter">
@@ -51,7 +49,6 @@
 //         </span>
 //         <span className="text-gray-500 dark:text-gray-400">/month</span>
 //       </div>
-
 
 //       <ul role="list" className="mb-8 space-y-4 text-left px-2">
 //         {whatIncludes.map((point: string) => {
@@ -74,7 +71,6 @@
 // };
 
 // export default SubscriptionPlanCard;
-
 
 //! ------------------------------------------------ TRY 2 ------------------------------------
 import { cn } from "@/utils/utils";
@@ -116,9 +112,9 @@ const SubscriptionPlanCard = ({
   return (
     <div
       className={cn(
-        `flex flex-col cursor-pointer max-w-lg w-full rounded-3xl text-center border border-stroke border-gray-100 dark:border-neutral-600 hover:border-6 hover:border-blue-600  shadow-sm hover:shadow-xl p-6 xl:p-2 text-gray-900 dark:text-white bg-white dark:bg-gray-800`,
-        isSelected ? "drop-shadow-xl bg-sky-600" : "",
-        isCurrentPlan ? "drop-shadow-xl ring-2 ring-blue-600 " : ""
+        `border-stroke hover:border-6 flex w-full max-w-lg cursor-pointer flex-col rounded-3xl border border-gray-100 bg-white p-6 text-center text-gray-900 shadow-sm hover:border-blue-600 hover:shadow-xl dark:border-neutral-600 dark:bg-gray-800 dark:text-white xl:p-2`,
+        isSelected ? "bg-sky-600 drop-shadow-xl" : "",
+        isCurrentPlan ? "ring-2 ring-blue-600 drop-shadow-xl" : "",
       )}
       onClick={onSelect}
     >
@@ -126,12 +122,12 @@ const SubscriptionPlanCard = ({
       <h3 className="my-4 text-2xl font-bold tracking-tight">{name}</h3>
 
       {/* description */}
-      <p className="font-light px-2 text-gray-500 text-lg md:text-md md:text-base  dark:text-gray-400">
+      <p className="md:text-md px-2 text-lg font-light text-gray-500 dark:text-gray-400 md:text-base">
         {description}
       </p>
 
       {/* subscription price */}
-      <div className="flex justify-center items-baseline my-8">
+      <div className="my-8 flex items-baseline justify-center">
         <span className="mr-2 text-5xl font-bold tracking-tighter">
           ${price}
         </span>
@@ -139,11 +135,11 @@ const SubscriptionPlanCard = ({
       </div>
 
       {/* What includes in this subscription  */}
-      <ul role="list" className="mb-8 space-y-4 text-left px-2">
+      <ul role="list" className="mb-8 space-y-4 px-2 text-left">
         {whatIncludes.map((point: string) => {
           return (
             <li key={point} className="flex items-center space-x-3">
-              <TiTick className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400" />
+              <TiTick className="h-5 w-5 flex-shrink-0 text-green-500 dark:text-green-400" />
               <span>{point}</span>
             </li>
           );
@@ -168,4 +164,3 @@ const SubscriptionPlanCard = ({
 };
 
 export default SubscriptionPlanCard;
-

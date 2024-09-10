@@ -35,7 +35,7 @@ const formSchema = z.object({
 export const WhatYouWillLearnForm = ({ course }: { course: Course }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [points, setPoints] = useState(
-    course?.whatYouWillLearn || whatYouWillLearn
+    course?.whatYouWillLearn || whatYouWillLearn,
   );
 
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -57,7 +57,7 @@ export const WhatYouWillLearnForm = ({ course }: { course: Course }) => {
     try {
       await axios.post(
         `api/instructor/${course?.instructorID}/dashboard/courses/${course?.courseId}/attachments`,
-        { newWhatYouWillLearnPoints: values.whatYouWillLearn }
+        { newWhatYouWillLearnPoints: values.whatYouWillLearn },
       );
       toast.success("Course whatYouWillLearn updated ...");
       toggleEdit();
@@ -74,14 +74,14 @@ export const WhatYouWillLearnForm = ({ course }: { course: Course }) => {
   };
 
   return (
-    <div className="mt-6 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4">
-      <div className="font-medium flex items-center justify-between mb-2">
+    <div className="mt-6 rounded-2xl border bg-slate-100 p-4 dark:bg-zinc-700">
+      <div className="mb-2 flex items-center justify-between font-medium">
         What you will learn?
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing && <>Cancel</>}
           {!isEditing && (
             <>
-              <PlusCircle className="h-4 w-4 mr-2" />
+              <PlusCircle className="mr-2 h-4 w-4" />
               Add a point
             </>
           )}
@@ -90,7 +90,7 @@ export const WhatYouWillLearnForm = ({ course }: { course: Course }) => {
       {!isEditing && (
         <>
           {whatYouWillLearn!.length === 0 && (
-            <p className="text-sm mt-2 text-gray-500 dark:text-gray-400 italic">
+            <p className="mt-2 text-sm italic text-gray-500 dark:text-gray-400">
               No points yet
             </p>
           )}
@@ -101,10 +101,10 @@ export const WhatYouWillLearnForm = ({ course }: { course: Course }) => {
               {points.map((point: string, index: any) => (
                 <div
                   key={index}
-                  className="flex items-center p-3 w-full bg-sky-100 dark:bg-zinc-800 border-sky-200 dark:border-none border text-sky-700 dark:text-gray-100 rounded-xl"
+                  className="flex w-full items-center rounded-xl border border-sky-200 bg-sky-100 p-3 text-sky-700 dark:border-none dark:bg-zinc-800 dark:text-gray-100"
                 >
-                  <Pencil className="h-4 w-4 mr-2 flex-shrink-0" />
-                  <p className="text-[12px] line-clamp-1">{point}</p>
+                  <Pencil className="mr-2 h-4 w-4 flex-shrink-0" />
+                  <p className="line-clamp-1 text-[12px]">{point}</p>
                   {deletingId === index && (
                     <div>
                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -113,7 +113,7 @@ export const WhatYouWillLearnForm = ({ course }: { course: Course }) => {
                   {deletingId !== index && (
                     <button
                       onClick={() => onDelete(index)}
-                      className="ml-auto hover:opacity-75 transition"
+                      className="ml-auto transition hover:opacity-75"
                     >
                       <X className="h-4 w-4" />
                     </button>
@@ -129,7 +129,7 @@ export const WhatYouWillLearnForm = ({ course }: { course: Course }) => {
         <Form {...form}>
           <form
             onSubmit={() => form.handleSubmit(onSubmit)}
-            className="space-y-4 mt-4"
+            className="mt-4 space-y-4"
           >
             <FormField
               control={form.control}

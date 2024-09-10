@@ -27,9 +27,7 @@ const formSchema = z.object({
   }),
 });
 
-export const TitleForm = ({ course}: {
-  course: Course
-}) => {
+export const TitleForm = ({ course }: { course: Course }) => {
   const [isEditing, setIsEditing] = useState(false);
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -46,7 +44,7 @@ export const TitleForm = ({ course}: {
     try {
       await axios.patch(
         `api/instructor/${course.instructorID}/dashboard/courses/${course.courseId}`,
-        {"newCourseTitle": values.title}
+        { newCourseTitle: values.title },
       );
       toast.success("Course updated ...");
       toggleEdit();
@@ -59,27 +57,27 @@ export const TitleForm = ({ course}: {
   // console.log(`Course title in title form:`, course);
 
   return (
-    <div className="mt-6 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4">
-      <div className="font-medium flex items-center justify-between">
+    <div className="mt-6 rounded-2xl border bg-slate-100 p-4 dark:bg-zinc-700">
+      <div className="flex items-center justify-between font-medium">
         Course title
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Cancel</>
           ) : (
             <>
-              <Pencil className="h-4 w-4 mr-2" />
+              <Pencil className="mr-2 h-4 w-4" />
               Edit title
             </>
           )}
         </Button>
       </div>
       {!isEditing && (
-
         <p
           className={cn(
-            "text-sm mt-2",
-            !course.courseTitle ?
-            "text-gray-500 dark:text-gray-400 italic" : " text-md text-base"
+            "mt-2 text-sm",
+            !course.courseTitle
+              ? "italic text-gray-500 dark:text-gray-400"
+              : "text-md text-base",
           )}
         >
           {course?.courseTitle! || "No title"}
@@ -89,7 +87,7 @@ export const TitleForm = ({ course}: {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 mt-4"
+            className="mt-4 space-y-4"
           >
             <FormField
               control={form.control}
@@ -111,7 +109,9 @@ export const TitleForm = ({ course}: {
             <div className="flex items-center gap-x-2">
               <Button
                 className="dark:bg-zinc-800 dark:text-white"
-                disabled={!isValid || isSubmitting} type="submit">
+                disabled={!isValid || isSubmitting}
+                type="submit"
+              >
                 Save
               </Button>
             </div>

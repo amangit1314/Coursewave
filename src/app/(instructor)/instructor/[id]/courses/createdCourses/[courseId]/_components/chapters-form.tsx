@@ -63,7 +63,7 @@ export const ChaptersForm = ({
     try {
       await axios.post(
         `api/instructor/${instructorId}/dashboard/courses/${courseId}/sections/${section.courseSectionId}/chapters`,
-        { chapterTitle: values.title }
+        { chapterTitle: values.title },
       );
       toast.success("Chapter created");
       toggleCreating(section.courseSectionId);
@@ -82,7 +82,7 @@ export const ChaptersForm = ({
         `api/instructor/${instructorId}/dashboard/courses/${courseId}/sections/${section.courseSectionId}/chapters/reorder`,
         {
           list: updateData,
-        }
+        },
       );
       toast.success("Chapters reordered");
       router.refresh();
@@ -94,14 +94,14 @@ export const ChaptersForm = ({
   };
 
   return (
-    <div className="relative mt-2 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4">
+    <div className="relative mt-2 rounded-2xl border bg-slate-100 p-4 dark:bg-zinc-700">
       {isUpdating && (
-        <div className="absolute h-full w-full bg-slate-500/20 top-0 right-0 rounded-xl flex items-center justify-center">
-          <Loader2 className="animate-spin h-6 w-6 text-sky-700" />
+        <div className="absolute right-0 top-0 flex h-full w-full items-center justify-center rounded-xl bg-slate-500/20">
+          <Loader2 className="h-6 w-6 animate-spin text-sky-700" />
         </div>
       )}
 
-      <div className="font-medium flex items-center justify-between not-italic">
+      <div className="flex items-center justify-between font-medium not-italic">
         <p className="text-sm dark:text-white"> Section chapters</p>
         <Button
           onClick={() => toggleCreating(section.courseSectionId)}
@@ -111,7 +111,7 @@ export const ChaptersForm = ({
             <>Cancel</>
           ) : (
             <>
-              <PlusCircle className="h-4 w-4 mr-2" />
+              <PlusCircle className="mr-2 h-4 w-4" />
               <p className="text-sm dark:text-white">Add a chapter</p>
             </>
           )}
@@ -122,7 +122,7 @@ export const ChaptersForm = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 mt-4"
+            className="mt-4 space-y-4"
           >
             <FormField
               control={form.control}
@@ -154,8 +154,8 @@ export const ChaptersForm = ({
       {!isCreating && (
         <div
           className={cn(
-            "text-sm mt-2",
-            !chapters?.length && "text-gray-500 dark:text-gray-400 italic"
+            "mt-2 text-sm",
+            !chapters?.length && "italic text-gray-500 dark:text-gray-400",
           )}
         >
           {!chapters?.length && "No chapters"}
@@ -168,7 +168,7 @@ export const ChaptersForm = ({
       )}
 
       {!isCreating && (
-        <p className="text-xs text-muted-foreground mt-4 not-italic">
+        <p className="mt-4 text-xs not-italic text-muted-foreground">
           Drag and drop to reorder the chapters
         </p>
       )}

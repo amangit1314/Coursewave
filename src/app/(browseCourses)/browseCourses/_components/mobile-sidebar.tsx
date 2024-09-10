@@ -3,7 +3,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import Image from "next/image";
 import Menu from './menu';
 import { Josefin_Sans } from "next/font/google";
-import SideBarRoutes from "./sidebarRoutes";
+import SideBarRoutes from "./sidebar-routes";
 import Link from 'next/link';
 
 const josefinSans = Josefin_Sans({

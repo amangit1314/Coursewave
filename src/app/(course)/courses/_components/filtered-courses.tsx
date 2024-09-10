@@ -13,7 +13,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import useCoursesStore from "@/zustand/coursesStore";
+import {useCoursesStore} from "@/zustand/coursesStore";
 
 interface FilteredCoursesComponentProps {
   activeCategory: string | null;
@@ -26,7 +26,7 @@ export const FilteredCoursesComponent = ({
 }: FilteredCoursesComponentProps) => {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("q") || "";
-  const { courses, fetchCourses, loading, error } = useCoursesStore();
+  const { courses, fetchCourses, loadingState } = useCoursesStore();
 
   useEffect(() => {
     fetchCourses();
@@ -34,9 +34,9 @@ export const FilteredCoursesComponent = ({
 
   console.log("Courses from api: ", courses);
 
-  const [currentPage, setCurrentPage] = React.useState(1); // Track current page
+  const [currentPage, setCurrentPage] = React.useState(1);
 
-  const coursesPerPage = 12; // Number of courses per page
+  const coursesPerPage = 12;
 
   const coursesFilteredByCategories = activeCategory
     ? activeCategory === "All"
@@ -45,7 +45,7 @@ export const FilteredCoursesComponent = ({
           (course: Course) =>
             course.courseTitle.includes(activeCategory) ||
             (course.courseCategories &&
-              course.courseCategories.includes(activeCategory))
+              course.courseCategories.includes(activeCategory)),
         )
     : courses;
 
@@ -58,8 +58,8 @@ export const FilteredCoursesComponent = ({
               .includes(searchQuery.toLowerCase()) ||
             (course.courseCategories &&
               course.courseCategories.some((cat) =>
-                cat.toLowerCase().includes(searchQuery.toLowerCase())
-              ))
+                cat.toLowerCase().includes(searchQuery.toLowerCase()),
+              )),
         )
       : courses.filter(
           (course: Course) =>
@@ -68,9 +68,9 @@ export const FilteredCoursesComponent = ({
               .includes(searchQuery.toLowerCase()) ||
             (course.courseCategories &&
               course.courseCategories.some((cat) =>
-                cat.toLowerCase().includes(searchQuery.toLowerCase())
+                cat.toLowerCase().includes(searchQuery.toLowerCase()),
               ) &&
-              course.courseCategories.includes(activeCategory))
+              course.courseCategories.includes(activeCategory)),
         )
     : courses.filter(
         (course: Course) =>
@@ -79,8 +79,8 @@ export const FilteredCoursesComponent = ({
             .includes(searchQuery.toLowerCase()) ||
           (course.courseCategories &&
             course.courseCategories.some((cat) =>
-              cat.toLowerCase().includes(searchQuery.toLowerCase())
-            ))
+              cat.toLowerCase().includes(searchQuery.toLowerCase()),
+            )),
       );
 
   const filteredCourses = searchQuery
@@ -92,22 +92,24 @@ export const FilteredCoursesComponent = ({
 
   const coursesToDisplay = filteredCourses?.slice(
     (currentPage - 1) * coursesPerPage,
-    currentPage * coursesPerPage
+    currentPage * coursesPerPage,
   );
 
-  if (loading) {
+  // todo use a callout for loading
+  if (loadingState.loading) {
     return (
-      <div className="flex flex-wrap justify-center my-6 md:p-6 md:mx-auto ">
+      <div className="my-6 flex flex-wrap justify-center md:mx-auto md:p-6">
         <FilteredCoursesSkeleton />
       </div>
     );
   }
 
-  if (error) {
+  // todo use a callout for error
+  if (loadingState.error) {
     return (
-      <div className="flex flex-col mx-auto my-auto justify-center items-center">
-        <p className="flex mx-auto items-center justify-center">
-          ERROR: {error}
+      <div className="mx-auto my-auto flex flex-col items-center justify-center">
+        <p className="mx-auto flex items-center justify-center">
+          ERROR: {loadingState.error}
         </p>
       </div>
     );
@@ -128,8 +130,8 @@ export const FilteredCoursesComponent = ({
   };
 
   return (
-    <div className="max-w-7xl w-full my-6">
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 md:max-w-7xl w-full gap-4 my-6 justify-center items-center mx-auto">
+    <div className="my-6 w-full max-w-7xl">
+      <div className="mx-auto my-6 grid w-full grid-cols-2 items-center justify-center gap-4 md:max-w-7xl md:grid-cols-2 lg:grid-cols-4">
         {filteredCourses &&
           filteredCourses.map((course: Course) => (
             <CourseCard key={course.courseId} course={course} />
@@ -170,7 +172,7 @@ const CoursesPagination = ({ currentPage, totalPages, onPageChange }: any) => {
                 {pageNumber}
               </PaginationLink>
             </PaginationItem>
-          )
+          ),
         )}
         <PaginationItem>
           <PaginationNext
@@ -187,7 +189,7 @@ const CoursesPagination = ({ currentPage, totalPages, onPageChange }: any) => {
 // <------------------------------------- SKELETON ---------------------------------------->
 const FilteredCoursesSkeleton = () => {
   return (
-    <div className="md:max-w-7xl w-full justify-center md:mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-4">
+    <div className="grid w-full grid-cols-1 justify-center gap-y-4 md:mx-auto md:max-w-7xl md:grid-cols-2 lg:grid-cols-3">
       <FilteredCourseSkeleton />
       <FilteredCourseSkeleton />
       <FilteredCourseSkeleton />
@@ -200,11 +202,11 @@ const FilteredCoursesSkeleton = () => {
 
 const FilteredCourseSkeleton = () => {
   return (
-    <div className="flex flex-col space-y-3 mb-6">
-      <Skeleton className="h-[125px] md:max-w-[250px] w-full rounded-xl" />
+    <div className="mb-6 flex flex-col space-y-3">
+      <Skeleton className="h-[125px] w-full rounded-xl md:max-w-[250px]" />
       <div className="space-y-2">
-        <Skeleton className="h-4 md:max-w-[250px] w-full" />
-        <Skeleton className="h-4 md:max-w-[200px] w-full " />
+        <Skeleton className="h-4 w-full md:max-w-[250px]" />
+        <Skeleton className="h-4 w-full md:max-w-[200px]" />
       </div>
     </div>
   );

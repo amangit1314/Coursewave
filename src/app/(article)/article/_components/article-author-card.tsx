@@ -2,8 +2,8 @@
 
 import React from "react";
 import Image from "next/image";
-import { Divider } from "@tremor/react";
-import useGetUserByAuthorId from "@/hooks/use-get-user-by-authorId";
+import { Callout, Divider } from "@tremor/react";
+import { useGetUserByAuthorId } from "@/hooks/useGetUserById";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const ArticleAuthorCard = ({ authorId }: { authorId: string }) => {
@@ -14,8 +14,22 @@ const ArticleAuthorCard = ({ authorId }: { authorId: string }) => {
     return <ArticleAuthorCardLoadingSkeleton />;
   }
 
+  if (authorData.error) {
+    return (
+      <div className="w-7xl mx-auto flex items-center justify-center align-middle">
+        <Callout
+          className=""
+          title="Failed to Fetch Author Info in aricle-author-card.tsx 🚨❌"
+          color="red"
+        >
+          <span>{authorData.error.message} 🚨❌ ...</span>
+        </Callout>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col space-y-4 my-8">
+    <div className="my-8 flex flex-col space-y-4">
       <Image
         src={
           author && author.profileImageUrl
@@ -25,30 +39,30 @@ const ArticleAuthorCard = ({ authorId }: { authorId: string }) => {
         alt=""
         height={60}
         width={60}
-        className="rounded-full h-[60px] w-[60px] cursor-pointer  duration-200 transition-all hover:shadow-xl"
+        className="h-[60px] w-[60px] cursor-pointer rounded-full transition-all duration-200 hover:shadow-xl"
       />
 
       <div className="md:ml-2">
-        <div className="text-sm flex flex-col space-y-2 justify-start items-start">
-          <div className="flex justify-between items-center w-full">
-            <p className="text-base text-zinc-800 dark:text-gray-200 font-medium tracking-tight">
+        <div className="flex flex-col items-start justify-start space-y-2 text-sm">
+          <div className="flex w-full items-center justify-between">
+            <p className="text-base font-medium tracking-tight text-zinc-800 dark:text-gray-200">
               Written by{" "}
-              <span className="cursor-pointer duration-200 transition-all font-bold hover:underline dark:text-white">
+              <span className="cursor-pointer font-bold transition-all duration-200 hover:underline dark:text-white">
                 {author ? author.name : "Author Name"}
               </span>
             </p>
-            <p className="rounded-badge ml-auto border border-stroke text-center px-4 py-2 text-xs cursor-pointer text-green-700 hover:text-white hover:bg-green-700 transition-all duration-200">
+            <p className="border-stroke ml-auto cursor-pointer rounded-badge border px-4 py-2 text-center text-xs text-green-700 transition-all duration-200 hover:bg-green-700 hover:text-white">
               Follow
             </p>
           </div>
-          <p className="text-sm font-medium text-zinc-700 dark:text-gray-200 ">
-            <span className="text-zinc-950 dark:text-white font-bold tracking-tight">
+          <p className="text-sm font-medium text-zinc-700 dark:text-gray-200">
+            <span className="font-bold tracking-tight text-zinc-950 dark:text-white">
               {100}
             </span>{" "}
             Followers
           </p>
 
-          <blockquote className="text-sm font-medium text-zinc-700 dark:text-gray-200 line-clamp-4 ">
+          <blockquote className="line-clamp-4 text-sm font-medium text-zinc-700 dark:text-gray-200">
             {author
               ? author.about
               : `Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci
@@ -68,22 +82,22 @@ export default ArticleAuthorCard;
 
 const ArticleAuthorCardLoadingSkeleton = () => {
   return (
-    <div className="space-y-6 my-8">
-      <Skeleton className="rounded-full h-[60px] w-[60px]" />
+    <div className="my-8 space-y-6">
+      <Skeleton className="h-[60px] w-[60px] rounded-full" />
 
       <div className="space-y-4">
-        <div className="flex justify-between items-center w-full">
-          <div className="flex justify-start items-center space-x-2">
+        <div className="flex w-full items-center justify-between">
+          <div className="flex items-center justify-start space-x-2">
             <Skeleton className="h-8 w-[45px]" />
             <Skeleton className="h-8 w-[150px]" />
           </div>
 
-          <p className="rounded-badge border border-stroke text-center px-4 py-2 text-xs cursor-pointer text-green-700 hover:text-white hover:bg-green-700 transition-all duration-200">
+          <p className="border-stroke cursor-pointer rounded-badge border px-4 py-2 text-center text-xs text-green-700 transition-all duration-200 hover:bg-green-700 hover:text-white">
             Follow
           </p>
         </div>
 
-        <div className="flex justify-start items-center space-x-2">
+        <div className="flex items-center justify-start space-x-2">
           <Skeleton className="h-4 w-[40px]" />
           <Skeleton className="h-4 w-[95px]" />
         </div>

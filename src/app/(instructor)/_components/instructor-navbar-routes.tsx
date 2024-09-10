@@ -6,12 +6,11 @@ import { usePathname, useRouter } from "next/navigation";
 import { IoNotificationsOutline } from "react-icons/io5";
 import UserAvatar from "@/components/user-avatar";
 import { Button } from "@/components/ui/button";
-import { ThemeModeToggle } from "@/components/themeModeToggle";
-import useUserInfo from "@/hooks/use-user-info";
+import { ThemeModeToggle } from "@/components/theme-mode-toggle";
+import { useUserInfo } from "@/hooks/useUserInfo";
 import Notifications from "@/components/notification-button";
-// import Notifications from "@/app/(dashboard)/(routes)/notifications/page";
 
-function InstructorNavbarRoutes() {
+const InstructorNavbarRoutes = () => {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -22,14 +21,14 @@ function InstructorNavbarRoutes() {
   const user = useUserInfo();
 
   return (
-    <div className="w-full ml-auto md:mx-8 flex justify-between items-center">
-      <div className="hidden md:flex md:mr-auto text-black dark:text-white text-md text-base font-semibold tracking-tight bg-transparent">
+    <div className="ml-auto flex w-full items-center justify-between md:mx-8">
+      <div className="text-md hidden bg-transparent text-base font-semibold tracking-tight text-black dark:text-white md:mr-auto md:flex">
         Instructor Dashboard
       </div>
-      <div className="ml-auto flex justify-end items-center gap-x-2">
+      <div className="ml-auto flex items-center justify-end gap-x-2">
         <Button
           onClick={switchBack}
-          className="cursor-pointer border-opacity-10 hover:bg-slate-50 dark:hover:border-opacity-100 dark:border-opacity-10 hover:border-opacity-100 dark:hover:bg-zinc-700 border px-4 border-black text-black text-xs dark:border-white dark:text-white bg-transparent rounded-lg mx-auto items-center"
+          className="mx-auto cursor-pointer items-center rounded-lg border border-black border-opacity-10 bg-transparent px-4 text-xs text-black hover:border-opacity-100 hover:bg-slate-50 dark:border-white dark:border-opacity-10 dark:text-white dark:hover:border-opacity-100 dark:hover:bg-zinc-700"
         >
           {"Go back"}
         </Button>
@@ -39,6 +38,6 @@ function InstructorNavbarRoutes() {
       </div>
     </div>
   );
-}
+};
 
 export default InstructorNavbarRoutes;

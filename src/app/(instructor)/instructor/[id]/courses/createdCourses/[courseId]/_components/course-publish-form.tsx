@@ -45,7 +45,7 @@ const PublishCourseForm = ({ course }: PublishCourseFormProps) => {
   };
 
   return (
-    <div className="flex flex-col space-y-2  md:space-y-0 md:flex-row justify-start md:justify-end items-start md:items-center space-x-2">
+    <div className="flex flex-col items-start justify-start space-x-2 space-y-2 md:flex-row md:items-center md:justify-end md:space-y-0">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
@@ -53,7 +53,7 @@ const PublishCourseForm = ({ course }: PublishCourseFormProps) => {
             name="isPublished"
             render={({ field }) => (
               <div className="">
-                <FormItem className="flex flex-col-reverse md:flex-row-reverse items-start md:items-center justify-start rounded-lg">
+                <FormItem className="flex flex-col-reverse items-start justify-start rounded-lg md:flex-row-reverse md:items-center">
                   <FormControl>
                     <Switch
                       checked={field.value ?? true}

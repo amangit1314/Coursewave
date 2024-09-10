@@ -32,12 +32,12 @@ const Offerings = () => {
   ];
 
   return (
-    <div className="h-full max-w-7xl w-full">
+    <div className="h-full w-full max-w-7xl">
       <div>
-        <div className="font-bold tracking-tight text-center text-2xl text-zinc-800 dark:text-white ">
+        <div className="text-center text-2xl font-bold tracking-tight text-zinc-800 dark:text-white">
           What we Offer!
         </div>
-        <p className="pt-4 text-[1rem] text-center text-zinc-700 dark:text-gray-200">
+        <p className="pt-4 text-center text-[1rem] text-zinc-700 dark:text-gray-200">
           Unlock Your Infinte Learning and Professional Protential with <br />
           our wide range of courses
           {/* <span className="text-blue-500 ml-1">Coursewave!</span> */}
@@ -45,7 +45,7 @@ const Offerings = () => {
       </div>
 
       {/* links grid */}
-      <div className="mx-auto mt-8  grid gap-x-5 lg:gap-x-5 text-center grid-cols-2 lg:max-w-5xl lg:w-full  lg:grid-cols-4 lg:text-left">
+      <div className="mx-auto mt-8 grid grid-cols-2 gap-x-5 text-center lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:gap-x-5 lg:text-left">
         {offerings.map((offering, index) => {
           return (
             <div key={index}>
@@ -83,12 +83,12 @@ const OfferingsLinkItem = ({
       target="_blank"
       rel="noopener noreferrer"
     >
-      <div className="group rounded-2xl border h-[140px] w-[241px] border-stroke hover:border-stroke hover:border-zinc-800 dark:hover:border-zinc-400 p-4 transition-all duration-300  hover:shadow-xl space-y-3">
-        <h2 className="text-[1.2rem] tracking-tight text-zinc-800 dark:text-gray-50 font-semibold">
+      <div className="border-stroke hover:border-stroke group h-[140px] w-[241px] space-y-3 rounded-2xl border p-4 transition-all duration-300 hover:border-zinc-800 hover:shadow-xl dark:hover:border-zinc-400">
+        <h2 className="text-[1.2rem] font-semibold tracking-tight text-zinc-800 dark:text-gray-50">
           {title ? title : "Courses"}
           <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none"></span>
         </h2>
-        <p className="w-full text-[1rem]  text-zinc-700 dark:text-gray-200">
+        <p className="w-full text-[1rem] text-zinc-700 dark:text-gray-200">
           {description
             ? description
             : "Find in-depth informative courses on various courses."}

@@ -23,7 +23,7 @@ import { z } from "zod";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import useUserInfo from "@/hooks/use-user-info";
+import { useUserInfo } from "@/hooks/useUserInfo";
 import { Input } from "@/components/ui/input";
 import { absoluteUrl } from "@/utils/utils";
 import { useRouter } from "next/navigation";
@@ -63,13 +63,15 @@ const WriteArticlePage = () => {
         title: values.title,
         content: values.content,
         estimatedReadingTime: "10 min",
-        thumbnailUrl: values.image ?? "https://wcgwzdehnxpexussrkni.supabase.co/storage/v1/object/public/assets/green-3d.jpg",
+        thumbnailUrl:
+          values.image ??
+          "https://wcgwzdehnxpexussrkni.supabase.co/storage/v1/object/public/assets/green-3d.jpg",
       })
       .then((response) => {
         console.log("Write Article Form Values: ", values);
         console.log("Response data after creating article: ", response);
         toast.success("Article Created successfully ...");
-        router.push(absoluteUrl('/articles'));
+        router.push(absoluteUrl("/articles"));
       })
       .catch((err: any) => {
         console.log("Error in creating course: ", err.message);
@@ -78,16 +80,16 @@ const WriteArticlePage = () => {
   };
 
   return (
-    <div className="px-4 md:px-8 py-24">
-      <div className="flex justify-start items-center space-x-2 dark:text-zinc-900 text-xs mb-8">
+    <div className="px-4 py-24 md:px-8">
+      <div className="mb-8 flex items-center justify-start space-x-2 text-xs dark:text-zinc-900">
         <IoMdArrowRoundBack className="text-zinc-900 dark:text-white" />
-        <p className="text-zinc-900 dark:text-gray-300 text-xs">
+        <p className="text-xs text-zinc-900 dark:text-gray-300">
           Back to articles
         </p>
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 ">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="title"
@@ -101,7 +103,7 @@ const WriteArticlePage = () => {
                     <Input
                       type="text"
                       placeholder="Title"
-                      className="bg-transparent overflow-hidden outline-none cursor-gray-300 dark:text-white"
+                      className="cursor-gray-300 overflow-hidden bg-transparent outline-none dark:text-white"
                       {...field}
                     />
                   </FormControl>
@@ -125,29 +127,29 @@ const WriteArticlePage = () => {
                     Article Content
                   </FormLabel>
                   <FormControl>
-                    <div className="justify-start items-start  py-4">
-                      <div className="flex justify-start items-start">
+                    <div className="items-start justify-start py-4">
+                      <div className="flex items-start justify-start">
                         <button type="button" onClick={() => setOpen(!open)}>
                           <IoAddCircleOutline className="h-8 w-8" />
                         </button>
 
                         {open && (
-                          <div className="flex justify-start items-center space-x-[5px] mx-2">
+                          <div className="mx-2 flex items-center justify-start space-x-[5px]">
                             <button
                               type="button"
-                              className="flex justify-center items-center border bg-transparent border-stroke rounded-full p-2 cursor-pointer transition-all duration-300 hover:border-blue-400 h-8 w-8 hover:bg-blue-100 hover:text-blue-400"
+                              className="border-stroke flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-transparent p-2 transition-all duration-300 hover:border-blue-400 hover:bg-blue-100 hover:text-blue-400"
                             >
                               <RiImageAddFill size={18} />
                             </button>
                             <button
                               type="button"
-                              className="flex justify-center items-center border bg-transparent border-stroke rounded-full p-2 cursor-pointer transition-all duration-300 hover:border-blue-400 h-8 w-8 hover:bg-blue-100 hover:text-blue-400"
+                              className="border-stroke flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-transparent p-2 transition-all duration-300 hover:border-blue-400 hover:bg-blue-100 hover:text-blue-400"
                             >
                               <AiOutlineVideoCameraAdd size={18} />
                             </button>
                             <button
                               type="button"
-                              className="flex justify-center items-center border bg-transparent border-stroke rounded-full p-2 cursor-pointer transition-all duration-300 hover:border-blue-400 h-8 w-8 hover:bg-blue-100 hover:text-blue-400"
+                              className="border-stroke flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border bg-transparent p-2 transition-all duration-300 hover:border-blue-400 hover:bg-blue-100 hover:text-blue-400"
                             >
                               <RiExternalLinkLine size={18} />
                             </button>
@@ -157,7 +159,7 @@ const WriteArticlePage = () => {
 
                       <ReactQuill
                         theme="bubble"
-                        className="w-full dark:text-white text-[28px]"
+                        className="w-full text-[28px] dark:text-white"
                         placeholder="Tell your story ..."
                         {...field}
                       />
@@ -173,7 +175,7 @@ const WriteArticlePage = () => {
           />
 
           {/* cancel and create button */}
-          <div className="flex items-center gap-x-2 mb-4">
+          <div className="mb-4 flex items-center gap-x-2">
             <Link href="/">
               <Button variant="ghost" type="button">
                 Cancel

@@ -1,15 +1,9 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  CaretSortIcon,
-  ChevronDownIcon,
-  DotsHorizontalIcon,
-} from "@radix-ui/react-icons";
+import { ChevronDownIcon } from "@radix-ui/react-icons";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -39,11 +33,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Course, Enrollment, User } from "@prisma/client";
-import { data as sampleData } from "@/lib/mockData";
 
-import useUserInfo from "@/hooks/use-user-info";
-import useEnrolledCourses from "@/hooks/use-enrolled-courses";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

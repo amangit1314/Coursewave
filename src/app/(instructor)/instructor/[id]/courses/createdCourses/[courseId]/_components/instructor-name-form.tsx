@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import useUserInfo from "@/hooks/use-user-info";
+import { useUserInfo } from "@/hooks/useUserInfo"; //TODO
 import { cn } from "@/utils/utils";
 import { Course } from "@prisma/client";
 
@@ -32,9 +32,7 @@ const formSchema = z.object({
   }),
 });
 
-export const InstructorNameForm = ({
-  course,
-}: InstructorNameFormProps) => {
+export const InstructorNameForm = ({ course }: InstructorNameFormProps) => {
   const [isEditing, setIsEditing] = useState(false);
   // const user = useUserInfo();
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -51,7 +49,7 @@ export const InstructorNameForm = ({
     try {
       await axios.patch(
         `api/instructor/${course.instructorID}/dashboard/courses/${course.courseId}`,
-        { newInstructorName: values.instructorName }
+        { newInstructorName: values.instructorName },
       );
       toast.success("Course instructor name updated ...");
       toggleEdit();
@@ -62,15 +60,15 @@ export const InstructorNameForm = ({
   };
 
   return (
-    <div className="mt-6 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4">
-      <div className="font-medium flex items-center justify-between">
+    <div className="mt-6 rounded-2xl border bg-slate-100 p-4 dark:bg-zinc-700">
+      <div className="flex items-center justify-between font-medium">
         Instructor Name
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Cancel</>
           ) : (
             <>
-              <Pencil className="h-4 w-4 mr-2" />
+              <Pencil className="mr-2 h-4 w-4" />
               Edit instructor name
             </>
           )}
@@ -80,9 +78,8 @@ export const InstructorNameForm = ({
       {!isEditing && (
         <p
           className={cn(
-            "text-sm mt-2",
-            !course?.courseCreator &&
-            "text-gray-500 dark:text-gray-400 italic"
+            "mt-2 text-sm",
+            !course?.courseCreator && "italic text-gray-500 dark:text-gray-400",
           )}
         >
           {course?.courseCreator || "No istructor name"}
@@ -93,7 +90,7 @@ export const InstructorNameForm = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 mt-4"
+            className="mt-4 space-y-4"
           >
             <FormField
               control={form.control}

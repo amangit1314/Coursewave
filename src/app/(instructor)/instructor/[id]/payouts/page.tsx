@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function Payouts() {
-  return (
-    <div>Payouts</div>
-  )
+  return <div>Payouts</div>;
 }
 
-export default Payouts
+export default Payouts;

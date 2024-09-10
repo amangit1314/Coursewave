@@ -2,8 +2,9 @@
 
 import React, { useEffect } from "react";
 import Image from "next/image";
-import useGetUserByAuthorId from "@/hooks/use-get-user-by-authorId";
+import { useGetUserByAuthorId } from "@/hooks/useGetUserById";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Callout } from "@tremor/react";
 
 type ArticleAuthorInfoProps = {
   authorId: string;
@@ -25,9 +26,15 @@ const ArticleAuthorInfo = ({
 
   if (authorData.error) {
     return (
-      <p className="text-red-600 dark:text-red-500">
-        Error: ${authorData.error.message}
-      </p>
+      <div className="w-7xl mx-auto flex items-center justify-center align-middle">
+        <Callout
+          className=""
+          title="Failed to Fetch Article Author Info 🚨❌"
+          color="red"
+        >
+          <span>{authorData.error.message} 🚨❌ ...</span>
+        </Callout>
+      </div>
     );
   }
 
@@ -50,17 +57,17 @@ const ArticleAuthorInfo = ({
         alt=""
         height={40}
         width={40}
-        className="rounded-full h-[40px] w-[40px]"
+        className="h-[40px] w-[40px] rounded-full"
       />
 
       <div className="ml-2">
-        <div className="text-sm flex space-x-2 justify-start items-center">
-          <p className="text-base text-zinc-800 dark:text-white font-semibold">
+        <div className="flex items-center justify-start space-x-2 text-sm">
+          <p className="text-base font-semibold text-zinc-800 dark:text-white">
             {author?.name ?? "Author Name"}
           </p>
-          <p className="text-xs text-green-500 cursor-pointer">Follow</p>
+          <p className="cursor-pointer text-xs text-green-500">Follow</p>
         </div>
-        <div className="text-xs flex space-x-2 justify-start items-center dark:text-gray-400">
+        <div className="flex items-center justify-start space-x-2 text-xs dark:text-gray-400">
           <p>{estimatedReadingTime ?? "5 min read"}, </p>
           <p className="font-medium">
             {formattedArticleDate ?? "Nov 18, 2023"}
@@ -75,12 +82,12 @@ export default ArticleAuthorInfo;
 
 const ArticleAuthorInfoLoadingSkeleton = () => {
   return (
-    <div className="flex justify-start items-center space-x-4">
-      <Skeleton className="rounded-full h-[40px] w-[40px]" />
+    <div className="flex items-center justify-start space-x-4">
+      <Skeleton className="h-[40px] w-[40px] rounded-full" />
 
       <div className="space-y-2">
-        <div className="flex space-x-2 justify-start items-center">
-          <div className="flex justify-start items-center space-x-2">
+        <div className="flex items-center justify-start space-x-2">
+          <div className="flex items-center justify-start space-x-2">
             <Skeleton className="h-6 w-[195px]" />
             <Skeleton className="h-6 w-[50px]" />
           </div>
@@ -88,7 +95,7 @@ const ArticleAuthorInfoLoadingSkeleton = () => {
           {/* <p className="text-xs text-green-500 cursor-pointer">Follow</p> */}
         </div>
 
-        <div className="flex justify-start items-center space-x-2">
+        <div className="flex items-center justify-start space-x-2">
           <Skeleton className="h-4 w-[40px]" />
           <Skeleton className="h-4 w-[195px]" />
         </div>

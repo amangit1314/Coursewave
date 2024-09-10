@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React from "react";
 import {
@@ -51,7 +51,7 @@ const valueFormatter = (number: number) =>
 
 export default function LineChartForStudents() {
   return (
-    <div className="rounded-lg mt-2 dark:bg-zinc-900 border border-stroke overflow-hidden">
+    <div className="border-stroke mt-2 overflow-hidden rounded-lg border dark:bg-zinc-900">
       <div className="px-4 pt-4">
         <Title>Students enrolled (2023 to Present)</Title>
       </div>

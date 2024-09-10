@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { generateUid } from "@/helpers/id_helper";
 import { sendEmail } from "@/helpers/send_email_helper";
 import { NextRequest, NextResponse } from "next/server";
-import { generateVerificationToken } from "@/helpers/jwt_helper";
+import { generateVerificationToken } from "@/helpers/jwt-helper";
 import cors, { runMiddleware } from '@/lib/cors';
 
 // Handle the OPTIONS request

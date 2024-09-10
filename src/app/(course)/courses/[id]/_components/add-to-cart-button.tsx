@@ -1,9 +1,9 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import useUserInfo from "@/hooks/use-user-info";
-import useCartStore from "@/zustand/cartStore";
+import { useUserInfo } from "@/hooks/useUserInfo";
+import { useCartStore } from "@/zustand/cartStore";
 import { CartItem, Course } from "@prisma/client";
-import { generateUid } from "@/helpers/id_helper";
+import { generateUid } from "@/helpers/id-helper";
 import { HiOutlineShoppingCart, HiShoppingCart } from "react-icons/hi";
 
 export const AddToCartButton = ({ course }: { course: Course }) => {
@@ -41,14 +41,14 @@ export const AddToCartButton = ({ course }: { course: Course }) => {
       onClick={toggleIsInCart}
       size="sm"
       color="blue"
-      className={`mt-2 text-center text-white bg-blue-500 w-[26rem] rounded-md hover:bg-blue-700 text-sm  font-semibold m-2 ${isInCart ? "bg-blue-600" : "bg-blue-500"}`}
+      className={`m-2 mt-2 w-[26rem] rounded-md bg-blue-500 text-center text-sm font-semibold text-white hover:bg-blue-700 ${isInCart ? "bg-blue-600" : "bg-blue-500"}`}
     >
       {isInCart ? (
-        <div className="flex justify-center items-center">
+        <div className="flex items-center justify-center">
           <HiShoppingCart size={22} /> Remove from cart
         </div>
       ) : (
-        <div className="flex justify-center items-center">
+        <div className="flex items-center justify-center">
           <HiOutlineShoppingCart size={22} /> Add to cart
         </div>
       )}

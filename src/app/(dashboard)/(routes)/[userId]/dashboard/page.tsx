@@ -1,11 +1,7 @@
 "use client";
 
-import React from "react";
-import {
-  EnrollementWithProgress as enrollment,
-  enrollmentColumns,
-} from "./_components/enrolled-courses-tables/columns";
-import { useQuery } from "@tanstack/react-query";
+import React, { useEffect, useMemo } from "react";
+import { enrollmentColumns } from "./_components/enrolled-courses-tables/columns";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Callout,
@@ -16,85 +12,53 @@ import {
   TabPanels,
 } from "@tremor/react";
 import { cn } from "@/utils/utils";
-import { useZustandStore } from "@/zustand/store";
 import { DataTable } from "./_components/enrolled-courses-tables/data-table";
 import { createdArticlesColumns } from "./_components/created-articles-table/created-articles-columns";
 import { savedArticlesColumns } from "./_components/saved-articles-table/saved-articles-columns";
+import { useUserStore } from "@/zustand/userStore";
 import DashboardHeader from "./_components/dashboard-header";
 import UserDashboardStats from "./_components/user-dashboard-stats";
 import LearningGoals from "./_components/learning-goals/learning-goals";
+import { EnrollementWithProgress } from "@/types/enrollment-with-progress";
+import { BlogWithComments } from "@/types/blog-with-comments";
 
 const DashboardPage = ({ params }: { params: { userId: string } }) => {
-  const userId = params?.userId!;
-
-  const fetchUserEnrolledCourses = async () => {
-    const response = await fetch(`api/profile/${userId}/enrolledCourses`);
-
-    if (!response.ok) {
-      console.log("Failed to fetch user enrolled courses ...");
-    }
-
-    return await response.json();
-  };
+  const { userId } = params;
 
   const {
-    data: enrolledCourses,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["enrolledCourses"],
-    queryFn: fetchUserEnrolledCourses,
-    staleTime: 4,
-  });
+    fetchEnrolledCourses,
+    enrolledCourses,
+    loadingState: { loading, error },
+  } = useUserStore();
 
-  const enrolledCoursesTableData = React.useMemo(() => {
-    console.log(
-      "Enrolled courses in use memo for table data: ",
-      enrolledCourses
-    );
-    const toEnrollmentProps = (enrolledCourse: any): enrollment => {
-      return {
-        enrollmentId: enrolledCourse.enrollmentId,
-        userId: enrolledCourse.userId,
-        courseId: enrolledCourse.courseId,
-        courseTitle: enrolledCourse.course.courseTitle,
-        courseProgressId: "enrollment.courseProgressId",
-        enrollmentDate: enrolledCourse.enrollmentDate.substring(0, 16),
-        progress: 0,
-        certificate: "Certificate",
-        enrollmentStatus: enrolledCourse.enrollmentStatus,
-        validity: "Life time",
-        createdAt: enrolledCourse.enrollmentDate,
-        updatedAt: enrolledCourse.enrollmentDate,
-      };
-    };
-    return enrolledCourses?.data?.map(toEnrollmentProps);
-  }, [enrolledCourses]);
+  useEffect(() => {
+    fetchEnrolledCourses(userId);
+  }, [userId, fetchEnrolledCourses]);
 
-  // <--------------------------- Calculate totals ---------------------->
-  const totalEnrolledCourses = enrolledCourses?.data?.length || 0;
+  const totalEnrolledCourses = enrolledCourses?.length || 0;
   const totalCompletedCourses =
-    enrolledCourses?.data?.filter(
-      (course: any) => course.enrollmentStatus === "completed"
+    enrolledCourses?.filter(
+      (enrollment: EnrollementWithProgress) =>
+        enrollment.enrollmentStatus === "COMPLETED",
     ).length || 0;
   const totalOngoingCourses =
-    enrolledCourses?.data?.filter(
-      (course: any) => course.enrollmentStatus === "ongoing"
+    enrolledCourses?.filter(
+      (course: any) => course.enrollmentStatus === "ACTIVE",
     ).length || totalEnrolledCourses;
 
-  // <-------------------------- Main ----------------------------------->
   return (
-    <div className="py-4 px-6 overflow-x-hidden">
+    <div className="overflow-x-hidden px-6 py-4">
       {/* header */}
       <DashboardHeader />
 
       {/* other content */}
       <div className="space-y-4 md:space-y-12">
-        <p className="text-xl pt-8 font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong tracking-tight">
+        {/* user dashboard text */}
+        <p className="pt-8 text-xl font-semibold tracking-tight text-tremor-content-strong dark:text-dark-tremor-content-strong">
           User Dashboard
         </p>
 
-        {/* user dashboard stats */}
+        {/* <---------------------------- user dashboard stats ----------------------> */}
         <UserDashboardStats
           totalEnrolledCourses={totalEnrolledCourses}
           totalCompletedCourses={totalCompletedCourses}
@@ -111,51 +75,14 @@ const DashboardPage = ({ params }: { params: { userId: string } }) => {
         {/* <BarChartExampleWithCustomTooltip /> */}
 
         {/* <--------------------------- Enrolled Courses -----------------------------> */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong tracking-tight">
-            Enrolled Courses
-          </h3>
-
-          {/* <------------------- enrolled courses table -------------------------> */}
-          <>
-            {isLoading ? (
-              <div className="space-y-2">
-                <Skeleton className="h-16 w-full rounded-md" />
-                <Skeleton className="h-16 w-full rounded-md" />
-                <Skeleton className="h-16 w-full rounded-md" />
-                <Skeleton className="h-16 w-full rounded-md" />
-              </div>
-            ) : error ? (
-              <Callout
-                className=""
-                title="Error Fetching Enrolled Courses"
-                color="red"
-              >
-                ERROR, {error.message} ...
-              </Callout>
-            ) : (
-              <div>
-                {enrolledCourses?.data?.length > 0 ? (
-                  <DataTable
-                    columns={enrollmentColumns}
-                    data={enrolledCoursesTableData}
-                  />
-                ) : (
-                  <Callout
-                    className=""
-                    title="No Enrolled Courses"
-                    color="yellow"
-                  >
-                    You haven't enrolled in any courses yet ...
-                  </Callout>
-                )}
-              </div>
-            )}
-          </>
-        </div>
+        <EnrolledCourses
+          enrolledCourses={enrolledCourses}
+          areEnrolledCoursesLoading={loading}
+          enrolledCoursesError={error}
+        />
 
         {/* <------------------------------ Articles & Learning Goals -------------------------> */}
-        <SavedArticlesAndLearningGoals userId={userId} />
+        <ArticlesAndLearningGoals userId={userId} />
       </div>
     </div>
   );
@@ -163,149 +90,204 @@ const DashboardPage = ({ params }: { params: { userId: string } }) => {
 
 export default DashboardPage;
 
-const SavedArticlesAndLearningGoals = ({ userId }: { userId: string }) => {
-  const fetchCreatedArticles = async () => {
-    const response = await fetch(`api/profile/${userId}/createdArticles`);
+// ----------------------------- components -----------------------------
 
-    if (!response.ok) {
-      console.log("Failed to fetch user created articles ...");
-    }
+/// Enrolled Courses
+interface EnrolledCoursesProps {
+  enrolledCourses: EnrollementWithProgress[];
+  areEnrolledCoursesLoading: boolean;
+  enrolledCoursesError: string | null;
+}
 
-    return await response.json();
-  };
+const EnrolledCourses: React.FC<EnrolledCoursesProps> = ({
+  enrolledCourses,
+  areEnrolledCoursesLoading,
+  enrolledCoursesError,
+}) => {
+  const enrolledCoursesTableData = useMemo(() => {
+    return enrolledCourses.map((enrollment) => ({
+      enrollmentId: enrollment.enrollmentId,
+      userId: enrollment.userId,
+      courseId: enrollment.courseId,
+      courseTitle: enrollment.courseTitle,
+      courseProgressId: enrollment.courseProgressId,
+      enrollmentDate: enrollment.enrollmentDate,
+      enrollmentStatus: enrollment.enrollmentStatus,
+      progress: enrollment.progress, // Use actual value
+      certificate: enrollment.certificate, // Use actual value
+      validity: enrollment.validity, // Use actual value
+      createdAt: enrollment.createdAt ? new Date(enrollment.createdAt) : null,
+      updatedAt: enrollment.updatedAt ? new Date(enrollment.updatedAt) : null,
+    }));
+  }, [enrolledCourses]);
 
-  const {
-    data: createdArticles,
-    isLoading: isCreatedArticlesLoading,
-    error: createdArticlesError,
-  } = useQuery({
-    queryKey: ["createdArticles"],
-    queryFn: fetchCreatedArticles,
-    staleTime: 4,
-  });
-
-  const savedArticles = useZustandStore((state) => state.savedArticles);
-  const isSavedArticlesLoading = useZustandStore((state) => state.loading);
-  const savedArticlesError = useZustandStore((state) => state.error);
+  if (areEnrolledCoursesLoading) return <EnrolledCoursesTableSkeleton />;
+  if (enrolledCoursesError)
+    return (
+      <Callout title="Error Fetching Enrolled Courses 🚨❌" color="red">
+        {enrolledCoursesError} 🚨❌
+      </Callout>
+    );
 
   return (
-    <div className="flex flex-col justify-start md:grid md:grid-cols-3 md:justify-between space-y-6 md:space-y-0 md:gap-6 items-start mb-8 p-4 rounded-md border border-stroke ">
-      {/* create articles and saved articles tabs */}
-      <div className="space-y-4 md:col-span-2 w-full">
-        <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong tracking-tight">
-          Articles
-        </h3>
+    <div className="space-y-4">
+      <h3 className="text-lg font-medium tracking-tight text-tremor-content-strong dark:text-dark-tremor-content-strong">
+        Enrolled Courses
+      </h3>
 
-        <TabGroup className="space-y-2">
-          {/* variant="line" */}
-          <TabList
-            defaultValue="1"
-            color={"blue"}
-            className="p-2 rounded-xl dark:bg-zinc-800 overflow-hidden"
-          >
-            <Tab
-              value="1"
-              className={cn(
-                "flex justify-center items-center rounded-md bg-transparent border border-stroke border-transparent text-blue-500 px-4 py-2 font-medium tracking-tight hover:text-white hover:bg-blue-600 dark:hover:bg-zinc-700 hover:border-transparent active:text-white active:border-transparent active:bg-blue-600 overflow-hidden"
-              )}
-            >
-              Saved Articles
-            </Tab>
-            <Tab
-              value="2"
-              className={cn(
-                "flex justify-center items-center rounded-md bg-transparent border border-stroke border-transparent text-blue-500 px-4 py-2 font-medium tracking-tight hover:text-white hover:bg-blue-600 dark:hover:bg-zinc-700 hover:border-transparent active:text-white active:border-transparent active:bg-blue-600 overflow-hidden"
-              )}
-            >
-              Created Articles
-            </Tab>
-          </TabList>
+      {enrolledCourses?.length > 0 ? (
+        <DataTable
+          columns={enrollmentColumns}
+          data={enrolledCoursesTableData}
+        />
+      ) : (
+        <Callout title="No Enrolled Courses" color="yellow">
+          You haven't enrolled in any courses yet ...
+        </Callout>
+      )}
+    </div>
+  );
+};
 
-          <TabPanels>
-            {/* saved articles */}
-            <TabPanel>
-              <>
-                {isSavedArticlesLoading ? (
-                  <SavedArticlesSkeleton />
-                ) : savedArticlesError ? (
-                  <Callout
-                    className=""
-                    title="Error Fetching Saved Articles"
-                    color="red"
-                  >
-                    We are facing below error while fetching saved artciles,{" "}
-                    {savedArticlesError}
-                    ...
-                  </Callout>
-                ) : (
-                  <div>
-                    {savedArticles?.length > 0 ? (
-                      <DataTable
-                        columns={savedArticlesColumns}
-                        data={savedArticles}
-                      />
-                    ) : (
-                      <Callout
-                        className=""
-                        title="No saved articles"
-                        color="yellow"
-                      >
-                        You doesn't saved any article, Browse and save one 😁
-                        ...
-                      </Callout>
-                    )}
-                  </div>
-                )}
-              </>
-            </TabPanel>
+/// Articles and Learning Goals Courses
+interface ArticlesAndLearningGoals {
+  userId: string;
+}
 
-            {/* created articles */}
-            <TabPanel>
-              <>
-                {isCreatedArticlesLoading ? (
-                  <CreatedArticlesSkeleton />
-                ) : createdArticlesError ? (
-                  <Callout
-                    className=""
-                    title="Error Fetching Created Articles"
-                    color="red"
-                  >
-                    We are facing below error while fetching created artciles,
-                    {createdArticlesError.message}
-                    ...
-                  </Callout>
-                ) : (
-                  <div>
-                    {createdArticles?.data?.length > 0 ? (
-                      <DataTable
-                        columns={createdArticlesColumns}
-                        data={createdArticles}
-                      />
-                    ) : (
-                      <Callout
-                        className=""
-                        title="No created articles"
-                        color="yellow"
-                      >
-                        Wow such empty, Create your first article 😁 ...
-                      </Callout>
-                    )}
-                  </div>
-                )}
-              </>
-            </TabPanel>
-          </TabPanels>
-        </TabGroup>
-      </div>
+const ArticlesAndLearningGoals: React.FC<ArticlesAndLearningGoals> = ({
+  userId,
+}) => {
+  const {
+    fetchCreatedArticles,
+    createdArticles,
+    loadingState: { loading, error },
+    savedArticles,
+    loadingState: { loading: savedArticlesLoading, error: savedArticlesError },
+  } = useUserStore();
 
-      {/* learning goals */}
-      <div className=" w-full md:cols-span-1">
+  useEffect(() => {
+    fetchCreatedArticles(userId);
+  }, [userId, fetchCreatedArticles]);
+
+  return (
+    <div className="border-stroke mb-8 flex flex-col items-start justify-start space-y-6 rounded-md border p-4 md:grid md:grid-cols-3 md:justify-between md:gap-6 md:space-y-0">
+      <Articles
+        savedArticles={savedArticles}
+        savedArticlesLoading={savedArticlesLoading}
+        savedArticlesError={savedArticlesError}
+        createdArticles={createdArticles}
+        createdArticlesLoading={loading}
+        createdArticlesError={error}
+      />
+
+      <div className="md:cols-span-1 w-full">
         <LearningGoals />
       </div>
     </div>
   );
 };
 
+/// Articles
+interface ArticlesProps {
+  savedArticles: BlogWithComments[];
+  savedArticlesLoading: boolean;
+  savedArticlesError: string | null;
+  createdArticles: BlogWithComments[];
+  createdArticlesLoading: boolean;
+  createdArticlesError: string | null;
+}
+
+const Articles: React.FC<ArticlesProps> = ({
+  savedArticles,
+  savedArticlesLoading,
+  savedArticlesError,
+  createdArticles,
+  createdArticlesLoading,
+  createdArticlesError,
+}) => {
+  return (
+    <div className="w-full space-y-4 md:col-span-2">
+      <h3 className="text-lg font-medium tracking-tight text-tremor-content-strong dark:text-dark-tremor-content-strong">
+        Articles
+      </h3>
+
+      <TabGroup className="space-y-2">
+        <TabList
+          defaultValue="1"
+          color={"blue"}
+          className="overflow-hidden rounded-xl p-2 dark:bg-zinc-800"
+        >
+          <Tab
+            value="1"
+            className={cn(
+              "border-stroke flex items-center justify-center overflow-hidden rounded-md border border-transparent bg-transparent px-4 py-2 font-medium tracking-tight text-blue-500 hover:border-transparent hover:bg-blue-600 hover:text-white active:border-transparent active:bg-blue-600 active:text-white dark:hover:bg-zinc-700",
+            )}
+          >
+            Saved Articles
+          </Tab>
+          <Tab
+            value="2"
+            className={cn(
+              "border-stroke flex items-center justify-center overflow-hidden rounded-md border border-transparent bg-transparent px-4 py-2 font-medium tracking-tight text-blue-500 hover:border-transparent hover:bg-blue-600 hover:text-white active:border-transparent active:bg-blue-600 active:text-white dark:hover:bg-zinc-700",
+            )}
+          >
+            Created Articles
+          </Tab>
+        </TabList>
+
+        <TabPanels>
+          <TabPanel>
+            {savedArticlesLoading ? (
+              <SavedArticlesSkeleton />
+            ) : savedArticlesError ? (
+              <Callout title="Error fetching Saved Articles 🚨❌" color="red">
+                {savedArticlesError} 🚨❌ ...
+              </Callout>
+            ) : (
+              <div>
+                {savedArticles.length > 0 ? (
+                  <DataTable
+                    columns={savedArticlesColumns}
+                    data={savedArticles}
+                  />
+                ) : (
+                  <Callout title="No saved articles" color="yellow">
+                    You haven't saved any articles. Browse and save one 😁 ...
+                  </Callout>
+                )}
+              </div>
+            )}
+          </TabPanel>
+
+          <TabPanel>
+            {createdArticlesLoading ? (
+              <CreatedArticlesSkeleton />
+            ) : createdArticlesError ? (
+              <Callout title="Error Fetching Created Articles 🚨❌" color="red">
+                {createdArticlesError} 🚨❌ ...
+              </Callout>
+            ) : (
+              <div>
+                {createdArticles.length > 0 ? (
+                  <DataTable
+                    columns={createdArticlesColumns}
+                    data={createdArticles}
+                  />
+                ) : (
+                  <Callout title="No created articles 🧐" color="yellow">
+                    Wow such empty, Create your first article 😁 ...
+                  </Callout>
+                )}
+              </div>
+            )}
+          </TabPanel>
+        </TabPanels>
+      </TabGroup>
+    </div>
+  );
+};
+
+/// ---------------------------- SKELETONS ------------------------------
 const SavedArticlesSkeleton = () => {
   return (
     <div className="space-y-2">
@@ -318,6 +300,18 @@ const SavedArticlesSkeleton = () => {
 };
 
 const CreatedArticlesSkeleton = () => {
+  return (
+    <div className="space-y-2">
+      <Skeleton className="h-16 w-full rounded-md" />
+      <Skeleton className="h-16 w-full rounded-md" />
+      <Skeleton className="h-16 w-full rounded-md" />
+      <Skeleton className="h-16 w-full rounded-md" />
+    </div>
+  );
+};
+
+// TODO: Enrolled courses table skeleton
+const EnrolledCoursesTableSkeleton = () => {
   return (
     <div className="space-y-2">
       <Skeleton className="h-16 w-full rounded-md" />

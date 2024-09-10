@@ -1,19 +1,7 @@
+import { CartItem } from "@/types/cart-item";
 import { Course } from "@prisma/client";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-interface CartItem {
-  id: string;
-  userId: string;
-  courseId: string;
-  courseName: string;
-  courseInstructorName?: string;
-  courseImageUrl?: string;
-  coursePrice: string;
-  quantity: number;
-  createdAt: Date;
-  updatedAt: Date;
-}
 
 interface CartState {
   cartItems: CartItem[];
@@ -24,7 +12,6 @@ interface CartState {
 type Actions = {
   addToCart: (course: Course, userId: string) => void;
   removeFromCart: (courseId: string) => void;
-  updateQuantity: (courseId: string, quantity: number) => void;
   clearCart: () => void;
 };
 
@@ -34,7 +21,7 @@ const initialState: CartState = {
   totalPrice: 0,
 };
 
-const useCartStore = create<CartState & Actions>()(
+export const useCartStore = create<CartState & Actions>()(
   persist(
     (set, get) => ({
       cartItems: initialState.cartItems,
@@ -44,7 +31,7 @@ const useCartStore = create<CartState & Actions>()(
       addToCart: (course: Course, userId: string) => {
         set((state) => {
           const existingItem = state.cartItems.find(
-            (item) => item.courseId === course.courseId
+            (item) => item.courseId === course.courseId,
           );
 
           if (existingItem) {
@@ -52,7 +39,7 @@ const useCartStore = create<CartState & Actions>()(
             const updatedCartItems = state.cartItems.map((item) =>
               item.courseId === course.courseId
                 ? { ...item, quantity: item.quantity + 1 }
-                : item
+                : item,
             );
             return {
               ...state,
@@ -87,7 +74,7 @@ const useCartStore = create<CartState & Actions>()(
       removeFromCart: (courseId: string) => {
         set((state) => ({
           cartItems: state.cartItems.filter(
-            (item) => item.courseId !== courseId
+            (item) => item.courseId !== courseId,
           ),
           totalItems: Math.max(0, state.totalItems - 1), // Prevent negative total items
           totalPrice: Math.max(
@@ -95,56 +82,54 @@ const useCartStore = create<CartState & Actions>()(
             state.totalPrice -
               parseFloat(
                 get().cartItems.find((item) => item.courseId === courseId)
-                  ?.coursePrice! || "0"
-              )
+                  ?.coursePrice! || "0",
+              ),
           ), // Ensure price is a number and handle missing item
         }));
       },
 
-      updateQuantity: (courseId: string, quantity: number) => {
-        if (quantity <= 0) {
-          // Remove item if quantity is 0 or less
-          return set((state) => ({
-            ...state,
-            cartItems: state.cartItems.filter(
-              (item) => item.courseId !== courseId
-            ),
-            totalItems: Math.max(0, state.totalItems - 1),
-            totalPrice: Math.max(
-              0,
-              state.totalPrice -
-                parseFloat(
-                  get().cartItems.find((item) => item.courseId === courseId)
-                    ?.coursePrice! || "0"
-                )
-            ), // Ensure price is a number and handle missing item
-          }));
-        }
+      // updateQuantity: (courseId: string, quantity: number) => {
+      //   if (quantity <= 0) {
+      //     // Remove item if quantity is 0 or less
+      //     return set((state) => ({
+      //       ...state,
+      //       cartItems: state.cartItems.filter(
+      //         (item) => item.courseId !== courseId
+      //       ),
+      //       totalItems: Math.max(0, state.totalItems - 1),
+      //       totalPrice: Math.max(
+      //         0,
+      //         state.totalPrice -
+      //           parseFloat(
+      //             get().cartItems.find((item) => item.courseId === courseId)
+      //               ?.coursePrice! || "0"
+      //           )
+      //       ), // Ensure price is a number and handle missing item
+      //     }));
+      //   }
 
-        set((state) => {
-          const updatedCartItems = state.cartItems.map((item) =>
-            item.courseId === courseId ? { ...item, quantity } : item
-          );
-          const updatedTotalPrice = updatedCartItems.reduce(
-            (acc, item) => acc + parseFloat(item.coursePrice!) * item.quantity,
-            0
-          ); // Calculate total price
+      //   set((state) => {
+      //     const updatedCartItems = state.cartItems.map((item) =>
+      //       item.courseId === courseId ? { ...item, quantity } : item
+      //     );
+      //     const updatedTotalPrice = updatedCartItems.reduce(
+      //       (acc, item) => acc + parseFloat(item.coursePrice!) * item.quantity,
+      //       0
+      //     ); // Calculate total price
 
-          return {
-            ...state,
-            cartItems: updatedCartItems,
-            totalItems: state.cartItems.length, // Update total items based on remaining items
-            totalPrice: updatedTotalPrice,
-          };
-        });
-      },
+      //     return {
+      //       ...state,
+      //       cartItems: updatedCartItems,
+      //       totalItems: state.cartItems.length, // Update total items based on remaining items
+      //       totalPrice: updatedTotalPrice,
+      //     };
+      //   });
+      // },
 
       clearCart: () => {
         set(() => initialState);
       },
     }),
-    { name: "Coursewave-Cart-Store", getStorage: () => localStorage }
-  )
+    { name: "Coursewave-Cart-Store", getStorage: () => localStorage },
+  ),
 );
-
-export default useCartStore;

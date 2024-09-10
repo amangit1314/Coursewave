@@ -1,10 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
 import React, { useEffect } from "react";
 import { Course } from "@prisma/client";
-import useUserInfo from "@/hooks/use-user-info";
+import { useUserInfo } from "@/hooks/useUserInfo";
 import toast, { Toaster } from "react-hot-toast";
 import CreateCourseButton from "../_components/create-course-button";
 import {
@@ -24,7 +22,17 @@ import {
 import { DataTable } from "./_components/data-table";
 import { columns } from "./_components/columns";
 
-export default function CreatedCourses({ params }: { params: { id: string } }) {
+type CreatedCourseProps = {
+  id: string;
+  instructorId: string;
+  image: string;
+  name: string;
+  href: string;
+  price: any;
+  status: "published" | "draft";
+};
+
+const CreatedCourses = ({ params }: { params: { id: string } }) => {
   const instructorId = params?.id!;
 
   const [selectedNames, setSelectedNames] = React.useState<string[]>([]);
@@ -42,7 +50,7 @@ export default function CreatedCourses({ params }: { params: { id: string } }) {
     const fetchCourses = async () => {
       try {
         const response = await fetch(
-          `api/instructor/${instructorId}/dashboard/courses`
+          `/api/instructor/${instructorId}/dashboard/courses`,
         );
 
         if (!response.ok) {
@@ -66,26 +74,25 @@ export default function CreatedCourses({ params }: { params: { id: string } }) {
   }, [instructorId]);
 
   const transformedCourses = React.useMemo(() => {
-    // Helper function to convert Course object to CreatedCourseProps
     const toCreatedCourseProps = (course: Course): CreatedCourseProps => {
       return {
-        id: course.courseId, // Assuming `id` exists in the `Course` interface
+        id: course.courseId,
         instructorId: course.instructorID!,
-        image: course.courseImage || "", // Handle potential missing image
+        image: course.courseImage || "",
         href: `/instructor/${instructorId}/courses/createdCourses/courses/${course.courseId}`,
         name: course.courseTitle,
-        price: course.coursePrice!, // Assuming `price` exists in the `Course` interface
-        status: course.isPublished ? "published" : "draft", // Assuming all courses are published in this context
+        price: course.coursePrice!,
+        status: course.isPublished ? "published" : "draft",
       };
     };
     return createdCourses.map(toCreatedCourseProps);
   }, [createdCourses, instructorId]);
 
   return (
-    <div className="pt-[80px] px-[2rem] h-full dark:bg-zinc-900 pb-6">
-      <div className="rounded-3xl my-4 dark:bg-zinc-800 overflow-hidden dark:border-none ">
+    <div className="h-full px-[2rem] pb-6 pt-[80px] dark:bg-zinc-900">
+      <div className="my-4 overflow-hidden rounded-3xl dark:border-none dark:bg-zinc-800">
         <Toaster />
-        <Flex className="px-5 pt-4 pb-8">
+        <Flex className="px-5 pb-8 pt-4">
           {/* <MultiSelect
             onValueChange={setSelectedNames}
             placeholder="Select Course..."
@@ -105,14 +112,6 @@ export default function CreatedCourses({ params }: { params: { id: string } }) {
       </div>
     </div>
   );
-}
-
-type CreatedCourseProps = {
-  id: string;
-  instructorId: string;
-  image: string;
-  name: string;
-  href: string;
-  price: any;
-  status: "published" | "draft";
 };
+
+export default CreatedCourses;

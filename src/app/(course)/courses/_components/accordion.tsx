@@ -64,11 +64,12 @@ const Accordion = () => {
       ],
     },
   ]);
+
   return (
-    <div className="bg-slate-100 list my-1 dark:bg-gray-800 py-1 rounded-xl border dark:border-gray-700">
+    <div className="list my-1 rounded-xl border bg-slate-100 py-1 dark:border-gray-700 dark:bg-gray-800">
       {list.map((accordion, key) => {
         return (
-          <div key={key} className="dark:border-gray-300 border-b-1">
+          <div key={key} className="border-b-1 dark:border-gray-300">
             <AccordionItem key={key} data={accordion} />
           </div>
         );
@@ -76,6 +77,9 @@ const Accordion = () => {
     </div>
   );
 };
+export default Accordion;
+
+/// * -------------------------------- COMPONENTS -----------------------------------
 
 const AccordionItem = (props: any) => {
   const [item, setItem] = React.useState(props.data);
@@ -87,32 +91,32 @@ const AccordionItem = (props: any) => {
 
   return (
     <div
-      className={` bg-slate-100 p-3 md:p-5 transition-all duration-200  group rounded-md dark:bg-gray-800 ${
+      className={`group rounded-md bg-slate-100 p-3 transition-all duration-200 dark:bg-gray-800 md:p-5 ${
         item.active === 1 ? "activated" : ""
       }`}
     >
-      <div className="flex items-center py-auto justify-between">
-        <div className="flex items-center py-auto" onClick={toggleActiveItem}>
-          <div className="px-1 cursor-pointer group-[.activated]:rotate-180">
+      <div className="py-auto flex items-center justify-between">
+        <div className="py-auto flex items-center" onClick={toggleActiveItem}>
+          <div className="cursor-pointer px-1 group-[.activated]:rotate-180">
             {" "}
             <IoMdArrowDropdown size={20} />{" "}
           </div>
-          <div className="pl-1 group-[.activated]:text-indigo-500 hover:text-indigo-500 group-[.activated]:font-semibold cursor-pointer text-xs md:text-sm">
+          <div className="cursor-pointer pl-1 text-xs group-[.activated]:font-semibold group-[.activated]:text-indigo-500 hover:text-indigo-500 md:text-sm">
             {item.title}
           </div>
         </div>
 
-        <div className="hidden md:flex md:visible items-center justify-end">
+        <div className="hidden items-center justify-end md:visible md:flex">
           {/* lections */}
-          <p className="text-sm text-gray-600 dark:text-gray-400 px-1">
+          <p className="px-1 text-sm text-gray-600 dark:text-gray-400">
             ◽ 3 lectures
           </p>
           {/* total length */}
           <p className="text-sm text-gray-600 dark:text-gray-400">◽ 15min</p>
         </div>
       </div>
-      <div className="overflow-hidden group-[.activated]:max-h-[120px] max-h-0 text-sm">
-        <div className="mt-2 ml-8">
+      <div className="max-h-0 overflow-hidden text-sm group-[.activated]:max-h-[120px]">
+        <div className="ml-8 mt-2">
           {item.chapters.map((chapter: Chapter) => {
             return (
               <div key={chapter.id}>
@@ -129,8 +133,6 @@ const AccordionItem = (props: any) => {
   );
 };
 
-export default Accordion;
-
 type AccordionItemDescriptionItemProps = {
   name: string;
   duration: string;
@@ -141,12 +143,16 @@ const AccordionItemDescriptionItem = ({
   duration,
 }: AccordionItemDescriptionItemProps) => {
   return (
-    <div className="flex justify-between items-center py-1">
-      <div className="flex justify-start items-center space-x-2">
+    <div className="flex items-center justify-between py-1">
+      <div className="flex items-center justify-start space-x-2">
         <FaRegCirclePlay size={18} />
-        <p className="text-xs md:text-sm text-gray-700 dark:text-gray-300">{name}</p>
+        <p className="text-xs text-gray-700 dark:text-gray-300 md:text-sm">
+          {name}
+        </p>
       </div>
-      <p className="text-xs md:text-sm text-gray-700 dark:text-gray-300">{duration}</p>
+      <p className="text-xs text-gray-700 dark:text-gray-300 md:text-sm">
+        {duration}
+      </p>
     </div>
   );
 };

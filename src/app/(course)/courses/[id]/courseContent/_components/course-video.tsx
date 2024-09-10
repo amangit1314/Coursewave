@@ -1,31 +1,34 @@
 "use client";
 
-import { Skeleton } from "@/components/ui/skeleton";
-import { useConfettiStore } from "@/hooks/use-confetti-store";
-import useUserInfo from "@/hooks/use-user-info";
-import { absoluteUrl, cn } from "@/utils/utils";
-import MuxPlayer from "@mux/mux-player-react";
-import { Chapter, CloudinaryData, MuxData } from "@prisma/client";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { Loader2, Lock } from "lucide-react";
-import { useRouter } from "next/navigation";
 import React from "react";
+import axios from "axios";
+import { cn } from "@/utils/utils";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { Loader2, Lock } from "lucide-react";
+import MuxPlayer from "@mux/mux-player-react";
+import { useUserInfo } from "@/hooks/useUserInfo";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Chapter, CloudinaryData } from "@prisma/client";
+import { useConfettiStore } from "@/hooks/useConfettiStore";
 
 type CourseVideoProps = {
   // viewerUserId?: string;
-  activeChapter: Chapter;
   // videoPublicId: string;
+  activeChapter: Chapter;
 };
 
 const CourseVideo = ({ activeChapter }: CourseVideoProps) => {
   const cloudName = "df2g8tcxq";
 
   const fetchChapterCloudinaryData = async () => {
-    const response = await fetch(
-      `/api/courses/${activeChapter?.courseId!}/chapters/${activeChapter?.id!}/cloudinaryData`
-    );
+    const url =
+      process.env.ENVIRONMENT! === "DEVELOPMENT"
+        ? `/api/courses/${activeChapter?.courseId!}/chapters/${activeChapter?.id!}/cloudinaryData`
+        : `api/courses/${activeChapter?.courseId!}/chapters/${activeChapter?.id!}/cloudinaryData`;
+
+    const response = await fetch(url);
 
     if (!response.ok) {
       console.log("Failed to fetch chapter cloudinaryData ...");
@@ -120,7 +123,7 @@ const CourseVideo = ({ activeChapter }: CourseVideoProps) => {
       height={360}
       width={720}
       allowFullScreen
-      className="smooth-content w-xl h-xl md:h-[360px] overflow-hidden rounded-xl object-cover md:w-[45rem] bg-blue-200 dark:bg-slate-700"
+      className="smooth-content w-xl h-xl overflow-hidden rounded-xl bg-blue-200 object-cover dark:bg-slate-700 md:h-[360px] md:w-[45rem]"
     />
   );
 };
@@ -167,7 +170,7 @@ export const VideoPlayer = ({
           `/api/profile/${user.user.id}/enrolledCourses/${courseId}/sections/sectionId/chapters/${chapterId}/progress`,
           {
             isCompleted: true,
-          }
+          },
         );
 
         // if (!nextChapterId) {
@@ -196,7 +199,7 @@ export const VideoPlayer = ({
         </div>
       )}
       {isLocked && (
-        <div className="absolute inset-0 flex items-center justify-center bg-slate-800 flex-col gap-y-2 text-secondary">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-y-2 bg-slate-800 text-secondary">
           <Lock className="h-8 w-8" />
           <p className="text-sm">This chapter is locked</p>
         </div>

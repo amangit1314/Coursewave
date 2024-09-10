@@ -1,17 +1,206 @@
+// "use client";
+
+// import * as z from "zod";
+// import axios from "axios";
+// import { useState } from "react";
+// import toast from "react-hot-toast";
+// import { useRouter } from "next/navigation";
+// import { Button } from "@/components/ui/button";
+// import { Chapter, CloudinaryData, MuxData } from "@prisma/client";
+// import { Pencil, PlusCircle, Upload, Video as VideoIcon } from "lucide-react";
+// import {
+//   CldUploadWidget,
+//   CloudinaryUploadWidgetResults,
+// } from "next-cloudinary";
+
+// interface ChapterVideoFormProps {
+//   chapterWithCloudinaryData: Chapter & {
+//     cloudinaryData?: CloudinaryData | null;
+//   };
+//   instructorId: string;
+//   courseId: string;
+//   sectionId: string;
+//   chapterId: string;
+// }
+
+// const formSchema = z.object({
+//   videoUrl: z.string(),
+// });
+
+// export const ChapterVideoForm = ({
+//   chapterWithCloudinaryData,
+//   instructorId,
+//   courseId,
+//   sectionId,
+//   chapterId,
+// }: ChapterVideoFormProps) => {
+//   const router = useRouter();
+//   const [isEditing, setIsEditing] = useState(false);
+//   const [videoUrl, setVideoUrl] = useState<string>(
+//     chapterWithCloudinaryData?.cloudinaryData?.publicId!,
+//   );
+//   const toggleEdit = () => setIsEditing((current) => !current);
+
+//   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+//     try {
+//       await axios.patch(
+//         `/api/instructor/${instructorId}/dashboard/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}`,
+//         { videoUrl: values.videoUrl },
+//       );
+//       toast.success("Chapter updated ✔");
+//       toggleEdit();
+//       router.refresh();
+//     } catch (error: any) {
+//       toast.error(`Error in updating chapter: , ${error.message}`);
+//     }
+//   };
+
+//   const handleUpload = (result: CloudinaryUploadWidgetResults) => {
+//     if (result?.event === "success") {
+//       // const uploadedUrl = result?.info!;
+//       const uploadedUrl = (result.info as any).public_id;
+//       console.log("Video upload result: ", uploadedUrl);
+//       setVideoUrl(uploadedUrl);
+//       onSubmit({ videoUrl: uploadedUrl });
+//       toast.success("Video successfully uploaded ✔");
+//     } else {
+//       toast.error("Error in uploading video 🚧 ...");
+//     }
+//   };
+
+//   console.log('Video Url in chapter-video-form: ', videoUrl);
+
+//   const getPublicIdFromUrl = (url: string) => {
+//     try {
+//       const parts = url.split("/");
+//       // The public ID is the last part before the file extension
+//       const lastPart = parts[parts.length - 1];
+//       const publicId = lastPart.split(".")[0]; 
+//       return publicId;
+//     } catch (error) {
+//       console.error("Error extracting public ID from URL:", error);
+//       return null;
+//     }
+//   };
+
+//   const publicId = getPublicIdFromUrl(videoUrl);
+
+//   return (
+//     <div className="mt-6 rounded-xl border bg-slate-100 p-4 transition-all duration-300 dark:bg-zinc-800 md:mt-0">
+//       <div className="flex items-center justify-between font-medium">
+//         <h3 className="font-semibold tracking-tight text-zinc-800 dark:text-white">
+//           {" "}
+//           Chapter video
+//         </h3>
+//         <Button
+//           onClick={toggleEdit}
+//           variant="ghost"
+//           className="group hover:bg-white dark:hover:bg-black dark:hover:text-white transition-all duration-100 overflow-hidden"
+//         >
+//           {isEditing && ( // <div className="text-red-600 bg-red-300 rounded-md px-4 py-2 hover:bg-red-600 hover:text-white border border-stroke border-red-600 hover:border-transparent">Cancel</div>
+//             <div className="text-red-600">Cancel</div>
+//           )}
+
+//           {!isEditing && !chapterWithCloudinaryData.videoUrl && (
+//             <div className="flex items-center justify-end text-zinc-800 group-hover:justify-center dark:text-gray-200">
+//               <PlusCircle className="mr-2 h-4 w-4" />
+//               <p>Add a video</p>
+//             </div>
+//           )}
+
+//           {!isEditing && chapterWithCloudinaryData.videoUrl && (
+//             <>
+//               <Pencil className="mr-2 h-4 w-4" />
+//               Edit video
+//             </>
+//           )}
+//         </Button>
+//       </div>
+
+//       {!isEditing &&
+//         (!chapterWithCloudinaryData.videoUrl ? (
+//           <div className="flex h-60 items-center justify-center rounded-md bg-slate-200">
+//             <VideoIcon className="h-10 w-10 overflow-hidden rounded-xl text-slate-500" />
+//           </div>
+//         ) : (
+          
+//           <div className="relative mt-4 flex aspect-video h-60 items-center justify-start rounded-xl">
+//             <iframe
+//               className="flex h-60 w-[25rem] items-center justify-start overflow-hidden rounded-xl"
+//               src={`https://player.cloudinary.com/embed/?cloud_name=${process.env.CLOUDINARY_CLOUD_NAME}&public_id=${publicId}`}
+//               // src={videoUrl}
+//               allowFullScreen
+//               frameBorder="0"
+//             />
+//           </div>
+//         ))}
+
+//       {isEditing && (
+//         <div>
+//           <CldUploadWidget
+//             uploadPreset="coursewave_course_section_chapter_video_uploader"
+//             onError={(error) => {
+//               console.log(`Error in uplaoding video: ${error}`);
+//               toast.error("Error in uploading video: ${error.message}");
+//             }}
+//             onSuccess={(result) => {
+//               handleUpload(result);
+//               toast.success("Video successfully uploaded 🎉 ...");
+//               console.log(
+//                 `Video successfully uploaded, and result: `,
+//                 JSON.stringify(result),
+//               );
+//             }}
+//           >
+//             {({ open }) => {
+//               return (
+//                 <button
+//                   className="text-md group mx-auto flex cursor-pointer items-center justify-center space-y-4 text-base font-semibold tracking-tight transition-all duration-300 hover:text-blue-700"
+//                   onClick={() => open()}
+//                 >
+//                   <div className="group flex flex-col items-center justify-center space-y-4 text-center align-middle">
+//                     <div className="flex items-center justify-center rounded-xl border border-dashed border-white px-8 py-8 transition-all duration-300 group-hover:border-blue-700">
+//                       <Upload size={48} />
+//                     </div>
+//                     <p>Change video</p>
+//                   </div>
+//                 </button>
+//               );
+//             }}
+//           </CldUploadWidget>
+
+//           <div className="mt-4 text-xs text-muted-foreground">
+//             Upload this chapter&apos;s video
+//           </div>
+//         </div>
+//       )}
+
+//       {chapterWithCloudinaryData.videoUrl && !isEditing && (
+//         <div className="mt-4 text-xs text-muted-foreground">
+//           Videos can take a few minutes to process. Refresh the page if video
+//           does not appear.
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// ---------------------------------------------------------------------------------------------------
+
 "use client";
 
 import * as z from "zod";
 import axios from "axios";
-import MuxPlayer from "@mux/mux-player-react";
-import { Pencil, PlusCircle, Upload, Video as VideoIcon } from "lucide-react";
-import Video from "next-video";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { Chapter, CloudinaryData, MuxData } from "@prisma/client";
 import { Button } from "@/components/ui/button";
-import { FileUpload } from "@/components/file-upload";
-import { CldUploadButton, CldUploadWidget, CloudinaryUploadWidgetResults } from "next-cloudinary";
+import { Chapter, CloudinaryData } from "@prisma/client";
+import { Pencil, PlusCircle, Upload, Video as VideoIcon } from "lucide-react";
+import {
+  CldUploadWidget,
+  CloudinaryUploadWidgetResults,
+} from "next-cloudinary";
 
 interface ChapterVideoFormProps {
   chapterWithCloudinaryData: Chapter & {
@@ -24,7 +213,7 @@ interface ChapterVideoFormProps {
 }
 
 const formSchema = z.object({
-  videoUrl: z.string().min(1),
+  videoUrl: z.string(),
 });
 
 export const ChapterVideoForm = ({
@@ -34,94 +223,82 @@ export const ChapterVideoForm = ({
   sectionId,
   chapterId,
 }: ChapterVideoFormProps) => {
-  // const [isEditing, setIsEditing] = useState(false);
-  // const [videoUrl, setVideoUrl] = useState("https://res.cloudinary.com/df2g8tcxq/video/upload/c_limit,h_60,w_90/v1721627293/sa5aozwunf2lkmzfejyr.jpg");
-
-  // const toggleEdit = () => setIsEditing((current) => !current);
-
-  // const router = useRouter();
-
-  // const onSubmit = async (values: z.infer<typeof formSchema>) => {
-  //   try {
-  //     // ${chapterWithCloudinaryData?.courseId!},
-  //     // ${chapterWithCloudinaryData.courseSectionId},
-  //     // ${chapterWithCloudinaryData?.id!}
-  //     await axios.patch(
-  //       `/api/instructor/${instructorId}/dashboard/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}`,
-  //       { videoUrl: values.videoUrl }
-  //     );
-  //     toast.success("Chapter updated successfully ...");
-  //     toggleEdit();
-  //     router.refresh();
-  //   } catch {
-  //     toast.error("Something went wrong");
-  //   }
-  // };
-
-  // const handleUpload = (error: any, result: any) => {
-  //   if (error) {
-  //     toast.error(`Error in uploading video: ${error.message}`);
-  //   } else {
-  //     const uploadedUrl = result?.info?.url;
-  //     setVideoUrl(uploadedUrl);
-  //     onSubmit({ videoUrl: uploadedUrl });
-  //     console.log("Uploaded video url: ", videoUrl);
-  //     toast.success("Video successfully uploaded!");
-  //   }
-  // };
-
+  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
-  const [videoUrl, setVideoUrl] = useState(
-    chapterWithCloudinaryData?.videoUrl || ""
+  const [videoUrl, setVideoUrl] = useState<string>(
+    chapterWithCloudinaryData?.cloudinaryData?.publicId || ""
   );
 
   const toggleEdit = () => setIsEditing((current) => !current);
-
-  const router = useRouter();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
         `/api/instructor/${instructorId}/dashboard/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}`,
-        { videoUrl: values.videoUrl }
+        { videoUrl: values.videoUrl },
       );
-      toast.success("Chapter updated successfully ...");
+      toast.success("Chapter updated ✔");
       toggleEdit();
       router.refresh();
-    } catch {
-      toast.error("Something went wrong");
+    } catch (error: any) {
+      toast.error(`Error in updating chapter: ${error.message}`);
     }
   };
 
   const handleUpload = (result: CloudinaryUploadWidgetResults) => {
     if (result?.event === "success") {
-      const uploadedUrl = result?.info!;
-      console.log('Video upload result: ', uploadedUrl);
-      // setVideoUrl(uploadedUrl);
-      // onSubmit({ videoUrl: uploadedUrl });
-      toast.success("Video successfully uploaded!");
+      const uploadedUrl = (result.info as any).public_id;
+      console.log("Video upload result: ", uploadedUrl);
+      setVideoUrl(uploadedUrl);
+      onSubmit({ videoUrl: uploadedUrl });
+      toast.success("Video successfully uploaded ✔");
     } else {
-      toast.error("Error in uploading video.");
+      toast.error("Error in uploading video 🚧 ...");
     }
   };
 
+  console.log('Video Url in chapter-video-form: ', videoUrl);
+
+  const getPublicIdFromUrl = (url: string) => {
+    try {
+      const parts = url.split("/");
+      const lastPart = parts[parts.length - 1];
+      const publicId = lastPart.split(".")[0];
+      return publicId;
+    } catch (error) {
+      console.error("Error extracting public ID from URL:", error);
+      return null;
+    }
+  };
+
+  const publicId = getPublicIdFromUrl(videoUrl);
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+
   return (
-    <div className="mt-6 md:mt-0 border bg-slate-100 dark:bg-zinc-800 transition-all duration-300 rounded-xl p-4">
-      <div className="font-medium flex items-center justify-between">
-        Chapter video
-        <Button onClick={toggleEdit} variant="ghost">
-          {isEditing && <>Cancel</>}
+    <div className="mt-6 rounded-xl border bg-slate-100 p-4 transition-all duration-300 dark:bg-zinc-800 md:mt-0">
+      <div className="flex items-center justify-between font-medium">
+        <h3 className="font-semibold tracking-tight text-zinc-800 dark:text-white">
+          Chapter video
+        </h3>
+        <Button
+          onClick={toggleEdit}
+          variant="ghost"
+          className="group hover:bg-white dark:hover:bg-black dark:hover:text-white transition-all duration-100 overflow-hidden"
+        >
+          {isEditing && (
+            <div className="text-red-600">Cancel</div>
+          )}
 
           {!isEditing && !chapterWithCloudinaryData.videoUrl && (
-            <>
-              <PlusCircle className="h-4 w-4 mr-2" />
-              Add a video
-            </>
+            <div className="flex items-center justify-end text-zinc-800 group-hover:justify-center dark:text-gray-200">
+              <PlusCircle className="mr-2 h-4 w-4" />
+              <p>Add a video</p>
+            </div>
           )}
 
           {!isEditing && chapterWithCloudinaryData.videoUrl && (
             <>
-              <Pencil className="h-4 w-4 mr-2" />
+              <Pencil className="mr-2 h-4 w-4" />
               Edit video
             </>
           )}
@@ -130,68 +307,45 @@ export const ChapterVideoForm = ({
 
       {!isEditing &&
         (!chapterWithCloudinaryData.videoUrl ? (
-          <div className="flex items-center justify-center h-60 bg-slate-200 rounded-md">
-            <VideoIcon className="h-10 w-10 text-slate-500 rounded-xl overflow-hidden" />
+          <div className="flex h-60 items-center justify-center rounded-md bg-slate-200">
+            <VideoIcon className="h-10 w-10 overflow-hidden rounded-xl text-slate-500" />
           </div>
         ) : (
-          <div className="relative aspect-video mt-2">
-            {/* <MuxPlayer
-              className="rounded-xl overflow-hidden"
-              playbackId={chapterWithCloudinaryData?.muxData?.playbackId || ""}
-            /> */}
-
-            {/* <Video className="rounded-xl overflow-hidden" src={videoUrl} /> */}
-
+          <div className="relative mt-4 flex aspect-video h-60 items-center justify-start rounded-xl">
             <iframe
-              className="rounded-xl overflow-hidden"
-              // src={videoUrl}
-              src={
-                "https://res.cloudinary.com/df2g8tcxq/video/upload/c_limit,h_60,w_90/v1721627293/sa5aozwunf2lkmzfejyr.jpg"
-              }
-              // src={
-              // chapterWithCloudinaryData?.cloudinaryData?.publicId!
-              //   ?
-              // `https://player.cloudinary.com/embed/?cloud_name=df2g8tcxq&public_id=${chapterWithCloudinaryData?.cloudinaryData?.publicId!}`
-              // : ``
-              // }
+              className="flex h-60 w-[25rem] items-center justify-start overflow-hidden rounded-xl"
+              src={`https://player.cloudinary.com/embed/?cloud_name=${cloudName}&public_id=${publicId}`}
+              allowFullScreen
+              frameBorder="0"
             />
           </div>
         ))}
 
       {isEditing && (
         <div>
-          {/* <FileUpload
-            endpoint="chapterVideo"
-            onChange={(url) => {
-              if (url) {
-                onSubmit({ videoUrl: url });
-              }
-            }}
-          /> */}
-
           <CldUploadWidget
             uploadPreset="coursewave_course_section_chapter_video_uploader"
             onError={(error) => {
-              console.log(`Error in uplaoding video: ${error}`);
-              toast.error("Error in uplaoding video: ${error.message}");
+              console.log(`Error in uploading video: ${error}`);
+              toast.error(`Error in uploading video: ${error}`);
             }}
             onSuccess={(result) => {
+              handleUpload(result);
               toast.success("Video successfully uploaded 🎉 ...");
               console.log(
                 `Video successfully uploaded, and result: `,
-                JSON.stringify(result)
+                JSON.stringify(result),
               );
-              handleUpload(result);
             }}
           >
             {({ open }) => {
               return (
                 <button
-                  className="cursor-pointer flex justify-center items-center mx-auto text-md text-base tracking-tight group hover:text-blue-700 transition-all duration-300 font-semibold space-y-4"
+                  className="text-md group mx-auto flex cursor-pointer items-center justify-center space-y-4 text-base font-semibold tracking-tight transition-all duration-300 hover:text-blue-700"
                   onClick={() => open()}
                 >
-                  <div className="flex flex-col space-y-4 justify-center items-center align-middle text-center group">
-                    <div className="flex justify-center items-center px-8 py-8 border border-white  border-dashed rounded-xl group-hover:border-blue-700 transition-all duration-300">
+                  <div className="group flex flex-col items-center justify-center space-y-4 text-center align-middle">
+                    <div className="flex items-center justify-center rounded-xl border border-dashed border-white px-8 py-8 transition-all duration-300 group-hover:border-blue-700">
                       <Upload size={48} />
                     </div>
                     <p>Change video</p>
@@ -201,16 +355,15 @@ export const ChapterVideoForm = ({
             }}
           </CldUploadWidget>
 
-          <div className="text-xs text-muted-foreground mt-4">
+          <div className="mt-4 text-xs text-muted-foreground">
             Upload this chapter&apos;s video
           </div>
         </div>
       )}
 
       {chapterWithCloudinaryData.videoUrl && !isEditing && (
-        <div className="text-xs text-muted-foreground mt-2">
-          Videos can take a few minutes to process. Refresh the page if video
-          does not appear.
+        <div className="mt-4 text-xs text-muted-foreground">
+          Videos can take a few minutes to process. Refresh the page if the video does not appear.
         </div>
       )}
     </div>

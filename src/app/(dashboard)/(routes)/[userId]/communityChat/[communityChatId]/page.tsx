@@ -17,24 +17,24 @@ const CommunityPage = ({
   const userId = params?.userId!;
 
   return (
-    <div className="py-10 mt-12 space-y-4 pr-[2.5rem] overflow-y-hidden">
-      <div className="flex justify-between items-center rounded-lg w-full h-[64px] bg-blue-700 dark:bg-black px-3">
-        <div className="flex justify-start items-center space-x-3">
+    <div className="mt-12 space-y-4 overflow-y-hidden py-10 pr-[2.5rem]">
+      <div className="flex h-[64px] w-full items-center justify-between rounded-lg bg-blue-700 px-3 dark:bg-black">
+        <div className="flex items-center justify-start space-x-3">
           <Link href={`/${userId}/communityChat`}>
             <Button
               variant="outline"
               size="icon"
-              className="flex justify-center items-center h-10 w-10 rounded-md dark:bg-transparent dark:hover:bg-zinc-800 transition-all duration-200"
+              className="flex h-10 w-10 items-center justify-center rounded-md transition-all duration-200 dark:bg-transparent dark:hover:bg-zinc-800"
             >
               <BiArrowBack className="h-[1.2rem] w-[1.2rem] scale-100 transition-all" />
             </Button>
           </Link>
 
           <div>
-            <p className="text-white tracking-tight font-semibold">
+            <p className="font-semibold tracking-tight text-white">
               Community Name
             </p>
-            <div className="flex justify-start items-center space-x-2">
+            <div className="flex items-center justify-start space-x-2">
               <p className="h-2 w-2 rounded-full bg-green-500"></p>
               <p className="text-xs text-gray-200">{11} online</p>
             </div>
@@ -44,7 +44,7 @@ const CommunityPage = ({
         <Button
           variant="outline"
           size="icon"
-          className="flex justify-center items-center h-10 w-10 rounded-md dark:bg-transparent dark:hover:bg-zinc-800 transition-all duration-200"
+          className="flex h-10 w-10 items-center justify-center rounded-md transition-all duration-200 dark:bg-transparent dark:hover:bg-zinc-800"
         >
           <MdMoreVert className="h-[1.2rem] w-[1.2rem] scale-100 transition-all" />
         </Button>

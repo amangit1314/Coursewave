@@ -24,13 +24,20 @@ export const ConfirmModal = ({ children, onConfirm }: ConfirmModalProps) => {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone.
-          </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>Continue</AlertDialogAction>
+
+        <AlertDialogDescription>
+          Are you absolutley sure to delte this chapter! This action cannot be
+          undone. You cannot recover this chapter once deleted.
+        </AlertDialogDescription>
+
+        <AlertDialogFooter className="mx-auto flex items-center justify-center">
+          <AlertDialogCancel className="border-stroke overflow-hidden rounded-md border border-red-600 bg-red-300 text-red-600 hover:bg-red-600 hover:text-white">
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm} className="mt-2">
+            Continue
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { LuDot } from "react-icons/lu";
 import React, { useEffect } from "react";
-import { RatingStars } from "../rating-stars";
+import  RatingStars from "../rating-stars";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { CourseCard } from "../course-card";
@@ -12,6 +12,7 @@ import { FaStar } from "react-icons/fa";
 import { Course } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
+import { Callout } from "@tremor/react";
 
 export const MoreIntructorCreatedCourses = ({
   instructorId,
@@ -79,7 +80,12 @@ export const MoreIntructorCreatedCourses = ({
   }
 
   if (error) {
-    return <div>ERROR: {error}</div>;
+    // return <div>ERROR: {error}</div>;
+    return <div className="mt-2">
+    <Callout className="" title="Failed to fetch instructor created courses 🚨❌" color="red">
+      <span>{error} 🚨❌ ...</span>
+    </Callout>
+  </div>
   }
 
   return (

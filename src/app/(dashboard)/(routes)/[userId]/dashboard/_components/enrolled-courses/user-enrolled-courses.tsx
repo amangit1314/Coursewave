@@ -3,13 +3,13 @@ import UserEnrolledCoursesCard from "./user-enrolled-courses-card";
 
 const EnrolledCourses = () => {
   return (
-    <div className=" w-full">
-      <div className="flex justify-between items-center mb-6">
-        <div className="font-semibold text-gray-700 text-lg dark:text-gray-400">
+    <div className="w-full">
+      <div className="mb-6 flex items-center justify-between">
+        <div className="text-lg font-semibold text-gray-700 dark:text-gray-400">
           Enrolled Courses
         </div>
 
-        <p className="text-sm cursor-pointer font-medium hover:text-blue-700 text-blue-500">
+        <p className="cursor-pointer text-sm font-medium text-blue-500 hover:text-blue-700">
           Show All
         </p>
       </div>

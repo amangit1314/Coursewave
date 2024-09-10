@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const DashboardAnalytics = () => {
-  return (
-    <div>DashboardAnalytics</div>
-  )
-}
+  return <div>DashboardAnalytics</div>;
+};
 
-export default DashboardAnalytics
+export default DashboardAnalytics;

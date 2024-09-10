@@ -21,16 +21,13 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/utils/utils";
 import { Textarea } from "@/components/ui/textarea";
 
-
 const formSchema = z.object({
   description: z.string().min(1, {
     message: "Description is required",
   }),
 });
 
-export const DescriptionForm = ({
-  course,
-}: {course: Course}) => {
+export const DescriptionForm = ({ course }: { course: Course }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -52,27 +49,27 @@ export const DescriptionForm = ({
         `api/instructor/${course.instructorID}/dashboard/courses/${course.courseId}`,
         {
           newCourseDescription: values.description,
-        }
+        },
       );
       toast.success("course description updated successfully ...");
       toggleEdit();
       router.refresh();
     } catch (err: any) {
-      console.log('Error in updating description: ', err.message)
+      console.log("Error in updating description: ", err.message);
       toast.error(`Something went wrong, ERROR: ${err.message} ...`);
     }
   };
 
   return (
-    <div className="mt-6 border bg-slate-100 dark:bg-zinc-700 rounded-2xl p-4">
-      <div className="font-medium flex items-center justify-between">
+    <div className="mt-6 rounded-2xl border bg-slate-100 p-4 dark:bg-zinc-700">
+      <div className="flex items-center justify-between font-medium">
         Course description
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <>Cancel</>
           ) : (
             <>
-              <Pencil className="h-4 w-4 mr-2" />
+              <Pencil className="mr-2 h-4 w-4" />
               Edit description
             </>
           )}
@@ -81,9 +78,9 @@ export const DescriptionForm = ({
       {!isEditing && (
         <p
           className={cn(
-            "text-sm mt-2 line-clamp-6",
+            "mt-2 line-clamp-6 text-sm",
             !course.courseDescription &&
-            "text-gray-500 dark:text-gray-400 italic"
+              "italic text-gray-500 dark:text-gray-400",
             //  : "text-md text-base font-semibold"
           )}
         >
@@ -94,7 +91,7 @@ export const DescriptionForm = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 mt-4"
+            className="mt-4 space-y-4"
           >
             <FormField
               control={form.control}

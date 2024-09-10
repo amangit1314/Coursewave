@@ -5,24 +5,24 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/utils/utils";
 import Link from "next/link";
 
-function InstructorSidebar() {
+const InstructorSidebar = () => {
   const path = usePathname();
   const isAnalyticsPage = path.includes("analytics");
   // const isAnalyticsPage = false;
   return (
     <div
-      className="fixed border-r top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0 shadow-sm bg-white overflow-y-auto"
+      className="fixed left-0 top-0 z-40 h-screen w-64 -translate-x-full overflow-y-auto border-r bg-white shadow-sm transition-transform sm:translate-x-0"
       aria-label="InstructorSidebar"
     >
       <div
         className={cn(
-          "h-full pl-3 md:px-3 py-4 overflow-y-auto bg-zinc-50 ",
-          isAnalyticsPage ? "dark:bg-zinc-800" : "dark:bg-zinc-800"
+          "h-full overflow-y-auto bg-zinc-50 py-4 pl-3 md:px-3",
+          isAnalyticsPage ? "dark:bg-zinc-800" : "dark:bg-zinc-800",
         )}
       >
         <Link
           href="/browseCourses"
-          className="pb-6 flex cursor-pointer items-center"
+          className="flex cursor-pointer items-center pb-6"
         >
           <Image
             src="/assets/images/logo/coursewave-favicon-color.png"
@@ -32,7 +32,7 @@ function InstructorSidebar() {
             height={8}
             priority
           />
-          <p className="pl-2 text-blue-500 font-bold font-mono text-xl">
+          <p className="pl-2 font-mono text-xl font-bold text-blue-500">
             Coursewave
           </p>
         </Link>
@@ -41,6 +41,6 @@ function InstructorSidebar() {
       </div>
     </div>
   );
-}
+};
 
 export default InstructorSidebar;

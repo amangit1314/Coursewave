@@ -84,10 +84,6 @@ export const createdArticlesColumns: ColumnDef<Blog>[] = [
       );
     },
   },
-  // {
-  //   accessorKey: "status",
-  //   header: "Status",
-  // },
   {
     id: "actions",
     cell: ({ row }) => {

@@ -4,19 +4,18 @@ import React from "react";
 import Image from "next/image";
 import { FaHandsClapping } from "react-icons/fa6";
 import { AiOutlineComment } from "react-icons/ai";
-import { Divider } from "@tremor/react";
+import { Callout, Divider } from "@tremor/react";
 import { CiBookmarkPlus } from "react-icons/ci";
 import { IoMdArrowRoundBack, IoMdBookmark } from "react-icons/io";
 import { FaShareFromSquare } from "react-icons/fa6";
 import { MdMoreHoriz, MdReport } from "react-icons/md";
 import Notifications from "@/components/notification-button";
-import { ThemeModeToggle } from "@/components/themeModeToggle";
+import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 import UserAvatar from "@/components/user-avatar";
 import { Blog } from "@prisma/client";
 import MoreFromAuthor from "../_components/more-from-author";
 import RecommendedFromCoursewave from "../_components/recommended-from-coursewave";
 import ArticleAuthorCard from "../_components/article-author-card";
-import useArticleInfo from "@/hooks/use-article-info";
 import ArticleAuthorInfo from "../_components/article-author-info";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -30,55 +29,48 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Eye, EyeOff, SquarePen, UserMinus, UserPlus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useZustandStore } from "@/zustand/store";
-
-type BlogComment = {
-  id: string;
-  blogId: string;
-  content: string;
-  authorId: string;
-  writtenOn: Date | null;
-  editedOn: Date | null;
-};
-
-type BlogWithComments = {
-  id: string;
-  title: string;
-  shortDescription: string | null;
-  content: string;
-  estimatedReadingTime: string;
-  clapsCount: number;
-  authorId: string;
-  categoryName: string | null;
-  comments: BlogComment[];
-  thumbnailUrl: string | null;
-  isRecommended: boolean;
-  createdAt: Date | null;
-  updatedAt: Date | null;
-};
+import { BlogWithComments } from "@/types/blog-with-comments";
+import { useUserStore } from "@/zustand/userStore";
+import { useArticlesStore } from "@/zustand/articlesStore";
 
 const ArticleContentPage = ({ params }: { params: { articleId: string } }) => {
   const articleId = params?.articleId!;
-  const articleData = useArticleInfo(articleId);
   const [isBookmarked, setIsBookmarked] = React.useState<boolean>(false);
-  const { saveArticle, unsaveArticle } = useZustandStore();
 
-  const article: BlogWithComments = articleData.data?.data! as BlogWithComments;
+  const { fetchSelectedArticle, selectedArticle } = useArticlesStore();
+
+  React.useEffect(() => {
+    fetchSelectedArticle(articleId);
+  }, [fetchSelectedArticle, articleId]);
+
+  const { saveArticle, unsaveArticle, loading, error } = useUserStore();
+
+  const article: BlogWithComments = selectedArticle!;
   console.log("Article info: ", article);
 
-
-  if (articleData.isLoading) {
+  if (loading) {
     return <ArticleContentLoadingSkeleton article={article!} />;
   }
 
-  if (!articleData) {
+  if (error && !article) {
+    // return (
+    //   <div className="text-red-500">
+    //     Error in getting the article information ...
+    //   </div>
+    // );
+
     return (
-      <div className="text-red-500">
-        Error in getting the article information ...
+      <div className="w-7xl mx-auto flex items-center justify-center align-middle">
+        <Callout
+          className=""
+          title="Failed to fetch Article Info 🚨❌"
+          color="red"
+        >
+          <span>ERROR: {error} 🚨❌ ...</span>
+        </Callout>
       </div>
     );
   }
-
 
   const toggleBookmark = () => {
     setIsBookmarked(!isBookmarked);
@@ -90,18 +82,18 @@ const ArticleContentPage = ({ params }: { params: { articleId: string } }) => {
   };
 
   return (
-    <div className="min-h-screen h-full justify-center overflow-x-hidden">
+    <div className="h-full min-h-screen justify-center overflow-x-hidden">
       {/* article header */}
-      <div className="flex justify-between items-center px-16 py-2 border border-b-[1px] border-stroke">
+      <div className="border-stroke flex items-center justify-between border border-b-[1px] px-16 py-2">
         {/* back button */}
         <div>
           <Link href={`/articles`}>
             <Button
               variant="outline"
               size="icon"
-              className="flex justify-center items-center h-10 w-20 rounded-md dark:bg-transparent dark:hover:bg-zinc-800 transition-all duration-200 space-x-[6px]"
+              className="flex h-10 w-20 items-center justify-center space-x-[6px] rounded-md transition-all duration-200 dark:bg-transparent dark:hover:bg-zinc-800"
             >
-              <IoMdArrowRoundBack className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all " />
+              <IoMdArrowRoundBack className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
 
               {/* sr-only */}
               <span className="">Back</span>
@@ -109,15 +101,16 @@ const ArticleContentPage = ({ params }: { params: { articleId: string } }) => {
           </Link>
         </div>
 
-        <div className="flex justify-end space-x-2 items-center">
+        {/* buttons (write article, theme, notifications, user avatar) */}
+        <div className="flex items-center justify-end space-x-2">
           {/* write article button */}
           <Link href={`/writeArticle`}>
             <Button
               variant="outline"
               size="icon"
-              className="flex justify-center items-center h-10 w-20 rounded-md dark:bg-transparent dark:hover:bg-zinc-800 transition-all duration-200 space-x-2"
+              className="flex h-10 w-20 items-center justify-center space-x-2 rounded-md transition-all duration-200 dark:bg-transparent dark:hover:bg-zinc-800"
             >
-              <SquarePen className="h-[1.2rem] w-[1.2rem] ml-1 rotate-0 scale-100 transition-all " />
+              <SquarePen className="ml-1 h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
               <span className="">Write</span>
             </Button>
           </Link>
@@ -133,9 +126,10 @@ const ArticleContentPage = ({ params }: { params: { articleId: string } }) => {
         </div>
       </div>
 
-      <div className="md:max-w-3xl w-full my-16 mx-8 md:mx-auto space-y-8 overflow-x-hidden">
+      {/* content */}
+      <div className="mx-8 my-16 w-full space-y-8 overflow-x-hidden md:mx-auto md:max-w-3xl">
         {/* article title */}
-        <p className="text-[42px] leading-10 my-[24px] text-zinc-800 dark:text-white font-bold tracking-tighter">
+        <p className="my-[24px] text-[42px] font-bold leading-10 tracking-tighter text-zinc-800 dark:text-white">
           {article?.title ? article?.title : "Serverless Video Backend"}
         </p>
 
@@ -149,32 +143,32 @@ const ArticleContentPage = ({ params }: { params: { articleId: string } }) => {
         <Divider />
 
         {/* claps and comments, bookmark and more menu */}
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           {/* clap and comments icons */}
-          <div className="flex px-1 space-x-4">
+          <div className="flex space-x-4 px-1">
             {/* claps count */}
-            <div className="flex justify-start items-center space-x-2 cursor-pointer hover:text-zinc-900 dark:hover:text-white transition-all duration-300">
+            <div className="flex cursor-pointer items-center justify-start space-x-2 transition-all duration-300 hover:text-zinc-900 dark:hover:text-white">
               <FaHandsClapping size={18} />
-              <div className="text-xs mt-1">
+              <div className="mt-1 text-xs">
                 {article?.clapsCount ? article?.clapsCount : 0}
               </div>
             </div>
 
             {/* comments */}
-            <div className="flex justify-start items-center space-x-2 cursor-pointer hover:text-zinc-900 dark:hover:text-white transition-all duration-300">
+            <div className="flex cursor-pointer items-center justify-start space-x-2 transition-all duration-300 hover:text-zinc-900 dark:hover:text-white">
               <AiOutlineComment size={18} />
-              <div className="text-xs mt-1">
+              <div className="mt-1 text-xs">
                 {article?.comments ? article?.comments.toString() : 0}
               </div>
             </div>
           </div>
 
           {/* bookmark and more menu icon */}
-          <div className="flex px-1 space-x-4 dark:text-gray-200 transition-all duration-300">
+          <div className="flex space-x-4 px-1 transition-all duration-300 dark:text-gray-200">
             {/* bookmark icons */}
             <div
               onClick={toggleBookmark}
-              className="flex justify-start items-center space-x-2 cursor-pointer hover:text-zinc-900  transition-all duration-300 dark:hover:text-white"
+              className="flex cursor-pointer items-center justify-start space-x-2 transition-all duration-300 hover:text-zinc-900 dark:hover:text-white"
             >
               {isBookmarked ? (
                 <IoMdBookmark size={18} />
@@ -184,41 +178,41 @@ const ArticleContentPage = ({ params }: { params: { articleId: string } }) => {
             </div>
 
             {/* share */}
-            <div className="flex justify-start items-center space-x-2 cursor-pointer hover:text-zinc-900  transition-all duration-300 dark:hover:text-white">
+            <div className="flex cursor-pointer items-center justify-start space-x-2 transition-all duration-300 hover:text-zinc-900 dark:hover:text-white">
               <FaShareFromSquare size={18} />
             </div>
 
             {/* more */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <div className="flex justify-start items-center space-x-2 cursor-pointer hover:text-zinc-900 dark:hover:text-white">
+                <div className="flex cursor-pointer items-center justify-start space-x-2 hover:text-zinc-900 dark:hover:text-white">
                   <MdMoreHoriz size={18} />
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-64 rounded-xl">
                 <DropdownMenuGroup>
-                  <DropdownMenuItem className="cursor-pointer hover:text-green-500 dark:hover:text-green-400 ">
+                  <DropdownMenuItem className="cursor-pointer hover:text-green-500 dark:hover:text-green-400">
                     <Eye className="mr-2 h-4 w-4" />
                     <span>Show more from author</span>
                     <DropdownMenuShortcut>⇧⌘M</DropdownMenuShortcut>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="hover:text-red-500 dark:hover:text-red-400 cursor-pointer">
+                  <DropdownMenuItem className="cursor-pointer hover:text-red-500 dark:hover:text-red-400">
                     <EyeOff className="mr-2 h-4 w-4" />
                     <span>Show less from author</span>
                     <DropdownMenuShortcut>⌘L</DropdownMenuShortcut>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="hover:text-green-500 dark:hover:text-green-400 cursor-pointer">
+                  <DropdownMenuItem className="cursor-pointer hover:text-green-500 dark:hover:text-green-400">
                     <UserPlus className="mr-2 h-4 w-4" />
                     <span>Follow Author</span>
                     <DropdownMenuShortcut>⌘F</DropdownMenuShortcut>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="hover:text-red-500 dark:hover:text-red-400 cursor-pointer">
+                  <DropdownMenuItem className="cursor-pointer hover:text-red-500 dark:hover:text-red-400">
                     <UserMinus className="mr-2 h-4 w-4" />
                     <span>Mute Author</span>
                     <DropdownMenuShortcut>⌘M</DropdownMenuShortcut>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
-                <DropdownMenuItem className="text-red-500 dark:text-red-400 cursor-pointer">
+                <DropdownMenuItem className="cursor-pointer text-red-500 dark:text-red-400">
                   <MdReport className="mr-2 h-4 w-4" />
                   <span>Report article</span>
                   <DropdownMenuShortcut>⌘R</DropdownMenuShortcut>
@@ -232,6 +226,7 @@ const ArticleContentPage = ({ params }: { params: { articleId: string } }) => {
 
         {/* content */}
         <div className="space-y-4">
+          {/* article main image */}
           <div>
             <Image
               src={
@@ -246,14 +241,15 @@ const ArticleContentPage = ({ params }: { params: { articleId: string } }) => {
             />
           </div>
 
+          {/* article content */}
           <div>
             {article?.content ? (
               <div
-                className="text-base text-md text-zinc-700 dark:text-gray-100 tracking-tight"
+                className="text-md text-base tracking-tight text-zinc-700 dark:text-gray-100"
                 dangerouslySetInnerHTML={{ __html: article?.content }}
               />
             ) : (
-              <blockquote className="text-base font-bold text-zinc-700 dark:text-gray-100 tracking-tight">
+              <blockquote className="text-base font-bold tracking-tight text-zinc-700 dark:text-gray-100">
                 "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nam,
                 unde dolor ratione tempore in nihil culpa commodi labore non
                 accusamus sequi quos eos aspernatur iste, fuga earum obcaecati
@@ -284,18 +280,18 @@ export default ArticleContentPage;
 
 const ArticleContentLoadingSkeleton = ({ article }: { article: Blog }) => {
   return (
-    <div className="min-h-screen h-full justify-center overflow-x-hidden">
+    <div className="h-full min-h-screen justify-center overflow-x-hidden">
       {/* article header */}
-      <div className="flex justify-between items-center px-16 py-2 border border-b-[1px] border-stroke">
+      <div className="border-stroke flex items-center justify-between border border-b-[1px] px-16 py-2">
         {/* back button */}
         <div>
           <Link href={`/articles`}>
             <Button
               variant="outline"
               size="icon"
-              className="flex justify-center items-center h-10 w-20 rounded-md dark:bg-transparent dark:hover:bg-zinc-800 transition-all duration-200 space-x-[6px]"
+              className="flex h-10 w-20 items-center justify-center space-x-[6px] rounded-md transition-all duration-200 dark:bg-transparent dark:hover:bg-zinc-800"
             >
-              <IoMdArrowRoundBack className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all " />
+              <IoMdArrowRoundBack className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
 
               {/* sr-only */}
               <span className="">Back</span>
@@ -303,15 +299,15 @@ const ArticleContentLoadingSkeleton = ({ article }: { article: Blog }) => {
           </Link>
         </div>
 
-        <div className="flex justify-end space-x-2 items-center">
+        <div className="flex items-center justify-end space-x-2">
           {/* write article button */}
           <Link href={`/writeArticle`}>
             <Button
               variant="outline"
               size="icon"
-              className="flex justify-center items-center h-10 w-20 rounded-md dark:bg-transparent dark:hover:bg-zinc-800 transition-all duration-200 space-x-2"
+              className="flex h-10 w-20 items-center justify-center space-x-2 rounded-md transition-all duration-200 dark:bg-transparent dark:hover:bg-zinc-800"
             >
-              <SquarePen className="h-[1.2rem] w-[1.2rem] ml-1 rotate-0 scale-100 transition-all " />
+              <SquarePen className="ml-1 h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
               <span className="">Write</span>
             </Button>
           </Link>
@@ -327,9 +323,9 @@ const ArticleContentLoadingSkeleton = ({ article }: { article: Blog }) => {
         </div>
       </div>
 
-      <div className="md:max-w-3xl w-full my-16 mx-8 md:mx-auto space-y-8 overflow-x-hidden">
+      <div className="mx-8 my-16 w-full space-y-8 overflow-x-hidden md:mx-auto md:max-w-3xl">
         {/* article title */}
-        <Skeleton className="h-[42px] my-[24px]" />
+        <Skeleton className="my-[24px] h-[42px]" />
 
         {/* author info */}
         <ArticleAuthorInfo
@@ -353,7 +349,7 @@ const ArticleContentLoadingSkeleton = ({ article }: { article: Blog }) => {
           </div>
 
           <div className="space-y-4">
-            <Skeleton className="h-8 w-[150px]  object-cover" />
+            <Skeleton className="h-8 w-[150px] object-cover" />
             <div className="space-y-2">
               <Skeleton className="h-4 w-full object-cover" />
               <Skeleton className="h-4 w-full object-cover" />
@@ -365,7 +361,7 @@ const ArticleContentLoadingSkeleton = ({ article }: { article: Blog }) => {
           <Skeleton className="h-[22rem] object-cover" />
 
           <div className="space-y-4">
-            <Skeleton className="h-8 w-[150px]  object-cover" />
+            <Skeleton className="h-8 w-[150px] object-cover" />
             <div className="space-y-2">
               <Skeleton className="h-4 w-full object-cover" />
               <Skeleton className="h-4 w-full object-cover" />
@@ -383,9 +379,9 @@ const ArticleContentLoadingSkeleton = ({ article }: { article: Blog }) => {
             </div>
           </div> */}
 
-          <div className="space-y-4 ">
+          <div className="space-y-4">
             <div>
-              <Skeleton className="h-6 w-40  rounded-md" />
+              <Skeleton className="h-6 w-40 rounded-md" />
             </div>
 
             <div className="space-y-2">

@@ -23,3 +23,5 @@ export const Prerequisits = ({ prerequisits }: any) => {
     </div>
   );
 };
+
+export default Prerequisits;

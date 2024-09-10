@@ -1,5 +1,5 @@
 import React from "react";
-import CardDataStats from "@/components/CardDataStats";
+import CardDataStats from "@/components/card-data-stats";
 import { BsPersonVideo2 } from "react-icons/bs";
 import { TbMoneybag } from "react-icons/tb";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -8,20 +8,24 @@ type AnalyticsStats = {
   totalEarning: string;
   totalStudents: number;
   totalCourses: number;
-}
+};
 
-export default function AnalyticsStats({totalEarning, totalStudents, totalCourses}: AnalyticsStats) {
+export default function AnalyticsStats({
+  totalEarning,
+  totalStudents,
+  totalCourses,
+}: AnalyticsStats) {
   return (
-    <ScrollArea className="max-w-[559px] w-full rounded-lg overflow-hidden">
+    <ScrollArea className="w-full max-w-[559px] overflow-hidden rounded-lg">
       <div className="flex space-x-4">
         <div className="w-[240px]">
           <CardDataStats
             title="Total Earnings"
-            total= {`$ ${totalEarning ? totalEarning :  0}`}
+            total={`$ ${totalEarning ? totalEarning : 0}`}
             rate="4.35%"
             levelUp
           >
-            <div className="p-1.5 h-[2.5rem] w-[2.5rem] flex justify-center items-center rounded-full bg-zinc-200 dark:bg-zinc-700 bg-opacity-30   ">
+            <div className="flex h-[2.5rem] w-[2.5rem] items-center justify-center rounded-full bg-zinc-200 bg-opacity-30 p-1.5 dark:bg-zinc-700">
               <TbMoneybag size={22} />
             </div>
           </CardDataStats>
@@ -34,7 +38,7 @@ export default function AnalyticsStats({totalEarning, totalStudents, totalCourse
             rate="2.59%"
             levelUp
           >
-            <div className="p-1.5 h-[2.5rem] w-[2.5rem] flex justify-center items-center rounded-full bg-zinc-200 dark:bg-zinc-800 bg-opacity-30">
+            <div className="flex h-[2.5rem] w-[2.5rem] items-center justify-center rounded-full bg-zinc-200 bg-opacity-30 p-1.5 dark:bg-zinc-800">
               <BsPersonVideo2 size={22} />
             </div>
           </CardDataStats>
@@ -47,7 +51,7 @@ export default function AnalyticsStats({totalEarning, totalStudents, totalCourse
             rate="0.95%"
             levelDown
           >
-            <div className="p-1.5 h-[2.5rem] w-[2.5rem] flex justify-center items-center rounded-full bg-zinc-200 dark:bg-zinc-700 bg-opacity-30  ">
+            <div className="flex h-[2.5rem] w-[2.5rem] items-center justify-center rounded-full bg-zinc-200 bg-opacity-30 p-1.5 dark:bg-zinc-700">
               <svg
                 className="fill-zinc-900 dark:fill-white"
                 width="22"

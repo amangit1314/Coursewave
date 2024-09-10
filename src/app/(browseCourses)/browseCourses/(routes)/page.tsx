@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import BrowseSection from "../_components/browse-section";
-import DataComponent from "../_components/DataComponent";
+import DataComponent from "../_components/data-component";
 
 const BrowseCourses = () => {
   return (

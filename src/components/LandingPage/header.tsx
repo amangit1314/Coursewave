@@ -1,18 +1,18 @@
 import React from "react";
-import Image from "next/image";
-import { CgMenuRightAlt } from "react-icons/cg";
-import { ThemeModeToggle } from "../themeModeToggle";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import { Grip } from "lucide-react";
-import { absoluteUrl } from "@/utils/utils";
-interface TestimonialItemProps {
-  handleLoginClick: any;
-}
+import { Orbitron } from "next/font/google";
+import { Button } from "@/components/ui/button";
+import { ThemeModeToggle } from "../theme-mode-toggle";
+import { MobileMenuDrawerButton } from "./menu";
 
-const LandingPageHeader: React.FC<TestimonialItemProps> = ({
-  handleLoginClick,
-}) => {
+const orbitron = Orbitron({
+  weight: ["400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
+
+const LandingPageHeader = ({ handleLoginClick }: { handleLoginClick: any }) => {
   const links = [
     {
       name: "Courses",
@@ -32,9 +32,9 @@ const LandingPageHeader: React.FC<TestimonialItemProps> = ({
     },
   ];
   return (
-    <div className="bg-transparent border-b sticky z-10 top-0 backdrop-blur-xl  p-[2rem] max-w-7xl h-[64px] w-full mx-auto flex justify-between items-center py-auto overflow-x-hidden overflow-y-hidden ">
+    <div className="py-auto max-w-screen sticky top-0 z-10 mx-auto flex h-[64px] w-full items-center justify-between overflow-x-hidden overflow-y-hidden border-b bg-transparent px-[.75rem] py-[2rem] backdrop-blur-xl md:max-w-7xl md:p-[2rem]">
       {/* coursewave logo and text */}
-      <div className="flex cursor-pointer items-center py-auto">
+      <div className="py-auto flex cursor-pointer items-center space-x-2">
         <Image
           src="/assets/images/logo/coursewave-favicon-color.png"
           alt="CourseWave Logo"
@@ -42,48 +42,50 @@ const LandingPageHeader: React.FC<TestimonialItemProps> = ({
           height={8}
           priority
         />
-        <p className="pl-2 text-blue-500 font-mono tracking-tight font-extrabold capitalize text-[1rem]">
-          Coursewave
-        </p>
+        <div className={orbitron.className}>
+          <p className="text-[1.1rem] font-extrabold capitalize tracking-tight text-blue-500 md:text-[1.1rem]">
+            Coursewave
+          </p>
+        </div>
       </div>
 
       {/* navigate links */}
-      <div className="hidden lg:flex lg:visible justify-around lg:space-x-4">
+      <div className="hidden justify-around lg:visible lg:flex lg:space-x-4">
         {links.map((link, index) => {
           return (
-            <Link
-              key={index}
-              href={link.link}
-              className="text-[14px] text-gray-700 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-500 cursor-pointer font-medium transition-all duration-100"
-            >
-              {link.name}
-            </Link>
+            <div key={index} className={orbitron.className}>
+              <Link
+                href={link.link}
+                className="cursor-pointer text-[.8rem] font-medium text-gray-800 transition-all duration-100 hover:text-blue-500 dark:text-white dark:hover:text-blue-500"
+              >
+                {link.name}
+              </Link>
+            </div>
           );
         })}
       </div>
 
       {/* theme and other icons */}
-      <div className="flex justify-center items-center py-auto space-x-2">
+      <div className="py-auto flex items-center justify-center space-x-2">
         <ThemeModeToggle />
 
         <Link
-          className="ml-2 hidden xl:visible lg:visible lg:flex  items-center py-auto"
+          className="py-auto hidden items-center md:visible md:flex"
           href="/login"
         >
           <Button
-            variant="outline"
-            size="sm"
             onClick={handleLoginClick}
-            className="flex justify-center items-center text-zinc-700 h-10 hover:text-white dark:hover:text-white text-[14px] bg-transparent dark:text-white dark:bg-transparent hover:shadow-xl font-medium dark:hover:bg-zinc-800 transition-all duration-200"
-            color="gray"
+            variant={"outline"}
+            size={"icon"}
+            className="border-stroke group visible flex h-10 w-10 items-center justify-center rounded-md border transition-all duration-200 dark:bg-transparent dark:hover:bg-zinc-800 md:hidden"
           >
             Login
           </Button>
         </Link>
 
-        <Button className="visible group md:hidden flex justify-center items-center h-10 w-10 rounded-md dark:bg-transparent dark:hover:bg-zinc-800 transition-all duration-200 border border-stroke">
-          <Grip className="scale-100 md:scale-0 transition-all duration-200 text-black group-hover:text-white dark:text-white h-[1.2rem] w-[1.2rem]" />
-        </Button>
+        <div className="visible flex md:hidden">
+          <MobileMenuDrawerButton />
+        </div>
       </div>
     </div>
   );

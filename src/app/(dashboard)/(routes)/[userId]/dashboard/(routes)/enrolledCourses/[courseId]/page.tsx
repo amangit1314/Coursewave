@@ -18,7 +18,7 @@ import {
 import { MdOutlineRateReview } from "react-icons/md";
 import { PiStudentBold } from "react-icons/pi";
 import { Accordion } from "@tremor/react";
-import { RatingStars } from "@/app/(course)/courses/_components/rating-stars";
+import RatingStars from "@/app/(course)/courses/_components/rating-stars";
 import Reviewcard from "@/app/(course)/courses/_components/sections/reviews/review-card";
 
 function CoursePreview({ params }: any) {
@@ -54,10 +54,10 @@ function CoursePreview({ params }: any) {
   };
 
   return (
-    <div className="flex flex-col py-[2rem] ">
+    <div className="flex flex-col py-[2rem]">
       <div className="flex">
-        <div className="pt-[75px]  flex flex-col text-red items-start justify-center text-start text-xl">
-          <div className="pl-6 md:pl-0 flex justify-center ">
+        <div className="text-red flex flex-col items-start justify-center pt-[75px] text-start text-xl">
+          <div className="flex justify-center pl-6 md:pl-0">
             <p className="text-sm text-blue-500 dark:text-blue-400">
               Development
             </p>
@@ -67,18 +67,18 @@ function CoursePreview({ params }: any) {
           </div>
 
           <div className="flex flex-col">
-            <p className="pl-6 md:pl-0 font-semibold text-2xl">
+            <p className="pl-6 text-2xl font-semibold md:pl-0">
               {" "}
               {course?.courseTitle}{" "}
             </p>
 
-            <p className="text-md text-base p-6 md:py-2 md:text-md md:p-0 md:pr-[8rem] w-auto line-clamp-5 md:line-clamp-3 font-noraml text-gray-700 dark:text-gray-400">
+            <p className="text-md md:text-md font-noraml line-clamp-5 w-auto p-6 text-base text-gray-700 dark:text-gray-400 md:line-clamp-3 md:p-0 md:py-2 md:pr-[8rem]">
               {course?.courseDescription
                 ? course?.courseDescription
                 : "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Provident eos odit nam quae repellat quis cumque reiciendis autem ab expedita Provident eos odit nam quae repellat."}
             </p>
 
-            <div className="pl-6 mt-2 md:mt-0 md:p-0 grid grid-flow-col grid-rows-2 md:flex md:flex-row justify-start">
+            <div className="mt-2 grid grid-flow-col grid-rows-2 justify-start pl-6 md:mt-0 md:flex md:flex-row md:p-0">
               <RatingStars />
               <div className="flex flex-row">
                 <p className="mx-1 cursor-pointer text-sm font-medium text-blue-500 dark:text-blue-400">{`(${239} ratings)`}</p>
@@ -86,13 +86,13 @@ function CoursePreview({ params }: any) {
               </div>
             </div>
 
-            <div className="pl-6 md:p-0 mt-6 py-auto items-center flex justify-start">
+            <div className="py-auto mt-6 flex items-center justify-start pl-6 md:p-0">
               <Badge variant="default">
                 <div className="px-1">
                   <FaCircleCheck style={style} />
                 </div>
                 Creator
-                <p className="pl-1 text-sm cursor-pointer text-indigo-400 dark:text-indigo-600 underline">
+                <p className="cursor-pointer pl-1 text-sm text-indigo-400 underline dark:text-indigo-600">
                   {/* {course?.instructorID?.substring(0, 8)} */}
                   Aman Soni
                 </p>
@@ -110,7 +110,7 @@ function CoursePreview({ params }: any) {
         />
       </div>
 
-      <div className="flex mt-1 flex-col">
+      <div className="mt-1 flex flex-col">
         <ThisCourseIncludes />
 
         <CourseContent />
@@ -140,9 +140,9 @@ function CourseDetailLeftSection({
 }: CourseDetailLeftSectionParams) {
   const iconStyle = { color: "white" };
   return (
-    <div className="hidden md:flex md:flex-col relative w-[30rem] ml-[8rem] mt-[75px] shadow-lg z-99 shadow-gray-950 rounded-lg bg-slate-800 border-gray-500 max-h-[23rem]">
+    <div className="z-99 relative ml-[8rem] mt-[75px] hidden max-h-[23rem] w-[30rem] rounded-lg border-gray-500 bg-slate-800 shadow-lg shadow-gray-950 md:flex md:flex-col">
       <Image
-        className="h-60 w-[20rem] bg-slate-700 rounded-t-lg relative left-0 right-0"
+        className="relative left-0 right-0 h-60 w-[20rem] rounded-t-lg bg-slate-700"
         src={
           "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20210301154221/System-Design-Live-Course-By-GeeksforGeeks.png"
         }
@@ -157,7 +157,7 @@ function CourseDetailLeftSection({
 
       <Badge
         onClick={toggleIsInCart}
-        className="flex justify-center items-center rounded-full h-10 w-10 bg-indigo-500 absolute mt-1 bottom-29 hover:bg-indigo-600 right-2"
+        className="bottom-29 absolute right-2 mt-1 flex h-10 w-10 items-center justify-center rounded-full bg-indigo-500 hover:bg-indigo-600"
       >
         {isInCart ? (
           <HiOutlineShoppingCart style={iconStyle} />
@@ -167,19 +167,19 @@ function CourseDetailLeftSection({
       </Badge>
 
       <div className="p-4">
-        <div className="flex py-auto items-center">
+        <div className="py-auto flex items-center">
           <p className="text-lg font-semibold dark:text-gray-200">$ 499</p>
-          <p className="font-bold pl-1 text-sm dark:text-gray-400">/mo</p>
+          <p className="pl-1 text-sm font-bold dark:text-gray-400">/mo</p>
         </div>
 
         <button
           type="submit"
-          className="mt-2 bg-indigo-500 w-[18rem] rounded-lg hover:bg-indigo-700 text-sm text-white font-semibold p-2"
+          className="mt-2 w-[18rem] rounded-lg bg-indigo-500 p-2 text-sm font-semibold text-white hover:bg-indigo-700"
         >
           Buy Now
         </button>
 
-        <p className="text-center text-xs py-2 text-gray-400 font-thin">
+        <p className="py-2 text-center text-xs font-thin text-gray-400">
           30 Day money back guarantee
         </p>
 
@@ -210,16 +210,16 @@ export default CoursePreview;
 
 function WhatYouWillLearn() {
   return (
-    <div className="mt-2 md:py-8 md:mt-0 md:p-0 p-6 flex ">
-      <div className="flex flex-col p-4 max-w-3xl text-start text-gray-900 bg-white rounded-lg border border-gray-100 shadow dark:border-gray-600 xl:p-8 dark:bg-gray-800 dark:text-white">
-        <h3 className="mb-4 text-xl tracking-tight font-semibold">
+    <div className="mt-2 flex p-6 md:mt-0 md:p-0 md:py-8">
+      <div className="flex max-w-3xl flex-col rounded-lg border border-gray-100 bg-white p-4 text-start text-gray-900 shadow dark:border-gray-600 dark:bg-gray-800 dark:text-white xl:p-8">
+        <h3 className="mb-4 text-xl font-semibold tracking-tight">
           What you will learn!
         </h3>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4 p-2 md:p-0 text-left">
+        <div className="grid grid-cols-2 gap-2 p-2 text-left md:grid-cols-3 md:gap-4 md:p-0">
           <li className="flex items-center space-x-3">
             <svg
-              className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+              className="h-5 w-5 flex-shrink-0 text-green-500 dark:text-green-400"
               fill="currentColor"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
@@ -234,7 +234,7 @@ function WhatYouWillLearn() {
           </li>
           <li className="flex items-center space-x-3">
             <svg
-              className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+              className="h-5 w-5 flex-shrink-0 text-green-500 dark:text-green-400"
               fill="currentColor"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
@@ -249,7 +249,7 @@ function WhatYouWillLearn() {
           </li>
           <li className="flex items-center space-x-3">
             <svg
-              className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+              className="h-5 w-5 flex-shrink-0 text-green-500 dark:text-green-400"
               fill="currentColor"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
@@ -267,7 +267,7 @@ function WhatYouWillLearn() {
           </li>
           <li className="flex items-center space-x-3">
             <svg
-              className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+              className="h-5 w-5 flex-shrink-0 text-green-500 dark:text-green-400"
               fill="currentColor"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
@@ -280,12 +280,12 @@ function WhatYouWillLearn() {
             </svg>
             <span className="text-sm">
               Premium support:{" "}
-              <span className=" text-sm font-semibold">6 months</span>
+              <span className="text-sm font-semibold">6 months</span>
             </span>
           </li>
           <li className="flex items-center space-x-3">
             <svg
-              className="flex-shrink-0 w-5 h-5 text-green-500 dark:text-green-400"
+              className="h-5 w-5 flex-shrink-0 text-green-500 dark:text-green-400"
               fill="currentColor"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
@@ -298,7 +298,7 @@ function WhatYouWillLearn() {
             </svg>
             <span className="text-sm">
               Free updates:{" "}
-              <span className="text-sm  font-semibold">6 months</span>
+              <span className="text-sm font-semibold">6 months</span>
             </span>
           </li>
         </div>
@@ -309,12 +309,12 @@ function WhatYouWillLearn() {
 
 function ThisCourseIncludes() {
   return (
-    <div className="flex justify-between items-center py-auto">
-      <div className="flex flex-col items-start mt-2 p-6 md:p-0">
-        <h3 className="mb-4 tracking-tight text-xl font-semibold">
+    <div className="py-auto flex items-center justify-between">
+      <div className="mt-2 flex flex-col items-start p-6 md:p-0">
+        <h3 className="mb-4 text-xl font-semibold tracking-tight">
           This course includes:
         </h3>
-        <div className="grid px-2 grid-cols-2 md:gap-x-24 gap-6 justify-start md:pb-6 ">
+        <div className="grid grid-cols-2 justify-start gap-6 px-2 md:gap-x-24 md:pb-6">
           <ThisCourseIncludesItem
             icon={<BsPersonVideo2 />}
             text="300+ video lectures"
@@ -341,9 +341,9 @@ function ThisCourseIncludes() {
 
 function ThisCourseIncludesItem({ icon, text }: any) {
   return (
-    <div className="flex py-auto justify-start items-center">
+    <div className="py-auto flex items-center justify-start">
       <div>{icon}</div>
-      <p className="pl-3 md:pl-2 text-md text-gray-700 dark:text-gray-400">
+      <p className="text-md pl-3 text-gray-700 dark:text-gray-400 md:pl-2">
         {text}
       </p>
     </div>
@@ -352,16 +352,16 @@ function ThisCourseIncludesItem({ icon, text }: any) {
 
 function CourseContent() {
   return (
-    <div className="p-6 md:mt-4 md:p-0 max-w-3xl pb-4 md:pb-6">
-      <h3 className="mb-4 tracking-tight text:lg md:text-xl font-semibold">
+    <div className="max-w-3xl p-6 pb-4 md:mt-4 md:p-0 md:pb-6">
+      <h3 className="text:lg mb-4 font-semibold tracking-tight md:text-xl">
         Course Content:
       </h3>
       <div className="flex justify-between pb-2">
-        <div className="grid grid-flow-col grid-rows-2 md:flex justify-evenly text-gray-700 dark:text-gray-400">
+        <div className="grid grid-flow-col grid-rows-2 justify-evenly text-gray-700 dark:text-gray-400 md:flex">
           {/* sections */}
           <p className="text-sm">◽ 101 sections</p>
           {/* lections */}
-          <p className="text-sm px-1">◽ 300 lectures</p>
+          <p className="px-1 text-sm">◽ 300 lectures</p>
           {/* total length */}
           <p className="text-sm">◽ 40h 57m total length</p>
         </div>
@@ -376,11 +376,11 @@ function CourseContent() {
 
 function Prerequisits() {
   return (
-    <div className="md:mt-4 p-6 md:p-0 max-w-3xl justify-start">
-      <h3 className="mb-4 text-xl tracking-tight font-semibold">
+    <div className="max-w-3xl justify-start p-6 md:mt-4 md:p-0">
+      <h3 className="mb-4 text-xl font-semibold tracking-tight">
         Prerequisits:
       </h3>
-      <ul className="pl-4 flex flex-col text-gray-700 dark:text-gray-400 text-md justify-between pb-2 list-disc">
+      <ul className="text-md flex list-disc flex-col justify-between pb-2 pl-4 text-gray-700 dark:text-gray-400">
         <li className="pb-1">No programming experience is required</li>
         <li className="pb-1">Laptop is must</li>
         <li>A stable internet connection</li>
@@ -391,11 +391,11 @@ function Prerequisits() {
 
 function WhoThisCourseIsFor() {
   return (
-    <div className="md:mt-4 p-6 md:p-0 text-base max-w-3xl justify-start">
-      <h3 className="mb-4 text-xl tracking-tight font-semibold">
+    <div className="max-w-3xl justify-start p-6 text-base md:mt-4 md:p-0">
+      <h3 className="mb-4 text-xl font-semibold tracking-tight">
         Who this course is for:
       </h3>
-      <ul className="pl-4 flex flex-col text-gray-700 dark:text-gray-400 text-md justify-between pb-2 list-disc">
+      <ul className="text-md flex list-disc flex-col justify-between pb-2 pl-4 text-gray-700 dark:text-gray-400">
         <li className="pb-1">
           Office workers, students, small/home business workers, and
           administrators would want to improve their productivity
@@ -452,14 +452,14 @@ function TechnologiesLearned() {
         </div>
         <div className="mt-2 flex -space-x-2 overflow-hidden">
           {technologies.map((tech, index) => (
-            <div key={index} className="inline-block h-15 w-15">
+            <div key={index} className="h-15 w-15 inline-block">
               <Image
                 src={tech.image}
                 alt={`Image of ${tech.name}`}
                 height={46}
                 width={46}
                 objectFit="cover"
-                className="rounded-full p-3 flex items-center justify-center h-12 w-12 ring-1 ring-white"
+                className="flex h-12 w-12 items-center justify-center rounded-full p-3 ring-1 ring-white"
               />
             </div>
           ))}
@@ -521,8 +521,8 @@ function Enrollements() {
 
 function Description() {
   return (
-    <div className="md:mt-4 p-6 md:p-0 max-w-3xl justify-start">
-      <h3 className="mb-4 text-xl tracking-tight font-semibold">
+    <div className="max-w-3xl justify-start p-6 md:mt-4 md:p-0">
+      <h3 className="mb-4 text-xl font-semibold tracking-tight">
         Description:
       </h3>
       <div className="bg-transparent pb-2">
@@ -532,7 +532,7 @@ function Description() {
           feugiat egestas.
         </p>
 
-        <div className="text-md pt-4 text-base text-gray-700 dark:text-gray-400 ">
+        <div className="text-md pt-4 text-base text-gray-700 dark:text-gray-400">
           <p>
             Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget risus
             enim. Mattis mauris semper sed amet vitae sed turpis id. Id dolor
@@ -556,8 +556,8 @@ function Description() {
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="dark:text-gray-400 text-gray-700">
-                <strong className="font-semibold dark:text-gray-300 text-gray-900">
+              <span className="text-gray-700 dark:text-gray-400">
+                <strong className="font-semibold text-gray-900 dark:text-gray-300">
                   Push to deploy.
                 </strong>{" "}
                 Lorem ipsum, dolor sit amet consectetur adipisicing elit.
@@ -578,8 +578,8 @@ function Description() {
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="dark:text-gray-400 text-gray-700">
-                <strong className="font-semibold dark:text-gray-300 text-gray-900">
+              <span className="text-gray-700 dark:text-gray-400">
+                <strong className="font-semibold text-gray-900 dark:text-gray-300">
                   SSL certificates.
                 </strong>{" "}
                 Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure qui
@@ -600,8 +600,8 @@ function Description() {
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="dark:text-gray-400 text-gray-700">
-                <strong className="font-semibold dark:text-gray-300 text-gray-900">
+              <span className="text-gray-700 dark:text-gray-400">
+                <strong className="font-semibold text-gray-900 dark:text-gray-300">
                   Database backups.
                 </strong>{" "}
                 Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus.
@@ -617,9 +617,9 @@ function Description() {
 
 function TailwindDescription() {
   return (
-    <div className="md:mt-4 p-6 md:p-0 max-w-3xl justify-start">
+    <div className="max-w-3xl justify-start p-6 md:mt-4 md:p-0">
       <h3 className="mb-4 text-xl font-semibold">Description:</h3>
-      <div className="relative pt-2 isolate overflow-hidden bg-white px-6 py-24 sm:py-32 lg:overflow-visible lg:px-0">
+      <div className="relative isolate overflow-hidden bg-white px-6 py-24 pt-2 sm:py-32 lg:overflow-visible lg:px-0">
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <svg
             className="absolute left-[max(50%,25rem)] top-0 h-[64rem] w-[128rem] -translate-x-1/2 stroke-gray-200 [mask-image:radial-gradient(64rem_64rem_at_top,white,transparent)]"
@@ -784,10 +784,10 @@ function TailwindDescription() {
 function InstructorCard() {
   const insStyle = { color: "white" };
   return (
-    <div className="md:mt-4 p-6 md:p-0 max-w-3xl justify-start">
-      <h3 className="mb-4 text-xl tracking-tight font-semibold">Instructor:</h3>
+    <div className="max-w-3xl justify-start p-6 md:mt-4 md:p-0">
+      <h3 className="mb-4 text-xl font-semibold tracking-tight">Instructor:</h3>
 
-      <div className="dark:p-5 dark:border dark:border-gray-700 rounded-xl">
+      <div className="rounded-xl dark:border dark:border-gray-700 dark:p-5">
         <div className="flex">
           <Image
             src="/assets/images/user/user-01.png"
@@ -795,18 +795,18 @@ function InstructorCard() {
             height={46}
             width={46}
             objectFit="cover"
-            className="rounded-full flex items-center justify-center h-12 w-12 ring-1 ring-white"
+            className="flex h-12 w-12 items-center justify-center rounded-full ring-1 ring-white"
           />
 
-          <div className="ml-4 md:ml-6 items-start mr-auto text-base">
-            <p className="text-md tracking-tight font-semibold">Aman Soni</p>
-            <p className="text-sm text-gray-700 dark:text-gray-400 font-thin ">
+          <div className="ml-4 mr-auto items-start text-base md:ml-6">
+            <p className="text-md font-semibold tracking-tight">Aman Soni</p>
+            <p className="text-sm font-thin text-gray-700 dark:text-gray-400">
               Full Stack Engineer
             </p>
           </div>
         </div>
 
-        <p className="text-md text-base pt-8 md:py-2 md:text-md md:p-0 md:pr-[8rem] w-auto line-clamp-5 md:line-clamp-3 font-noraml text-gray-700 dark:text-gray-400">
+        <p className="text-md md:text-md font-noraml line-clamp-5 w-auto pt-8 text-base text-gray-700 dark:text-gray-400 md:line-clamp-3 md:p-0 md:py-2 md:pr-[8rem]">
           {/* {course?.courseDescription ? course?.courseDescription : '*/}
           Lorem ipsum dolor sit, amet consectetur adipisicing elit. Provident
           eos odit nam quae repellat quis cumque reiciendis autem ab expedita
@@ -815,7 +815,7 @@ function InstructorCard() {
         </p>
       </div>
 
-      <div className="stats sm:stats-vertically md:stats-horizontal shadow my-4 dark:bg-gray-800">
+      <div className="sm:stats-vertically stats my-4 shadow md:stats-horizontal dark:bg-gray-800">
         <div className="stat">
           <div className="stat-figure text-primary">
             {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg> */}
@@ -846,7 +846,7 @@ function InstructorCard() {
           </div>
           <div className="stat-value">2</div>
           <div className="stat-title">Created Courses</div>
-          <div className="stat-desc ">Full Stack Enginner</div>
+          <div className="stat-desc">Full Stack Enginner</div>
         </div>
       </div>
     </div>
@@ -901,20 +901,20 @@ function CourseRatings() {
   };
 
   return (
-    <div className="group md:mt-4 p-6 md:p-0 max-w-7xl items-center justify-start">
-      <div className="flex justify-between items-center py-auto">
-        <h3 className="flex items-center justify-start py-auto mb-4 text-xl tracking-tight font-semibold">
+    <div className="group max-w-7xl items-center justify-start p-6 md:mt-4 md:p-0">
+      <div className="py-auto flex items-center justify-between">
+        <h3 className="py-auto mb-4 flex items-center justify-start text-xl font-semibold tracking-tight">
           <FaStar />
           <p className="pl-2 pt-1">4.6 course rating, 111K ratings</p>
         </h3>
-        <p className="text-sm font-medium text-blue-500 mb-4">Show All</p>
+        <p className="mb-4 text-sm font-medium text-blue-500">Show All</p>
       </div>
 
       <div
-        className={`grid bg-white dark:bg-transparent gap-4 ${
+        className={`grid gap-4 bg-white dark:bg-transparent ${
           showAllItems
-            ? "grid-cols-2  md:grid-cols-4 grid-flow-col"
-            : "grid-rows-2 grid-cols-2  md:grid-cols-4"
+            ? "grid-flow-col grid-cols-2 md:grid-cols-4"
+            : "grid-cols-2 grid-rows-2 md:grid-cols-4"
         }`}
       >
         {reviews.map((review, index) => {
@@ -944,8 +944,8 @@ function CourseRatings() {
 
 function CourseRatingItem() {
   return (
-    <div className="p-5 w-auto bg-slate-100 dark:bg-slate-800 dark:border dark:border-gray-700 rounded-md max-w-[25rem]">
-      <p className="text-sm md:py-2 md:pr-[2.5rem] md:p-0 w-auto max-w-xs line-clamp-5 md:line-clamp-3 font-normal text-gray-700 dark:text-gray-400">
+    <div className="w-auto max-w-[25rem] rounded-md bg-slate-100 p-5 dark:border dark:border-gray-700 dark:bg-slate-800">
+      <p className="line-clamp-5 w-auto max-w-xs text-sm font-normal text-gray-700 dark:text-gray-400 md:line-clamp-3 md:p-0 md:py-2 md:pr-[2.5rem]">
         Lorem ipsum dolor sit, amet consectetur adipisicing elit. .
       </p>
 
@@ -956,12 +956,12 @@ function CourseRatingItem() {
           height={56}
           width={56}
           objectFit="cover"
-          className="rounded-full flex items-center justify-center h-14 w-14"
+          className="flex h-14 w-14 items-center justify-center rounded-full"
         />
 
-        <div className="ml-4 items-start mr-auto text-base">
-          <p className="text-md tracking-tight font-semibold">Aman Soni</p>
-          <p className="text-sm text-gray-600 dark:text-gray-400 font-thin ">
+        <div className="ml-4 mr-auto items-start text-base">
+          <p className="text-md font-semibold tracking-tight">Aman Soni</p>
+          <p className="text-sm font-thin text-gray-600 dark:text-gray-400">
             Full Stack Engineer
           </p>
         </div>
@@ -979,14 +979,14 @@ function MoreCoursesBy() {
   };
 
   return (
-    <div className="group md:mt-4 p-6 md:p-0 max-w-7xl items-center justify-start">
-      <h3 className="flex items-center justify-start py-auto mb-4 text-xl tracking-tight font-semibold">
+    <div className="group max-w-7xl items-center justify-start p-6 md:mt-4 md:p-0">
+      <h3 className="py-auto mb-4 flex items-center justify-start text-xl font-semibold tracking-tight">
         More Courses by <strong className="text-blue-500">Aman Soni</strong>
       </h3>
 
       <div
-        className={`grid bg-white dark:bg-transparent gap-2 ${
-          showAllItems ? "grid-cols-3 grid-flow-row" : "grid-rows-2 grid-cols-3"
+        className={`grid gap-2 bg-white dark:bg-transparent ${
+          showAllItems ? "grid-flow-row grid-cols-3" : "grid-cols-3 grid-rows-2"
         }`}
       >
         <MoreCreatedCourseItem />
@@ -1000,7 +1000,7 @@ function MoreCoursesBy() {
 
       <button
         onClick={toggleItemsVisibility}
-        className="mt-2 mx-auto shadow-md px-4 py-2 border border-blue-500 text-blue-500 bg-transparent  hover:text-white hover:bg-blue-500 rounded-full focus:outline-none"
+        className="mx-auto mt-2 rounded-full border border-blue-500 bg-transparent px-4 py-2 text-blue-500 shadow-md hover:bg-blue-500 hover:text-white focus:outline-none"
       >
         {showAllItems ? "Show Less" : "Show More"}
       </button>
@@ -1010,7 +1010,7 @@ function MoreCoursesBy() {
 
 function MoreCreatedCourseItem() {
   return (
-    <div className="p-5 bg-slate-100 dark:bg-slate-800 dark:border dark:border-gray-700 rounded-md max-w-[25rem]">
+    <div className="max-w-[25rem] rounded-md bg-slate-100 p-5 dark:border dark:border-gray-700 dark:bg-slate-800">
       <div className="flex">
         <Image
           src="/assets/images/user/user-01.png"
@@ -1018,18 +1018,18 @@ function MoreCreatedCourseItem() {
           height={56}
           width={56}
           objectFit="cover"
-          className="rounded-full flex items-center justify-center h-14 w-14"
+          className="flex h-14 w-14 items-center justify-center rounded-full"
         />
 
-        <div className="ml-4 items-start mr-auto text-base">
-          <p className="text-md tracking-tight font-semibold">Aman Soni</p>
-          <p className="text-sm text-gray-600 dark:text-gray-400 font-thin ">
+        <div className="ml-4 mr-auto items-start text-base">
+          <p className="text-md font-semibold tracking-tight">Aman Soni</p>
+          <p className="text-sm font-thin text-gray-600 dark:text-gray-400">
             Full Stack Engineer
           </p>
         </div>
       </div>
 
-      <p className="text-sm md:py-2 md:pr-[2.5rem] md:p-0 w-[25rem] line-clamp-5 md:line-clamp-3 font-normal text-gray-700 dark:text-gray-400">
+      <p className="line-clamp-5 w-[25rem] text-sm font-normal text-gray-700 dark:text-gray-400 md:line-clamp-3 md:p-0 md:py-2 md:pr-[2.5rem]">
         Lorem ipsum dolor sit, amet consectetur adipisicing elit. .
       </p>
     </div>

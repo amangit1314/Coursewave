@@ -24,12 +24,12 @@ const Analytics = ({
   createdCourses,
 }: AnalyticsStats) => {
   return (
-    <div className="dark:bg-zinc-900 h-auto flex justify-center pb-12">
+    <div className="flex h-auto justify-center pb-12 dark:bg-zinc-900">
       {/* first column */}
       <div className="space-y-8 px-[2rem] pt-[90px]">
         <div className="space-y-3">
-          <div className="flex justify-start md:flex-row md:justify-between items-center">
-            <div className="font-semibold text-xl tracking-tight text-zinc-800 dark:text-white">
+          <div className="flex items-center justify-start md:flex-row md:justify-between">
+            <div className="text-xl font-semibold tracking-tight text-zinc-800 dark:text-white">
               Analytics Stats
             </div>
 
@@ -46,14 +46,14 @@ const Analytics = ({
         </div>
 
         <div className="space-y-3">
-          <div className="font-semibold text-xl text-zinc-800 dark:text-white tracking-tight ">
+          <div className="text-xl font-semibold tracking-tight text-zinc-800 dark:text-white">
             Earning Report
           </div>
           <EarningReportAreaChart />
         </div>
 
         <div className="space-y-3">
-          <div className="font-semibold text-xl text-zinc-800 dark:text-white tracking-tight">
+          <div className="text-xl font-semibold tracking-tight text-zinc-800 dark:text-white">
             Students
           </div>
           <LineChartForStudents />
@@ -61,7 +61,7 @@ const Analytics = ({
       </div>
 
       {/* second column */}
-      <div className="w-[22rem] mt-[3rem] pt-[50px] mr-[2rem]">
+      <div className="mr-[2rem] mt-[3rem] w-[22rem] pt-[50px]">
         <TotalRevenueCard />
         <BestSellingCourses courses={createdCourses} />
         <VisitorsAnalyticsChart />

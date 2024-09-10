@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function Enrollements() {
-    return (
-        <div>Enrollements</div>
-    )
+  return <div>Enrollements</div>;
 }
 
-export default Enrollements
+export default Enrollements;

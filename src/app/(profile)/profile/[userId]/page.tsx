@@ -11,8 +11,8 @@ import { RiInstagramFill } from "react-icons/ri";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { FaGithub, FaSquareXTwitter, FaLinkedinIn } from "react-icons/fa6";
 import toast from "react-hot-toast";
-import useUserInfo from "@/hooks/use-user-info";
-import { ThemeModeToggle } from "@/components/themeModeToggle";
+import { useUserInfo } from "@/hooks/useUserInfo";
+import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 import "@uploadthing/react/styles.css";
 import {
   AlertDialog,
@@ -56,19 +56,19 @@ const Profile = () => {
 
   return (
     <div className="p-4">
-      <div className="overflow-hidden rounded-3xl border border-stroke border-gray-600 shadow-default dark:border-strokedark dark:bg-slate-900 shadow z-20 px-4 pt-6 pb-6 text-center lg:pb-8 xl:pb-11.5 m-4">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center border border-red-500 font-medium justify-center text-sm text-red-500 px-2 py-1 rounded-md bg-transparent hover:bg-red-600 hover:text-white cursor-pointer transition-all duration-300">
+      <div className="border-stroke shadow-default dark:border-strokedark xl:pb-11.5 z-20 m-4 overflow-hidden rounded-3xl border border-gray-600 px-4 pb-6 pt-6 text-center shadow dark:bg-slate-900 lg:pb-8">
+        <div className="flex items-center justify-between">
+          <div className="flex cursor-pointer items-center justify-center rounded-md border border-red-500 bg-transparent px-2 py-1 text-sm font-medium text-red-500 transition-all duration-300 hover:bg-red-600 hover:text-white">
             Logout
           </div>
-          <div className="flex items-end justify-end ml-auto">
+          <div className="ml-auto flex items-end justify-end">
             <ThemeModeToggle />
           </div>
         </div>
 
         <ProfileImage />
 
-        <h3 className="flex justify-center items-center mt-4 text-2xl tracking-tight font-bold text-black dark:text-white space-x-2">
+        <h3 className="mt-4 flex items-center justify-center space-x-2 text-2xl font-bold tracking-tight text-black dark:text-white">
           {user ? user.name : "Aman Soni"}
           {/* <Pencil
             size={16}
@@ -76,8 +76,8 @@ const Profile = () => {
           /> */}
         </h3>
 
-        <div className="flex text-black dark:text-gray-200 justify-center items-center pt-auto space-x-2">
-          <div className="flex justify-start items-center">
+        <div className="pt-auto flex items-center justify-center space-x-2 text-black dark:text-gray-200">
+          <div className="flex items-center justify-start">
             <SiGmail size={20} />
             <p className="pl-1.5 text-sm font-normal">
               {user ? user.email : "amansoni@gmail.com"}
@@ -107,7 +107,7 @@ const ProfileWithBackground = () => {
   const user = useUserInfo();
   return (
     <div className="relative">
-      <div className="relative z-20 h-35 md:h-65">
+      <div className="h-35 md:h-65 relative z-20">
         <Image
           src={
             user
@@ -115,15 +115,15 @@ const ProfileWithBackground = () => {
               : "/assets/images/cover/cover-01.png"
           }
           alt="profile cover"
-          className="max-h-[230px] h-full max-w-7xl w-full rounded-tl-sm rounded-tr-sm object-cover object-center"
+          className="h-full max-h-[230px] w-full max-w-7xl rounded-tl-sm rounded-tr-sm object-cover object-center"
           width={970}
           height={200}
         />
 
-        <div className="absolute bottom-1 right-1 z-10 xsm:bottom-4 xsm:right-4">
+        <div className="xsm:bottom-4 xsm:right-4 absolute bottom-1 right-1 z-10">
           <label
             htmlFor="cover"
-            className="flex cursor-pointer items-center justify-center gap-2 rounded bg-slate-900 py-1 px-2 text-sm font-medium text-white hover:bg-opacity-80 xsm:px-4"
+            className="xsm:px-4 flex cursor-pointer items-center justify-center gap-2 rounded bg-slate-900 px-2 py-1 text-sm font-medium text-white hover:bg-opacity-80"
           >
             <input type="file" name="cover" id="cover" className="sr-only" />
             <span>
@@ -146,7 +146,7 @@ const ProfileImage = () => {
   const user = useUserInfo();
 
   return (
-    <div className="flex items-center mt-8 justify-center">
+    <div className="mt-8 flex items-center justify-center">
       <div className="relative max-h-44 max-w-44">
         <Image
           src={
@@ -157,12 +157,12 @@ const ProfileImage = () => {
           }
           width={160}
           height={160}
-          className="rounded-full h-[160px] w-[160px] border border-stroke"
+          className="border-stroke h-[160px] w-[160px] rounded-full border"
           alt="profile"
         />
         <label
           htmlFor="profile"
-          className="absolute bottom-0 right-0 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-primary p-2 text-white bg-slate-700 hover:bg-opacity-70 sm:bottom-2 sm:right-2"
+          className="absolute bottom-0 right-0 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-primary bg-slate-700 p-2 text-white hover:bg-opacity-70 sm:bottom-2 sm:right-2"
         >
           <Camera size={18} />
           <input type="file" name="profile" id="profile" className="sr-only" />
@@ -204,18 +204,18 @@ const EditProfileImage = ({
       src={imageUrl ? imageUrl : "/assets/images/user/user-01.png"}
       width={96}
       height={96}
-      className="rounded-full h-[96px] w-[96px] border border-stroke"
+      className="border-stroke h-[96px] w-[96px] rounded-full border"
       alt="profile"
     />
   );
 
   return (
-    <div className="flex items-center mt-8 justify-center">
+    <div className="mt-8 flex items-center justify-center">
       <div className="relative max-h-44 max-w-44">
         {content}
         <label
           htmlFor="profile"
-          className="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-primary p-2 text-white bg-slate-700 hover:bg-opacity-70 sm:bottom-2 sm:right-2"
+          className="absolute bottom-0 right-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-primary bg-slate-700 p-2 text-white hover:bg-opacity-70 sm:bottom-2 sm:right-2"
           onClick={handleEditClick}
         >
           <Camera size={18} />
@@ -265,13 +265,13 @@ const EditProfileWidget = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-blue-400 dark:hover:from-blue-600 hover:via-indigo-400 hover:to-sky-400 hover:bg-blue-600  hover:rounded-lg p-2 hover:text-white transition-all duration-200 text-gray-800 dark:text-gray-200">
+        <div className="flex cursor-pointer items-center justify-between p-2 text-gray-800 transition-all duration-200 hover:rounded-lg hover:bg-blue-600 hover:bg-gradient-to-r hover:from-blue-400 hover:via-indigo-400 hover:to-sky-400 hover:text-white dark:text-gray-200 dark:hover:from-blue-600">
           <p className="text-sm">Edit Profile </p>
           <MdOutlineKeyboardArrowRight />
         </div>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[425px] w-full">
+      <DialogContent className="w-full sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="text-zinc-950 dark:text-white">
             Edit Profile
@@ -292,7 +292,7 @@ const EditProfileWidget = () => {
               render={({ field }) => (
                 <div>
                   <FormItem className="mt-8">
-                    <FormLabel className="my-4 text-base text-zinc-800 dark:text-gray-100 tracking-tight font-medium">
+                    <FormLabel className="my-4 text-base font-medium tracking-tight text-zinc-800 dark:text-gray-100">
                       Edit profile image
                     </FormLabel>
                     <FormControl>
@@ -322,7 +322,7 @@ const EditProfileWidget = () => {
               render={({ field }) => (
                 <div>
                   <FormItem className="mt-8">
-                    <FormLabel className="my-4 text-base text-zinc-800 dark:text-gray-100  tracking-tight font-medium">
+                    <FormLabel className="my-4 text-base font-medium tracking-tight text-zinc-800 dark:text-gray-100">
                       Edit username
                     </FormLabel>
                     <FormControl>
@@ -333,7 +333,7 @@ const EditProfileWidget = () => {
                       <Input
                         id="newUsername"
                         disabled={isSubmitting}
-                        className="bg-transparent border-gray-700 dark:border-gray-400 "
+                        className="border-gray-700 bg-transparent dark:border-gray-400"
                         placeholder={user.user?.name!}
                         {...field}
                       />
@@ -374,7 +374,7 @@ const SwitchToInstructorButton = () => {
   return (
     <button
       onClick={setInstructor}
-      className="my-3 p-2 cursor-pointer font-bold text-blue-500 hover:bg-blue-700 hover:rounded-lg hover:p-2  rounded-lg hover:text-white transition-all duration-200"
+      className="my-3 cursor-pointer rounded-lg p-2 font-bold text-blue-500 transition-all duration-200 hover:rounded-lg hover:bg-blue-700 hover:p-2 hover:text-white"
     >
       {isInstructor ? "Switch to instructor view" : "Become Instructor"}
     </button>
@@ -383,12 +383,12 @@ const SwitchToInstructorButton = () => {
 
 const AccountSettingsSection = () => {
   return (
-    <div className="flex mt-4 space-y-5 flex-col items-start">
-      <p className="text-md text-base font-semibold px-1 text-black  dark:text-white">
+    <div className="mt-4 flex flex-col items-start space-y-5">
+      <p className="text-md px-1 text-base font-semibold text-black dark:text-white">
         Account Settings
       </p>
 
-      <div className="flex group flex-col  space-y-2 max-w-7xl w-full  ">
+      <div className="group flex w-full max-w-7xl flex-col space-y-2">
         {/* <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-blue-400 dark:hover:from-blue-600 hover:via-indigo-400 hover:to-sky-400 dark:hover:bg-blue-600 hover:text-white hover:rounded-lg p-2 transition-all duration-200 text-gray-800 dark:text-gray-200">
           <p className="text-sm">Edit Profile Data</p>
           <MdOutlineKeyboardArrowRight />
@@ -451,14 +451,14 @@ const ChangePasswordWidget = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-emerald-400 dark:hover:from-emerald-600 hover:via-green-400 hover:to-emerald-400 dark:hover:bg-emerald-600 hover:text-white hover:rounded-lg p-2 transition-all duration-200 text-gray-800 dark:text-gray-200">
+        <div className="flex cursor-pointer items-center justify-between p-2 text-gray-800 transition-all duration-200 hover:rounded-lg hover:bg-gradient-to-r hover:from-emerald-400 hover:via-green-400 hover:to-emerald-400 hover:text-white dark:text-gray-200 dark:hover:bg-emerald-600 dark:hover:from-emerald-600">
           <p className="text-sm text-zinc-950 dark:text-white">
             Change Password{" "}
           </p>
           <MdOutlineKeyboardArrowRight />
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] rounded-3xl overflow-hidden">
+      <DialogContent className="overflow-hidden rounded-3xl sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="text-zinc-950 dark:text-white">
             Change Password
@@ -477,7 +477,7 @@ const ChangePasswordWidget = () => {
               name="oldPassword"
               render={({ field }) => (
                 <FormItem className="mt-8 space-y-1">
-                  <FormLabel className="text-right text-zinc-800 dark:text-white font-medium tracking-tight">
+                  <FormLabel className="text-right font-medium tracking-tight text-zinc-800 dark:text-white">
                     Current Password
                   </FormLabel>
                   <FormControl>
@@ -503,7 +503,7 @@ const ChangePasswordWidget = () => {
               render={({ field }) => (
                 <div>
                   <FormItem className="mt-8 space-y-1">
-                    <FormLabel className="text-right text-zinc-800 dark:text-white font-medium tracking-tight">
+                    <FormLabel className="text-right font-medium tracking-tight text-zinc-800 dark:text-white">
                       New Password
                     </FormLabel>
                     <FormControl>
@@ -524,11 +524,11 @@ const ChangePasswordWidget = () => {
               )}
             />
 
-            <DialogFooter className="flex justify-start space-x-4 items-center">
+            <DialogFooter className="flex items-center justify-start space-x-4">
               <Button
                 type="submit"
                 disabled={!isValid || isSubmitting}
-                className="hover:bg-green-600 hover:text-white overflow-hidden"
+                className="overflow-hidden hover:bg-green-600 hover:text-white"
               >
                 Save changes
               </Button>
@@ -550,7 +550,7 @@ const DeleteAccountWidget = () => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-red-400 dark:hover:from-red-600 hover:via-pink-400 hover:to-red-400 dark:hover:bg-red-600 hover:text-white hover:rounded-lg p-2 transition-all duration-200 text-gray-800 dark:text-gray-200">
+        <div className="flex cursor-pointer items-center justify-between p-2 text-gray-800 transition-all duration-200 hover:rounded-lg hover:bg-gradient-to-r hover:from-red-400 hover:via-pink-400 hover:to-red-400 hover:text-white dark:text-gray-200 dark:hover:bg-red-600 dark:hover:from-red-600">
           <p className="text-sm">Delete Account</p>
           <MdOutlineKeyboardArrowRight />
         </div>
@@ -563,7 +563,7 @@ const DeleteAccountWidget = () => {
             account and remove your data from our servers.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter className="flex justify-end items-center">
+        <AlertDialogFooter className="flex items-center justify-end">
           <AlertDialogCancel className="mb-2">Cancel</AlertDialogCancel>
           <AlertDialogAction className="bg-red-600 text-white">
             Continue
@@ -576,16 +576,16 @@ const DeleteAccountWidget = () => {
 
 const HelpAndSupportSection = () => {
   return (
-    <div className="mt-4 flex flex-col space-y-5 items-start">
-      <p className="text-md text-base font-semibold px-1 text-black  dark:text-white">
+    <div className="mt-4 flex flex-col items-start space-y-5">
+      <p className="text-md px-1 text-base font-semibold text-black dark:text-white">
         Help and Support
       </p>
-      <div className="flex flex-col space-y-2 max-w-7xl w-full">
-        <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-blue-400 dark:hover:from-blue-600 hover:via-indigo-400 hover:to-sky-400 hover:bg-blue-600 hover:text-white  hover:rounded-lg p-2 transition-all duration-200 text-gray-800 dark:text-gray-200">
+      <div className="flex w-full max-w-7xl flex-col space-y-2">
+        <div className="flex cursor-pointer items-center justify-between p-2 text-gray-800 transition-all duration-200 hover:rounded-lg hover:bg-blue-600 hover:bg-gradient-to-r hover:from-blue-400 hover:via-indigo-400 hover:to-sky-400 hover:text-white dark:text-gray-200 dark:hover:from-blue-600">
           <p className="text-sm">About CourseWave</p>
           <MdOutlineKeyboardArrowRight />
         </div>
-        <div className="flex justify-between items-center cursor-pointer hover:bg-gradient-to-r hover:from-blue-400 dark:hover:from-blue-600 hover:via-indigo-400 hover:to-sky-400 hover:bg-blue-600 hover:text-white  hover:rounded-lg p-2 transition-all duration-200 text-gray-800 dark:text-gray-200">
+        <div className="flex cursor-pointer items-center justify-between p-2 text-gray-800 transition-all duration-200 hover:rounded-lg hover:bg-blue-600 hover:bg-gradient-to-r hover:from-blue-400 hover:via-indigo-400 hover:to-sky-400 hover:text-white dark:text-gray-200 dark:hover:from-blue-600">
           <p className="text-sm">Share App </p>
           <MdOutlineKeyboardArrowRight />
         </div>
@@ -598,7 +598,7 @@ const FollowCoursewaveOn = () => {
   return (
     <div className="mt-8">
       <h4 className="mb-2 text-sm font-normal text-black dark:text-white">
-        Follow <span className="text-blue-500 font-bold">CourseWave</span> on
+        Follow <span className="font-bold text-blue-500">CourseWave</span> on
       </h4>
       <div className="flex items-center justify-center gap-3.5">
         <Link href="#" className="hover:text-blue-500" aria-label="social-icon">

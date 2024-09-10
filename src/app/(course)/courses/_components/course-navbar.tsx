@@ -4,9 +4,9 @@ import React from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Josefin_Sans } from "next/font/google";
-import { ThemeModeToggle } from "@/components/themeModeToggle";
+import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 import UserAvatar from "@/components/user-avatar";
-import useUserInfo from "@/hooks/use-user-info";
+import { useUserInfo } from "@/hooks/useUserInfo";
 import Notifications from "@/components/notification-button";
 import Link from "next/link";
 import Image from "next/image";
@@ -18,7 +18,7 @@ const josefinSans = Josefin_Sans({
   subsets: ["latin"],
 });
 
-export const CourseNavbar = ({ courseName }: { courseName: string }) => {
+const CourseNavbar = ({ courseName }: { courseName: string }) => {
   const router = useRouter();
   const user = useUserInfo();
   const userId = user.user?.id;
@@ -26,7 +26,7 @@ export const CourseNavbar = ({ courseName }: { courseName: string }) => {
   console.log("Is user instructor: ", isUserAnInstructor);
 
   const [isInstructor, setIsInstructor] = React.useState<boolean>(
-    isUserAnInstructor!
+    isUserAnInstructor!,
   );
 
   const switchToInstructorView = () => {
@@ -43,20 +43,20 @@ export const CourseNavbar = ({ courseName }: { courseName: string }) => {
   };
 
   return (
-    <div className="flex justify-between items-center w-full ">
+    <div className="flex w-full items-center justify-between">
       {/* breadcrumbs */}
-      <div className="flex justify-start space-x-1 items-center">
-        <div className="hidden md:flex text-sm breadcrumbs">
+      <div className="flex items-center justify-start space-x-1">
+        <div className="breadcrumbs hidden text-sm md:flex">
           <ul className="hidden md:flex">
             <li>
               <Link
                 href=""
-                className={`text-blue-500 font-bold text-xl ${josefinSans.className} `}
+                className={`text-xl font-bold text-blue-500 ${josefinSans.className} `}
               >
                 <Image
                   src="/assets/images/logo/coursewave-favicon-color.png"
                   alt="CourseWave Logo"
-                  className="mr-1 mb-2"
+                  className="mb-2 mr-1"
                   width={30}
                   height={8}
                   priority
@@ -65,7 +65,7 @@ export const CourseNavbar = ({ courseName }: { courseName: string }) => {
               </Link>
             </li>
             <li>
-              <span className="inline-flex mr-1 gap-2 items-center">
+              <span className="mr-1 inline-flex items-center gap-2">
                 {courseName}
               </span>
             </li>
@@ -95,3 +95,5 @@ export const CourseNavbar = ({ courseName }: { courseName: string }) => {
     </div>
   );
 };
+
+export default CourseNavbar;

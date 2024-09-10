@@ -4,7 +4,7 @@ import axios from "axios";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { absoluteUrl } from "@/utils/utils";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { LucideLoader2 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { QueryClient, useQuery } from "@tanstack/react-query";
 import { useZustandStore } from "@/zustand/store";
 import { signIn } from "next-auth/react";
+import { useUserStore } from "@/zustand/userStore";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers.post["Content-Type"] = "application/json";
@@ -27,26 +28,22 @@ const Login = () => {
   const [loading, setLoading] = React.useState(false);
   const [user, setUserInfo] = React.useState({ email: "", password: "" });
   const [isButtonDisabled, setButtonDisabled] = React.useState(false);
-  const { setUser } = useZustandStore();
+  const { setUser, loginUser } = useUserStore();
 
   const onLogin = async () => {
     try {
       setLoading(true);
-      await axios
-        .post(
-          process.env.ENVIRONMENT === "DEVELOPMENT"
-            ? absoluteUrl("/api/auth/login")
-            : "api/auth/login",
-          user
-        )
-        .then((res) => {
-          console.log("Login response: ", res.data);
-          setUser(res.data);
-        });
+      const url =
+        process.env.ENVIRONMENT === "DEVELOPMENT"
+          ? absoluteUrl("/api/auth/login")
+          : "api/auth/login";
+      await axios.post(url, user).then((res) => {
+        console.log("Login response: ", res.data);
+        setUser(res.data);
+      });
 
       successNotification("Logged in successfully");
       router.push("/browseCourses");
-      // redirect('/browseCourses');
     } catch (error: any) {
       console.error("Login failed: ", error.message);
       errorNotification(error.message);
@@ -65,22 +62,22 @@ const Login = () => {
 
   return (
     <div className="h-[80vh] bg-zinc-800">
-      <div className="flex flex-col items-center h-auto bg-slate-800 md:p-24 md:max-w-7xl w-full md:mx-auto">
-        <div className="flex flex-col space-y-4 md:space-y-0 lg:flex-row w-7xl p-14 justify-center bg-slate-900 rounded-3xl">
+      <div className="flex h-auto w-full flex-col items-center bg-slate-800 md:mx-auto md:max-w-7xl md:p-24">
+        <div className="w-7xl flex flex-col justify-center space-y-4 rounded-3xl bg-slate-900 p-14 md:space-y-0 lg:flex-row">
           {/* Left section */}
-          <div className="flex flex-col mr-0 lg:mr-20 justify-center">
-            <div className="text-white font-bold text-2xl md:text-[42px] tracking-tight space-y-8 md:leading-10">
+          <div className="mr-0 flex flex-col justify-center lg:mr-20">
+            <div className="space-y-8 text-2xl font-bold tracking-tight text-white md:text-[42px] md:leading-10">
               Welcome back to <br />{" "}
               <span className="text-blue-500">CourseWave</span>
             </div>
-            <div className="h-[5px] rounded-full bg-blue-500 w-32 mt-1 mb-4"></div>
+            <div className="mb-4 mt-1 h-[5px] w-32 rounded-full bg-blue-500"></div>
             <div className="text-slate-400">
               Sign in to continue to your <br /> account.
             </div>
           </div>
 
           {/* Right Section */}
-          <div className="flex flex-col p-8 bg-white rounded-3xl">
+          <div className="flex flex-col rounded-3xl bg-white p-8">
             {/* <div className="inline-flex items-center justify-center w-full">
               <SignInWithGoogleButton />
               <hr className="w-30 h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
@@ -91,7 +88,7 @@ const Login = () => {
             </div> */}
 
             <Input
-              className="p-2 border border-gray-300 bg-transparent rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+              className="mb-4 rounded-lg border border-gray-300 bg-transparent p-2 text-black focus:border-gray-600 focus:outline-none"
               id="email"
               type="text"
               value={user.email}
@@ -103,7 +100,6 @@ const Login = () => {
 
             <PasswordInput
               id="current_password"
-              // type="password"
               value={user.password}
               onChange={(e: any) =>
                 setUserInfo({ ...user, password: e.target.value })
@@ -113,7 +109,7 @@ const Login = () => {
 
             <Link
               href="/forgotPassword"
-              className="pb-2 text-sm text-blue-500 cursor-point"
+              className="cursor-point pb-2 text-sm text-blue-500"
             >
               forgot password?
             </Link>
@@ -121,7 +117,7 @@ const Login = () => {
             <button
               onClick={onLogin}
               type="submit"
-              className="py-2 text-white w-full bg-blue-500 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+              className="inline-flex w-full items-center justify-center whitespace-nowrap rounded-md bg-blue-500 py-2 text-sm font-medium text-white ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
               disabled={isButtonDisabled}
             >
               {loading ? (
@@ -137,7 +133,7 @@ const Login = () => {
 
             <p className="pt-3 text-sm dark:text-gray-900">
               Dont have an account?
-              <Link href="/register" className="text-blue-500 ml-[4px]">
+              <Link href="/register" className="ml-[4px] text-blue-500">
                 Register!
               </Link>
             </p>
@@ -155,7 +151,7 @@ const SignInWithGoogleButton = () => {
     <Button
       variant="outline"
       onClick={() => signIn()}
-      className="p-3 bg-transparent border-blue-500 rounded-md overflow-hidden"
+      className="overflow-hidden rounded-md border-blue-500 bg-transparent p-3"
     >
       <FcGoogle size={26} />
       <div className="pl-2">Sign in with Google</div>

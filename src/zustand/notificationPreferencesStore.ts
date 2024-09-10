@@ -17,50 +17,49 @@ type NotificationPreferencesStore = {
   setPreferences: (preferences: Partial<NotificationPreferences>) => void;
   updatePreferences: (
     userId: string,
-    preferences: Partial<NotificationPreferences>
+    preferences: Partial<NotificationPreferences>,
   ) => Promise<void>;
 };
 
-const useNotificationPreferencesStore = create<NotificationPreferencesStore>()(
-  persist(
-    (set) => ({
-      preferences: {
-        course_update_reminder: false,
-        instructor_new_course_reminder: false,
-        session_reminders: false,
-        qandAns_reminders: true,
-        course_updates: false,
-        marketing_emails: false,
-        security_emails: true,
-      },
-      setPreferences: (preferences) =>
-        set((state) => ({
-          preferences: { ...state.preferences, ...preferences },
-        })),
-      updatePreferences: async (userId, preferences) => {
-        try {
-          const response = await axios.post(
-            `api/profile/${userId}/preferences`,
-            {
-              preferences,
+export const useNotificationPreferencesStore =
+  create<NotificationPreferencesStore>()(
+    persist(
+      (set) => ({
+        preferences: {
+          course_update_reminder: false,
+          instructor_new_course_reminder: false,
+          session_reminders: false,
+          qandAns_reminders: true,
+          course_updates: false,
+          marketing_emails: false,
+          security_emails: true,
+        },
+        setPreferences: (preferences) =>
+          set((state) => ({
+            preferences: { ...state.preferences, ...preferences },
+          })),
+        updatePreferences: async (userId, preferences) => {
+          try {
+            const response = await axios.post(
+              `api/profile/${userId}/preferences`,
+              {
+                preferences,
+              },
+            );
+
+            if (response.status === 200) {
+              set((state) => ({
+                preferences: { ...state.preferences, ...preferences },
+              }));
+              console.log("Preferences updated successfully:", response.data);
+            } else {
+              console.error("Failed to update preferences:", response.data);
             }
-          );
-
-          if (response.status === 200) {
-            set((state) => ({
-              preferences: { ...state.preferences, ...preferences },
-            }));
-            console.log("Preferences updated successfully:", response.data);
-          } else {
-            console.error("Failed to update preferences:", response.data);
+          } catch (error) {
+            console.error("Error updating preferences:", error);
           }
-        } catch (error) {
-          console.error("Error updating preferences:", error);
-        }
-      },
-    }),
-    { name: "notification-preferences" }
-  )
-);
-
-export default useNotificationPreferencesStore;
+        },
+      }),
+      { name: "notification-preferences" },
+    ),
+  );

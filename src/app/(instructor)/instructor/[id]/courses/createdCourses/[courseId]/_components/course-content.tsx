@@ -68,15 +68,15 @@ export default function CourseContent({
   // console.log("Course sections in couse content: ", chapters);
 
   return (
-    <div className="py-20 px-8 space-y-8 dark:bg-zinc-900">
-      <div className="flex cursor-pointer hover:underline justify-start items-center text-sm space-x-2">
+    <div className="space-y-8 px-8 py-20 dark:bg-zinc-900">
+      <div className="flex cursor-pointer items-center justify-start space-x-2 text-sm hover:underline">
         <IoMdArrowRoundBack className="text-black dark:text-white" size={16} />
         <p>Back to created courses</p>
       </div>
 
-      <div className="flex justify-between items-center pt-4">
+      <div className="flex items-center justify-between pt-4">
         <div className=" ">
-          <p className="text-zinc-900 dark:text-white text-md text-base font-semibold">
+          <p className="text-md text-base font-semibold text-zinc-900 dark:text-white">
             Edit Course
           </p>
           <p className="text-sm">
@@ -87,7 +87,7 @@ export default function CourseContent({
       </div>
 
       {/* forms grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 dark:bg-zinc-800 rounded-3xl overflow-hidden p-6 ">
+      <div className="grid grid-cols-1 gap-6 overflow-hidden rounded-3xl p-6 dark:bg-zinc-800 md:grid-cols-2">
         {/* first col for forms */}
         <div>
           <div className="flex items-center gap-x-2">
@@ -111,7 +111,7 @@ export default function CourseContent({
 
           {/*TODO:  category form */}
           <div>
-            <div className="flex items-center gap-x-2 mt-6">
+            <div className="mt-6 flex items-center gap-x-2">
               <IconBadge icon={Shapes} />
               <h2 className="text-md font-medium text-zinc-800 dark:text-white">
                 Course Categories
@@ -174,7 +174,7 @@ export default function CourseContent({
       </div>
 
       {/* sections ans chapters, DONE ✔️ */}
-      <div className="grid grid-cols-1 gap-6 dark:bg-zinc-800 rounded-3xl overflow-hidden p-6 ">
+      <div className="grid grid-cols-1 gap-6 overflow-hidden rounded-3xl p-6 dark:bg-zinc-800">
         {/*  chapters form */}
         <div>
           <div className="flex items-center gap-x-2">

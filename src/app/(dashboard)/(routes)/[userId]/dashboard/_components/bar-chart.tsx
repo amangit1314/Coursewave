@@ -69,7 +69,7 @@ export function BarChartExampleWithCustomTooltip() {
   };
   return (
     <>
-      <h3 className="text-lg font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong tracking-tight">
+      <h3 className="text-lg font-medium tracking-tight text-tremor-content-strong dark:text-dark-tremor-content-strong">
         Activity Data
       </h3>
       <BarChart

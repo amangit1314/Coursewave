@@ -1,6 +1,6 @@
 import React from "react";
 
-export const CourseDescription = ({
+const CourseDescription = ({
   courseDescription,
 }: {
   courseDescription: string;
@@ -11,12 +11,12 @@ export const CourseDescription = ({
   const truncatedDescription = courseDescription.slice(0, 170);
 
   return (
-    <div className="w-full h-auto space-y-4">
-      <h3 className="tracking-tight text-xl  font-semibold text-zinc-800 dark:text-slate-200">
+    <div className="h-auto w-full space-y-4">
+      <h3 className="text-xl font-semibold tracking-tight text-zinc-800 dark:text-slate-200">
         About This Course
       </h3>
       <p
-        className={`text-md text-base md:text-md md:p-0 md:pr-[8rem] w-auto line-clamp-5 md:line-clamp-3 font-noraml text-gray-700 dark:text-gray-400 ${
+        className={`text-md md:text-md font-noraml line-clamp-5 w-auto text-base text-gray-700 dark:text-gray-400 md:line-clamp-3 md:p-0 md:pr-[8rem] ${
           isExpanded ? "text-clamp-4" : ""
         }`}
       >
@@ -25,7 +25,7 @@ export const CourseDescription = ({
 
       {courseDescription.length > 250 && (
         <div
-          className="expand-toggle cursor-pointer text-blue-500 text-md text-base mt-1"
+          className="expand-toggle text-md mt-1 cursor-pointer text-base text-blue-500"
           onClick={() => setIsExpanded(!isExpanded)}
         >
           {isExpanded ? "Show Less" : "Show More"}
@@ -34,3 +34,5 @@ export const CourseDescription = ({
     </div>
   );
 };
+
+export default CourseDescription;

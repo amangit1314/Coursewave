@@ -3,21 +3,17 @@
 import React from "react";
 import { BsPersonVideo2 } from "react-icons/bs";
 import { AiFillSetting } from "react-icons/ai";
-import { BsPatchQuestion } from "react-icons/bs";
-import { BiBroadcast } from "react-icons/bi";
 import { TbBrandGoogleAnalytics } from "react-icons/tb";
-import { HiUserGroup } from "react-icons/hi";
-import { VscFeedback } from "react-icons/vsc";
 import { FaHandsHelping } from "react-icons/fa";
 import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/utils/utils";
-import useUserInfo from "@/hooks/use-user-info";
-import useInstructorInfo from "@/hooks/use-instructor-info";
+import { useUserInfo } from "@/hooks/useUserInfo";
+import { useInstructorInfo } from "@/hooks/useInstructorInfo";
 import { Instructor } from "@prisma/client";
 
 const InstructorSideBarRoutes = () => {
   const user = useUserInfo();
-  const userId = user.user?.id;
+  const userId = user.user?.id!;
 
   const instructorData = useInstructorInfo(userId);
 
@@ -108,24 +104,24 @@ const InstructorSidebarItem = ({ href, icon, label }: SidebarItemProps) => {
       onClick={onClick}
       type="button"
       className={cn(
-        "flex items-center w-full rounded-md text-zinc-900 dark:text-white transition-all hover:bg-zinc-100 dark:hover:bg-zinc-700 group",
+        "group flex w-full items-center rounded-md text-zinc-900 transition-all hover:bg-zinc-100 dark:text-white dark:hover:bg-zinc-700",
         isActive &&
-          "text-blue-500 bg-blue-200/20 hover:bg-blue-200/20 hover:text-blue-500"
+          "bg-blue-200/20 text-blue-500 hover:bg-blue-200/20 hover:text-blue-500",
       )}
     >
-      <div className="pl-2  flex py-2 item-center gap-x-2">
+      <div className="item-center flex gap-x-2 py-2 pl-2">
         <div className={cn("text-slate-500", isActive && "text-blue-500")}>
           {icon}
         </div>
-        <span className="flex-1 ml-3 tracking-tight whitespace-nowrap">
+        <span className="ml-3 flex-1 whitespace-nowrap tracking-tight">
           {label}{" "}
         </span>
       </div>
 
       <div
         className={cn(
-          "ml-auto opacity-0 rounded-l-md border-2 border-blue-500 h-8 transition-all ",
-          isActive && "opacity-100"
+          "ml-auto h-8 rounded-l-md border-2 border-blue-500 opacity-0 transition-all",
+          isActive && "opacity-100",
         )}
       />
     </button>

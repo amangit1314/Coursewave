@@ -15,16 +15,16 @@ export default function InstructorLayout({ children }: InstructorLayoutProps) {
 
   return (
     <div
-      className={`min-h-screen h-full ${isAnalyticsPage ? "dark:bg-zinc-900" : "dark:bg-zinc-900"} `}
+      className={`h-full min-h-screen ${isAnalyticsPage ? "dark:bg-zinc-900" : "dark:bg-zinc-900"} `}
     >
-      <div className="h-[60px] md:pl-64 fixed inset-y-0 w-full z-50 ">
+      <div className="fixed inset-y-0 z-50 h-[60px] w-full md:pl-64">
         <InstructorNavbar />
       </div>
       <div className="flex h-full md:fixed md:inset-y-0 md:z-50">
         <InstructorSidebar />
       </div>
       <div
-        className={`md:pl-64 min-h-screen h-full ${isAnalyticsPage ? "dark:bg-zinc-900" : "dark:bg-zinc-900"}`}
+        className={`h-full min-h-screen md:pl-64 ${isAnalyticsPage ? "dark:bg-zinc-900" : "dark:bg-zinc-900"}`}
       >
         {children}
       </div>

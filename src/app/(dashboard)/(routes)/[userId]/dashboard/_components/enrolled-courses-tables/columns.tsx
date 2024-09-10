@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import {
@@ -12,16 +10,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Enrollment } from "@prisma/client";
+
 import Link from "next/link";
+import { EnrollementWithProgress } from "@/types/enrollment-with-progress";
 
-export type EnrollementWithProgress = Enrollment & {
-  progress: number;
-  certificate: string;
-  validity: string;
-}
-
-export const enrollmentColumns: ColumnDef<Enrollment>[] = [
+export const enrollmentColumns: ColumnDef<EnrollementWithProgress>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -46,32 +39,27 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
   },
   {
     accessorKey: "courseTitle",
-    header: "Course Title",
-    // header: ({ column }) => {
-    //   return (
-    //     <Button
-    //       variant="ghost"
-    //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    //     >
-    //       Course Title
-    //       <ArrowUpDown className="ml-2 h-4 w-4" />
-    //     </Button>
-    //   );
-    // },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Course Title
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
   },
   {
     accessorKey: "enrollmentDate",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Enrollment Date
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Enrollment Date
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
   },
   {
     accessorKey: "progress",
@@ -106,7 +94,9 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => navigator.clipboard.writeText(enrollment.enrollmentId)}
+              onClick={() =>
+                navigator.clipboard.writeText(enrollment.enrollmentId)
+              }
             >
               Copy enrollment ID
             </DropdownMenuItem>
@@ -116,13 +106,6 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
                 View Course
               </DropdownMenuItem>
             </Link>
-            {/* <Link
-              href={`/instructor/${course.instructorId}/courses/createdCourses/${course.id}`}
-            >
-              <DropdownMenuItem className="cursor-pointer">
-                View course details
-              </DropdownMenuItem>
-            </Link> */}
           </DropdownMenuContent>
         </DropdownMenu>
       );

@@ -1,12 +1,12 @@
-export default function Description({ courseDescription }: any) {
+const Description = ({ courseDescription }: any) => {
   return (
-    <div className="md:mt-4 max-w-3xl justify-start">
-      <h3 className="mb-4 text-xl tracking-tight font-semibold text-gray-700 dark:text-gray-200">
+    <div className="max-w-3xl justify-start md:mt-4">
+      <h3 className="mb-4 text-xl font-semibold tracking-tight text-gray-700 dark:text-gray-200">
         Description:
       </h3>
       <div className="bg-transparent pb-2">
         {courseDescription ? (
-          <div className="text-md text-base dark:text-gray-400 text-gray-700">
+          <div className="text-md text-base text-gray-700 dark:text-gray-400">
             {courseDescription}
           </div>
         ) : (
@@ -17,7 +17,7 @@ export default function Description({ courseDescription }: any) {
               vitae feugiat egestas.
             </p>
 
-            <div className="text-md pt-4 text-base text-gray-700 dark:text-gray-400 ">
+            <div className="text-md pt-4 text-base text-gray-700 dark:text-gray-400">
               <p>
                 Faucibus commodo massa rhoncus, volutpat. Dignissim sed eget
                 risus enim. Mattis mauris semper sed amet vitae sed turpis id.
@@ -41,8 +41,8 @@ export default function Description({ courseDescription }: any) {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="dark:text-gray-400 text-gray-700">
-                    <strong className="font-semibold dark:text-gray-300 text-gray-900">
+                  <span className="text-gray-700 dark:text-gray-400">
+                    <strong className="font-semibold text-gray-900 dark:text-gray-300">
                       Push to deploy.
                     </strong>{" "}
                     Lorem ipsum, dolor sit amet consectetur adipisicing elit.
@@ -63,8 +63,8 @@ export default function Description({ courseDescription }: any) {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="dark:text-gray-400 text-gray-700">
-                    <strong className="font-semibold dark:text-gray-300 text-gray-900">
+                  <span className="text-gray-700 dark:text-gray-400">
+                    <strong className="font-semibold text-gray-900 dark:text-gray-300">
                       SSL certificates.
                     </strong>{" "}
                     Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure
@@ -85,8 +85,8 @@ export default function Description({ courseDescription }: any) {
                       clipRule="evenodd"
                     />
                   </svg>
-                  <span className="dark:text-gray-400 text-gray-700">
-                    <strong className="font-semibold dark:text-gray-300 text-gray-900">
+                  <span className="text-gray-700 dark:text-gray-400">
+                    <strong className="font-semibold text-gray-900 dark:text-gray-300">
                       Database backups.
                     </strong>{" "}
                     Ac tincidunt sapien vehicula erat auctor pellentesque
@@ -100,4 +100,6 @@ export default function Description({ courseDescription }: any) {
       </div>
     </div>
   );
-}
+};
+
+export default Description;

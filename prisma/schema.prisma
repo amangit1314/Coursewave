@@ -144,14 +144,14 @@ model Course {
   instructorEarningsFromThisCourse InstructorEarning[]
   CourseProgress                   CourseProgress[]
   MuxData                          MuxData[]
+  CloudinaryData                   CloudinaryData[]
 
   Instructor Instructor? @relation(fields: [instructorID], references: [instructorID])
   WishList   WishList?   @relation(fields: [userId], references: [userId])
 
-  createdAt      DateTime?        @default(now())
-  updatedAt      DateTime?        @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
   // User      User?     @relation(fields: [userId], references: [id])
-  CloudinaryData CloudinaryData[]
 }
 
 model CourseAttachment {
@@ -248,11 +248,15 @@ model MuxData {
 }
 
 model CloudinaryData {
-  id        String @id @default(cuid())
-  cloudName String
-  publicId  String
-  courseId  String
-  chapterId String @unique
+  id             String  @id @default(cuid())
+  cloudName      String
+  publicId       String
+  publicId_480p  String?
+  publicId_720p  String?
+  publicId_1080p String?
+  courseId       String
+  sectionId      String?
+  chapterId      String  @unique
 
   chapter Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   course  Course?  @relation(fields: [courseId], references: [courseId], onDelete: Cascade)

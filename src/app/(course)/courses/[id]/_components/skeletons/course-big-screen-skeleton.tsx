@@ -1,14 +1,12 @@
-"use clinet";
-
 import { Skeleton } from "@/components/ui/skeleton";
 import { FaAngleRight, FaStar } from "react-icons/fa6";
 
-export const CourseBigScreenSkeleton = () => {
+const CourseBigScreenSkeleton = () => {
   return (
-    <div className=" min-h-screen min-w-screen flex justify-center items-center py-8">
-      <div className="grid grid-cols-3 justify-between space-x-8 items-start min-h-screen h-full border border-stroke rounded-3xl p-4">
+    <div className="min-w-screen flex min-h-screen items-center justify-center py-8">
+      <div className="border-stroke grid h-full min-h-screen grid-cols-3 items-start justify-between space-x-8 rounded-3xl border p-4">
         {/* left */}
-        <div className="h-full col-span-2 w-full space-y-8">
+        <div className="col-span-2 h-full w-full space-y-8">
           <div className="flex space-x-2">
             <Skeleton className="h-4 w-[100px] rounded-full" />
             <FaAngleRight />
@@ -21,7 +19,7 @@ export const CourseBigScreenSkeleton = () => {
               <Skeleton className="h-8 w-[300px] rounded-md" />
             </div>
 
-            <div className="flex space-x-2 justify-start items-center">
+            <div className="flex items-center justify-start space-x-2">
               <FaStar className="text-yellow-500" />
               <Skeleton className="h-4 w-[100px] rounded-full" />
               <Skeleton className="h-4 w-[230px] rounded-full" />
@@ -32,15 +30,15 @@ export const CourseBigScreenSkeleton = () => {
           <div className="space-y-4">
             <Skeleton className="h-6 w-[260px] rounded-md" />
             <div className="space-y-2">
-              <Skeleton className="h-4 mt-2 w-full rounded-full" />
+              <Skeleton className="mt-2 h-4 w-full rounded-full" />
               <Skeleton className="h-4 w-full rounded-full" />
               <Skeleton className="h-4 w-[320px] rounded-full" />
             </div>
           </div>
 
-          <div className="space-y-4 mt-4">
+          <div className="mt-4 space-y-4">
             <div>
-              <Skeleton className="h-6 w-40  rounded-md" />
+              <Skeleton className="h-6 w-40 rounded-md" />
             </div>
 
             <div className="space-y-2">
@@ -66,7 +64,7 @@ export const CourseBigScreenSkeleton = () => {
           <div className="space-y-4">
             <Skeleton className="h-6 w-[260px] rounded-md" />
             <div className="space-y-2">
-              <Skeleton className="h-4 mt-2 w-full rounded-full" />
+              <Skeleton className="mt-2 h-4 w-full rounded-full" />
               <Skeleton className="h-4 w-full rounded-full" />
               <Skeleton className="h-4 w-[320px] rounded-full" />
             </div>
@@ -74,10 +72,10 @@ export const CourseBigScreenSkeleton = () => {
         </div>
 
         {/* right */}
-        <div className="h-full col-span-1 space-y-2 max-w-[22rem] w-full rounded-3xl border border-stroke p-4 ">
+        <div className="border-stroke col-span-1 h-full w-full max-w-[22rem] space-y-2 rounded-3xl border p-4">
           <Skeleton className="h-[220px] w-full rounded-2xl" />
-          <div className="flex justify-start items-center space-x-2">
-            <span className="text-blue-500 font-bold">$</span>
+          <div className="flex items-center justify-start space-x-2">
+            <span className="font-bold text-blue-500">$</span>
             <Skeleton className="h-4 w-12 rounded-md" />{" "}
             <Skeleton className="h-4 w-40 rounded-full" />
           </div>
@@ -85,11 +83,11 @@ export const CourseBigScreenSkeleton = () => {
           <Skeleton className="h-10 w-full rounded-md" />
 
           <div className="space-y-8">
-            <div className="flex justify-center items-center mx-auto">
+            <div className="mx-auto flex items-center justify-center">
               <Skeleton className="h-4 w-40 rounded-full" />
             </div>
 
-            <div className="space-y-4 mt-4">
+            <div className="mt-4 space-y-4">
               <div>
                 <Skeleton className="h-6 w-40 rounded-md" />
               </div>
@@ -114,7 +112,7 @@ export const CourseBigScreenSkeleton = () => {
               </div>
             </div>
 
-            <div className="flex justify-center items-center space-x-4 mx-auto">
+            <div className="mx-auto flex items-center justify-center space-x-4">
               <Skeleton className="h-4 w-40 rounded-full" />
               <Skeleton className="h-4 w-40 rounded-full" />
             </div>
@@ -124,3 +122,6 @@ export const CourseBigScreenSkeleton = () => {
     </div>
   );
 };
+
+
+export default CourseBigScreenSkeleton;

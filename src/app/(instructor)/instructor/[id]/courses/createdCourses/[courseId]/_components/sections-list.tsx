@@ -58,7 +58,7 @@ export const SectionsList = ({
     const bulkUpdateData = updatedChapters.map((section) => ({
       id: section.courseSectionId,
       position: items.findIndex(
-        (item) => item.courseSectionId === section.courseSectionId
+        (item) => item.courseSectionId === section.courseSectionId,
       ),
     }));
 
@@ -115,20 +115,19 @@ const SectionItem = ({
   };
 
   return (
-    <div className="relative mt-6 border bg-slate-100 dark:bg-zinc-800 rounded-2xl p-4 w-full">
-      <div className="font-medium flex items-center justify-between">
-
+    <div className="relative mt-6 w-full rounded-2xl border bg-slate-100 p-4 dark:bg-zinc-800">
+      <div className="flex items-center justify-between font-medium">
         <div className="space-y-[5px]">
-          <p className="text-xs space-x-2 dark:text-gray-400">
-            <span className="dark:text-white ">
+          <p className="space-x-2 text-xs dark:text-gray-400">
+            <span className="dark:text-white">
               {section.courseSectionNumber}.
             </span>
-            <span className="not-italic dark:text-white font-semibold">
+            <span className="font-semibold not-italic dark:text-white">
               {section.courseSectionTitle}
             </span>
           </p>
 
-          <p className="line-clamp-2 text-xs  ">
+          <p className="line-clamp-2 text-xs">
             {section.courseSectionDescription}
           </p>
         </div>
@@ -138,7 +137,7 @@ const SectionItem = ({
             <>Cancel</>
           ) : (
             <>
-              <Pencil className="h-4 w-4 mr-2" />
+              <Pencil className="mr-2 h-4 w-4" />
               Edit
             </>
           )}

@@ -1,5 +1,61 @@
 import { Payment } from "@/types/payment";
 
+export const courses = [
+  {
+    courseImage: "assets/illustrations/course_illus.png",
+    courseId: "course_0xx1",
+    isFree: false,
+    coursePrice: "300",
+    courseTitle: "Become React Hero",
+    avgStarRatings: 4.8,
+    instructorName: "Aman Soni",
+  },
+  {
+    courseImage: "assets/images/images1.jpg",
+    courseId: "course_0xx2",
+    isFree: false,
+    coursePrice: "200",
+    courseTitle: "Full Stack Bootcamp",
+    avgStarRatings: 4.8,
+    instructorName: "Aman Soni",
+  },
+  {
+    courseImage: "assets/images/images2.jpg",
+    courseId: "course_0xx3",
+    isFree: false,
+    coursePrice: "270",
+    courseTitle: "Git & Github Master Class",
+    avgStarRatings: 4.8,
+    instructorName: "Aman Soni",
+  },
+  {
+    courseImage: "assets/images/images3.jpg",
+    courseId: "course_0xx4",
+    isFree: false,
+    coursePrice: "470",
+    courseTitle: "API Testing with Postman",
+    avgStarRatings: 4.8,
+    instructorName: "Aman Soni",
+  },
+  {
+    courseImage: "/nextjs.png",
+    courseId: "course_0xx5",
+    isFree: false,
+    coursePrice: "27",
+    courseTitle: "Intro to Data Science",
+    avgStarRatings: 4.8,
+    instructorName: "Aman Soni",
+  },
+];
+
+export const sampleCourseCategories = [
+  { title: "All" },
+  { title: "Development" },
+  { title: "Mobile Development" },
+  { title: "Web Development" },
+  { title: "React Native" },
+];
+
 export const reviews = [
   {
     name: "Lorean James",

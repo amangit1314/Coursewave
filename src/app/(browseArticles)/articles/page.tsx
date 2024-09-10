@@ -1,36 +1,19 @@
 import React from "react";
 import { ArticleCard } from "./_components/article-card";
 import { db } from "@/lib/db";
-import { Blog, BlogComment } from "@prisma/client";
-
-type BlogWithComments = {
-  id: string;
-  title: string;
-  shortDescription: string | null;
-  content: string;
-  estimatedReadingTime: string;
-  clapsCount: number;
-  authorId: string;
-  categoryName: string | null;
-  thumbnailUrl: string | null;
-  isRecommended: boolean;
-  
-  comments: BlogComment[];
-  createdAt: Date | null;
-  updatedAt: Date | null;
-};
+import { BlogWithComments } from "@/types/blog-with-comments";
 
 const ArticlesPage = async () => {
+  // TODO: use useArticles zustand store here in place of directly accessing it from db
   const articles: BlogWithComments[] = await db.blog.findMany({
     include: {
       comments: true,
-    }
-  }
-  );
+    },
+  });
 
   return (
-    <div className="px-10 py-8 max-w-7xl overflow-x-hidden">
-      <p className="text-3xl text-zinc-800 dark:text-white font-bold tracking-tight">
+    <div className="max-w-7xl overflow-x-hidden px-10 py-8">
+      <p className="text-3xl font-bold tracking-tight text-zinc-800 dark:text-white">
         Articles
       </p>
       <p className="text-base text-zinc-600 dark:text-gray-300">
@@ -39,19 +22,17 @@ const ArticlesPage = async () => {
 
       <div>
         {articles && articles.length ? (
-          <div className="grid my-8 grid-cols-2 md:grid-cols-3 gap-8">
+          <div className="my-8 grid grid-cols-2 gap-8 md:grid-cols-3">
             {articles.map((article: BlogWithComments) => {
               return (
                 <div key={article.id}>
-                  <ArticleCard article={article}  />
+                  <ArticleCard article={article} />
                 </div>
-              )
+              );
             })}
           </div>
         ) : (
-          <div className="grid my-8 grid-cols-3 gap-8">
-            No Articles yet
-          </div>
+          <div className="my-8 grid grid-cols-3 gap-8">No Articles yet</div>
         )}
       </div>
     </div>

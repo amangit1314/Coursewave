@@ -39,8 +39,8 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import useUserInfo from "@/hooks/use-user-info";
-import useNotificationPreferencesStore from "@/zustand/notificationPreferencesStore";
+import { useUserInfo } from "@/hooks/useUserInfo";
+import { useNotificationPreferencesStore } from "@/zustand/notificationPreferencesStore";
 
 const FormSchema = z.object({
   course_update_reminder: z.boolean().default(true).optional(),
@@ -262,9 +262,9 @@ const DeleteAccountWidget = () => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <div className="flex flex-col ml-4 cursor-pointer hover:bg-red-600 items-center justify-between rounded-lg border p-4 transition-all duration-300 group">
+        <div className="group ml-4 flex cursor-pointer flex-col items-center justify-between rounded-lg border p-4 transition-all duration-300 hover:bg-red-600">
           <div className="space-y-0.5">
-            <Title className="text-base font-semibold text-zinc-800 dark:text-white group-hover:text-white ">
+            <Title className="text-base font-semibold text-zinc-800 group-hover:text-white dark:text-white">
               Delete Account
             </Title>
             <FormDescription className="group-hover:text-gray-200">
@@ -294,9 +294,9 @@ const ChangePasswordWidget = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="flex flex-col cursor-pointer hover:bg-green-600 items-center justify-between rounded-lg border p-4 transition-all duration-300 group">
+        <div className="group flex cursor-pointer flex-col items-center justify-between rounded-lg border p-4 transition-all duration-300 hover:bg-green-600">
           <div className="space-y-0.5">
-            <Title className="text-base font-semibold text-zinc-800 dark:text-white  group-hover:text-white">
+            <Title className="text-base font-semibold text-zinc-800 group-hover:text-white dark:text-white">
               Change Password
             </Title>
             <FormDescription className="group-hover:text-gray-200">

@@ -53,7 +53,7 @@ export const ChapterTitleForm = ({
     try {
       await axios.patch(
         `api/courses/${courseId}/chapters/${chapterId}`,
-        values
+        values,
       );
       toast.success("Chapter updated");
       toggleEdit();
@@ -64,26 +64,29 @@ export const ChapterTitleForm = ({
   };
 
   return (
-    <div className="mt-6 md:mt-0 border bg-slate-100 dark:bg-zinc-800 transition-all duration-300 rounded-xl p-4">
-      <div className="font-medium flex items-center justify-between">
-        Chapter title
-        <Button onClick={toggleEdit} variant="ghost">
+    <div className="mt-6 rounded-xl border bg-slate-100 p-4 transition-all duration-300 dark:bg-zinc-800 md:mt-0">
+      <div className="flex items-center justify-between font-medium">
+        <h3 className="font-semibold tracking-tight text-zinc-800 dark:text-white">
+          Chapter title
+        </h3>
+        <Button onClick={toggleEdit} variant="ghost" className="group hover:bg-white dark:hover:bg-black dark:hover:text-white transition-all duration-100 overflow-hidden">
           {isEditing ? (
-            <>Cancel</>
+             // <div className="text-red-600 bg-red-300 rounded-md px-4 py-2 hover:bg-red-600 hover:text-white border border-stroke border-red-600 hover:border-transparent">Cancel</div>
+          <div className="text-red-600">Cancel</div>
           ) : (
-            <>
-              <Pencil className="h-4 w-4 mr-2" />
-              Edit title
-            </>
+            <div className="flex justify-end group-hover:justify-center items-center text-zinc-800 dark:text-gray-200">
+              <Pencil className="mr-2 h-4 w-4" />
+              <p>Edit title</p>
+            </div>
           )}
         </Button>
       </div>
-      {!isEditing && <p className="text-sm mt-2">{initialData.title}</p>}
+      {!isEditing && <p className="mt-2 text-sm">{initialData.title}</p>}
       {isEditing && (
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 mt-4"
+            className="mt-4 space-y-4"
           >
             <FormField
               control={form.control}

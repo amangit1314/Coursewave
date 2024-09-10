@@ -10,6 +10,6 @@ export function absoluteUrl(path: string) {
   return `${process.env.NEXT_DEPLOYMENT_APP_URL}${path}`;
 }
 
-export function formatNumber(number: number) {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
+// export function formatNumber(number: number) {
+//   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+// }
