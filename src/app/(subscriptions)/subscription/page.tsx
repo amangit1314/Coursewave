@@ -6,7 +6,7 @@
 // import React, { startTransition, useEffect } from "react";
 // import { createStripeUrl } from "../../../../actions/create-stripe-checkout-url";
 // import toast from "react-hot-toast";
-// import useUserInfo from "@/hooks/use-user-info";
+// import {useUserInfo} from "@/hooks/use-user-info";
 // import SubscriptionPlanCard from "./_components/subscription-plan-card";
 // import { absoluteUrl } from "@/lib/utils";
 // import { useQuery } from "@tanstack/react-query";

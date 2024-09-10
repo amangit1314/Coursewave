@@ -4,7 +4,7 @@
 // import { storeSubscriptionPlans } from "@/lib/subscriptions";
 // import { createStripeUrl } from "../../../../../actions/create-stripe-checkout-url";
 // import toast from "react-hot-toast";
-// import useUserInfo from "@/hooks/use-user-info";
+// import {useUserInfo} from "@/hooks/use-user-info";
 // import SubscriptionPlanCard from "./subscription-plan-card";
 
 // type SubscriptionPlan = {
