@@ -16,7 +16,7 @@ const MoreFromAuthor = ({ authorId }: { authorId: string }) => {
   // const authorData = useGetUserByAuthorId(authorId);
   // const author = authorData.user;
 
-  const { createdArticles, fetchCreatedArticles, loading, error, user } =
+  const { createdArticles, fetchCreatedArticles, loadingState, user } =
     useUserStore();
 
   React.useEffect(() => {
@@ -30,11 +30,11 @@ const MoreFromAuthor = ({ authorId }: { authorId: string }) => {
   //   return <div>Loading ...</div>;
   // }
 
-  if (loading) {
+  if (loadingState.loading) {
     return <MoreFromAuthorLoadingSkeleton />;
   }
 
-  if (error) {
+  if (loadingState.error) {
     // return (
     //   <p className="text-red-600 dark:text-red-500">
     //      {/* Error: {articlesData.error.message} */}
@@ -48,7 +48,7 @@ const MoreFromAuthor = ({ authorId }: { authorId: string }) => {
           title="Failed to fetch more articles from Author in more-from-author.tsx 🚨❌"
           color="red"
         >
-          <span>{error} 🚨❌ ...</span>
+          <span>{loadingState.error} 🚨❌ ...</span>
         </Callout>
       </div>
     );
