@@ -23,7 +23,7 @@ import toast, { Toaster } from "react-hot-toast";
 
 //* tremor icons
 import { Button, Callout, Divider } from "@tremor/react";
-import { Course } from "@prisma/client";
+import { Course, Instructor } from "@prisma/client";
 
 //* icons
 import { Loader } from "lucide-react";
@@ -49,7 +49,9 @@ import { useCheckCourseIsPurchased } from "@/hooks/useCheckCourseIsPuchased";
 import CourseNavbar from "../_components/course-navbar";
 import CourseContent from "../_components/course-content";
 import Prerequisits from "../_components/sections/prerequisits";
-import InstructorCard from "../_components/sections/instructor-info";
+import InstructorCard, {
+  InstructorCardLoadingSkeleton,
+} from "../_components/sections/instructor-card";
 import CourseBreadcrumb from "../_components/sections/course-breadcrumb";
 import WhatYouWillLearn from "../_components/sections/what-you-will-learn";
 import WhoThisCourseIsFor from "../_components/sections/who-this-course-is-for";
@@ -61,9 +63,18 @@ import CourseBigScreenSkeleton from "./_components/skeletons/course-big-screen-s
 import { Footer } from "@/components/LandingPage/footer";
 import { CourseRatings } from "../_components/sections/ratings/course-ratings";
 import { MoreIntructorCreatedCourses } from "../_components/sections/more-instructor-created-courses";
+import { useInstructorStore } from "@/zustand/instructorStore";
+import { useUserStore } from "@/zustand/userStore";
+import { EnrollementWithProgress } from "@/types/enrollment-with-progress";
+import { Skeleton } from "@/components/ui/skeleton";
+import { CourseWithOtherFields } from "@/types/course-with-other-fields";
 
 const CoursePreview = ({ params }: { params: { id: string } }) => {
   const courseId = params?.id!;
+
+  console.log(
+    `Course id in courses/[id]/page.tsx before fetching data: ${courseId}`,
+  );
 
   const { course, loadingState, fetchCourse, fetchCourseReviews, reviews } =
     useCoursesStore();
@@ -101,7 +112,7 @@ const CoursePreview = ({ params }: { params: { id: string } }) => {
   }
 
   console.log(
-    `Course data for courseId:${courseId} in course id detail page: `,
+    `Course data for courseId:${courseId} in courses/[id]/page.tsx : `,
     course,
   );
 
@@ -115,7 +126,11 @@ const CoursePreview = ({ params }: { params: { id: string } }) => {
 
         {/* course content */}
         <div className="pl-8 md:grid md:max-w-7xl md:grid-cols-2 md:pl-[6rem]">
-          <CourseDetailsLeftSection course={course!} />
+          {/* {(!course?.instructorID || !course) ? <CourseDetailsLeftSection course={course!} instructorId={course?.instructorID!} /> : <div></div> } */}
+          <CourseDetailsLeftSection
+            course={course!}
+            instructorId={course?.instructorID || "Unknown Instructor ID"} // Fallback to avoid undefined
+          />
           <CourseDetailsRightSection course={course!} />
         </div>
 
@@ -125,24 +140,11 @@ const CoursePreview = ({ params }: { params: { id: string } }) => {
         </div>
 
         {/* Instructor Info */}
-        <div className="mt-4 flex w-full max-w-7xl flex-col justify-start border-y px-8 py-8 dark:bg-transparent md:px-[6rem]">
-          <h3 className="mb-4 text-xl font-semibold tracking-tight text-gray-800 dark:text-slate-200">
-            Meet Your Instructor
-          </h3>
-
-          {!course?.instructorID ? (
-            <div>
-              <InstructorCard instructorId={course?.instructorID!} />
-sss
-              <MoreIntructorCreatedCourses
-                instructorId={course?.instructorID!}
-                instructorName={course?.courseCreator!}
-              />s
-            </div>
-          ) : (
-            <div></div>
-          )}
-        </div>
+        <CourseInstructorInformationSection
+          // instructorId={course?.instructorID || "Unknown Instructor ID"} // Fallback for instructorId
+          // instructorName={course?.courseCreator || "Unknown Instructor"} // Fallback for instructorName
+          instructor={course?.Instructor!}
+        />
       </div>
 
       <Footer />
@@ -154,38 +156,47 @@ export default CoursePreview;
 
 //* ------------------------------------- SECTIONS -------------------------------------
 
-const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
-  console.log(
-    `Instructor id in the course details left section: ${course?.instructorID!} `,
-  );
+const CourseDetailsLeftSection = ({
+  course,
+  instructorId,
+}: {
+  course: CourseWithOtherFields;
+  instructorId: string;
+}) => {
+  // console.log(
+  //   `Instructor id in the course details left section: ${course?.instructorID!} `,
+  // );
 
-  const instructorInfo = useInstructorInfo(course?.instructorID!);
+  // const { instructor, fetchInstructorById, loadingState } =
+  //   useInstructorStore();
 
-  if (instructorInfo.isLoading) {
-    return <InstructorBadgeLoadingSkeleton />;
-  }
+  // useEffect(() => {
+  //   fetchInstructorById(instructorId);
+  // }, [fetchInstructorById, instructorId]);
 
-  if (instructorInfo.error) {
-    return (
-      <div>
-        <Callout
-          className=""
-          title="Failed to Fetch Instructor Info 🚨❌"
-          color="red"
-        >
-          <span>{instructorInfo.error.message} 🚨❌ ...</span>
-        </Callout>
-      </div>
-    );
-  }
+  // if (loadingState.loading) {
+  //   return <InstructorBadgeLoadingSkeleton />;
+  // }
 
-  const instructor = instructorInfo.instructor;
+  // if (loadingState.error) {
+  //   return (
+  //     <div>
+  //       <Callout
+  //         className=""
+  //         title="Failed to Fetch Instructor Info 🚨❌"
+  //         color="red"
+  //       >
+  //         <span>{loadingState.error} 🚨❌ ...</span>
+  //       </Callout>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="text-red mt-[3.125rem] flex flex-col items-start justify-center space-y-6 overflow-x-hidden text-start text-xl">
       {/* course title, description, ratings,*/}
       <div className="mr-8 space-y-4">
-        <div className="w-full space-y-4 rounded-3xl bg-gradient-to-br from-purple-500 to-blue-500 py-4 pl-4 pr-4 backdrop-blur-sm dark:from-zinc-900 dark:to-blue-500 md:mr-0 md:w-[590px] md:pr-4">
+        <div className="w-full space-y-4 rounded-3xl bg-gradient-to-br from-[#87CEEB] to-[#4144ff] py-4 pl-4 pr-4 backdrop-blur-sm md:mr-0 md:w-[586px] md:pr-4">
           <div className="space-y-1">
             <CourseBreadcrumb course={course!} />
 
@@ -231,12 +242,12 @@ const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
             </div>
           </div>
 
-          {/* instructor info tile */}
-          <div className="align-center backdrop-filter-blur flex w-auto flex-shrink-0 cursor-pointer flex-row items-center justify-start rounded-lg transition-all duration-200 md:items-start">
+          {/* TODO: instructor info tile */}
+          {/* <div className="align-center backdrop-filter-blur flex w-auto flex-shrink-0 cursor-pointer flex-row items-center justify-start rounded-lg transition-all duration-200 md:items-start">
             <Image
               className="h-12 w-12 items-center rounded-full bg-white"
               src={instructor?.instructorProfilePicUrl!}
-              alt={instructor?.instructorName}
+              alt={instructor?.instructorName!}
               height={12}
               width={12}
               unoptimized
@@ -253,13 +264,13 @@ const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
                 Instructor of this course
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
       {/* no of reviews and projects */}
       <div className="flex w-full items-center justify-start space-x-6 pr-8 md:mr-0 md:max-w-7xl md:pr-0">
-        <div className="h-50 space-y-2 rounded-3xl bg-gradient-to-br from-purple-500 to-blue-500 p-4 backdrop-blur-sm dark:from-zinc-900 dark:to-blue-500">
+        <div className="h-50 space-y-2 rounded-3xl bg-gradient-to-br from-[#87CEEB] to-[#4144ff] p-4 backdrop-blur-sm">
           <div className="space-y-1">
             <SiCrowdsource size={24} className="text-white" />
             <p className="text-4xl font-bold tracking-tighter text-white">
@@ -272,7 +283,7 @@ const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
           </p>
         </div>
 
-        <div className="h-50 space-y-2 rounded-3xl bg-gradient-to-br from-purple-500 to-blue-500 p-4 backdrop-blur-sm dark:from-zinc-900 dark:to-blue-500">
+        <div className="h-50 space-y-2 rounded-3xl bg-gradient-to-br from-[#87CEEB] to-[#4144ff] p-4 backdrop-blur-sm">
           <div className="space-y-1">
             <GoProjectTemplate size={24} className="text-white" />
             <p className="text-4xl font-bold tracking-tighter text-white">5</p>
@@ -301,7 +312,7 @@ const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
 
         <div className="mr-4 flex flex-col items-center justify-center space-y-2">
           <CourseEnrollButton course={course!} courseId={course?.courseId} />
-          <ApplyCouponCode />
+          <ApplyCouponCode /> {/* // TODO */}
         </div>
       </div>
 
@@ -326,7 +337,11 @@ const CourseDetailsLeftSection = ({ course }: { course: Course }) => {
   );
 };
 
-const CourseDetailsRightSection = ({ course }: { course: Course }) => {
+const CourseDetailsRightSection = ({
+  course,
+}: {
+  course: CourseWithOtherFields;
+}) => {
   return (
     <div className="hidden h-auto w-auto md:mt-12 md:flex md:flex-col">
       <Toaster />
@@ -383,26 +398,11 @@ const CourseDetailsRightSection = ({ course }: { course: Course }) => {
               <li>Certificate for Completion</li>
               <li>A Complete Project Included</li>
               <li>
-                <div className="flex items-center justify-start space-x-2">
-                  <p>You will learn about: </p>
-                  {course?.technologiesYouAreGoingToLearn ? (
+                <YouWillLearnAbout
+                  technologiesYouAreGoingToLearn={
                     course?.technologiesYouAreGoingToLearn
-                      .slice(0, 2)
-                      .map((tech: any, index: any) => {
-                        return (
-                          <div
-                            className="flex items-center rounded-md bg-slate-200 px-2 py-1 text-black"
-                            key={index}
-                          >
-                            {tech}
-                          </div>
-                        );
-                      })
-                  ) : (
-                    <div></div>
-                  )}
-                  <p className="text-xs">etc.</p>
-                </div>
+                  }
+                />
               </li>
             </ul>
           </div>
@@ -420,7 +420,126 @@ const CourseDetailsRightSection = ({ course }: { course: Course }) => {
   );
 };
 
+const CourseInstructorInformationSection = ({
+  instructorId,
+  // instructorName,
+  instructor,
+}: {
+  instructor: Instructor;
+  instructorId: string;
+  // instructorName: string;
+}) => {
+  // console.log(
+  //   `Instructor id in the instructor-info.tsx: ${instructor.instructorID} `,
+  // );
+
+  const {
+    // fetchInstructorById,
+    fetchInstructorStats,
+    // instructor,
+    instructorCreatedCourses,
+    instructorStudentsCount,
+    instructorAverageStarRating,
+    loadingState,
+  } = useInstructorStore();
+
+  // Fetch instructor data when instructorId changes
+  useEffect(() => {
+    if (instructor.instructorID) {
+      fetchInstructorStats(instructor.instructorID);
+    }
+  }, [instructor, fetchInstructorStats]);
+
+  if (loadingState.error) {
+    return (
+      <Callout
+        className=""
+        title="Failed to fetch Instructor data 🚨❌"
+        color="red"
+      >
+        ERROR: <span>{loadingState.error} </span>
+      </Callout>
+    );
+  }
+
+  return (
+    <div className="mt-4 flex w-full max-w-7xl flex-col justify-start border-y px-8 py-8 dark:bg-transparent md:px-[6rem]">
+      <h3 className="mb-4 text-xl font-semibold tracking-tight text-gray-800 dark:text-slate-200">
+        Meet Your Instructor
+      </h3>
+
+      {!instructor || !instructor.instructorID ? (
+        <div>
+          {loadingState.loading ? (
+            <InstructorCardLoadingSkeleton />
+          ) : (
+            <InstructorCard
+              instructorProfilePicUrl={
+                instructor?.instructorProfilePicUrl ??
+                "https://wcgwzdehnxpexussrkni.supabase.co/storage/v1/object/public/assets/green-3d.jpg"
+              }
+              instructorName={instructor?.instructorName || "Coursewave"}
+              instructorTag={
+                instructor?.instructorTag || "Full Stack Developer"
+              }
+              aboutInstructor={instructor?.aboutInstructor || "Sample about"}
+              instructorCreatedCourses={instructorCreatedCourses}
+              instructorStudentsCount={instructorStudentsCount}
+              instructorAverageStarRating={instructorAverageStarRating}
+            />
+          )}
+
+          {loadingState.loading ? (
+            <MoreInstructorCreatedCoursesSkeleton />
+          ) : (
+            <MoreIntructorCreatedCourses
+              // instructorId={instructorId}
+              instructorName={instructor.instructorName}
+              instructorCreatedCourses={instructorCreatedCourses || []}
+            />
+          )}
+        </div>
+      ) : (
+        <div></div>
+      )}
+    </div>
+  );
+};
+
 //? --------------------------------------- COMPONENTS ----------------------------------
+
+const YouWillLearnAbout = ({
+  technologiesYouAreGoingToLearn,
+}: {
+  technologiesYouAreGoingToLearn: string[] | null;
+}) => {
+  // Check if there are technologies and if their length is greater than 0
+  if (
+    !technologiesYouAreGoingToLearn ||
+    technologiesYouAreGoingToLearn.length === 0
+  ) {
+    return <div></div>; // Return an empty div if no technologies
+  }
+
+  return (
+    <div className="flex items-center justify-start space-x-2">
+      <p>You will learn about: </p>
+      {technologiesYouAreGoingToLearn
+        .slice(0, 2)
+        .map((tech: string, index: number) => {
+          return (
+            <div
+              className="flex items-center rounded-md bg-slate-200 px-2 py-1 text-black"
+              key={index}
+            >
+              {tech}
+            </div>
+          );
+        })}
+      <p className="text-xs">etc.</p>
+    </div>
+  );
+};
 
 const CourseDescription = ({
   courseDescription,
@@ -457,44 +576,90 @@ const CourseDescription = ({
   );
 };
 
+function checkCourseIsPurchased(
+  userId: string,
+  courseId: string,
+  enrolledCourses: EnrollementWithProgress[],
+) {
+  return enrolledCourses.some(
+    (enrollment: EnrollementWithProgress) => enrollment.courseId === courseId,
+  );
+}
+
 const CourseEnrollButton = ({
   course,
   courseId,
 }: {
-  course: Course;
+  course: CourseWithOtherFields;
   courseId: string;
 }) => {
   const [isLoading, setIsLoading] = React.useState(false);
-  const user = useUserInfo();
-  const isCoursePurchased = useCheckCourseIsPurchased(user?.user?.id, courseId);
+  const { user, loadingState, fetchEnrolledCourses, enrolledCourses } =
+    useUserStore();
   const setNotification = useNotificationsStore(
     (state) => state.setNotification,
   );
 
+  useEffect(() => {
+    user && user?.id ? fetchEnrolledCourses(user?.id) : null;
+  }, [fetchEnrolledCourses, user]);
+
+  if (loadingState.loading) {
+    return (
+      <Skeleton className="mr-8 mt-2 w-[28rem] rounded-md p-2 text-center md:mr-0 md:w-[26rem]" />
+    );
+  }
+
+  if (loadingState.error) {
+    return (
+      <div className="w-7xl mx-auto flex items-center justify-center align-middle">
+        <Callout
+          className=""
+          title="Failed to fetch user enrolledCourses 🚨❌"
+          color="red"
+        >
+          ERROR In courses/[id]/page.tsx :{" "}
+          <span>{loadingState.error} 🚨❌ ...</span>
+        </Callout>
+      </div>
+    );
+  }
+
+  // Check if both user id and courseId are defined
+  const isCoursePurchased =
+    user?.id && courseId
+      ? checkCourseIsPurchased(user.id, courseId, enrolledCourses)
+      : false;
+
   const enrollInCourse = async () => {
     try {
-      setIsLoading(true);
-      console.log(
-        "Is course already purchased? : ",
-        isCoursePurchased.courseIsPurchased,
-      );
-      if (isCoursePurchased.courseIsPurchased) {
-        window.location.assign(`/courses/${courseId}/courseContent`);
+      if (!user) {
+        window.location.assign(`/login`);
       } else {
-        const response = await axios.post(`api/courses/${courseId}/checkout`, {
-          userId: user?.user?.id!,
-        });
+        setIsLoading(true);
+        console.log("Is course already purchased? : ", isCoursePurchased);
 
-        window.location.assign(response.data.url);
+        if (isCoursePurchased) {
+          window.location.assign(`/courses/${courseId}/courseContent`);
+        } else {
+          const response = await axios.post(
+            `api/courses/${courseId}/checkout`,
+            {
+              userId: user?.id!,
+            },
+          );
 
-        setNotification(
-          "Course Enrollment Successful 🎉",
-          `Congratulations! You have successfully enrolled in "${course?.courseTitle}" course?.`,
-        );
+          window.location.assign(response.data.url);
 
-        toast.success(
-          `Congratulations 🎉! You have successfully enrolled in "${course?.courseTitle}" course`,
-        );
+          setNotification(
+            "Course Enrollment Successful 🎉",
+            `Congratulations! You have successfully enrolled in "${course?.courseTitle}" course?.`,
+          );
+
+          toast.success(
+            `Congratulations 🎉! You have successfully enrolled in "${course?.courseTitle}" course`,
+          );
+        }
       }
     } catch (error) {
       toast.error("Something went wrong ...");
@@ -503,32 +668,19 @@ const CourseEnrollButton = ({
     }
   };
 
-  if (isCoursePurchased.error) {
-    return (
-      <div className="mt-2">
-        <Callout
-          className=""
-          title="Failed to check course is purchased or not 🚨❌"
-          color="red"
-        >
-          <span>{isCoursePurchased.error.message} 🚨❌ ...</span>
-        </Callout>
-      </div>
-    );
-  }
-
   return (
     <div className="flex justify-between">
       <Button
         onClick={enrollInCourse}
+        // || !courseId || !user?.id
         disabled={isLoading}
         size="sm"
         color="blue"
         className="mr-8 mt-2 w-[28rem] rounded-md bg-blue-500 p-2 text-center text-sm font-semibold text-white hover:bg-blue-700 md:mr-0 md:w-[26rem]"
       >
-        {isCoursePurchased.isLoading ? (
+        {isLoading ? (
           <Loader className="animate-spin" />
-        ) : isCoursePurchased.courseIsPurchased ? (
+        ) : isCoursePurchased ? (
           "Resume Learning"
         ) : (
           "Buy Now"
@@ -660,5 +812,15 @@ const ApplyCouponCode = () => {
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+};
+
+const MoreInstructorCreatedCoursesSkeleton = () => {
+  return (
+    <div className="grid grid-cols-2 gap-4 md:flex md:items-center md:justify-start md:gap-0 md:space-x-4">
+      <Skeleton className="h-32 w-40 rounded-xl" />
+      <Skeleton className="h-32 w-40 rounded-xl" />
+      <Skeleton className="h-32 w-40 rounded-xl" />
+    </div>
   );
 };

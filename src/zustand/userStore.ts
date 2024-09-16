@@ -402,6 +402,12 @@ export const useUserStore = create<UserState & UserActions>()(
           });
         }
       },
+      checkCourseIsPurchased: (courseId: string) => {
+        const purchasedCourses = get().enrolledCourses;
+        
+        // Check if any of the enrolled courses have the same courseId
+        return purchasedCourses.some((enrollment: EnrollementWithProgress) => enrollment.courseId === courseId);
+      },
 
       // Articles
       fetchArticles: async () => {

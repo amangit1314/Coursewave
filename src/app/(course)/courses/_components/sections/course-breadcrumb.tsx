@@ -1,7 +1,8 @@
+import { CourseWithOtherFields } from "@/types/course-with-other-fields";
 import { Course } from "@prisma/client";
 import Link from "next/link";
 
-const CourseBreadcrumb = ({ course }: { course: Course }) => {
+const CourseBreadcrumb = ({ course }: { course: CourseWithOtherFields }) => {
   return (
     <div className="breadcrumbs text-sm">
       <ul className="text-white">

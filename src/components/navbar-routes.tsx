@@ -68,7 +68,12 @@ const NavbarRoutes = () => {
           <Toaster />
 
           {/* instructor button */}
-          <InstructorButton />
+          {user ? (
+            <InstructorButton />
+          ) : (
+           <div></div>
+          )}
+          
 
           {/* theme toggle */}
           <ThemeModeToggle />

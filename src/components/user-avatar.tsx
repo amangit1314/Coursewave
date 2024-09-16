@@ -28,11 +28,8 @@ const errorNotification = (errorMessage: string) => toast.error(errorMessage);
 
 const UserAvatar = () => {
   const router = useRouter();
-  const user = useUserInfo();
-  const [loading, setLoading] = React.useState(false);
-  const [isButtonDisabled, setButtonDisabled] = React.useState(false);
 
-  const { setUser } = useUserStore();
+  const { user, setUser, loadingState } = useUserStore();
 
   // const onLogout = async () => {
   //   try {
@@ -87,11 +84,11 @@ const UserAvatar = () => {
 
   const onLogout = async () => {
     setUser({
-      id: '',
-      email: '',
-      password: '',
-      accessToken: '',
-      preferences: { },
+      id: "",
+      email: "",
+      password: "",
+      accessToken: "",
+      preferences: {},
       name: null,
       profileImageUrl: null,
       about: null,
@@ -114,9 +111,9 @@ const UserAvatar = () => {
       resetTokenExpiry: null,
       resetTokenStatus: null,
       createdAt: null,
-      updatedAt: null
+      updatedAt: null,
     });
-  }
+  };
 
   return (
     <DropdownMenu>
@@ -124,14 +121,14 @@ const UserAvatar = () => {
         <Avatar className="cursor-pointer rounded-lg transition-all duration-300">
           <AvatarImage
             src={
-              user.user?.profileImageUrl
-                ? user.user?.profileImageUrl
+              user?.profileImageUrl
+                ? user?.profileImageUrl
                 : "https://github.com/shadcn.png"
             }
             alt="username"
             className="object-cover"
           />
-          <AvatarFallback>{user.user?.name}</AvatarFallback>
+          <AvatarFallback>{user?.name}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="my-2 mr-2 w-56 overflow-hidden rounded-xl">
@@ -141,25 +138,25 @@ const UserAvatar = () => {
 
         <DropdownMenuGroup>
           <DropdownMenuItem className="transition-all duration-300">
-            <Link href={`/profile/${user.user?.id}/`}>Profile</Link>
+            <Link href={`/profile/${user?.id}/`}>Profile</Link>
             <DropdownMenuShortcut>
-              <Link href={`/profile/${user.user?.id}/`}>
+              <Link href={`/profile/${user?.id}/`}>
                 <CiUser />
               </Link>
             </DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuItem className="transition-all duration-300">
-            <Link href={`/profile/${user.user?.id}/`}>Cart</Link>
+            <Link href={`/profile/${user?.id}/`}>Cart</Link>
             <DropdownMenuShortcut>
-              <Link href={`/profile/${user.user?.id}/`}>
+              <Link href={`/profile/${user?.id}/`}>
                 <CiShoppingCart />
               </Link>
             </DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuItem className="transition-all duration-300">
-            <Link href={`/profile/${user.user?.id}/`}>Saved Courses</Link>
+            <Link href={`/profile/${user?.id}/`}>Saved Courses</Link>
             <DropdownMenuShortcut>
-              <Link href={`/profile/${user.user?.id}/`}>
+              <Link href={`/profile/${user?.id}/`}>
                 <CiSaveDown2 />
               </Link>
             </DropdownMenuShortcut>
@@ -172,7 +169,11 @@ const UserAvatar = () => {
           onClick={onLogout}
           className="cursor-pointer transition-all duration-300"
         >
-          {loading ? <Loader2 className="animate-spin" /> : "Log out"}
+          {loadingState.loading ? (
+            <Loader2 className="animate-spin" />
+          ) : (
+            "Log out"
+          )}
           <DropdownMenuShortcut>
             <IoMdLogOut />
           </DropdownMenuShortcut>

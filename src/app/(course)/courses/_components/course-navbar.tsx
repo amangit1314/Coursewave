@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
 import React from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import { Josefin_Sans } from "next/font/google";
 import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 import UserAvatar from "@/components/user-avatar";
-import { useUserInfo } from "@/hooks/useUserInfo";
 import Notifications from "@/components/notification-button";
 import Link from "next/link";
 import Image from "next/image";
-import Cart from "@/components/cart-button";
 import InstructorButton from "@/components/instructor-button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useUserStore } from "@/zustand/userStore";
+import { useRouter } from "next/navigation";
 
 const josefinSans = Josefin_Sans({
   weight: ["400", "500", "600", "700"],
@@ -20,26 +20,15 @@ const josefinSans = Josefin_Sans({
 
 const CourseNavbar = ({ courseName }: { courseName: string }) => {
   const router = useRouter();
-  const user = useUserInfo();
-  const userId = user.user?.id;
-  const isUserAnInstructor = user.user?.isInstructor;
-  console.log("Is user instructor: ", isUserAnInstructor);
+  // const user = useUserInfo();
+  const { user, loadingState } = useUserStore();
 
-  const [isInstructor, setIsInstructor] = React.useState<boolean>(
-    isUserAnInstructor!,
-  );
+  if (loadingState.loading) {
+    return <Skeleton className="h-12 w-12 rounded-md" />;
+  }
 
-  const switchToInstructorView = () => {
-    if (!userId) {
-      toast.error("Please provide user id ⚠ ...");
-    } else if (isUserAnInstructor) {
-      setIsInstructor(true);
-      router.push(`/instructor/${userId}/analytics`);
-    } else {
-      setIsInstructor(false);
-      toast.error("You are not an instructor ...");
-      router.push(`/profile/${userId}`);
-    }
+  const gotToSignIn = () => {
+    router.push("/login");
   };
 
   return (
@@ -78,7 +67,11 @@ const CourseNavbar = ({ courseName }: { courseName: string }) => {
         <Toaster />
 
         {/* instructor button */}
-        <InstructorButton />
+        {user ? (
+            <InstructorButton />
+          ) : (
+           <div></div>
+          )}
 
         {/* These */}
         <ThemeModeToggle />
@@ -90,7 +83,16 @@ const CourseNavbar = ({ courseName }: { courseName: string }) => {
         <Notifications />
 
         {/* user profile */}
-        {<UserAvatar />}
+        {user ? (
+            <UserAvatar />
+          ) : (
+            <button
+              onClick={gotToSignIn}
+              className="text-base hover:text-blue-600"
+            >
+              Sign In
+            </button>
+          )}
       </div>
     </div>
   );

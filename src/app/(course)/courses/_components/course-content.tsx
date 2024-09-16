@@ -10,7 +10,7 @@ import { Chapter, CourseSection } from "@prisma/client";
 export const CourseContent = ({ courseId }: { courseId: string }) => {
   const fetchCourseSections = async () => {
     // TODO:
-    const res = await fetch(`api/courses/${courseId}/sections`);
+    const res = await fetch(`/api/courses/${courseId}/sections`);
 
     if (!res.ok) {
       console.error("Failed to fetch sections ...");
