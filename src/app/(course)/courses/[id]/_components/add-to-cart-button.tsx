@@ -5,6 +5,7 @@ import { useCartStore } from "@/zustand/cartStore";
 import { CartItem, Course } from "@prisma/client";
 import { generateUid } from "@/helpers/id-helper";
 import { HiOutlineShoppingCart, HiShoppingCart } from "react-icons/hi";
+import { CourseWithOtherFields } from "@/types/course-with-other-fields";
 
 export const AddToCartButton = ({ course }: { course: Course }) => {
   const user = useUserInfo();
@@ -31,7 +32,7 @@ export const AddToCartButton = ({ course }: { course: Course }) => {
     if (isInCart) {
       handleRemoveFromCart(course?.courseId!);
     } else {
-      handleAddToCart(course!, user.user?.id!);
+      handleAddToCart(course as CourseWithOtherFields, user.user?.id!);
       setIsInCart(!isInCart);
     }
   };
