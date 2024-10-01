@@ -63,14 +63,17 @@ import CourseBigScreenSkeleton from "./_components/skeletons/course-big-screen-s
 import { Footer } from "@/components/LandingPage/footer";
 import { CourseRatings } from "../_components/sections/ratings/course-ratings";
 import { MoreIntructorCreatedCourses } from "../_components/sections/more-instructor-created-courses";
-import { useInstructorStore } from "@/zustand/instructorStore";
+import {
+  useFetchInstructorCreatedCourses,
+  useInstructorStore,
+} from "@/zustand/instructorStore";
 import { useUserStore } from "@/zustand/userStore";
 import { EnrollementWithProgress } from "@/types/enrollment-with-progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CourseWithOtherFields } from "@/types/course-with-other-fields";
 
 const CoursePreview = ({ params }: { params: { id: string } }) => {
-  const courseId = params?.id!;
+  const courseId = params?.id || "";
 
   console.log(
     `Course id in courses/[id]/page.tsx before fetching data: ${courseId}`,
@@ -80,9 +83,11 @@ const CoursePreview = ({ params }: { params: { id: string } }) => {
     useCoursesStore();
 
   useEffect(() => {
-    fetchCourse(courseId);
-    fetchCourseReviews(courseId);
-  }, [fetchCourse, fetchCourseReviews, courseId]);
+    if (courseId) {
+      fetchCourse(courseId);
+      fetchCourseReviews(courseId);
+    }
+  }, [courseId, fetchCourse, fetchCourseReviews]);
 
   if (loadingState.loading) {
     return (
@@ -100,11 +105,7 @@ const CoursePreview = ({ params }: { params: { id: string } }) => {
   if (loadingState.error) {
     return (
       <div className="w-7xl mx-auto flex items-center justify-center align-middle">
-        <Callout
-          className=""
-          title="Failed to Fetch Course Info 🚨❌"
-          color="red"
-        >
+        <Callout title="Failed to Fetch Course Info 🚨❌" color="red">
           ERROR In Course id page: <span>{loadingState.error} 🚨❌ ...</span>
         </Callout>
       </div>
@@ -116,35 +117,46 @@ const CoursePreview = ({ params }: { params: { id: string } }) => {
     course,
   );
 
+  // Provide fallback values only when rendering
+  const courseTitle = course?.courseTitle;
+  const instructor = course?.Instructor;
+
   return (
     <div className="space-y-[6rem] overflow-x-hidden">
-      <div className="flex flex-col overflow-x-hidden">
-        {/* course navbar */}
-        <div className="inset-y-0 z-50 w-full px-4 py-2 md:px-10">
-          <CourseNavbar courseName={course?.courseTitle!} />
-        </div>
+      <div className="space-y-12 md:px-10">
+        {/* Course Navbar */}
+        {courseTitle && (
+          <div className="inset-y-0 z-50 w-full px-4 py-2 md:px-0">
+            <CourseNavbar courseName={courseTitle} />
+          </div>
+        )}
 
-        {/* course content */}
-        <div className="pl-8 md:grid md:max-w-7xl md:grid-cols-2 md:pl-[6rem]">
-          {/* {(!course?.instructorID || !course) ? <CourseDetailsLeftSection course={course!} instructorId={course?.instructorID!} /> : <div></div> } */}
-          <CourseDetailsLeftSection
-            course={course!}
-            instructorId={course?.instructorID || "Unknown Instructor ID"} // Fallback to avoid undefined
-          />
-          <CourseDetailsRightSection course={course!} />
-        </div>
+        {/* Course Content */}
+        {course && (
+          <div className="md:max-w-screen w-full md:grid md:grid-cols-3">
+            <div className="col-span-2 p-6 md:pr-10">
+              <CourseDetailsLeftSection course={course} />
+            </div>
+            <CourseDetailsRightSection course={course} />
+          </div>
+        )}
 
-        {/* course ratings */}
-        <div className="flex w-full max-w-7xl items-center justify-start px-2 md:mt-4 md:px-[6rem]">
+        {/* Course Ratings */}
+        {/* {reviews?.length > 0 && (
+          <div className="flex w-full items-center justify-start md:mt-4">
+            <CourseRatings reviews={reviews} />
+          </div>
+        )} */}
+        <div className="ml-6 flex w-full items-center justify-start md:mt-4">
           <CourseRatings reviews={reviews} />
         </div>
 
         {/* Instructor Info */}
-        <CourseInstructorInformationSection
-          // instructorId={course?.instructorID || "Unknown Instructor ID"} // Fallback for instructorId
-          // instructorName={course?.courseCreator || "Unknown Instructor"} // Fallback for instructorName
-          instructor={course?.Instructor!}
-        />
+        <div className="ml-6">
+          {instructor && (
+            <CourseInstructorInformationSection instructor={instructor} />
+          )}
+        </div>
       </div>
 
       <Footer />
@@ -158,50 +170,19 @@ export default CoursePreview;
 
 const CourseDetailsLeftSection = ({
   course,
-  instructorId,
 }: {
   course: CourseWithOtherFields;
-  instructorId: string;
 }) => {
-  // console.log(
-  //   `Instructor id in the course details left section: ${course?.instructorID!} `,
-  // );
-
-  // const { instructor, fetchInstructorById, loadingState } =
-  //   useInstructorStore();
-
-  // useEffect(() => {
-  //   fetchInstructorById(instructorId);
-  // }, [fetchInstructorById, instructorId]);
-
-  // if (loadingState.loading) {
-  //   return <InstructorBadgeLoadingSkeleton />;
-  // }
-
-  // if (loadingState.error) {
-  //   return (
-  //     <div>
-  //       <Callout
-  //         className=""
-  //         title="Failed to Fetch Instructor Info 🚨❌"
-  //         color="red"
-  //       >
-  //         <span>{loadingState.error} 🚨❌ ...</span>
-  //       </Callout>
-  //     </div>
-  //   );
-  // }
-
   return (
-    <div className="text-red mt-[3.125rem] flex flex-col items-start justify-center space-y-6 overflow-x-hidden text-start text-xl">
+    <div className="text-red flex flex-col items-start justify-center space-y-6 overflow-x-hidden text-start text-xl">
       {/* course title, description, ratings,*/}
-      <div className="mr-8 space-y-4">
-        <div className="w-full space-y-4 rounded-3xl bg-gradient-to-br from-[#87CEEB] to-[#4144ff] py-4 pl-4 pr-4 backdrop-blur-sm md:mr-0 md:w-[586px] md:pr-4">
+      <div className="w-full space-y-4 md:mr-8">
+        <div className="w-full max-w-[45.313rem] space-y-4 rounded-3xl bg-gradient-to-br from-[#4144ff] to-[#57ffcf] py-4 pl-4 pr-4 backdrop-blur-sm md:mr-0 md:pr-0">
           <div className="space-y-1">
             <CourseBreadcrumb course={course!} />
 
             {/* course image only for mobile screen */}
-            <div className="visible my-4 mr-8 w-full max-w-screen-2xl pr-8 md:hidden">
+            <div className="visible my-4 w-full max-w-screen-2xl md:hidden">
               <Image
                 className="visible h-60 w-full rounded-3xl bg-slate-700 shadow-md md:hidden"
                 src={
@@ -219,7 +200,7 @@ const CourseDetailsLeftSection = ({
             </div>
 
             {/* title */}
-            <h1 className="text-2xl font-semibold tracking-tight text-white dark:text-white md:text-4xl">
+            <h1 className="text-2xl font-bold tracking-tight text-white dark:text-white md:text-4xl">
               {course?.courseTitle}
             </h1>
 
@@ -243,11 +224,11 @@ const CourseDetailsLeftSection = ({
           </div>
 
           {/* TODO: instructor info tile */}
-          {/* <div className="align-center backdrop-filter-blur flex w-auto flex-shrink-0 cursor-pointer flex-row items-center justify-start rounded-lg transition-all duration-200 md:items-start">
+          <div className="align-center backdrop-filter-blur flex w-auto flex-shrink-0 cursor-pointer flex-row items-center justify-start rounded-lg transition-all duration-200 md:items-start">
             <Image
               className="h-12 w-12 items-center rounded-full bg-white"
-              src={instructor?.instructorProfilePicUrl!}
-              alt={instructor?.instructorName!}
+              src={course?.Instructor?.instructorProfilePicUrl || ""}
+              alt={course?.Instructor?.instructorName || "Sample Instructor"}
               height={12}
               width={12}
               unoptimized
@@ -255,22 +236,19 @@ const CourseDetailsLeftSection = ({
 
             <div className="my-1 ml-1 flex w-full flex-col px-2 pt-1 md:my-0 md:pt-0">
               <div className="py-auto rating flex items-center justify-between">
-                <p className="text-md text-base font-semibold tracking-tight text-gray-100 dark:text-gray-200">
-                  {instructor?.instructorName}
+                <p className="text-md text-base font-bold tracking-tight text-gray-100 dark:text-gray-200">
+                  {course?.Instructor.instructorName}
                 </p>
               </div>
 
-              <p className="text-sm text-gray-300 dark:text-gray-400">
-                Instructor of this course
-              </p>
+              <p className="text-sm text-gray-200">Instructor of this course</p>
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
-
-      {/* no of reviews and projects */}
-      <div className="flex w-full items-center justify-start space-x-6 pr-8 md:mr-0 md:max-w-7xl md:pr-0">
-        <div className="h-50 space-y-2 rounded-3xl bg-gradient-to-br from-[#87CEEB] to-[#4144ff] p-4 backdrop-blur-sm">
+      {/* no of reviews and projects */} {/* md:max-w-7xl */}
+      <div className="flex w-full items-center justify-start space-x-6 md:mr-0 md:pr-0">
+        <div className="h-50 space-y-2 rounded-3xl bg-gradient-to-br from-[#4144ff] to-[#57ffcf] p-4 backdrop-blur-sm">
           <div className="space-y-1">
             <SiCrowdsource size={24} className="text-white" />
             <p className="text-4xl font-bold tracking-tighter text-white">
@@ -283,7 +261,7 @@ const CourseDetailsLeftSection = ({
           </p>
         </div>
 
-        <div className="h-50 space-y-2 rounded-3xl bg-gradient-to-br from-[#87CEEB] to-[#4144ff] p-4 backdrop-blur-sm">
+        <div className="h-50 space-y-2 rounded-3xl bg-gradient-to-br from-[#4144ff] to-[#57ffcf] p-4 backdrop-blur-sm">
           <div className="space-y-1">
             <GoProjectTemplate size={24} className="text-white" />
             <p className="text-4xl font-bold tracking-tighter text-white">5</p>
@@ -295,12 +273,11 @@ const CourseDetailsLeftSection = ({
           </p>
         </div>
       </div>
-
       {/* only for mobile screen */}
-      <div className="visible mr-8 space-y-4 py-4 pr-8 md:hidden md:pr-0">
-        <div className="mr-8 space-y-2">
+      <div className="visible space-y-4 md:hidden md:px-0">
+        <div className="space-y-2">
           <p className="text-sm font-medium text-blue-500">Buy course</p>
-          <p className="text-sm text-gray-700 dark:text-gray-400">
+          <p className="line-clamp-2 pr-4 text-sm text-gray-700 dark:text-gray-400">
             Get access to this course forever when you buy it. Learn at your own
             pace, anytime
           </p>
@@ -310,12 +287,11 @@ const CourseDetailsLeftSection = ({
           ${course?.coursePrice!}
         </p>
 
-        <div className="mr-4 flex flex-col items-center justify-center space-y-2">
+        <div className="flex flex-col items-center justify-center space-y-2">
           <CourseEnrollButton course={course!} courseId={course?.courseId} />
           <ApplyCouponCode /> {/* // TODO */}
         </div>
       </div>
-
       {/* course description */}
       <div className="my-4 w-full md:my-0 md:mb-8 md:mt-16">
         <CourseDescription
@@ -325,13 +301,9 @@ const CourseDetailsLeftSection = ({
           }
         />
       </div>
-
       <WhatYouWillLearn whatYouWillLearn={course?.whatYouWillLearn} />
-
       <CourseContent courseId={course?.courseId} />
-
       <WhoThisCourseIsFor thisCourseIsFor={course?.thisCourseIsFor} />
-
       <Prerequisits prerequisits={course?.prerequisits} />
     </div>
   );
@@ -343,7 +315,7 @@ const CourseDetailsRightSection = ({
   course: CourseWithOtherFields;
 }) => {
   return (
-    <div className="hidden h-auto w-auto md:mt-12 md:flex md:flex-col">
+    <div className="hidden h-auto w-auto md:flex md:flex-col">
       <Toaster />
 
       <div className="mx-auto h-auto w-full max-w-md rounded-3xl shadow-xl dark:bg-slate-800">
@@ -373,7 +345,7 @@ const CourseDetailsRightSection = ({
             </p>
           </div>
 
-          <div className="flex w-full flex-col items-center justify-start space-y-1 px-2">
+          <div className="flex w-auto flex-col items-center justify-start space-y-1">
             <CourseEnrollButton course={course!} courseId={course?.courseId} />
             {/* <AddToCartButton course={course!} /> */}
           </div>
@@ -421,92 +393,87 @@ const CourseDetailsRightSection = ({
 };
 
 const CourseInstructorInformationSection = ({
-  instructorId,
-  // instructorName,
   instructor,
 }: {
   instructor: Instructor;
-  instructorId: string;
-  // instructorName: string;
 }) => {
-  // console.log(
-  //   `Instructor id in the instructor-info.tsx: ${instructor.instructorID} `,
-  // );
-
   const {
-    // fetchInstructorById,
     fetchInstructorStats,
-    // instructor,
-    instructorCreatedCourses,
     instructorStudentsCount,
     instructorAverageStarRating,
     loadingState,
   } = useInstructorStore();
 
-  // Fetch instructor data when instructorId changes
-  useEffect(() => {
-    if (instructor.instructorID) {
-      fetchInstructorStats(instructor.instructorID);
-    }
-  }, [instructor, fetchInstructorStats]);
+  const instructorId = instructor?.instructorID || "undefined";
 
-  if (loadingState.error) {
+  // Fetch instructor courses using react-query hook
+  const {
+    data: instructorCreatedCourses,
+    isLoading,
+    isError,
+    error,
+  } = useFetchInstructorCreatedCourses(instructorId);
+
+  // Fetch instructor stats on mount or when the instructorId changes
+  useEffect(() => {
+    if (instructorId && instructorId !== "undefined") {
+      fetchInstructorStats(instructorId);
+    }
+  }, [instructorId, fetchInstructorStats]);
+
+  // Handle loading, error, and empty instructor case
+  if (loadingState.loading || isLoading) {
+    return (
+      <div className="mt-4">
+        <InstructorCardLoadingSkeleton />
+        <MoreInstructorCreatedCoursesSkeleton />
+      </div>
+    );
+  }
+
+  if (loadingState.error || isError) {
     return (
       <Callout
         className=""
         title="Failed to fetch Instructor data 🚨❌"
         color="red"
       >
-        ERROR: <span>{loadingState.error} </span>
+        ERROR: <span>{loadingState.error || error?.message} </span>
       </Callout>
     );
   }
 
+  // Default placeholder values
+  const instructorProfilePicUrl =
+    instructor?.instructorProfilePicUrl ??
+    "https://wcgwzdehnxpexussrkni.supabase.co/storage/v1/object/public/assets/green-3d.jpg";
+  const instructorName = instructor?.instructorName || "Coursewave";
+  const instructorTag = instructor?.instructorTag || "Full Stack Developer";
+  const aboutInstructor = instructor?.aboutInstructor || "Sample about";
+
   return (
-    <div className="mt-4 flex w-full max-w-7xl flex-col justify-start border-y px-8 py-8 dark:bg-transparent md:px-[6rem]">
+    <div className="mt-4 flex w-full max-w-7xl flex-col justify-start border-y px-6 py-8 dark:bg-transparent md:px-0">
       <h3 className="mb-4 text-xl font-semibold tracking-tight text-gray-800 dark:text-slate-200">
         Meet Your Instructor
       </h3>
 
-      {!instructor || !instructor.instructorID ? (
-        <div>
-          {loadingState.loading ? (
-            <InstructorCardLoadingSkeleton />
-          ) : (
-            <InstructorCard
-              instructorProfilePicUrl={
-                instructor?.instructorProfilePicUrl ??
-                "https://wcgwzdehnxpexussrkni.supabase.co/storage/v1/object/public/assets/green-3d.jpg"
-              }
-              instructorName={instructor?.instructorName || "Coursewave"}
-              instructorTag={
-                instructor?.instructorTag || "Full Stack Developer"
-              }
-              aboutInstructor={instructor?.aboutInstructor || "Sample about"}
-              instructorCreatedCourses={instructorCreatedCourses}
-              instructorStudentsCount={instructorStudentsCount}
-              instructorAverageStarRating={instructorAverageStarRating}
-            />
-          )}
+      <InstructorCard
+        instructorProfilePicUrl={instructorProfilePicUrl}
+        instructorName={instructorName}
+        instructorTag={instructorTag}
+        aboutInstructor={aboutInstructor}
+        instructorCreatedCourses={instructorCreatedCourses?.length || 1}
+        instructorStudentsCount={instructorStudentsCount || 1}
+        instructorAverageStarRating={instructorAverageStarRating || 4.9}
+      />
 
-          {loadingState.loading ? (
-            <MoreInstructorCreatedCoursesSkeleton />
-          ) : (
-            <MoreIntructorCreatedCourses
-              // instructorId={instructorId}
-              instructorName={instructor.instructorName}
-              instructorCreatedCourses={instructorCreatedCourses || []}
-            />
-          )}
-        </div>
-      ) : (
-        <div></div>
-      )}
+      <MoreIntructorCreatedCourses
+        instructorName={instructorName}
+        instructorCreatedCourses={instructorCreatedCourses || []}
+      />
     </div>
   );
 };
-
-//? --------------------------------------- COMPONENTS ----------------------------------
 
 const YouWillLearnAbout = ({
   technologiesYouAreGoingToLearn,
@@ -676,7 +643,7 @@ const CourseEnrollButton = ({
         disabled={isLoading}
         size="sm"
         color="blue"
-        className="mr-8 mt-2 w-[28rem] rounded-md bg-blue-500 p-2 text-center text-sm font-semibold text-white hover:bg-blue-700 md:mr-0 md:w-[26rem]"
+        className="mr-8 mt-2 w-[27rem] rounded-md bg-blue-500 p-2 text-center text-sm font-semibold text-white hover:bg-blue-700 md:mr-0 md:w-[22.5rem]"
       >
         {isLoading ? (
           <Loader className="animate-spin" />
@@ -690,7 +657,7 @@ const CourseEnrollButton = ({
   );
 };
 
-const AddToCartButton = ({ course }: { course: Course }) => {
+const AddToCartButton = ({ course }: { course: CourseWithOtherFields }) => {
   const user = useUserInfo();
   // const cartItemId = generateUid();
 
@@ -808,16 +775,25 @@ const ApplyCouponCode = () => {
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit">Apply</Button>
+          <Button
+            type="submit"
+            className="font-semibold tracking-tight text-white"
+          >
+            Apply
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 };
 
+// ------------------------------------ SKELETONS ------------------------------
 const MoreInstructorCreatedCoursesSkeleton = () => {
   return (
     <div className="grid grid-cols-2 gap-4 md:flex md:items-center md:justify-start md:gap-0 md:space-x-4">
+      <Skeleton className="h-32 w-40 rounded-xl" />
+      <Skeleton className="h-32 w-40 rounded-xl" />
+      <Skeleton className="h-32 w-40 rounded-xl" />
       <Skeleton className="h-32 w-40 rounded-xl" />
       <Skeleton className="h-32 w-40 rounded-xl" />
       <Skeleton className="h-32 w-40 rounded-xl" />

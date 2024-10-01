@@ -16,7 +16,7 @@ import { DataTable } from "./_components/enrolled-courses-tables/data-table";
 import { createdArticlesColumns } from "./_components/created-articles-table/created-articles-columns";
 import { savedArticlesColumns } from "./_components/saved-articles-table/saved-articles-columns";
 import { useUserStore } from "@/zustand/userStore";
-import DashboardHeader from "./_components/dashboard-header";
+// import DashboardHeader from "./_components/dashboard-header";
 import UserDashboardStats from "./_components/user-dashboard-stats";
 import LearningGoals from "./_components/learning-goals/learning-goals";
 import { EnrollementWithProgress } from "@/types/enrollment-with-progress";
@@ -47,14 +47,14 @@ const DashboardPage = ({ params }: { params: { userId: string } }) => {
     ).length || totalEnrolledCourses;
 
   return (
-    <div className="overflow-x-hidden px-6 py-4">
+    <div className="overflow-x-hidden py-8 pl-8 pr-8 md:pl-0">
       {/* header */}
-      <DashboardHeader />
+      {/* <DashboardHeader /> */}
 
       {/* other content */}
-      <div className="space-y-4 md:space-y-12">
+      <div className="space-y-6 md:space-y-8">
         {/* user dashboard text */}
-        <p className="pt-8 text-xl font-semibold tracking-tight text-tremor-content-strong dark:text-dark-tremor-content-strong">
+        <p className="text-xl font-semibold tracking-tight text-tremor-content-strong dark:text-dark-tremor-content-strong">
           User Dashboard
         </p>
 
@@ -107,17 +107,23 @@ const EnrolledCourses: React.FC<EnrolledCoursesProps> = ({
   const enrolledCoursesTableData = useMemo(() => {
     return enrolledCourses.map((enrollment) => ({
       enrollmentId: enrollment.enrollmentId,
-      userId: enrollment.userId,
-      courseId: enrollment.courseId,
-      courseTitle: enrollment.courseTitle,
-      courseProgressId: enrollment.courseProgressId,
+      userId: enrollment.user.id,
+      courseId: enrollment.course.courseId,
+      courseTitle: enrollment.course.courseTitle,
+      courseProgressId: enrollment.courseProgress.id,
       enrollmentDate: enrollment.enrollmentDate,
       enrollmentStatus: enrollment.enrollmentStatus,
-      progress: enrollment.progress, // Use actual value
-      certificate: enrollment.certificate, // Use actual value
-      validity: enrollment.validity, // Use actual value
+      progress: enrollment.courseProgress.completedPercentage,
+      certificate:
+        enrollment.courseProgress.completedPercentage === 100 ? true : false,
+      validity:
+        enrollment.enrollmentStatus !== "DROPPED" ? "Lifetime" : "Expired",
       createdAt: enrollment.createdAt ? new Date(enrollment.createdAt) : null,
       updatedAt: enrollment.updatedAt ? new Date(enrollment.updatedAt) : null,
+      ChapterProgress: enrollment.ChapterProgress,
+      user: enrollment.user,
+      course: enrollment.course,
+      courseProgress: enrollment.courseProgress,
     }));
   }, [enrolledCourses]);
 

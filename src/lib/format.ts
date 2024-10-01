@@ -27,6 +27,25 @@ export const formatDate = (
   return date.toLocaleDateString("en-US", options);
 };
 
+// utils/formatDate.ts
+export const formatDateFromString = (dateString: string): string => {
+  // Create a Date object from the input string
+  const date = new Date(dateString);
+
+  // Extract the day, month, and year
+  const day = date.getDate();
+  const month = date.getMonth() + 1; // getMonth() returns 0-indexed month
+  const year = date.getFullYear();
+
+  // Format day and month to always have two digits
+  const formattedDay = day < 10 ? `0${day}` : day;
+  const formattedMonth = month < 10 ? `0${month}` : month;
+
+  // Return the formatted date in DD/MM/YYYY format
+  return `${formattedDay}/${formattedMonth}/${year}`;
+};
+
+
 export const formatTime = (
   input: string | number,
   options: Intl.DateTimeFormatOptions = {

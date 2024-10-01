@@ -184,53 +184,59 @@ model CourseSection {
 }
 
 model Chapter {
-  id              String  @id @default(uuid())
+  id              String            @id @default(uuid())
   title           String
-  description     String? @db.Text
-  videoUrl        String? @db.Text
+  description     String?           @db.Text
+  videoUrl        String?           @db.Text
   position        Int
-  isPublished     Boolean @default(false)
-  isFree          Boolean @default(false)
-  chapterDuration String? @default("03:00")
   courseId        String
-  isCompleted     Boolean @default(false)
-  // try to make courseSectionId required and update the related code accordingly
-  courseSectionId String?
+  courseSectionId String
+  isPublished     Boolean           @default(false)
+  isFree          Boolean           @default(false)
+  isCompleted     Boolean           @default(false)
+  chapterNotes    ChapterNotes[]
+  muxData         MuxData?
+  course          Course?           @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
+  courseSection   CourseSection?    @relation(fields: [courseSectionId], references: [courseSectionId])
+  CloudinaryData  CloudinaryData?
+  ChapterProgress ChapterProgress[]
 
-  chapterNotes  ChapterNotes[]
-  muxData       MuxData?
-  course        Course?        @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
-  courseSection CourseSection? @relation(fields: [courseSectionId], references: [courseSectionId])
-
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  CloudinaryData CloudinaryData?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([courseId])
 }
 
 model ChapterProgress {
-  id               String          @id @default(uuid())
-  courseProgress   CourseProgress? @relation(fields: [courseProgressId], references: [id])
+  id               String  @id @default(uuid())
+  enrollmentId     String
   chapterId        String
   courseProgressId String
-  isCompleted      Boolean         @default(false)
+  isCompleted      Boolean @default(false)
+
+  enrollment     Enrollment      @relation(fields: [enrollmentId], references: [enrollmentId], onDelete: Cascade)
+  chapter        Chapter         @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  CourseProgress CourseProgress? @relation(fields: [courseProgressId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([enrollmentId, chapterId])
+  @@index([chapterId])
 }
 
 model Review {
-  id        String    @id @unique
-  rating    Float
-  comment   String
-  userId    String    @unique
-  courseId  String    @unique
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
+  id       String @id @unique
+  rating   Float
+  comment  String
+  userId   String @unique
+  courseId String @unique
 
   Course Course? @relation(fields: [courseId], references: [courseId])
   User   User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model MuxData {
@@ -318,8 +324,9 @@ model Enrollment {
   course           Course?          @relation(fields: [courseId], references: [courseId])
   courseProgress   CourseProgress?  @relation(fields: [enrollmentId], references: [enrollmentId])
 
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
+  createdAt       DateTime?         @default(now())
+  updatedAt       DateTime?         @updatedAt
+  ChapterProgress ChapterProgress[]
 }
 
 // * SUBSCRIPTION MODEL

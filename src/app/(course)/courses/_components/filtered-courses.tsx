@@ -22,7 +22,6 @@ interface FilteredCoursesComponentProps {
 
 export const FilteredCoursesComponent = ({
   activeCategory,
-  categories,
 }: FilteredCoursesComponentProps) => {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("q") || "";
@@ -130,7 +129,7 @@ export const FilteredCoursesComponent = ({
   };
 
   return (
-    <div className="my-6 w-full max-w-7xl">
+    <div className="mb-6 w-full max-w-7xl">
       <div className="mx-auto my-6 grid w-full grid-cols-2 items-center justify-center gap-4 md:max-w-7xl md:grid-cols-2 lg:grid-cols-4">
         {filteredCourses &&
           filteredCourses.map((course: Course) => (
@@ -189,7 +188,7 @@ const CoursesPagination = ({ currentPage, totalPages, onPageChange }: any) => {
 // <------------------------------------- SKELETON ---------------------------------------->
 const FilteredCoursesSkeleton = () => {
   return (
-    <div className="grid w-full grid-cols-1 justify-center gap-y-4 md:mx-auto md:max-w-7xl md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid w-full grid-cols-1 justify-center gap-y-4 md:mx-auto md:max-w-7xl md:grid-cols-2 lg:grid-cols-4">
       <FilteredCourseSkeleton />
       <FilteredCourseSkeleton />
       <FilteredCourseSkeleton />

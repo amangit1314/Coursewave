@@ -4,10 +4,10 @@ import DataComponent from "../_components/data-component";
 
 const BrowseCourses = () => {
   return (
-    <div className="flex mt-30 h-full">
+    <div className="flex h-full pt-16">
       <Suspense>
         <BrowseSection>
-          <DataComponent />
+          {/* <DataComponent /> */}
         </BrowseSection>
       </Suspense>
     </div>

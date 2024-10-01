@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Course, Instructor } from "@prisma/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { CourseWithOtherFields } from "@/types/course-with-other-fields";
 
 type LoadingState = {
   loading: boolean;
@@ -91,9 +92,9 @@ export const useFetchInstructorCreatedCourses = (instructorId: string) => {
     queryKey: ["instructorCourses", instructorId],
     queryFn: async () => {
       const { data } = await axios.get(
-        `/api/instructor/${instructorId}/dashboard/courses`,
+        `/api/instructor/${instructorId}/dashboard/analytics`,
       );
-      return data.courses;
+      return data.courses as CourseWithOtherFields[];
     },
     enabled: !!instructorId, // Only run the query if instructorId is available
   });

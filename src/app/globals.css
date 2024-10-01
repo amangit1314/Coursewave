@@ -98,6 +98,13 @@ body::-webkit-scrollbar-thumb {
     --radius: 0.5rem;
   }
 
+  .ScrollAreaThumb {
+    flex: 1;
+    background: var(--mauve-10);
+    border-radius: var(--scrollbar-size);
+    position: relative;
+  }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;

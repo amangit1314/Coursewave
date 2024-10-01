@@ -13,81 +13,14 @@ import { Course } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Callout } from "@tremor/react";
+import { CourseWithOtherFields } from "@/types/course-with-other-fields";
 
 export const MoreIntructorCreatedCourses = ({
   // instructorId,
   instructorName,
   instructorCreatedCourses,
-}: {instructorName: string, instructorCreatedCourses: Course[]}) => {
-  // const [loading, setLoading] = React.useState(false);
-  // const [error, setError] = React.useState<String | null>(null);
-  // const [instructorCreatedCourses, setInstructorCreatedCourses] =
-  //   React.useState<Course[]>([]);
+}: {instructorName: string, instructorCreatedCourses: CourseWithOtherFields[]}) => {
 
-  // useEffect(() => {
-  //   const fetchInstructorCreatedCourses = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const response = await fetch(
-  //         `/api/instructor/${instructorId}/dashboard/courses`
-  //       );
-
-  //       if (!response.ok) {
-  //         console.log(
-  //           "Failed to fetch instructor created courses from api ..."
-  //         );
-  //         setError("Failed to fetch instructor created courses from api ...");
-  //       }
-
-  //       const data = await response.json();
-  //       setInstructorCreatedCourses(data.data);
-  //     } catch (error: any) {
-  //       console.log(
-  //         "Failed to fetch instructor created courses from api, ERROR: ",
-  //         error.message
-  //       );
-  //       setError(error.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchInstructorCreatedCourses();
-  // }, [instructorId]);
-
-  // if (loading) {
-  //   return (
-  //     <ScrollArea className="w-full md:w-[1080px] whitespace-nowrap">
-  //       <div className="flex justify-start items-center space-x-2 mb-8">
-  //         <p className="text-xl tracking-tight font-semibold text-gray-800 dark:text-gray-100">
-  //           More Courses by
-  //         </p>
-  //         <strong className="text-xl tracking-tighter font-bold text-blue-500">
-  //           {/* {instructorName ? instructorName : "Aman Soni"} */}
-  //           <Skeleton className="h-6 w-[150px]" />
-  //         </strong>
-  //       </div>
-
-  //       <div className="grid grid-cols-4 w-max space-x-4 pb-4">
-  //         <CourseSkeleton />
-  //         <CourseSkeleton />
-  //         <CourseSkeleton />
-  //         <CourseSkeleton />
-  //       </div>
-
-  //       {/* <ScrollBar orientation="horizontal" /> */}
-  //     </ScrollArea>
-  //   );
-  // }
-
-  // if (error) {
-  //   // return <div>ERROR: {error}</div>;
-  //   return <div className="mt-2">
-  //   <Callout className="" title="Failed to fetch instructor created courses 🚨❌" color="red">
-  //     <span>{error} 🚨❌ ...</span>
-  //   </Callout>
-  // </div>
-  // }
 
   return (
     <div className="md:mt-8  max-w-7xl w-full items-center overflow-x-hidden">
@@ -103,18 +36,9 @@ export const MoreIntructorCreatedCourses = ({
       <ScrollArea className="w-full md:w-[1080px] whitespace-nowrap">
         {instructorCreatedCourses ? (
           <div className="flex w-max space-x-4 pb-4">
-            {instructorCreatedCourses.map((course: Course) => {
+            {instructorCreatedCourses.map((course: CourseWithOtherFields) => {
               return (
                 <div key={course.courseId}>
-                  {/* <MoreCreatedCourseItem
-                    courseId={course.courseId}
-                    image={course.courseImage!}
-                    title={course.courseTitle}
-                    avgRating={4.9}
-                    instructorName={course.instructorName!}
-                    numberOfEnrollments={12}
-                    price={course.coursePrice!}
-                  /> */}
                   <MoreCreatedCourseNewItem course={course} />
                 </div>
               );
@@ -140,7 +64,7 @@ type CreatedCourseProps = {
   price: string;
 };
 
-export const MoreCreatedCourseNewItem = ({ course }: { course: Course }) => {
+export const MoreCreatedCourseNewItem = ({ course }: { course: CourseWithOtherFields }) => {
   const router = useRouter();
 
   const onViewDetails = () => {

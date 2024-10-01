@@ -228,8 +228,8 @@ type InstructorCardProps = {
   instructorName: string;
   instructorTag: string;
   aboutInstructor: string;
-  instructorCreatedCourses: any;
-  instructorStudentsCount: number;
+  instructorCreatedCourses?: any;
+  instructorStudentsCount?: number;
   instructorAverageStarRating: number;
 };
 
@@ -256,7 +256,7 @@ const InstructorCard = ({
             width={150}
             objectFit="cover"
             quality={100}
-            className="flex h-[10rem] w-[16rem] items-center justify-start rounded-xl object-cover ring-1 ring-white"
+            className="flex h-[10rem] max-w-[28rem] w-full md:w-[16rem] items-center justify-start rounded-xl object-cover ring-1 ring-white"
           />
 
           <div className="flex w-full max-w-[16rem] flex-col items-start text-start text-base">

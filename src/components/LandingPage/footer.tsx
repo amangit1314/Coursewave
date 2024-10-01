@@ -11,6 +11,12 @@ import { absoluteUrl } from "@/utils/utils";
 import { FaSquareXTwitter, FaYoutube } from "react-icons/fa6";
 import Newsletter from "./newsletter";
 import { SiDiscord, SiDribbble, SiGithub, SiLinkedin } from "react-icons/si";
+import { Orbitron } from "next/font/google";
+
+const orbitron = Orbitron({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["latin"],
+});
 
 const quickLinks = [
   {
@@ -206,7 +212,7 @@ export const Footer = () => {
         {/* other options */}
         <div className="flex flex-col justify-start md:flex-row md:p-4">
           {/* coursewave logo */}
-          <div className="border-stroke mr-8 mt-6 flex flex-col space-y-4 border-r pr-8 md:mt-0">
+          <div className="md:border-stroke mr-8 mt-6 flex flex-col space-y-4 md:border-r pr-8 md:mt-0">
             <div className="py-auto flex cursor-pointer items-center">
               <Image
                 src="/assets/images/logo/coursewave-favicon-color.png"
@@ -215,16 +221,18 @@ export const Footer = () => {
                 height={8}
                 priority
               />
-              <p className="pl-2 font-mono text-[1rem] font-extrabold capitalize tracking-tight text-blue-500">
-                Coursewave
-              </p>
+              <span className={orbitron.className}>
+                <p className="pl-2 text-[1rem] font-extrabold capitalize tracking-tight text-blue-500">
+                  Coursewave
+                </p>
+              </span>
             </div>
           </div>
 
           {/* Get Help and  Quick Links) */}
           <div className="mt-4 hidden flex-col md:visible md:mt-0 md:flex md:flex-row">
             {/* Get Help */}
-            <div className="border-stroke space-y-4 border-r border-neutral-700 pr-8 md:mx-8">
+            <div className="border-stroke space-y-4 border-r pr-8 md:mx-8">
               <p className="cursor-pointer text-sm font-bold uppercase tracking-tight text-slate-100">
                 Get Help
               </p>
@@ -315,24 +323,36 @@ export const Footer = () => {
       </div>
 
       {/* copywright text, changelog, refund policy, privacy policy, licence  */}
-      <div className="mt-8 flex flex-col items-center justify-between bg-zinc-900 p-4 md:flex-row">
+      <div className="mt-8 flex flex-col-reverse items-center justify-between bg-zinc-900 p-4  md:flex-row">
         <CopyRightText />
 
         {/* changelog, refund policy, privacy policy, licence */}
-        <div className="mt-1 flex items-center justify-end space-x-2 md:mt-0">
-          <Link href="" className="text-xs text-slate-400 hover:text-blue-500">
+        <div className=" mb-4 md:mb-0 flex items-center justify-end space-x-2 md:mt-0">
+          <Link
+            href=""
+            className="border-stroke border-r pr-2 text-xs font-light text-slate-400 hover:text-blue-500"
+          >
             Changelog
           </Link>
 
-          <Link href="" className="text-xs text-slate-400 hover:text-blue-500">
+          <Link
+            href=""
+            className="border-stroke border-r pr-2 text-xs font-light text-slate-400 hover:text-blue-500"
+          >
             Refund Policy
           </Link>
 
-          <Link href="" className="text-xs text-slate-400 hover:text-blue-500">
+          <Link
+            href=""
+            className="border-stroke border-r pr-2 text-xs font-light text-slate-400 hover:text-blue-500"
+          >
             Privacy Policy
           </Link>
 
-          <Link href="" className="text-xs text-slate-400 hover:text-blue-500">
+          <Link
+            href=""
+            className="border-stroke border-r pr-2 text-xs font-light text-slate-400 hover:text-blue-500"
+          >
             Licence
           </Link>
         </div>
@@ -345,8 +365,11 @@ const CopyRightText = () => {
   return (
     <p className="text-center text-xs text-slate-100">
       &copy; 2023{" "}
-      <strong className="text-xs font-bold text-blue-500">Coursewave</strong> by
-      Aman Soni. All rights reserved.
+      <span className={orbitron.className}>
+        {" "}
+        <strong className="text-xs font-bold text-blue-500">Coursewave </strong>
+      </span>{" "}
+      by Aman Soni. All rights reserved.
     </p>
   );
 };
@@ -363,9 +386,9 @@ export const MobileFooterAccordionSection = () => {
     <Accordion type="single" collapsible className="">
       <AccordionItem value="item-1">
         <AccordionTrigger>
-          <p className="text-slate-100 md:mr-[12rem]">Get Help</p>
+          <p className="text-slate-100 mr-[23rem]">Get Help</p>
         </AccordionTrigger>
-        <AccordionContent className="space-y-2 text-zinc-400">
+        <AccordionContent className="space-y-2 text-zinc-400  w-full">
           {points.map((point, index) => {
             return (
               <div

@@ -351,45 +351,52 @@ export const useUserStore = create<UserState & UserActions>()(
       fetchEnrolledCourses: async (userId: string) => {
         set({ loadingState: { loading: true, error: null } });
         try {
-          // Fetch enrollments with related course data
-          const enrollments = await db.enrollment.findMany({
-            where: { userId },
-            include: {
-              course: {
-                select: {
-                  courseId: true,
-                  courseTitle: true,
-                  coursePrice: true,
-                  CourseProgress: true,
-                },
-              },
+          // Fetch user enrollments from the API endpoint
+          const response = await fetch(`/api/users/${userId}/enrollments`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
             },
           });
 
-          // Format data for use in the frontend
-          const formattedEnrollments: EnrollementWithProgress[] =
-            enrollments.map((enrollment) => ({
-              enrollmentId: enrollment.enrollmentId,
-              userId: enrollment.userId,
-              courseId: enrollment.courseId,
-              enrollmentDate: enrollment.enrollmentDate,
-              courseProgressId: enrollment.courseProgressId,
-              courseTitle: enrollment.course?.courseTitle || "Unknown Title",
-              enrollmentStatus: enrollment.enrollmentStatus,
-              coursePrice: enrollment.course?.coursePrice || 0,
-              progress: 0,
-              certificate: "None",
-              validity: "Unknown",
-              createdAt: enrollment.createdAt
-                ? new Date(enrollment.createdAt)
-                : null,
-              updatedAt: enrollment.updatedAt
-                ? new Date(enrollment.updatedAt)
-                : null,
-            }));
+          if (!response.ok) {
+            set({
+              loadingState: {
+                loading: false,
+                error:
+                  "Failed to fetch enrolled courses in response not ok condition ...",
+              },
+            });
+          }
+
+          const data = await response.json();
+
+          if (!data.success) {
+            set({
+              loadingState: {
+                loading: false,
+                error: data.message || "Failed to fetch data.",
+              },
+            });
+          }
+
+          const enrollments = data?.data! as EnrollementWithProgress[];
+
+          // Format the enrollments if necessary
+          // const formattedEnrollments = enrollments.map((enrollment: EnrollementWithProgress) => ({
+          //   courseId: enrollment.courseId,
+          //   courseTitle: enrollment.course.courseTitle,
+          //   enrollmentStatus: enrollment.enrollmentStatus,
+          //   progress: {
+          //     progress: enrollment.courseProgress.progress,
+          //     completedPercentage:
+          //       enrollment.courseProgress.completedPercentage,
+          //     isCompleted: enrollment.courseProgress.isCompleted,
+          //   },
+          // }));
 
           set({
-            enrolledCourses: formattedEnrollments,
+            enrolledCourses: enrollments,
             loadingState: { loading: false, error: null },
           });
         } catch (error) {
@@ -402,11 +409,15 @@ export const useUserStore = create<UserState & UserActions>()(
           });
         }
       },
+
       checkCourseIsPurchased: (courseId: string) => {
         const purchasedCourses = get().enrolledCourses;
-        
+
         // Check if any of the enrolled courses have the same courseId
-        return purchasedCourses.some((enrollment: EnrollementWithProgress) => enrollment.courseId === courseId);
+        return purchasedCourses.some(
+          (enrollment: EnrollementWithProgress) =>
+            enrollment.courseId === courseId,
+        );
       },
 
       // Articles

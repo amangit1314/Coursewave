@@ -1,10 +1,10 @@
 import React from 'react'
 import Image from 'next/image'
-import { Josefin_Sans } from "next/font/google";
+import { Josefin_Sans, Orbitron } from "next/font/google";
 import SideBarRoutes from './sidebar-routes';
 import Link from 'next/link';
 
-const josefinSans = Josefin_Sans({
+const josefinSans = Orbitron({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
 });
@@ -29,11 +29,13 @@ const Sidebar = () => {
             priority
           />
           <p
-            className={`pl-2 text-blue-500 font-bold text-xl ${josefinSans.className}`}
+            className={`pl-2 text-blue-500 font-bold text-lg ${josefinSans.className}`}
           >
             Coursewave
           </p>
         </Link>
+
+        
         <SideBarRoutes />
       </div>
     </div>

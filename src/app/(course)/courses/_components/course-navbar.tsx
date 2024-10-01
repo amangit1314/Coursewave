@@ -2,7 +2,7 @@
 
 import React from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { Josefin_Sans } from "next/font/google";
+import { Josefin_Sans, Orbitron, Poppins } from "next/font/google";
 import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 import UserAvatar from "@/components/user-avatar";
 import Notifications from "@/components/notification-button";
@@ -13,10 +13,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useUserStore } from "@/zustand/userStore";
 import { useRouter } from "next/navigation";
 
-const josefinSans = Josefin_Sans({
+const josefinSans = Orbitron({
   weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
 });
+
+// const poppins = Poppins({
+//   weight: ["400", "500", "600", "700"],
+//   subsets: ["latin"],
+// });
 
 const CourseNavbar = ({ courseName }: { courseName: string }) => {
   const router = useRouter();
@@ -35,17 +40,18 @@ const CourseNavbar = ({ courseName }: { courseName: string }) => {
     <div className="flex w-full items-center justify-between">
       {/* breadcrumbs */}
       <div className="flex items-center justify-start space-x-1">
-        <div className="breadcrumbs hidden text-sm md:flex">
-          <ul className="hidden md:flex">
+        <div className="breadcrumbs hidden text-sm md:flex md:items-center">
+          {/* hidden md:flex */}
+          <ul className="flex">
             <li>
               <Link
-                href=""
-                className={`text-xl font-bold text-blue-500 ${josefinSans.className} `}
+                href="/browseCourses"
+                className={`text-md font-bold text-blue-500 ${josefinSans.className} `}
               >
                 <Image
                   src="/assets/images/logo/coursewave-favicon-color.png"
                   alt="CourseWave Logo"
-                  className="mb-2 mr-1"
+                  className="mr-2 hover:no-underline"
                   width={30}
                   height={8}
                   priority

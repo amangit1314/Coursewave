@@ -1,5 +1,6 @@
 import { CartItem } from "@/types/cart-item";
-import { Course } from "@prisma/client";
+import { CourseWithOtherFields } from "@/types/course-with-other-fields";
+// import { CourseWithOtherFeilds } from "@prisma/client";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -10,7 +11,7 @@ interface CartState {
 }
 
 type Actions = {
-  addToCart: (course: Course, userId: string) => void;
+  addToCart: (course: CourseWithOtherFields, userId: string) => void;
   removeFromCart: (courseId: string) => void;
   clearCart: () => void;
 };
@@ -28,7 +29,7 @@ export const useCartStore = create<CartState & Actions>()(
       totalItems: initialState.totalItems,
       totalPrice: initialState.totalPrice,
 
-      addToCart: (course: Course, userId: string) => {
+      addToCart: (course: CourseWithOtherFields, userId: string) => {
         set((state) => {
           const existingItem = state.cartItems.find(
             (item) => item.courseId === course.courseId,
@@ -45,7 +46,8 @@ export const useCartStore = create<CartState & Actions>()(
               ...state,
               cartItems: updatedCartItems,
               totalItems: state.totalItems + 1,
-              totalPrice: state.totalPrice + parseFloat(course.coursePrice!), // Ensure price is a number
+              totalPrice:
+                state.totalPrice + parseFloat(course.coursePrice!.toString()), // Ensure price is a number
             };
           } else {
             const newCartItem: CartItem = {
@@ -55,7 +57,7 @@ export const useCartStore = create<CartState & Actions>()(
               courseName: course.courseTitle,
               courseInstructorName: course.courseCreator!,
               courseImageUrl: course.courseImage!,
-              coursePrice: course.coursePrice!,
+              coursePrice: course.coursePrice!.toString(),
               quantity: 1,
               createdAt: new Date(),
               updatedAt: new Date(),
@@ -65,7 +67,8 @@ export const useCartStore = create<CartState & Actions>()(
               ...state,
               cartItems: [...state.cartItems, newCartItem],
               totalItems: state.totalItems + 1,
-              totalPrice: state.totalPrice + parseFloat(course.coursePrice!), // Ensure price is a number
+              totalPrice:
+                state.totalPrice + parseFloat(course.coursePrice!.toString()), // Ensure price is a number
             };
           }
         });
@@ -130,6 +133,9 @@ export const useCartStore = create<CartState & Actions>()(
         set(() => initialState);
       },
     }),
-    { name: "Coursewave-Cart-Store", getStorage: () => localStorage },
+    {
+      name: "Coursewave-Cart-Store",
+      getStorage: () => localStorage,
+    },
   ),
 );

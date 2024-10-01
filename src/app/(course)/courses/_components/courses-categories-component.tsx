@@ -1,6 +1,7 @@
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Category } from "@prisma/client";
+import { Poppins } from "next/font/google";
 import Link from "next/link";
 
 interface CategorysComponentProps {
@@ -43,6 +44,10 @@ interface CategorysComponentProps {
 //     </>
 //   );
 // }
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
 
 export default function CategoriesComponent({
   activeCategory,
@@ -51,7 +56,8 @@ export default function CategoriesComponent({
   loading,
 }: CategorysComponentProps) {
   return (
-    <ScrollArea className="max-w-8xl mt-8 w-full whitespace-nowrap">
+    <div className={poppins.className}>
+      <ScrollArea className="max-w-8xl mt-8 w-full whitespace-nowrap">
       {loading ? (
         <div className="mx-auto flex w-max flex-wrap justify-center">
           <CourseCategoriesSkeleton />
@@ -65,8 +71,8 @@ export default function CategoriesComponent({
                 onClick={() => setActiveCategory(index)}
                 className={`flex h-9 w-full items-center justify-center rounded-full px-4 text-center hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-white ${
                   activeCategory === index
-                    ? "bg-blue-600 text-white"
-                    : "text-gray-500"
+                    ? "bg-blue-500 dark:bg-blue-600 text-white tracking-tight font-medium dark:hover:bg-blue-700"
+                    : "text-gray-500 font-medium"
                 }`}
               >
                 {category.name}
@@ -76,14 +82,25 @@ export default function CategoriesComponent({
         </div>
       )}
 
-      <ScrollBar orientation="horizontal" className="mt-8" color="blue" />
+      <ScrollBar orientation="horizontal" className="mt-8 scrollbar-thumb-blue-500" color="blue" />
     </ScrollArea>
+    </div>
+    
   );
 }
 
 function CourseCategoriesSkeleton() {
   return (
     <div className="flex items-center space-x-3">
+      <Skeleton className="rounded-full px-6 py-2 text-transparent">
+        Loading
+      </Skeleton>
+      <Skeleton className="rounded-full px-6 py-2 text-transparent">
+        Loading
+      </Skeleton>
+      <Skeleton className="rounded-full px-6 py-2 text-transparent">
+        Loading
+      </Skeleton>
       <Skeleton className="rounded-full px-6 py-2 text-transparent">
         Loading
       </Skeleton>

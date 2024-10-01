@@ -5,25 +5,31 @@ import SidebarItem from "./sidebar-item";
 import { FaCompass } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 import { FaHandsHelping } from "react-icons/fa";
-import { useUserInfo } from "@/hooks/useUserInfo";
 import { AiFillSetting, AiOutlineTransaction } from "react-icons/ai";
 import { FaBloggerB } from "react-icons/fa";
 import { BiBroadcast } from "react-icons/bi";
 import { PiChatsTeardropFill } from "react-icons/pi";
+import { useUserStore } from "@/zustand/userStore";
+import { RiRoadMapLine } from "react-icons/ri";
 
 const SideBarRoutes = () => {
-  const user = useUserInfo();
+  const { user } = useUserStore();
   const routes = [
     {
       icon: <MdDashboard size={22} />,
       label: "Dashboard",
-      href: `/${user.user?.id}/dashboard`,
-      isLocked: true,
+      href: `/${user?.id}/dashboard`,
+      isLocked: user ? false : true,
     },
     {
       icon: <FaCompass size={22} />,
       label: "Courses",
       href: `/browseCourses`,
+      isLocked: false,
+    },  {
+      icon: <RiRoadMapLine size={22} />,
+      label: "Roadmaps",
+      href: `/roadmaps`,
       isLocked: false,
     },
     {
@@ -41,28 +47,29 @@ const SideBarRoutes = () => {
     {
       icon: <PiChatsTeardropFill size={22} />,
       label: "Community Chat",
-      href: `/${user.user?.id}/communityChat`,
-      isLocked: true,
+      href: `/${user?.id}/communityChat`,
+      isLocked: user ? false : true,
     },
     {
       icon: <AiOutlineTransaction size={22} />,
       label: "Subscription",
       href: `/subscription`,
-      isLocked: true,
+      isLocked: user ? false : true,
     },
     {
       icon: <AiFillSetting size={22} />,
       label: "Settings",
       href: `/settings`,
-      isLocked: true,
+      isLocked: user ? false : true,
     },
     {
       icon: <FaHandsHelping size={22} />,
       label: "Help & Support",
       href: `/helpAndSupport`,
-      isLocked: false,
+      isLocked: user ? false : true,
     },
   ];
+
   return (
     <div className="flex flex-col justify-between font-medium">
       <ul className="space-y-2 font-medium">
@@ -70,9 +77,9 @@ const SideBarRoutes = () => {
           return (
             <SidebarItem
               key={index}
-              href={route.href}
               icon={route.icon}
               label={route.label}
+              href={route.href}
               isLocked={route.isLocked}
             />
           );

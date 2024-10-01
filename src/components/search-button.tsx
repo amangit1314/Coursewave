@@ -32,7 +32,7 @@ const SearchButton = () => {
     >
       <BiSearchAlt className="ml-1 mr-2" size={20} />
       <input
-        className="bg-transparent border-none outline-none flex justify-start item-center text-sm dark:text-white"
+        className="bg-transparent border-none outline-none flex justify-start item-center text-xs dark:text-white"
         type="text"
         placeholder="Search course ..."
         value={searchQuery}

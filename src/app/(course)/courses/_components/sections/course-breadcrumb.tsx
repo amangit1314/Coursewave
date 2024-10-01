@@ -1,5 +1,4 @@
 import { CourseWithOtherFields } from "@/types/course-with-other-fields";
-import { Course } from "@prisma/client";
 import Link from "next/link";
 
 const CourseBreadcrumb = ({ course }: { course: CourseWithOtherFields }) => {
@@ -7,7 +6,7 @@ const CourseBreadcrumb = ({ course }: { course: CourseWithOtherFields }) => {
     <div className="breadcrumbs text-sm">
       <ul className="text-white">
         <li>
-          <Link href={""}>
+          <Link href={"/browseCourses"}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

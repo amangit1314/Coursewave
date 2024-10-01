@@ -2,24 +2,22 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import Navbar from "./browseCourses/_components/navbar";
-import Sidebar from "./browseCourses/_components/sidebar";
+import Navbar from "../(browseCourses)/browseCourses/_components/navbar";
+import Sidebar from "../(browseCourses)/browseCourses/_components/sidebar";
 
-interface BrowseCoursesLayoutProps {
+interface RoadmapsLayoutProps {
   children: React.ReactNode;
 }
 
-export default function BrowseCoursesLayout({
-  children,
-}: BrowseCoursesLayoutProps) {
+export default function RoadmapsLayout({ children }: RoadmapsLayoutProps) {
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false);
-  const [isCourseOverviewPage, setIsCourseOverviewPage] = useState(false);
+  const [isRoadmapPreviewPage, setIsRoadmapPreviewPage] = useState(false);
 
   // Ensure that the client-side rendering handles path-related checks
   useEffect(() => {
     setIsClient(true); // Set the flag to true after mounting
-    setIsCourseOverviewPage(
+    setIsRoadmapPreviewPage(
       pathname?.startsWith("/browseCourses/courseDetails/") ?? false,
     );
   }, [pathname]);
@@ -35,7 +33,7 @@ export default function BrowseCoursesLayout({
         <Navbar />
       </div>
 
-      {!isCourseOverviewPage && (
+      {!isRoadmapPreviewPage && (
         <div
           id="cta-button-sidebar"
           className="fixed inset-y-0 z-50 hidden h-full md:flex"
@@ -46,7 +44,7 @@ export default function BrowseCoursesLayout({
 
       <div
         className={
-          isCourseOverviewPage ? "mx-auto h-full max-w-6xl" : "h-full md:pl-64"
+          isRoadmapPreviewPage ? "mx-auto h-full max-w-6xl" : "h-full md:pl-64"
         }
       >
         {children}

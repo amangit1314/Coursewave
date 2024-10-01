@@ -39,8 +39,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Course, Enrollment, User } from "@prisma/client";
-import { data as sampleData } from "@/lib/mockData";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

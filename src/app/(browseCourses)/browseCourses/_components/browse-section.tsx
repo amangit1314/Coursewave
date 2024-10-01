@@ -9,12 +9,12 @@ import { useUserStore } from "@/zustand/userStore";
 import { useCoursesStore } from "@/zustand/coursesStore";
 import { useCategoriesStore } from "@/zustand/categoriesStore";
 
+// interface BrowseSectionProps {
+//   children: React.ReactNode;
+// }
+// : React.FC<BrowseSectionProps>d
 
-interface BrowseSectionProps {
-  children: React.ReactNode;
-}
-
-const BrowseSection: React.FC<BrowseSectionProps> = ({ children }) => {
+const BrowseSection = () => {
   const [activeCategoryIndex, setActiveCategoryIndex] =
     React.useState<number>(0);
   const [categoriesData, setCategories] = React.useState<Category[]>([]);
@@ -35,11 +35,8 @@ const BrowseSection: React.FC<BrowseSectionProps> = ({ children }) => {
   console.log("Categories in browse section: ", categories);
 
   const categoriesWithData = useMemo(() => {
-    return [
-      { name: "All", createdAt: null, updatedAt: null },
-      ...categories,
-    ];
-  }, [setCategories, categories]);
+    return [{ name: "All", createdAt: null, updatedAt: null }, ...categories];
+  }, [categories]);
 
   const handleClick = (index: number) => {
     setActiveCategoryIndex(index);
@@ -50,7 +47,7 @@ const BrowseSection: React.FC<BrowseSectionProps> = ({ children }) => {
   console.log("User in browse-section.tsx: ", user);
 
   return (
-    <div className="w-full space-y-6 overflow-x-hidden px-6 py-16 md:space-y-0 md:px-12 md:py-12">
+    <div className="w-full space-y-3 overflow-x-hidden px-6 py-16 md:space-y-0 md:py-0">
       <CategoriesComponent
         activeCategory={activeCategoryIndex}
         setActiveCategory={handleClick}
