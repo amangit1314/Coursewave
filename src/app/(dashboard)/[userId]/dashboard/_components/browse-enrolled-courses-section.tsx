@@ -2,9 +2,9 @@
 
 import React, { useEffect } from "react";
 import { Category } from "@prisma/client";
-import { FilteredCoursesComponent } from "@/app/(course)/courses/_components/filtered-courses";
-import CategoriesComponent from "@/app/(course)/courses/_components/courses-categories-component";
 import { absoluteUrl } from "@/utils/utils";
+import CategoriesComponent from "@/app/(courses)/courses/_components/courses-categories-component";
+import { FilteredCoursesComponent } from "@/app/(courses)/courses/_components/filtered-courses";
 
 interface BrowseEnrolledCoursesSectionProps {
   children: React.ReactNode;

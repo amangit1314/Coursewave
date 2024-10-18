@@ -1,4 +1,3 @@
-import Navbar from "@/app/(browseCourses)/browseCourses/_components/navbar";
 import InstructorButton from "@/components/instructor-button";
 import Notifications from "@/components/notification-button";
 import { ThemeModeToggle } from "@/components/theme-mode-toggle";

@@ -1,5 +1,4 @@
-import Navbar from "../(browseCourses)/browseCourses/_components/navbar";
-import Sidebar from "../(browseCourses)/browseCourses/_components/sidebar";
+import Sidebar from "../(courses)/browse/_components/sidebar";
 
 interface HelpAndSupportLayoutProps {
   children: React.ReactNode;

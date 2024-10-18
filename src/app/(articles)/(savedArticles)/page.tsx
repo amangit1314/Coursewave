@@ -13,10 +13,6 @@ import Notifications from "@/components/notification-button";
 import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 import UserAvatar from "@/components/user-avatar";
 import { Blog } from "@prisma/client";
-import MoreFromAuthor from "../_components/more-from-author";
-import RecommendedFromCoursewave from "../_components/recommended-from-coursewave";
-import ArticleAuthorCard from "../_components/article-author-card";
-import ArticleAuthorInfo from "../_components/article-author-info";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
@@ -32,6 +28,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { BlogWithComments } from "@/types/blog-with-comments";
 import { useUserStore } from "@/zustand/userStore";
 import { useArticlesStore } from "@/zustand/articlesStore";
+import ArticleAuthorCard from "../articles/[articleId]/_components/article-author-card";
+import ArticleAuthorInfo from "../articles/[articleId]/_components/article-author-info";
+import MoreFromAuthor from "../articles/[articleId]/_components/more-from-author";
+import RecommendedFromCoursewave from "../articles/[articleId]/_components/recommended-from-coursewave";
 
 const ArticleContentPage = ({ params }: { params: { articleId: string } }) => {
   const articleId = params?.articleId!;

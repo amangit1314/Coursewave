@@ -1,5 +1,4 @@
-import Navbar from "../(browseCourses)/browseCourses/_components/navbar";
-import Sidebar from "../(browseCourses)/browseCourses/_components/sidebar";
+import Navbar from "@/app/(courses)/browse/_components/navbar";
 
 interface WriteArticleLayoutProps {
   children: React.ReactNode;

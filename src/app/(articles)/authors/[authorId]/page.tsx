@@ -1,7 +1,7 @@
 import React from "react";
-import { ArticleCard } from "./_components/article-card";
 import { db } from "@/lib/db";
 import { BlogWithComments } from "@/types/blog-with-comments";
+import { ArticleCard } from "../../articles/_components/article-card";
 
 const ArticlesPage = async () => {
   // TODO: use useArticles zustand store here in place of directly accessing it from db

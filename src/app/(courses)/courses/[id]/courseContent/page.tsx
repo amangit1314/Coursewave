@@ -68,44 +68,44 @@ const CourseContentPage = ({ params }: { params: { id: string } }) => {
     loadingState,
   } = useCoursesStore();
   const router = useRouter();
-
-  const userId = user?.id!;
+  const userId = user?.id || "";
   console.log("============> User id in course content page: ", userId);
-  // Memoize the fetch actions
-  const memoizedFetchCourse = useCallback(
-    () => fetchCourse(courseId),
-    [courseId, fetchCourse],
-  );
-  const memoizedFetchCourseCloudinaryData = useCallback(
-    () => fetchCourseCloudinaryData(courseId),
-    [courseId, fetchCourseCloudinaryData],
-  );
-  const memoizedFetchCourseAttachments = useCallback(
-    () => fetchCourseAttachments(courseId),
-    [courseId, fetchCourseAttachments],
-  );
-  const memoizedFetchCourseProgress = useCallback(
-    () => fetchCourseProgress(courseId, userId),
-    [courseId, userId, fetchCourseProgress],
-  );
-  const memoizedFetchCourseReviews = useCallback(
-    () => fetchCourseReviews(courseId),
-    [courseId, fetchCourseReviews],
-  );
 
-  useEffect(() => {
-    memoizedFetchCourse();
-    memoizedFetchCourseCloudinaryData();
-    memoizedFetchCourseAttachments();
-    memoizedFetchCourseProgress();
-    memoizedFetchCourseReviews();
-  }, [
-    memoizedFetchCourse,
-    memoizedFetchCourseCloudinaryData,
-    memoizedFetchCourseAttachments,
-    memoizedFetchCourseProgress,
-    memoizedFetchCourseReviews,
-  ]);
+  // Memoize the fetch actions
+  // const memoizedFetchCourse = useCallback(
+  //   () => fetchCourse(courseId),
+  //   [courseId, fetchCourse],
+  // );
+  // const memoizedFetchCourseCloudinaryData = useCallback(
+  //   () => fetchCourseCloudinaryData(courseId),
+  //   [courseId, fetchCourseCloudinaryData],
+  // );
+  // const memoizedFetchCourseAttachments = useCallback(
+  //   () => fetchCourseAttachments(courseId),
+  //   [courseId, fetchCourseAttachments],
+  // );
+  // const memoizedFetchCourseProgress = useCallback(
+  //   () => fetchCourseProgress(courseId, userId),
+  //   [courseId, userId, fetchCourseProgress],
+  // );
+  // const memoizedFetchCourseReviews = useCallback(
+  //   () => fetchCourseReviews(courseId),
+  //   [courseId, fetchCourseReviews],
+  // );
+
+  // useEffect(() => {
+  //   memoizedFetchCourse();
+  //   memoizedFetchCourseCloudinaryData();
+  //   memoizedFetchCourseAttachments();
+  //   memoizedFetchCourseProgress();
+  //   memoizedFetchCourseReviews();
+  // }, [
+  //   memoizedFetchCourse,
+  //   memoizedFetchCourseCloudinaryData,
+  //   memoizedFetchCourseAttachments,
+  //   memoizedFetchCourseProgress,
+  //   memoizedFetchCourseReviews,
+  // ]);
 
   // Handle loading state
   const isLoading = loadingState.loading;
@@ -156,7 +156,7 @@ const CourseContentPage = ({ params }: { params: { id: string } }) => {
 
 export default CourseContentPage;
 
-//! <--------------------- Utility to saperate the details code --------------------->
+//! <--------------------- Utility to separate the details code --------------------->
 type CourseDetailsProps = {
   chapters: Chapter[];
   instructor: Instructor;
@@ -583,7 +583,7 @@ const ChapterItem = ({
 
         <div>
           <div className="link-clamp-1 max-lines-1 line-clamp-1 overflow-clip text-xs">
-           Chapter {index.toString()}
+            Chapter {index.toString()}
           </div>
           <div className="link-clamp-2 text-md max-lines-1 line-clamp-1 overflow-hidden text-base">
             {title}

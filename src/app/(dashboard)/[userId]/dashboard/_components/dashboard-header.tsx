@@ -1,5 +1,5 @@
+import Notifications from "@/components/notification-button";
 import { ThemeModeToggle } from "@/components/theme-mode-toggle";
-import Notifications from "../../../notifications/page";
 import UserAvatar from "@/components/user-avatar";
 
 const DashboardHeader = () => {

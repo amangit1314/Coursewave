@@ -122,7 +122,7 @@ const AccordionItem = (props: any) => {
               <div key={chapter.id}>
                 <AccordionItemDescriptionItem
                   name={chapter.title}
-                  duration={chapter.chapterDuration!}
+                  duration={chapter.createdAt.toString()!}
                 />
               </div>
             );

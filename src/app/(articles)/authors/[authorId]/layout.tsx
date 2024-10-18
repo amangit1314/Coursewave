@@ -1,18 +1,18 @@
 "use client";
 
-import Navbar from "../(browseCourses)/browseCourses/_components/navbar";
-import Sidebar from "../(browseCourses)/browseCourses/_components/sidebar";
+
 import React from "react";
 import UserAvatar from "@/components/user-avatar";
 import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 import { useUserInfo } from "@/hooks/useUserInfo";
 import Notifications from "@/components/notification-button";
 import SearchButton from "@/components/search-button";
-import ArticlesSearchButton from "./articles/_components/articles-search-button";
 import { usePathname, useRouter } from "next/navigation";
 import { useUserStore } from "@/zustand/userStore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "react-hot-toast";
+import { Sidebar } from "lucide-react";
+import ArticlesSearchButton from "../../articles/_components/articles-search-button";
 
 interface BrowseArticlesLayoutProps {
   children: React.ReactNode;
