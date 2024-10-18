@@ -18,8 +18,8 @@ import {
 import { MdOutlineRateReview } from "react-icons/md";
 import { PiStudentBold } from "react-icons/pi";
 import { Accordion } from "@tremor/react";
-import RatingStars from "@/app/(course)/courses/_components/rating-stars";
-import Reviewcard from "@/app/(course)/courses/_components/sections/reviews/review-card";
+import RatingStars from "@/app/(courses)/courses/_components/rating-stars";
+import Reviewcard from "@/app/(courses)/courses/_components/sections/reviews/review-card";
 
 function CoursePreview({ params }: any) {
   const [loading, setLoading] = React.useState(true);
