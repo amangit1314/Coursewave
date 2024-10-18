@@ -1,4 +1,4 @@
-import { SessionCard } from "@/app/(browseSessions)/browseSessions/_components/session-card";
+import { SessionCard } from "@/app/(sessions)/browseSessions/_components/session-card";
 import React from "react";
 
 function CreatedSessions() {
