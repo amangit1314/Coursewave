@@ -1,6 +1,3 @@
-import Navbar from "../(browseCourses)/browseCourses/_components/navbar";
-import Sidebar from "../(browseCourses)/browseCourses/_components/sidebar";
-
 interface ProfileLayoutProps {
   children: React.ReactNode;
 }

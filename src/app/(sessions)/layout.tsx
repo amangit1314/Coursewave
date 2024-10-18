@@ -3,7 +3,6 @@
 import React from "react";
 import UserAvatar from "@/components/user-avatar";
 import { ThemeModeToggle } from "@/components/theme-mode-toggle";
-import { useUserInfo } from "@/hooks/useUserInfo";
 import Notifications from "@/components/notification-button";
 import { usePathname, useRouter } from "next/navigation";
 import { useUserStore } from "@/zustand/userStore";

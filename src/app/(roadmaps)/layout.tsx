@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Sidebar } from "lucide-react";
 import Navbar from "../(courses)/browse/_components/navbar";
+import Sidebar from "../(courses)/browse/_components/sidebar";
 
 interface RoadmapsLayoutProps {
   children: React.ReactNode;
