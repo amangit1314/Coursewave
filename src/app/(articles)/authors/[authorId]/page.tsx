@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { BlogWithComments } from "@/types/blog-with-comments";
 import { ArticleCard } from "../../articles/_components/article-card";
 
-const ArticlesPage = async () => {
+const AuthorPage = async () => {
   // TODO: use useArticles zustand store here in place of directly accessing it from db
   const articles: BlogWithComments[] = await db.blog.findMany({
     include: {
@@ -39,4 +39,4 @@ const ArticlesPage = async () => {
   );
 };
 
-export default ArticlesPage;
+export default AuthorPage;
