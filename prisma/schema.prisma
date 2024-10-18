@@ -264,11 +264,53 @@ model CloudinaryData {
   sectionId      String?
   chapterId      String  @unique
 
+  // Additional fields from the Cloudinary response
+  version             Int?
+  signature           String?
+  format              String?
+  resourceType        String?
+  url                 String?
+  secureUrl           String?
+  playbackUrl         String?
+  width               Int?
+  height              Int?
+  duration            Float?
+  frameRate           Float?
+  bitRate             Int?
+  createdAtCloudinary DateTime?
+  nbFrames            Int?
+
+  // Nested fields for audio and video metadata with relation names
+  audio CodecData? @relation(name: "AudioCodec") // Audio codec information
+  video CodecData? @relation(name: "VideoCodec") // Video codec information
+
+  // Existing relations
   chapter Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   course  Course?  @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
 
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
+}
+
+model CodecData {
+  id            String  @id @default(cuid())
+  codec         String?
+  bitRate       String?
+  channels      Int?
+  channelLayout String?
+  frequency     Int?
+  pixFormat     String?
+  level         Int?
+  profile       String?
+  dar           String?
+  timeBase      String?
+  duration      Float?
+  nbFrames      Int?
+  parentId      String  @unique // Ensure that this field is unique for one-to-one relation
+
+  // Separate relations for audio and video
+  cloudinaryAudioData CloudinaryData? @relation(name: "AudioCodec", fields: [parentId], references: [id], map: "fk_codec_audio_parentId")
+  cloudinaryVideoData CloudinaryData? @relation(name: "VideoCodec", fields: [parentId], references: [id], map: "fk_codec_video_parentId")
 }
 
 model ChapterNotes {

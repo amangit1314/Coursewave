@@ -18,7 +18,7 @@ export default function RoadmapsLayout({ children }: RoadmapsLayoutProps) {
   useEffect(() => {
     setIsClient(true); // Set the flag to true after mounting
     setIsRoadmapPreviewPage(
-      pathname?.startsWith("/browseCourses/courseDetails/") ?? false,
+      pathname?.startsWith("/roadmaps/") ?? false,
     );
   }, [pathname]);
 

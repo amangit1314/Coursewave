@@ -25,31 +25,32 @@ const errorNotification = (errorMessage: string) => toast.error(errorMessage);
 const Login = () => {
   const router = useRouter();
 
-  const [loading, setLoading] = React.useState(false);
+  // const [loading, setLoading] = React.useState(false);
   const [user, setUserInfo] = React.useState({ email: "", password: "" });
   const [isButtonDisabled, setButtonDisabled] = React.useState(false);
-  const { setUser, loginUser } = useUserStore();
+  const { loginUser, loadingState } = useUserStore();
 
   const onLogin = async () => {
-    try {
-      setLoading(true);
-      const url =
-        process.env.ENVIRONMENT === "DEVELOPMENT"
-          ? absoluteUrl("/api/auth/login")
-          : "api/auth/login";
-      await axios.post(url, user).then((res) => {
-        console.log("Login response: ", res.data);
-        setUser(res.data);
-      });
+    loginUser(user.email, user.password);
+    // try {
+    //   setLoading(true);
+    //   const url =
+    //     process.env.ENVIRONMENT === "DEVELOPMENT"
+    //       ? absoluteUrl("/api/auth/login")
+    //       : "api/auth/login";
+    //   await axios.post(url, user).then((res) => {
+    //     console.log("Login response: ", res.data);
+    //     setUser(res.data);
+    //   });
 
-      successNotification("Logged in successfully");
-      router.push("/browseCourses");
-    } catch (error: any) {
-      console.error("Login failed: ", error.message);
-      errorNotification(error.message);
-    } finally {
-      setLoading(false);
-    }
+    //   successNotification("Logged in successfully");
+    //   router.push("/browseCourses");
+    // } catch (error: any) {
+    //   console.error("Login failed: ", error.message);
+    //   errorNotification(error.message);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   useEffect(() => {
@@ -120,7 +121,7 @@ const Login = () => {
               className="inline-flex w-full items-center justify-center whitespace-nowrap rounded-md bg-blue-500 py-2 text-sm font-medium text-white ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
               disabled={isButtonDisabled}
             >
-              {loading ? (
+              {loadingState.loading ? (
                 <LucideLoader2 className="animate-spin" />
               ) : isButtonDisabled ? (
                 "Cant Login"

@@ -15,6 +15,13 @@ type LoadingState = {
 };
 
 type UserState = {
+  userResponse: {
+    status: boolean;
+    data: User;
+    accessToken: string;
+    refreshToken: string;
+  } | null;
+  userId: string;
   user: User | null;
   savedCourses: Course[];
   token: string | null;
@@ -31,7 +38,7 @@ type UserState = {
 type UserActions = {
   loginUser: (email: string, password: string) => Promise<void>;
   logOutUser: (userId: string) => Promise<void>;
-  setUser: (user: User) => void;
+  // setUser: (user: User) => void;
   saveCourse: (course: Course) => Promise<void>;
   verifyEmail: () => Promise<void>;
   updateUserProfile: (
@@ -83,6 +90,8 @@ type UserActions = {
 export const useUserStore = create<UserState & UserActions>()(
   persist(
     (set, get) => ({
+      userResponse: null,
+      userId: "",
       user: null,
       savedCourses: [],
       token: null,
@@ -96,42 +105,91 @@ export const useUserStore = create<UserState & UserActions>()(
       userSettingsPreferences: [],
 
       // Auth Actions
-
+      // loginUser: async (email: string, password: string) => {
+      //   try {
+      //     set({ loadingState: { loading: true, error: null } });
+      
+      //     const url =
+      //       process.env.ENVIRONMENT === "DEVELOPMENT"
+      //         ? absoluteUrl("/api/auth/login")
+      //         : "api/auth/login";
+      
+      //     const response = await axios.post(url, { email, password });
+      
+      //     const { data, accessToken, refreshToken } = response.data; // Destructure the response
+      
+      //     console.log("Login response: ", response.data);
+      
+      //     // Update userResponse, user, userId, and token in a single set call
+      //     set({
+      //       userResponse: response.data,         // Store the full login response
+      //       user: data as User,                  // Extract the user data from the response
+      //       userId: data.id,                     // Set the userId from user data
+      //       token: accessToken,                  // Store the access token if needed
+      //       loadingState: { loading: false, error: null }, // Reset loading state
+      //     });
+      
+      //     console.log(
+      //       "Auth successfull in userStore.ts, the user: ",
+      //       get().user,
+      //     );
+      //   } catch (error: any) {
+      //     console.error("Login failed: ", error.message);
+      //     set({ loadingState: { loading: false, error: error.message } });
+      //   }
+      // },
       loginUser: async (email: string, password: string) => {
         try {
+          // Start loading state
           set({ loadingState: { loading: true, error: null } });
-
+      
+          // API URL
           const url =
             process.env.ENVIRONMENT === "DEVELOPMENT"
               ? absoluteUrl("/api/auth/login")
-              : "api/auth/login";
-
-          const response = await axios
-            .post(url, { email: email, password: password })
-            .then((res) => {
-              console.log("Login response: ", res.data);
-              set({
-                user: res.data as User,
-                loadingState: { loading: false, error: "" },
-              });
-            });
-
-          console.log("Login success response: ", response);
-          console.log(
-            "Auth successfull in userStore.ts, the user: ",
-            get().user,
-          );
+              : "/api/auth/login";
+      
+          // Perform the API request
+          const response = await axios.post(url, { email, password });
+      
+          // Log the full response to make sure we're receiving the right data
+          console.log("Login response: ", response.data);
+      
+          // Extract data, accessToken, and refreshToken
+          const { data, accessToken, refreshToken } = response.data;
+      
+          // Log the individual parts to confirm correctness
+          console.log("Extracted user data: ", data);
+          console.log("Extracted accessToken: ", accessToken);
+          console.log("Extracted refreshToken: ", refreshToken);
+      
+          // Update the Zustand store in one `set` call
+          set({
+            userResponse: response.data,  // Full login response
+            user: data as User,           // User data
+            userId: data.id,              // User ID from user data
+            token: accessToken,           // Access token
+            loadingState: { loading: false, error: null },  // Stop loading
+          });
+      
+          // Log to confirm state after setting
+          console.log("Updated Zustand state:", get().user, get().userId, get().userResponse);
+      
         } catch (error: any) {
           console.error("Login failed: ", error.message);
+      
+          // Set error state if the request fails
           set({ loadingState: { loading: false, error: error.message } });
         }
       },
+      
+
       logOutUser: async (userId: string) => {
         // Implement logout logic here
       },
-      setUser: (user: User) => {
-        set({ user });
-      },
+      // setUser: (user: User) => {
+      //   set({ user });
+      // },
       saveCourse: async (course: Course) => {
         // Implement save course logic here
       },
@@ -514,6 +572,23 @@ export const useUserStore = create<UserState & UserActions>()(
         // Implement logic here
       },
     }),
-    { name: "Coursewave-User-Store", getStorage: () => localStorage },
+
+    {
+      name: "Coursewave-User-Store",
+      getStorage: () => ({
+        setItem: (...args) => window.localStorage.setItem(...args),
+        removeItem: (...args) => window.localStorage.removeItem(...args),
+        getItem: async (...args) =>
+          new Promise((resolve) => {
+            if (typeof window === "undefined") {
+              resolve(null);
+            } else {
+              setTimeout(() => {
+                resolve(window.localStorage.getItem(...args));
+              }, 0);
+            }
+          }),
+      }),
+    },
   ),
 );

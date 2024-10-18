@@ -38,6 +38,9 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "wcgwzdehnxpexussrkni.supabase.co",
+      },  {
+        protocol: "https",
+        hostname: "static.vecteezy.com",
       },
     ],
   },

@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import Sidebar from "../(browseCourses)/browseCourses/_components/sidebar";
-import Navbar from "../(browseCourses)/browseCourses/_components/navbar";
+import Navbar from "../(courses)/browse/_components/navbar";
+import Sidebar from "../(courses)/browse/_components/sidebar";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

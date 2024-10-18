@@ -2,6 +2,7 @@ import { create } from "zustand";
 import {
   Category,
   Chapter,
+  CloudinaryData,
   Course,
   CourseAttachment,
   CourseProgress,
@@ -33,6 +34,7 @@ type CoursesState = {
   sections: CourseSection[];
   chapters: Chapter[];
   muxDatas: MuxData[];
+  cloudinaryDatas: CloudinaryData[];
   attachments: CourseAttachment[];
   courseProgress: CourseProgress | null;
   reviews: Review[];
@@ -69,6 +71,11 @@ type CoursesActions = {
   fetchCourseCloudinaryData: (courseId: string) => Promise<void>;
   fetchCourseAttachments: (courseId: string) => Promise<void>;
   fetchCourseProgress: (courseId: string, userId: string) => Promise<void>;
+  updateCourseProgress: (
+    userId: string,
+    courseId: string,
+    chapterId: string,
+  ) => Promise<void>;
   fetchCourseReviews: (courseId: string) => Promise<void>;
   fetchCourseEnrollments: (courseId: string) => Promise<void>;
   fetchCoursePurchases: (courseId: string) => Promise<void>;
@@ -76,11 +83,6 @@ type CoursesActions = {
   fetchCourseInstructor: (courseId: string) => Promise<void>;
   fetchInstructorEarningsFromThisCourse: (courseId: string) => Promise<void>;
   saveCourse: (courseId: string, userId: string) => Promise<void>;
-  updateCourseProgress: (
-    userId: string,
-    courseId: string,
-    chapterId: string,
-  ) => Promise<void>;
 };
 
 export const useCoursesStore = create<CoursesState & CoursesActions>()(
@@ -96,6 +98,7 @@ export const useCoursesStore = create<CoursesState & CoursesActions>()(
       sections: [],
       chapters: [],
       muxDatas: [],
+      cloudinaryDatas: [],
       attachments: [],
       courseProgress: null,
       reviews: [],
@@ -104,15 +107,10 @@ export const useCoursesStore = create<CoursesState & CoursesActions>()(
       payments: [],
       instructor: null,
       instructorEarningsFromThisCourse: [],
-
-      // tracking
-
       loadingState: {
         loading: false,
         error: null,
       },
-
-      // to filter
       selectedCategory: null,
       queryString: "",
 
@@ -446,7 +444,7 @@ export const useCoursesStore = create<CoursesState & CoursesActions>()(
             },
           });
           const response = await fetch(
-            `/api/courses/${courseId}/cloudinaryData`,
+            `/api/courses/${courseId}/cloudinaryDatas`,
           );
           if (!response.ok) {
             console.error("Failed to fetch course mux data");
@@ -515,7 +513,7 @@ export const useCoursesStore = create<CoursesState & CoursesActions>()(
         }
       },
 
-      fetchCourseProgress: async (courseId: string, userId: string) => {
+      fetchCourseProgress: async (userId: string, courseId: string) => {
         try {
           set({
             loadingState: {
@@ -524,10 +522,10 @@ export const useCoursesStore = create<CoursesState & CoursesActions>()(
             },
           });
           const response = await fetch(
-            `/api/profile/${userId}/enrolledCourses/${courseId}/courseProgress?include=chapterProgress`,
+            `/api/profile/${userId}/enrolledCourses/${courseId}/courseProgress`,
           );
           if (!response.ok) {
-            console.error("Failed to fetch course progress");
+            console.log("Failed to fetch course progress in fetchCourseProgress action in useCoursesStore.tsx hook");
             set({
               loadingState: {
                 loading: false,
@@ -545,7 +543,7 @@ export const useCoursesStore = create<CoursesState & CoursesActions>()(
             },
           });
         } catch (error: any) {
-          console.error("Error fetching course progress:", error);
+          console.log("Error fetching course progress:", error);
           set({
             loadingState: {
               loading: false,
@@ -894,7 +892,20 @@ export const useCoursesStore = create<CoursesState & CoursesActions>()(
     }),
     {
       name: "Coursewave-Courses-Store",
-      getStorage: () => localStorage,
+      getStorage: () => ({
+        setItem: (...args) => window.localStorage.setItem(...args),
+        removeItem: (...args) => window.localStorage.removeItem(...args),
+        getItem: async (...args) =>
+          new Promise((resolve) => {
+            if (typeof window === "undefined") {
+              resolve(null);
+            } else {
+              setTimeout(() => {
+                resolve(window.localStorage.getItem(...args));
+              }, 0);
+            }
+          }),
+      }),
     },
   ),
 );

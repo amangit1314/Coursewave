@@ -135,7 +135,20 @@ export const useCartStore = create<CartState & Actions>()(
     }),
     {
       name: "Coursewave-Cart-Store",
-      getStorage: () => localStorage,
+      getStorage: () => ({
+        setItem: (...args) => window.localStorage.setItem(...args),
+        removeItem: (...args) => window.localStorage.removeItem(...args),
+        getItem: async (...args) =>
+          new Promise((resolve) => {
+            if (typeof window === "undefined") {
+              resolve(null);
+            } else {
+              setTimeout(() => {
+                resolve(window.localStorage.getItem(...args));
+              }, 0);
+            }
+          }),
+      }),
     },
   ),
 );
