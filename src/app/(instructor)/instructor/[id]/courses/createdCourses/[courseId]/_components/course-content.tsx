@@ -35,7 +35,6 @@ import { PrerequisitsForm } from "./prerequisits-form";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { SectionsForm } from "./sections-form";
-import { CourseChaptersSkeleton } from "@/app/(course)/courses/[id]/courseContent/skeletons";
 import { z } from "zod";
 import {
   Form,
