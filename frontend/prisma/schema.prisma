@@ -1,0 +1,506 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//* USER MODEL
+model User {
+  id              String   @id @unique
+  name            String?
+  email           String   @unique
+  password        String
+  profileImageUrl String?
+  about           String?
+  shortSummary    String?
+  isEmailVerified Boolean? @default(false)
+  isInstructor    Boolean? @default(false)
+  preferences     Json     @default("{}")
+
+  // TOKENS
+  verifyToken                String?
+  verifyTokenGenerationTime  DateTime? @default(now())
+  verifyTokenExpiry          String?
+  verifyTokenStatus          String?
+  refreshToken               String?
+  refreshTokenGenerationTime DateTime? @default(now())
+  refreshTokenExpiry         String?
+  refreshTokenStatus         String?
+  accessToken                String?
+  accessTokenGenerationTime  DateTime? @default(now())
+  accessTokenExpiry          String?
+  accessTokenStatus          String?
+  resetToken                 String?
+  resetTokenGenerationTime   DateTime? @default(now())
+  resetTokenExpiry           String?
+  resetTokenStatus           String?
+
+  // RELATIONS
+  wishList         WishList[]
+  cart             Cart[]
+  enrollments      Enrollment[]
+  payments         Payment[]
+  blogComments     BlogComment[]
+  createdBlogs     Blog[]
+  reviews          Review[]
+  courseProgresses CourseProgress[]
+  subscriptions    Subscription[]
+  StripeCustomer   StripeCustomer?
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+// * STRIPE CUSTOMER MODEL
+model StripeCustomer {
+  stripeCustomerId       String    @id
+  userId                 String    @unique
+  stripeSubscriptionId   String?   @unique
+  stripePriceId          String?
+  stripeCurrentPeriodEnd DateTime?
+
+  user User? @relation(fields: [userId], references: [id])
+
+  createdAt    DateTime?     @default(now())
+  updatedAt    DateTime?     @updatedAt
+  Subscription Subscription?
+}
+
+//* CART MODELS
+model Cart {
+  id     String @id
+  userId String @unique
+
+  user      User?      @relation(fields: [userId], references: [id])
+  cartItems CartItem[]
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model CartItem {
+  id                   String  @id @unique
+  userId               String  @unique
+  courseId             String  @unique
+  courseName           String
+  courseInstructorName String
+  courseImageUrl       String?
+  coursePrice          String
+  quantity             Int     @default(1)
+
+  cart Cart? @relation(fields: [id], references: [id])
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+//* WISHLIST MODEL
+model WishList {
+  userId String @id
+
+  courses Course[]
+  user    User?    @relation(fields: [userId], references: [id])
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+//* COURSE MODELS
+model Course {
+  courseId                       String   @id
+  courseTitle                    String
+  courseImage                    String?
+  courseCreator                  String?
+  courseDescription              String?
+  isFree                         Boolean  @default(false)
+  coursePrice                    String?
+  dealPrice                      String?
+  discount                       String?
+  instructorID                   String?
+  isLive                         Boolean? @default(false)
+  courseCategories               String[] @default(["Full Stack, Next.js"])
+  instructorName                 String?
+  isPublished                    Boolean? @default(false)
+  avgStarRatings                 Float?   @default(5.0)
+  courseDuration                 String?  @default("1 hour 50 minutes")
+  technologiesYouAreGoingToLearn String[] @default(["Flutter", "Node.js", "Next.js"])
+  thisCourseIsFor                String[] @default(["Who wants to learn.", "Want to understand concepts of this topic.", "If you are a enthusiast of subject."])
+  prerequisits                   String[] @default(["Must have a good internet connection.", "Laptop is a must.", "And if you Want to learn & gain knowledge"])
+  whatYouWillLearn               String[] @default(["How to configure and setup open source project", "How to maintain open source codebase"])
+  categoryId                     String?
+  userId                         String?
+
+  reviews                          Review[]
+  enrollments                      Enrollment[]
+  payments                         Payment[]
+  purchases                        Purchase[]
+  attachments                      CourseAttachment[]
+  courseSections                   CourseSection[]
+  categories                       Category[]
+  chapters                         Chapter[]
+  instructorEarningsFromThisCourse InstructorEarning[]
+  CourseProgress                   CourseProgress[]
+  MuxData                          MuxData[]
+  CloudinaryData                   CloudinaryData[]
+
+  Instructor Instructor? @relation(fields: [instructorID], references: [instructorID])
+  WishList   WishList?   @relation(fields: [userId], references: [userId])
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+  // User      User?     @relation(fields: [userId], references: [id])
+}
+
+model CourseAttachment {
+  id           String  @id @default(uuid())
+  name         String
+  url          String
+  instructorId String
+  courseId     String
+  course       Course? @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+}
+
+model CourseSection {
+  courseSectionId          String  @id @unique
+  courseId                 String
+  instructorId             String
+  courseSectionNumber      Int
+  courseSectionTitle       String
+  courseSectionDescription String?
+
+  chapters Chapter[]
+  course   Course?   @relation(fields: [courseId], references: [courseId])
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model Chapter {
+  id              String            @id @default(uuid())
+  title           String
+  description     String?           @db.Text
+  videoUrl        String?           @db.Text
+  position        Int
+  courseId        String
+  courseSectionId String
+  isPublished     Boolean           @default(false)
+  isFree          Boolean           @default(false)
+  isCompleted     Boolean           @default(false)
+  chapterNotes    ChapterNotes[]
+  muxData         MuxData?
+  course          Course?           @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
+  courseSection   CourseSection?    @relation(fields: [courseSectionId], references: [courseSectionId])
+  CloudinaryData  CloudinaryData?
+  ChapterProgress ChapterProgress[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+}
+
+model ChapterProgress {
+  id               String  @id @default(uuid())
+  enrollmentId     String
+  chapterId        String
+  courseProgressId String
+  isCompleted      Boolean @default(false)
+
+  enrollment     Enrollment      @relation(fields: [enrollmentId], references: [enrollmentId], onDelete: Cascade)
+  chapter        Chapter         @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  CourseProgress CourseProgress? @relation(fields: [courseProgressId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([enrollmentId, chapterId])
+  @@index([chapterId])
+}
+
+model Review {
+  id       String @id @unique
+  rating   Float
+  comment  String
+  userId   String @unique
+  courseId String @unique
+
+  Course Course? @relation(fields: [courseId], references: [courseId])
+  User   User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model MuxData {
+  id         String @id @default(uuid())
+  assetId    String
+  playbackId String
+  courseId   String
+  chapterId  String @unique
+
+  chapter Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  course  Course?  @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model CloudinaryData {
+  id             String  @id @default(cuid())
+  cloudName      String
+  publicId       String
+  publicId_480p  String?
+  publicId_720p  String?
+  publicId_1080p String?
+  courseId       String
+  sectionId      String?
+  chapterId      String  @unique
+
+  // Additional fields from the Cloudinary response
+  version             Int?
+  signature           String?
+  format              String?
+  resourceType        String?
+  url                 String?
+  secureUrl           String?
+  playbackUrl         String?
+  width               Int?
+  height              Int?
+  duration            Float?
+  frameRate           Float?
+  bitRate             Int?
+  createdAtCloudinary DateTime?
+  nbFrames            Int?
+
+  // Nested fields for audio and video metadata with relation names
+  audio CodecData? @relation(name: "AudioCodec") // Audio codec information
+  video CodecData? @relation(name: "VideoCodec") // Video codec information
+
+  // Existing relations
+  chapter Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  course  Course?  @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model CodecData {
+  id            String  @id @default(cuid())
+  codec         String?
+  bitRate       String?
+  channels      Int?
+  channelLayout String?
+  frequency     Int?
+  pixFormat     String?
+  level         Int?
+  profile       String?
+  dar           String?
+  timeBase      String?
+  duration      Float?
+  nbFrames      Int?
+  parentId      String  @unique // Ensure that this field is unique for one-to-one relation
+
+  // Separate relations for audio and video
+  cloudinaryAudioData CloudinaryData? @relation(name: "AudioCodec", fields: [parentId], references: [id], map: "fk_codec_audio_parentId")
+  cloudinaryVideoData CloudinaryData? @relation(name: "VideoCodec", fields: [parentId], references: [id], map: "fk_codec_video_parentId")
+}
+
+model ChapterNotes {
+  noteId    String @id @unique
+  userId    String
+  courseId  String
+  chapterId String
+  note      String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chapter Chapter? @relation(fields: [chapterId], references: [id])
+}
+
+model CourseProgress {
+  id                  String  @id @default(uuid())
+  userId              String
+  courseId            String
+  progress            Float   @default(0.0)
+  completedPercentage Int     @default(0)
+  enrollmentId        String  @unique
+  isCompleted         Boolean @default(false)
+
+  user        User?        @relation(fields: [userId], references: [id])
+  course      Course?      @relation(fields: [courseId], references: [courseId])
+  enrollments Enrollment[]
+
+  createdAt       DateTime?         @default(now())
+  updatedAt       DateTime?         @updatedAt
+  ChapterProgress ChapterProgress[]
+
+  @@unique([userId, courseId])
+  @@index([courseId])
+}
+
+//* ENROLLMENT MODELS
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  DROPPED
+}
+
+model Enrollment {
+  enrollmentId     String           @id
+  userId           String
+  courseId         String
+  enrollmentDate   String
+  courseProgressId String
+  courseTitle      String
+  enrollmentStatus EnrollmentStatus @default(ACTIVE)
+  user             User?            @relation(fields: [userId], references: [id])
+  course           Course?          @relation(fields: [courseId], references: [courseId])
+  courseProgress   CourseProgress?  @relation(fields: [enrollmentId], references: [enrollmentId])
+
+  createdAt       DateTime?         @default(now())
+  updatedAt       DateTime?         @updatedAt
+  ChapterProgress ChapterProgress[]
+}
+
+// * SUBSCRIPTION MODEL
+model Subscription {
+  id                     String    @id @unique
+  userId                 String
+  stripeCustomerId       String    @unique
+  stripeSubscriptionId   String
+  stripePriceId          String
+  stripeCurrentPeriodEnd DateTime? @default(now())
+
+  stripeCustmoer StripeCustomer? @relation(fields: [stripeCustomerId], references: [stripeCustomerId])
+  user           User?           @relation(fields: [userId], references: [id])
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+//* PURCHASE MODEL
+model Purchase {
+  id       String @id @unique @default(uuid())
+  userId   String
+  courseId String
+  amount   String
+
+  course    Course?   @relation(fields: [courseId], references: [courseId], onDelete: Cascade)
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt()
+
+  @@unique([userId, courseId])
+  @@index([courseId])
+}
+
+//* Category MODEL
+model Category {
+  name    String   @id
+  courses Course[]
+  blogs   Blog[]
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+//* BLOG MODELS
+model Blog {
+  id                   String  @id @unique
+  title                String
+  shortDescription     String?
+  content              String
+  estimatedReadingTime String
+  clapsCount           Int     @default(0)
+  authorId             String
+  categoryName         String?
+  thumbnailUrl         String?
+  isRecommended        Boolean @default(false)
+
+  comments BlogComment[]
+  category Category?     @relation(fields: [categoryName], references: [name])
+  author   User?         @relation(fields: [authorId], references: [id])
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model BlogComment {
+  id       String @id @default(cuid())
+  blogId   String
+  content  String
+  authorId String
+  blog     Blog?  @relation(fields: [blogId], references: [id])
+  author   User?  @relation(fields: [authorId], references: [id])
+
+  writtenOn DateTime? @default(now())
+  editedOn  DateTime? @updatedAt
+}
+
+//* INSTRUCTOR MODELS
+model Instructor {
+  instructorID            String  @id
+  instructorName          String
+  instructorEmail         String
+  instructorTag           String
+  instructorProfilePicUrl String
+  aboutInstructor         String?
+
+  createdCourses Course[]
+  earnings       InstructorEarning[]
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model InstructorEarning {
+  earningId     String @id
+  instructorId  String
+  courseId      String
+  earningDate   String
+  earningAmount Float?
+
+  instructor Instructor? @relation(fields: [instructorId], references: [instructorID])
+  course     Course?     @relation(fields: [courseId], references: [courseId])
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+// ! PAYMENT MODELS
+model Payment {
+  paymentId     String        @id @unique
+  userId        String        @unique
+  courseId      String        @unique
+  paymentDate   DateTime      @default(now())
+  amount        String
+  paymentMethod String?
+  transactionId String?       @unique
+  user          User?         @relation(fields: [userId], references: [id])
+  course        Course?       @relation(fields: [courseId], references: [courseId])
+  transactions  Transaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Transaction {
+  transactionId     String   @id
+  paymentId         String
+  transactionDate   DateTime @default(now())
+  transactionAmount String
+  transactionStatus String
+
+  payment Payment? @relation(fields: [paymentId], references: [paymentId])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

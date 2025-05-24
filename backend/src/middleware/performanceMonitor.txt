@@ -1,0 +1,158 @@
+import { Request, Response, NextFunction } from 'express';
+import { redisClient } from '../config/redis';
+
+// Define types for performance metrics
+interface PerformanceMetric {
+  key: string;
+  path?: string;
+  method?: string;
+  statusCode?: string;
+  duration?: string;
+  timestamp?: string;
+  ip?: string;
+}
+
+// Performance monitoring middleware
+export const performanceMonitor = () => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const start = process.hrtime();
+    
+    // Capture response data
+    const originalSend = res.send;
+    res.send = function(body) {
+      const [seconds, nanoseconds] = process.hrtime(start);
+      const duration = seconds * 1000 + nanoseconds / 1000000; // Convert to milliseconds
+      
+      // Store performance metrics in Redis
+      storePerformanceMetrics(req, res, duration).catch(console.error);
+      
+      return originalSend.call(this, body);
+    };
+    
+    next();
+  };
+};
+
+// Store performance metrics in Redis
+async function storePerformanceMetrics(req: Request, res: Response, duration: number) {
+  try {
+    const path = req.originalUrl;
+    const method = req.method;
+    const statusCode = res.statusCode;
+    const timestamp = Math.floor(Date.now() / 1000);
+    
+    // Create a unique key for this request
+    const requestKey = `perf:${timestamp}:${method}:${path}`;
+    
+    // Store request details
+    await redisClient.hSet(requestKey, {
+      path,
+      method,
+      statusCode: statusCode.toString(),
+      duration: duration.toString(),
+      timestamp: timestamp.toString(),
+      ip: req.ip || req.socket.remoteAddress || 'unknown'
+    });
+    
+    // Set expiry for the key (keep for 24 hours)
+    await redisClient.expire(requestKey, 24 * 60 * 60);
+    
+    // Update aggregated metrics
+    const pathKey = `perf:path:${path}`;
+    await redisClient.hIncrBy(pathKey, 'count', 1);
+    await redisClient.hIncrByFloat(pathKey, 'totalDuration', duration);
+    
+    // Update status code metrics
+    const statusKey = `perf:status:${statusCode}`;
+    await redisClient.hIncrBy(statusKey, 'count', 1);
+    
+    // Update method metrics
+    const methodKey = `perf:method:${method}`;
+    await redisClient.hIncrBy(methodKey, 'count', 1);
+    
+    // Set expiry for aggregated metrics (keep for 7 days)
+    await redisClient.expire(pathKey, 7 * 24 * 60 * 60);
+    await redisClient.expire(statusKey, 7 * 24 * 60 * 60);
+    await redisClient.expire(methodKey, 7 * 24 * 60 * 60);
+    
+  } catch (error) {
+    console.error('Error storing performance metrics:', error);
+  }
+}
+
+// Get performance metrics
+export const getPerformanceMetrics = async (options: {
+  path?: string;
+  method?: string;
+  statusCode?: number;
+  startTime?: number;
+  endTime?: number;
+  limit?: number;
+}) => {
+  try {
+    const {
+      path,
+      method,
+      statusCode,
+      startTime = Math.floor(Date.now() / 1000) - 24 * 60 * 60, // Last 24 hours
+      endTime = Math.floor(Date.now() / 1000),
+      limit = 100
+    } = options;
+    
+    // Build the pattern to search for
+    let pattern = 'perf:*';
+    if (path) pattern = `perf:*:${method || '*'}:${path}`;
+    else if (method) pattern = `perf:*:${method}:*`;
+    
+    // Get all keys matching the pattern
+    const keys = await redisClient.keys(pattern);
+    
+    // Filter keys by timestamp if needed
+    const filteredKeys = keys.filter((key: string) => {
+      const parts = key.split(':');
+      const keyTimestamp = parseInt(parts[1], 10);
+      return keyTimestamp >= startTime && keyTimestamp <= endTime;
+    });
+    
+    // Get details for each key
+    const metrics = await Promise.all(
+      filteredKeys.slice(0, limit).map(async (key: string) => {
+        const details = await redisClient.hGetAll(key);
+        return {
+          key,
+          ...details
+        } as PerformanceMetric;
+      })
+    );
+    
+    // Get aggregated metrics
+    const aggregatedMetrics = {
+      totalRequests: metrics.length,
+      averageDuration: metrics.reduce((sum, m) => sum + parseFloat(m.duration || '0'), 0) / metrics.length || 0,
+      statusCodes: {} as Record<string, number>,
+      methods: {} as Record<string, number>,
+      paths: {} as Record<string, number>
+    };
+    
+    // Calculate status code distribution
+    metrics.forEach(m => {
+      if (m.statusCode) {
+        aggregatedMetrics.statusCodes[m.statusCode] = (aggregatedMetrics.statusCodes[m.statusCode] || 0) + 1;
+      }
+      if (m.method) {
+        aggregatedMetrics.methods[m.method] = (aggregatedMetrics.methods[m.method] || 0) + 1;
+      }
+      if (m.path) {
+        aggregatedMetrics.paths[m.path] = (aggregatedMetrics.paths[m.path] || 0) + 1;
+      }
+    });
+    
+    return {
+      metrics,
+      aggregatedMetrics
+    };
+  } catch (error) {
+    console.error('Error getting performance metrics:', error);
+    return { metrics: [], aggregatedMetrics: {} };
+  }
+} 
