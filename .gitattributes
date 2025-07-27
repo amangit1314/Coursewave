@@ -1,1 +1,0 @@
-*.{zip,pdf,mp4,psd,ai} filter=lfs diff=lfs merge=lfs -text
