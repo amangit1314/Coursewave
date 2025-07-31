@@ -1,0 +1,27 @@
+import { Request, Response, NextFunction } from 'express';
+import { recordRequestDuration, recordResponseSize, recordError } from '../../config/monitoring';
+
+export const monitoringMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  const start = Date.now();
+  const originalSend = res.send;
+
+  // Override send to capture response size
+  res.send = function (body: any): Response {
+    const responseSize = Buffer.byteLength(JSON.stringify(body));
+    recordResponseSize(req.path, responseSize);
+    return originalSend.call(this, body);
+  };
+
+  // Capture response when finished
+  res.on('finish', () => {
+    const duration = (Date.now() - start) / 1000; // Convert to seconds
+    recordRequestDuration(req.method, req.path, res.statusCode, duration);
+
+    // Record errors if status code indicates an error
+    if (res.statusCode >= 400) {
+      recordError('http', res.statusCode.toString());
+    }
+  });
+
+  next();
+}; 
