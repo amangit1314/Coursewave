@@ -1,28 +1,28 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// /* eslint-disable @typescript-eslint/no-explicit-any */
 
 
-"use client";
+// "use client";
 
-import toast from "react-hot-toast";
+// import toast from "react-hot-toast";
 
-import { UploadDropzone } from "@/lib/utils/uploadthing";
-import { ourFileRouter } from "@/app/api/uploadthing/core";
+// import { UploadDropzone } from "@/lib/utils/uploadthing";
+// import { ourFileRouter } from "@/app/api/uploadthing/core";
 
-interface FileUploadProps {
-  onChange: (url?: string) => void;
-  endpoint: keyof typeof ourFileRouter;
-}
+// interface FileUploadProps {
+//   onChange: (url?: string) => void;
+//   endpoint: keyof typeof ourFileRouter;
+// }
 
-export const FileUpload = ({ onChange, endpoint }: FileUploadProps) => {
-  return (
-    <UploadDropzone
-      endpoint={endpoint}
-      onClientUploadComplete={(res: any) => {
-        onChange(res?.[0].url);
-      }}
-      onUploadError={(error: Error) => {
-        toast.error(`${error?.message}`);
-      }}
-    />
-  );
-};
+// export const FileUpload = ({ onChange, endpoint }: FileUploadProps) => {
+//   return (
+//     <UploadDropzone
+//       endpoint={endpoint}
+//       onClientUploadComplete={(res: any) => {
+//         onChange(res?.[0].url);
+//       }}
+//       onUploadError={(error: Error) => {
+//         toast.error(`${error?.message}`);
+//       }}
+//     />
+//   );
+// };

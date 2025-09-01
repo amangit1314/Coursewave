@@ -11,7 +11,7 @@ import Image from "next/image";
 import "@uploadthing/react/styles.css";
 import { Button } from "@/components/ui/button";
 import { Course } from "@/types/course";
-import { FileUpload } from "@/app/(shared)/FileUpload";
+// import { FileUpload } from "@/app/(shared)/FileUpload";
 
 const formSchema = z.object({
   imageUrl: z.string().min(1, {
@@ -78,14 +78,14 @@ export const ImageForm = ({ course }: { course: Course }) => {
       {isEditing && (
         <div>
           {/* TODO: check below */}
-          <FileUpload
+          {/* <FileUpload
             endpoint="courseImageUpdater"
             onChange={(url) => {
               if (url) {
                 onSubmit({ imageUrl: url });
               }
             }}
-          />
+          /> */}
           <div className="mt-4 text-xs text-muted-foreground">
             16:9 aspect ratio recommended
           </div>
