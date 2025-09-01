@@ -5,11 +5,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
-import Notifications from "@/app/(shared)/notification-button";
 import UserAvatar from "@/app/(shared)/UserAvatar";
-import { Poppins } from "next/font/google";
 import { useUserStore } from "@/zustand/userStore";
 import { poppins } from "@/lib/config/fonts";
+import Notifications from "@/app/(shared)/NotificationButton";
 
 // const InstructorNavbarRoutes = () => {
 //   const pathname = usePathname();
