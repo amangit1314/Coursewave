@@ -13,8 +13,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
-import Notifications from "@/app/(shared)/notification-button";
 import UserAvatar from "@/app/(shared)/UserAvatar";
+import Notifications from "@/app/(shared)/NotificationButton";
 
 interface ArticleHeaderProps {
   article: BlogArticle;

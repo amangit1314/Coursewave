@@ -6,9 +6,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { useUserStore } from "@/zustand/userStore";
 
 import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
-import Notifications from "@/app/(shared)/notification-button";
 import UserAvatar from "@/app/(shared)/UserAvatar";
 import Sidebar from "../browse/_components/Sidebar";
+import Notifications from "@/app/(shared)/NotificationButton";
 
 interface BrowseArticlesLayoutProps {
   children: React.ReactNode;
