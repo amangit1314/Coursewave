@@ -10,8 +10,8 @@ import { toast } from "react-hot-toast";
 import { Sidebar } from "lucide-react";
 import ArticlesSearchButton from "../../articles/_components/ArticlesSearchButton";
 import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
-import Notifications from "@/app/(shared)/notification-button";
 import UserAvatar from "@/app/(shared)/UserAvatar";
+import Notifications from "@/app/(shared)/NotificationButton";
 
 interface BrowseArticlesLayoutProps {
   children: React.ReactNode;
