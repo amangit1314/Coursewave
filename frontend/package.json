@@ -17,7 +17,6 @@
     "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^5.1.1",
     "@mux/mux-player-react": "^3.5.1",
-    "@prisma/client": "^6.11.1",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-alert-dialog": "^1.1.14",
     "@radix-ui/react-aspect-ratio": "^1.1.7",
@@ -127,8 +126,6 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
     "postcss": "^8.5.6",
-    "prism": "^4.1.2",
-    "prisma": "^6.11.1",
     "tailwindcss": "^4.1.11",
     "typescript": "^5"
   }
