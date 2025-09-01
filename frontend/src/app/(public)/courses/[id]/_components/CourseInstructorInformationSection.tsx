@@ -1,3 +1,12 @@
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Instructor } from "@/types/instructor";
+import { useFetchInstructorCreatedCourses, useInstructorStore } from "@/zustand/instructorStore";
+import { useEffect } from "react";
+import InstructorCard, { InstructorCardLoadingSkeleton } from "../../_components/sections/InstructorCard";
+import { MoreInstructorCreatedCoursesSkeleton } from "./skeletons/MoreInstructorCreatedCoursesSkeleton";
+import { ErrorMessage } from "./ErrorMessage";
+import { FaGraduationCap } from "react-icons/fa6";
+
 const CourseInstructorInformationSection = ({
   instructor,
 }: {
@@ -84,16 +93,18 @@ const CourseInstructorInformationSection = ({
           instructorName={instructorName}
           instructorTag={instructorTag}
           aboutInstructor={aboutInstructor}
-          instructorCreatedCourses={instructorCreatedCourses?.length || 1}
+          instructorCreatedCourses={instructorCreatedCourses?.data?.length || 1}
           instructorStudentsCount={instructorStudentsCount || 1}
           instructorAverageStarRating={instructorAverageStarRating || 4.9}
         />
 
-        <MoreIntructorCreatedCourses
+        {/* <MoreIntructorCreatedCourses
           instructorName={instructorName}
           instructorCreatedCourses={instructorCreatedCourses || []}
-        />
+        /> */}
       </CardContent>
     </Card>
   );
 };
+
+export default CourseInstructorInformationSection;

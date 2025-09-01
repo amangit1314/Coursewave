@@ -1,4 +1,4 @@
-import CreateCourseForm from "./_components/create-course-form";
+import CreateCourseForm from "./_components/CreateCourseForm";
 
 const CreateCourse = async ({ params }: { params: { id: string } }) => {
   const instructorId = await params.id;

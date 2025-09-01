@@ -1,6 +1,6 @@
 "use server";
-import { User } from "@prisma/client";
-// import { cookies } from "next/headers";
+
+import { User } from "@/types/user";
 import { StreamClient } from "@stream-io/node-sdk";
 
 export const getToken = async () => {

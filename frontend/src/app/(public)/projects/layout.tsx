@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import Navbar from "../(courses)/browse/_components/Navbar";
-import Sidebar from "../(courses)/browse/_components/Sidebar";
-
+import Navbar from "../browse/_components/Navbar";
+import Sidebar from "../browse/_components/Sidebar";
 
 interface ProjectsLayoutProps {
   children: React.ReactNode;
@@ -18,9 +17,7 @@ export default function ProjectsLayout({ children }: ProjectsLayoutProps) {
   // Ensure that the client-side rendering handles path-related checks
   useEffect(() => {
     setIsClient(true); // Set the flag to true after mounting
-    setIsProjectPreviewPage(
-      pathname?.startsWith("/projects/") ?? false,
-    );
+    setIsProjectPreviewPage(pathname?.startsWith("/projects/") ?? false);
   }, [pathname]);
 
   if (!isClient) {

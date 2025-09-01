@@ -10,15 +10,14 @@ import {
   TabPanel,
   TabPanels,
 } from "@tremor/react";
-import { DataTable } from "./_components/enrolled-courses-tables/data-table";
-import { createdArticlesColumns } from "./_components/created-articles-table/created-articles-columns";
-import { savedArticlesColumns } from "./_components/saved-articles-table/saved-articles-columns";
 import { BookmarkIcon, PencilIcon } from "lucide-react";
 import { BlogArticle } from "@/types/blog-api-response";
-import { CreatedArticlesSkeleton, SavedArticlesSkeleton } from "./loading";
-import EmptyState from "./_components/EmptyState";
-import ErrorMessage from "./_components/ErrorMessage";
-
+import { CreatedArticlesSkeleton, SavedArticlesSkeleton } from "../loading";
+import ErrorMessage from "./ErrorMessage";
+import { DataTable } from "./enrolled-courses-tables/data-table";
+import { savedArticlesColumns } from "./saved-articles-table/saved-articles-columns";
+import EmptyState from "./EmptyState";
+import { createdArticlesColumns } from "./created-articles-table/created-articles-columns";
 
 const ArticlesSection = () => {
   const {

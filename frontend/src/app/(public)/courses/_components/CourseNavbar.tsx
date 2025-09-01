@@ -9,10 +9,10 @@ import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUserStore } from "@/zustand/userStore";
 import { useRouter } from "next/navigation";
-import InstructorButton from "@/app/(shared)/instructor-button";
-import { ThemeModeToggle } from "@/app/(shared)/theme-mode-toggle";
+import InstructorButton from "@/app/(shared)/InstructorButton";
+import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
 import Notifications from "@/app/(shared)/notification-button";
-import UserAvatar from "@/app/(shared)/user-avatar";
+import UserAvatar from "@/app/(shared)/UserAvatar";
 import { ChevronRight, Home } from "lucide-react";
 
 const poppins = Poppins({

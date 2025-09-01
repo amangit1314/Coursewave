@@ -1,4 +1,5 @@
-import { Course, User } from "@prisma/client";
+import { Course } from "@/types/course";
+import { User } from "@/types/user";
 import Link from "next/link";
 
 type EnrolledCourseProps = {
@@ -27,10 +28,10 @@ const EnrolledCoursesWidget = ({
             <div>{enrolledCourse?.enrollmentId ?? "Course Id Unavailable"}</div>
 
             <Link
-              href={`/courses/${enrolledCourse?.course?.courseId}`}
+              href={`/courses/${enrolledCourse?.course?.id}`}
               className="hover:text-blue-500 cursor-pointer transition-all duration-300"
             >
-              {enrolledCourse?.course?.courseTitle ??
+              {enrolledCourse?.course?.title ??
                 "Course Title Unavailable"}
             </Link>
 

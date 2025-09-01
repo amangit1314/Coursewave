@@ -19,7 +19,7 @@ import {
   MdSettings,
   MdPushPin,
 } from "react-icons/md";
-import { ThemeModeToggle } from "@/app/(shared)/theme-mode-toggle";
+import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
 import { Community } from "@/types/community";
 
 import PinnedMessagesButton from "./PinnedMessagesButton";

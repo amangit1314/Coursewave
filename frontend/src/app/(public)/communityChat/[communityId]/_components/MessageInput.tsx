@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import React, { useRef } from "react";
 import { BiHappy } from "react-icons/bi";
 import { MdSend, MdAttachFile } from "react-icons/md";
-import EmojiPicker from "@/app/(shared)/emoji-picker";
+import EmojiPicker from "@/app/(shared)/EmojiPicker";
 import { useCommunityChatStore } from "@/zustand/communityChatStore";
 import {
   Popover,

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { LuDot } from "react-icons/lu";
 import React, { useEffect } from "react";
-import  RatingStars from "../RatingStars";
+import RatingStars from "../RatingStars";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { CourseCard } from "../../../browse/_components/CourseCard";
@@ -19,8 +19,10 @@ import { Button } from "@/components/ui/button";
 export const MoreIntructorCreatedCourses = ({
   instructorName,
   instructorCreatedCourses,
-}: {instructorName: string, instructorCreatedCourses: Course[]}) => {
-
+}: {
+  instructorName: string;
+  instructorCreatedCourses: Course[];
+}) => {
   if (!instructorCreatedCourses || instructorCreatedCourses.length === 0) {
     return (
       <div className="text-center py-12">
@@ -61,8 +63,8 @@ export const MoreIntructorCreatedCourses = ({
 
       {/* View All Button */}
       <div className="text-center pt-6">
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           className="bg-gradient-to-r from-blue-500 to-purple-500 text-white border-0 hover:from-blue-600 hover:to-purple-600"
         >
           View All Courses by {instructorName}
@@ -91,14 +93,14 @@ export const MoreCreatedCourseNewItem = ({ course }: { course: Course }) => {
             width={400}
             height={200}
           />
-          
+
           {/* Overlay gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-          
+
           {/* Top badges */}
           <div className="absolute top-3 left-3 right-3 flex justify-between items-start">
             <Badge className="bg-blue-500 text-white border-0">
-              {course.isFree ? "Free" : `$${course.price}`}
+              {course.price === "0" ? "Free" : `$${course.price}`}
             </Badge>
             <Badge className="bg-yellow-500 text-white border-0 flex items-center gap-1">
               <FaStar className="w-3 h-3" />
@@ -128,22 +130,25 @@ export const MoreCreatedCourseNewItem = ({ course }: { course: Course }) => {
 
         {/* Course Stats */}
         <div className="flex items-center justify-between text-sm text-zinc-500 dark:text-zinc-400 mb-4">
-          <div className="flex items-center gap-1">
+          {/* <div className="flex items-center gap-1">
             <FaUsers className="w-4 h-4" />
             <span>{course.totalStudents?.toLocaleString() || "0"} students</span>
-          </div>
-          <div className="flex items-center gap-1">
+          </div> */}
+          {/* <div className="flex items-center gap-1">
             <FaClock className="w-4 h-4" />
             <span>{course.totalLessons || "0"} lessons</span>
-          </div>
+          </div> */}
         </div>
 
         {/* Categories */}
         {course.categories && course.categories.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
             {course.categories.slice(0, 2).map((category) => (
-              <Badge key={category.id} variant="secondary" className="text-xs">
-                {category.name}
+              // <Badge key={category.id} variant="secondary" className="text-xs">
+              //   {category.name}
+              // </Badge>
+              <Badge key={category} variant="secondary" className="text-xs">
+                {category}
               </Badge>
             ))}
             {course.categories.length > 2 && (
@@ -157,7 +162,7 @@ export const MoreCreatedCourseNewItem = ({ course }: { course: Course }) => {
         {/* Price and Action */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {course.isFree ? (
+            {course.price === "0" ? (
               <span className="text-lg font-bold text-green-600">Free</span>
             ) : (
               <span className="text-lg font-bold text-zinc-900 dark:text-white">
@@ -165,8 +170,8 @@ export const MoreCreatedCourseNewItem = ({ course }: { course: Course }) => {
               </span>
             )}
           </div>
-          <Button 
-            size="sm" 
+          <Button
+            size="sm"
             onClick={onViewDetails}
             className="bg-gradient-to-r from-blue-500 to-purple-500 text-white border-0 hover:from-blue-600 hover:to-purple-600"
           >

@@ -1,4 +1,5 @@
-import { User } from "@prisma/client";
+import { User } from "@/types/user";
+
 
 const getUserInfoById = async (
   userId: string

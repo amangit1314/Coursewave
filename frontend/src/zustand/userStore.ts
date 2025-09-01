@@ -697,7 +697,9 @@ interface CourseSlice {
 
 interface ArticleSlice {
   savedArticles: BlogArticle[];
+  createdArticles: BlogArticle[];
   fetchSavedArticles: () => Promise<void>;
+  fetchCreatedArticles: (userId: string) => Promise<void>;
   saveArticle: (articleId: string) => Promise<void>;
   unsaveArticle: (articleId: string) => Promise<void>;
 }
@@ -965,10 +967,19 @@ export const useUserStore = create<
 
         // --- ArticleSlice ---
         savedArticles: [],
+        createdArticles: [],
         fetchSavedArticles: async () => {
           try {
             const data = await articleService.getSavedArticles();
             set({ savedArticles: data });
+          } catch {
+            toast.error("Could not load saved articles");
+          }
+        },
+        fetchCreatedArticles: async (userId: string) => {
+          try {
+            const data = await articleService.getCreatedArticles(userId);
+            set({ createdArticles: data });
           } catch {
             toast.error("Could not load saved articles");
           }

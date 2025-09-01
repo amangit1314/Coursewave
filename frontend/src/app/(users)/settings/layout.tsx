@@ -1,4 +1,4 @@
-import Sidebar from "../(courses)/browse/_components/Sidebar";
+import Sidebar from "@/app/(public)/browse/_components/Sidebar";
 
 interface SettingsLayoutProps {
   children: React.ReactNode;

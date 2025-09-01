@@ -2,7 +2,7 @@ import sgMail from "@sendgrid/mail";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
 import bcryptjs from "bcryptjs";
-import { db } from "@/lib/db";
+
 import { forgotPasswordHtmlTemplate } from "./forgot-password-email-html-template";
 import { verifyEmailHtmlTemplate } from "./verify-email-html-template";
 
@@ -37,31 +37,31 @@ export const sendEmail = async (
   try {
     const hasedToken = await bcryptjs.hash(userId.toString(), 10);
 
-    if (emailType === "VERIFY") {
-      await db.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          id: userId,
-          verifyToken: hasedToken,
-          verifyTokenExpiry: (Date.now() + 3600000).toString(),
-          verifyTokenStatus: "VALID",
-        },
-      });
-    } else if (emailType === "RESET") {
-      await db.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          id: userId,
-          resetToken: hasedToken,
-          resetTokenExpiry: (Date.now() + 3600000).toString(),
-          resetTokenStatus: "VALID",
-        },
-      });
-    }
+    // if (emailType === "VERIFY") {
+    //   await db.user.update({
+    //     where: {
+    //       id: userId,
+    //     },
+    //     data: {
+    //       id: userId,
+    //       verifyToken: hasedToken,
+    //       verifyTokenExpiry: (Date.now() + 3600000).toString(),
+    //       verifyTokenStatus: "VALID",
+    //     },
+    //   });
+    // } else if (emailType === "RESET") {
+    //   await db.user.update({
+    //     where: {
+    //       id: userId,
+    //     },
+    //     data: {
+    //       id: userId,
+    //       resetToken: hasedToken,
+    //       resetTokenExpiry: (Date.now() + 3600000).toString(),
+    //       resetTokenStatus: "VALID",
+    //     },
+    //   });
+    // }
 
     const msg = {
       to: email,

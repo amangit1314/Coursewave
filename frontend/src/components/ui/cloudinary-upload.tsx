@@ -21,8 +21,8 @@ export const CloudinaryUpload = ({
   disabled,
   onChange,
 }: CloudinaryUploadProps) => {
-  const cloudinaryRef = useRef<any>();
-  const widgetRef = useRef<any>();
+  const cloudinaryRef = useRef<any>(null);
+  const widgetRef = useRef<any>(null);
 
   useEffect(() => {
     // Load Cloudinary script

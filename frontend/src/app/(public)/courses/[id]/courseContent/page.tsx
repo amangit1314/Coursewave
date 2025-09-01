@@ -896,35 +896,36 @@ import React from "react";
 
 import { useParams } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { CourseProgress } from "@/app/(shared)/course-progress";
-import { ThemeModeToggle } from "@/app/(shared)/theme-mode-toggle";
+import { CourseProgress } from "@/app/(shared)/CourseProgress";
+import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
 import { useCoursesStore } from "@/zustand/coursesStore";
 import { useUserStore } from "@/zustand/userStore";
 import { Callout } from "@tremor/react";
 
-import UserAvatar from "@/app/(shared)/user-avatar";
+import UserAvatar from "@/app/(shared)/UserAvatar";
 import VideoSummary from "./_components/VideoSummary";
 import CourseAttachments from "./_components/CourseAttachments";
 
 import CourseNotes from "./_components/CourseNotes";
 import CourseContentInstructorCard from "./_components/CourseContentInstructorCard";
 import CourseSectionsAndChapters from "./_components/CourseSectionsAndChapters";
-import CourseVideo from "./_components/CourseVideoNew";
+// import CourseVideo from "./_components/CourseVideoNew";
 
 const CourseContentPage = () => {
   const { courseId } = useParams<{ courseId: string }>();
-  const { userId, loadingState: userLoading } = useUserStore();
+  const { user, loadingState: userLoading } = useUserStore();
+  const userId = user?.id;
   const {
     course,
     attachments,
     fetchCourse,
-    fetchCourseCloudinaryData,
+    // fetchCourseCloudinaryData,
     fetchCourseAttachments,
     fetchCourseProgress,
     fetchCourseReviews,
     loadingState,
   } = useCoursesStore();
-  const { updateCourseProgress } = useCoursesStore();
+  // const { updateCourseProgress } = useCoursesStore();
 
   // Track active section and chapter
   const [activeSectionIndex, setActiveSectionIndex] = React.useState(0);
@@ -945,7 +946,7 @@ const CourseContentPage = () => {
   React.useEffect(() => {
     if (courseId && userId) {
       fetchCourse(courseId);
-      fetchCourseCloudinaryData(courseId);
+      // fetchCourseCloudinaryData(courseId);
       fetchCourseAttachments(courseId);
       fetchCourseProgress(courseId, userId);
       fetchCourseReviews(courseId);
@@ -1045,8 +1046,11 @@ const CourseContentPage = () => {
         </div>
 
         <div className="mx-auto mt-4 w-full max-w-4xl space-y-6">
-          <CourseVideo chapter={sections?.[0]?.chapters?.[0] ?? null} />
-          <VideoSummary chapterId={sections?.[0]?.chapters?.[0]?.id || ""} chapterTitle={sections?.[0]?.chapters?.[0]?.title || ""} />
+          {/* <CourseVideo chapter={sections?.[0]?.chapters?.[0] ?? null} /> */}
+          <VideoSummary
+            chapterId={sections?.[0]?.chapters?.[0]?.id || ""}
+            chapterTitle={sections?.[0]?.chapters?.[0]?.title || ""}
+          />
           <div className="space-y-2">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
               About this Class
@@ -1056,7 +1060,7 @@ const CourseContentPage = () => {
             </p>
           </div>
           <div>
-            <CourseContentInstructorCard instructor={course.instructor} />
+            {/* <CourseContentInstructorCard instructor={course.instructor} /> */}
           </div>
         </div>
       </main>

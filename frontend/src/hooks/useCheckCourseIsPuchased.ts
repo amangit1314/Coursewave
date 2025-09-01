@@ -1,5 +1,5 @@
+import { Enrollment } from "@/types/user-enrollments-api-response";
 import { useQuery } from "@tanstack/react-query";
-import { Enrollment, Purchase } from "@prisma/client";
 
 export const useCheckCourseIsPurchased = (userId: string, courseId: string) => {
   const fetchIsCourseAlreadyPurchased = async () => {
@@ -29,7 +29,7 @@ export const useCheckCourseIsPurchased = (userId: string, courseId: string) => {
 
   const courseIsPurchased: boolean = !!(data?.data?.hasPurchased ?? false);
   const enrollment: Enrollment = data?.data?.enrollment! as Enrollment;
-  const purchase: Purchase = data?.data?.purchase! as Purchase;
+  const purchase = data?.data?.purchase!;
 
   return { courseIsPurchased, enrollment, purchase, error, isLoading };
 };

@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import SessionDetailsClient from "./session-details-client-component";
+// import SessionDetailsClient from "./session-details-client-component";
 
 export default async function SessionDetails({ 
   params 
@@ -10,7 +10,8 @@ export default async function SessionDetails({
   
   return (
     <Suspense fallback={""}>
-      <SessionDetailsClient sessionId={sessionId} />
+      some
+      {/* <SessionDetailsClient sessionId={sessionId} /> */}
     </Suspense>
   );
 } 

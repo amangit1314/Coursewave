@@ -1,9 +1,8 @@
 "use client";
 
 import { getToken } from "@/app/_actions/actions";
-import { generateUid } from "@/lib/helpers/id-helper";
-import {useUserInfo} from "@/hooks/useUserInfo";
 import { User } from "@/types";
+import { useUserStore } from "@/zustand/userStore";
 import { StreamVideo, StreamVideoClient } from "@stream-io/video-react-sdk";
 import { Loader, Loader2 } from "lucide-react";
 import React from "react";
@@ -29,16 +28,16 @@ const VideoSDKClientProvider = ({ children }: ClientProviderProps) => {
 export default VideoSDKClientProvider;
 
 const useInitializeVideoClient = () => {
-  const { user, isLoading, error } = useUserInfo();
+  const { user, loadingState } = useUserStore();
   const [videoClient, setVideoClient] =
     React.useState<StreamVideoClient | null>(null);
 
   React.useEffect(() => {
-    if (isLoading) return;
+    if (loadingState.loading) return;
 
     // If there's an authentication error, don't initialize the client
-    if (error) {
-      console.warn("Video SDK: Authentication error, skipping client initialization:", error.message);
+    if (loadingState.error) {
+      console.warn("Video SDK: Authentication error, skipping client initialization:", loadingState.error);
       return;
     }
 
@@ -78,7 +77,7 @@ const useInitializeVideoClient = () => {
         client.disconnectUser();
         setVideoClient(null);
     }
-  }, [isLoading, user?.id, user?.name, user?.profileImageUrl, error]);
+  }, [loadingState.loading, user?.id, user?.name, user?.profileImageUrl, loadingState.error]);
 
   return videoClient;
 };

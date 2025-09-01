@@ -44,8 +44,8 @@ const DataComponent = () => {
             subject="Development"
             instructor={course.instructorId?.split("-")[0] || "Aman Soni"}
             instructorId={course.instructorId?.split("-")[0] || "Aman Soni"}
-            price={course.price!}
-            categories={course.categories.map((category) => category.name)}
+            price={course.price!.toString()}
+            categories={course.categories.map((category) => category)}
           />
         ))
       ) : (

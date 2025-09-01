@@ -47,7 +47,7 @@ export const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
           }}
         />
         <Badge className="absolute bottom-2 right-2 dark:bg-blue-600 dark:text-white">
-          {course.isFree ? "Free" : `$${course.price}`}
+          {course.price === "0" ? "Free" : `$${course.price}`}
         </Badge>
       </div>
 
@@ -55,10 +55,10 @@ export const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
         {course.categories ? course.categories[0]?.name : "Default"}
       </p> */}
 
-      <div className="mt-2 flex justify-between">
+      {/* <div className="mt-2 flex justify-between">
         <p className="text-xs">{course.totalLessons} Classes</p>
         <p className="pl-1 text-xs">{Math.floor(course.durationMinutes / 60)} hours</p>
-      </div>
+      </div> */}
 
       {/* Course Title */}
       <p className="text-md mr-3 mt-1 line-clamp-2 font-semibold tracking-tight text-[#333333] dark:text-white">
@@ -80,7 +80,7 @@ export const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
       {/* Course Price */}
       <div className="mt-2 flex items-center justify-between">
         <span className="text-lg font-bold text-gray-900 dark:text-white">
-          {course.isFree ? "Free" : `$${course.price}`}
+          {course.price === "0" ? "Free" : `$${course.price}`}
         </span>
         <button
           onClick={(e) => {

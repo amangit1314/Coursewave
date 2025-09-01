@@ -129,10 +129,10 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { ArticleHeader } from "./_components/article-header";
-import { ArticleContent } from "./_components/article-content";
-import { ArticleSidebar } from "./_components/article-sidebar";
-import { ArticleFooter } from "./_components/article-footer";
+import { ArticleHeader } from "./_components/ArticleHeader";
+import { ArticleContent } from "./_components/ArticleContent";
+import { ArticleSidebar } from "./_components/ArticleSidebar";
+import { ArticleFooter } from "./_components/ArticleFooter";
 import { ArticleLoadingSkeleton } from "./_components/article-loading-skeleton";
 import { useArticleBySlug } from "@/hooks/useArticleBySlug";
 

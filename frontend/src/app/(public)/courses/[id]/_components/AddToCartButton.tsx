@@ -1,6 +1,5 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { useUserInfo } from "@/hooks/useUserInfo";
 import { useCartStore } from "@/zustand/cartStore";
 
 import { generateUid } from "@/lib/helpers/id-helper";
@@ -8,9 +7,10 @@ import { HiOutlineShoppingCart, HiShoppingCart } from "react-icons/hi";
 import { CourseWithOtherFields } from "@/types/course-with-other-fields";
 import { Course } from "@/types/course-details-api-response";
 import { CartItem } from "@/types/cart-item";
+import { useUserStore } from "@/zustand/userStore";
 
 export const AddToCartButton = ({ course }: { course: Course }) => {
-  const user = useUserInfo();
+  const { user } = useUserStore();
   const cartItemId = generateUid();
 
   const [isInCart, setIsInCart] = React.useState(false);
@@ -19,12 +19,12 @@ export const AddToCartButton = ({ course }: { course: Course }) => {
 
   const cartItemToAdd: CartItem = {
     id: `cart_${cartItemId}`,
-    userId: user.user?.id,
+    userId: user?.id ?? "",
     courseId: course?.id,
     courseName: course?.title,
     courseInstructorName: course?.instructor?.user?.name ?? "",
     courseImageUrl: course?.imageUrl ?? "./assets/images/images1.jpg",
-    coursePrice: course?.price!,
+    coursePrice: course?.price!.toString(),
     quantity: 1,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -34,14 +34,20 @@ export const AddToCartButton = ({ course }: { course: Course }) => {
     if (isInCart) {
       handleRemoveFromCart(course?.id!);
     } else {
+      // const adaptedCourse = {
+      //   ...course,
+      //   categories: course.categories.map((category) => ({
+      //     id: category.id,
+      //     name: category.name,
+      //   })),
+      // };
       const adaptedCourse = {
         ...course,
-        categories: course.categories.map(category => ({
-          id: category.id,
-          name: category.name,
-        })),
+        categories: course.categories.map((category) =>
+          typeof category === "string" ? category : category
+        ),
       };
-      handleAddToCart(adaptedCourse, user.user?.id!);
+      handleAddToCart(adaptedCourse, user?.id!);
       setIsInCart(!isInCart);
     }
   };

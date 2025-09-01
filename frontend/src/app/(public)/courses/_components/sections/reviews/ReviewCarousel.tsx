@@ -3,8 +3,7 @@
 
 "use client";
 
-import Image from "next/image";
-import { Course } from "@prisma/client";
+
 import React, { useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { TbCertificate } from "react-icons/tb";

@@ -1,4 +1,4 @@
-import Sidebar from "../(courses)/browse/_components/Sidebar";
+import Sidebar from "../browse/_components/Sidebar";
 
 interface SubscriptionLayoutProps {
   children: React.ReactNode;

@@ -43,7 +43,8 @@ export const useInstructorStore = create<InstructorState & InstructorActions>()(
       fetchInstructorById: async (userId: string) => {
         set({ loadingState: { loading: true, error: null } });
         try {
-          const instructor = await instructorService.getInstructorByUserId(userId);
+          const instructor =
+            await instructorService.getInstructorByUserId(userId);
           set({
             instructor,
             loadingState: { loading: false, error: null },
@@ -60,17 +61,25 @@ export const useInstructorStore = create<InstructorState & InstructorActions>()(
         set({ loadingState: { loading: true, error: null } });
         try {
           // First get the instructor by user ID
-          const instructor = await instructorService.getInstructorByUserId(userId);
+          const instructor =
+            await instructorService.getInstructorByUserId(userId);
           if (!instructor) {
             throw new Error("Instructor not found");
           }
-          
+
           // Then get analytics using the instructor ID
-          const analytics = await instructorService.getInstructorAnalytics(instructor.id);
+          const analytics = await instructorService.getInstructorAnalytics(
+            instructor?.id ?? ""
+          );
+          // set({
+          //   instructorCreatedCourses: analytics.createdCourses,
+          //   instructorStudentsCount: analytics.totalStudents,
+          //   instructorAverageStarRating: analytics.averageStarRating,
+          //   loadingState: { loading: false, error: null },
+          // });
           set({
-            instructorCreatedCourses: analytics.createdCourses,
-            instructorStudentsCount: analytics.totalStudents,
-            instructorAverageStarRating: analytics.averageStarRating,
+            instructorStudentsCount: analytics.data?.totalStudents, /// todo: fix it
+            instructorAverageStarRating: analytics.data?.averageRating,
             loadingState: { loading: false, error: null },
           });
         } catch (error: any) {
@@ -100,9 +109,11 @@ export const useFetchInstructorCreatedCourses = (userId: string) => {
       if (!instructor) {
         throw new Error("Instructor not found");
       }
-      
+
       // Then get courses using the instructor ID
-      const courses = await instructorService.getInstructorCourses(instructor.id);
+      const courses = await instructorService.getInstructorCourses(
+        instructor?.id ?? ""
+      );
       return courses;
     },
     enabled: !!userId, // Only run the query if userId is available

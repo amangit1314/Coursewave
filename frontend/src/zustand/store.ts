@@ -1,20 +1,12 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import {
-  Blog,
-  Category,
-  Chapter,
-  ChapterNotes,
-  Course,
-  CourseAttachment,
-  CourseProgress,
-  CourseSection,
-  Instructor,
-  Review,
-  User,
-} from "@prisma/client";
 import { LearningGoal } from "@/types/learning-goal";
 import { fetchCourseInfo } from "@/lib/helpers/data-fetching-methods";
+import { User } from "@/types/user";
+import { Course } from "@/types/course";
+import { Blog, CourseProgress, CourseSection } from "@/lib/api/services";
+import { Category, Chapter, Instructor } from "@/types/user-enrollments-api-response";
+import { Review } from "@/types/review";
 
 type CoursewaveState = {
   // user
@@ -40,11 +32,11 @@ type CoursewaveState = {
   courseInfo: Course | null;
   selectedCourse: Course | null;
   courseProgress: CourseProgress | null;
-  courseAttachments: CourseAttachment[];
+  courseAttachments: any[];
   courseSections: CourseSection[];
   courseSectionChapters: Chapter[];
   courseSectionChapterInfo: Chapter | null;
-  chapterNotes: ChapterNotes[];
+  chapterNotes: any[];
   courseReviews: Review[];
   filteredCourses: Course[];
 
@@ -217,7 +209,7 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(
       removeFromCart: (userId: string, courseId: string) => {
         set((state) => ({
           cartCourses: state.cartCourses.filter(
-            (course) => course.courseId !== courseId,
+            (course) => course.id !== courseId,
           ),
         }));
       },
@@ -386,20 +378,6 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(
 
     {
       name: "Coursewave-Store",
-      getStorage: () => ({
-        setItem: (...args) => window.localStorage.setItem(...args),
-        removeItem: (...args) => window.localStorage.removeItem(...args),
-        getItem: async (...args) =>
-          new Promise((resolve) => {
-            if (typeof window === "undefined") {
-              resolve(null);
-            } else {
-              setTimeout(() => {
-                resolve(window.localStorage.getItem(...args));
-              }, 0);
-            }
-          }),
-      }),
     },
   ),
 );

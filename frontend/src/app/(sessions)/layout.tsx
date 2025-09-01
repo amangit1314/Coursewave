@@ -4,16 +4,15 @@ import React, { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useUserStore } from "@/zustand/userStore";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "react-hot-toast";
-import Sidebar from "../(courses)/browse/_components/Sidebar";
-import { ThemeModeToggle } from "../(shared)/theme-mode-toggle";
-import Notifications from "../(shared)/notification-button";
-import UserAvatar from "../(shared)/user-avatar";
+
+import { ThemeModeToggle } from "../(shared)/ThemeModeToggle";
+import Notifications from "../(shared)/NotificationButton";
+import UserAvatar from "../(shared)/UserAvatar";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, Users, Video, Menu, X } from "lucide-react";
+import { Calendar, Clock, Users, Video, Menu, X, Sidebar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import SidebarItem from "../(courses)/browse/_components/SidebarItem";
+
 import { FaCompass } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 import { FaHandsHelping } from "react-icons/fa";

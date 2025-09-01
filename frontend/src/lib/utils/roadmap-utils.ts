@@ -25,12 +25,12 @@ export function getTemplateRoadmap(skill: string) {
   }
 
   // Default fallback
-  return roadmapTemplates["full stack developer"];
+  return roadmapTemplates["backend developer"];
 }
 
 
 
-export function downloadRoadmap(roadmap: any, filename?: string) {
+export function downloadRoadmap(roadmap: any, filename?: string, progress?: Record<string, boolean>) {
   const doc = new jsPDF();
   
   // Add title

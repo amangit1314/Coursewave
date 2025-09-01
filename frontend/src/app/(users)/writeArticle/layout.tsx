@@ -1,5 +1,3 @@
-import Navbar from "@/app/(courses)/browse/_components/Navbar";
-
 interface WriteArticleLayoutProps {
   children: React.ReactNode;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Analytics from "./_components/analytics-main-content";
+import Analytics from "./_components/Analytics";
 import { Course } from "@/types/course";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";

@@ -1,4 +1,4 @@
-import { SessionCard } from "@/app/(sessions)/browseSessions/_components/session-card";
+import { SessionCard } from "@/app/(sessions)/browseSessions/_components/SessionCard";
 import { Session } from "@/types/session";
 import React from "react";
 

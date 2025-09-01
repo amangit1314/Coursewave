@@ -5,7 +5,8 @@ import { Callout } from "@tremor/react";
 import { useQuery } from "@tanstack/react-query";
 import { FaRegCirclePlay } from "react-icons/fa6";
 import { IoMdArrowDropdown } from "react-icons/io";
-import { Chapter, CourseSection } from "@prisma/client";
+import { Chapter, CourseSection } from "@/types/course-details-api-response";
+
 
 export const CourseContent = ({ courseId }: { courseId: string }) => {
   const fetchCourseSections = async () => {
@@ -107,19 +108,19 @@ const SectionsAndChaptersAccordion = ({
         <div className="list my-1 rounded-xl border bg-slate-100 py-1 dark:border-gray-700 dark:bg-gray-800">
           {sections.map((section: CourseSection) => {
             const isExpanded = expandedSections.includes(
-              section.courseSectionNumber,
+              section.position,
             );
 
             return (
               <div
-                key={section.courseSectionId}
+                key={section.id}
                 className="border-b-1 dark:border-gray-300"
               >
                 <AccordionSectionItem
                   section={section}
                   item={{ active: isExpanded ? 1 : 0 }}
                   setItem={() =>
-                    handleSectionToggle(section.courseSectionNumber)
+                    handleSectionToggle(section.position)
                   }
                 />
               </div>
@@ -143,7 +144,7 @@ const AccordionSectionItem = ({
   setItem: (any: any) => void;
 }) => {
   const courseId = section.courseId!;
-  const courseSectionId = section.courseSectionId!;
+  const courseSectionId = section.id!;
 
   const toggleActiveItem = () => {
     let newActive = item.active === 1 ? 0 : 1;
@@ -212,18 +213,18 @@ const AccordionSectionItem = ({
             <IoMdArrowDropdown size={20} />
           </div>
           <div className="line-clamp-1 cursor-pointer overflow-clip pl-1 text-xs group-[.activated]:font-semibold group-[.activated]:text-indigo-500 hover:text-indigo-500 md:text-sm">
-            {section.courseSectionTitle}
+            {section.title}
           </div>
         </div>
 
         <ul className="hidden items-center justify-end space-x-6 md:visible md:flex">
           <li className="text-xs text-gray-600 dark:text-gray-400">
             {chapters?.filter(
-              (chapter) => chapter.courseSectionId === section.courseSectionId,
+              (chapter) => chapter.id === section.id,
             )
               ? chapters?.filter(
                   (chapter) =>
-                    chapter.courseSectionId === section.courseSectionId,
+                    chapter.id === section.id,
                 ).length
               : 1}{" "}
             lecture

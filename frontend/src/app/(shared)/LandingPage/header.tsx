@@ -6,7 +6,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Orbitron } from "next/font/google";
 import { Button } from "@/components/ui/button";
-import { ThemeModeToggle } from "../theme-mode-toggle";
+import { ThemeModeToggle } from "../ThemeModeToggle";
 import { Menu, X, ChevronDown, LogIn, Rocket } from "lucide-react";
 
 const orbitron = Orbitron({

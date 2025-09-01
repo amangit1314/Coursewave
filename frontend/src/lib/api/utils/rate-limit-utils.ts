@@ -1,4 +1,6 @@
-import { clientRateLimiter, getRateLimitStatus } from './rate-limiter';
+// import { clientRateLimiter, getRateLimitStatus } from './rate-limiter';
+
+import { clientRateLimiter, getRateLimitStatus } from "../core/rate-limiter";
 
 // Utility to get all current rate limit statuses
 export function getAllRateLimitStatuses() {

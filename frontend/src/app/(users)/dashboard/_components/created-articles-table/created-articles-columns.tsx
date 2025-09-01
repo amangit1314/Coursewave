@@ -13,7 +13,6 @@ import {
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
-import { Blog } from "@prisma/client";
 import { BlogArticle } from "@/types/blog-api-response";
 
 export const createdArticlesColumns: ColumnDef<BlogArticle>[] = [

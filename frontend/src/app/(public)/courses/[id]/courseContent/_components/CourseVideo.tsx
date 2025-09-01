@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Loader2, Lock } from "lucide-react";
 import MuxPlayer from "@mux/mux-player-react";
-import { useUserInfo } from "@/hooks/useUserInfo";
+// import { useUserInfo } from "@/hooks/useUserInfo";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 // import { Chapter, CloudinaryData } from "@prisma/client";

@@ -3,12 +3,11 @@
 import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useUserStore } from "@/zustand/userStore";
-import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "react-hot-toast";
-import { ThemeModeToggle } from "@/app/(shared)/theme-mode-toggle";
-import Notifications from "@/app/(shared)/notification-button";
-import UserAvatar from "@/app/(shared)/user-avatar";
-import Sidebar from "../(courses)/browse/_components/Sidebar";
+import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
+import UserAvatar from "@/app/(shared)/UserAvatar";
+import Sidebar from "../browse/_components/Sidebar";
+import Notifications from "@/app/(shared)/NotificationButton";
 
 interface BrowseCommunityChatLayoutProps {
   children: React.ReactNode;

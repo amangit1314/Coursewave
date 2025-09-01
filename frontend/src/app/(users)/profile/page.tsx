@@ -70,7 +70,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UploadDropzone } from "@/lib/utils/uploadthing";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { ThemeModeToggle } from "@/app/(shared)/theme-mode-toggle";
+import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
 import { useRouter } from "next/navigation";
 import { useInstructorInfo } from "@/hooks/useInstructorInfo";
 import { PiSignOut, PiStudentFill } from "react-icons/pi";

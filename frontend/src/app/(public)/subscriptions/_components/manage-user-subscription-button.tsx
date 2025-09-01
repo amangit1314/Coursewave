@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils/utils";
 import { Button } from "@/components/ui/button";
 import React from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { manageStripeSubscriptionAction } from "@/app/_actions/stripe";
+import { manageStripeSubscriptionAction } from "@/app/_actions/manage-stripe-subscription";
 import { Loader2 } from "lucide-react";
 
 type ManageUserSubscriptionButtonProps = {

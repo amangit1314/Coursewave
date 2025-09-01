@@ -2,17 +2,16 @@
 
 
 import React from "react";
-import UserAvatar from "@/components/user-avatar";
-import { ThemeModeToggle } from "@/components/theme-mode-toggle";
-import { useUserInfo } from "@/hooks/useUserInfo";
-import Notifications from "@/components/notification-button";
-import SearchButton from "@/components/search-button";
+
 import { usePathname, useRouter } from "next/navigation";
 import { useUserStore } from "@/zustand/userStore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "react-hot-toast";
 import { Sidebar } from "lucide-react";
-import ArticlesSearchButton from "../../articles/_components/articles-search-button";
+import ArticlesSearchButton from "../../articles/_components/ArticlesSearchButton";
+import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
+import Notifications from "@/app/(shared)/notification-button";
+import UserAvatar from "@/app/(shared)/UserAvatar";
 
 interface BrowseArticlesLayoutProps {
   children: React.ReactNode;
@@ -54,7 +53,7 @@ const ArticlesNavbarRoutes = ({ name }: { name?: string }) => {
 
   // Move these calls before the if statement
   const [isInstructor, setIsInstructor] = React.useState<boolean>(
-    user?.isInstructor ?? false,
+    user?.roles?.includes("INSTRUCTOR") ?? false
   );
 
   if (loadingState.loading) {

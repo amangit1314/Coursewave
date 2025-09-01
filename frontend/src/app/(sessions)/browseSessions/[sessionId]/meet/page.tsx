@@ -56,7 +56,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useUserInfo } from '@/hooks/useUserInfo';
+import { useUserStore } from '@/zustand/userStore';
+// import { useUserInfo } from '@/hooks/useUserInfo';
 
 interface Participant {
   id: string;
@@ -104,7 +105,7 @@ interface MeetingRequest {
 }
 
 export default function MeetingPage() {
-  const { user } = useUserInfo();
+  const { user } = useUserStore();
   const [isVideoOn, setIsVideoOn] = useState(true);
   const [isMicOn, setIsMicOn] = useState(true);
   const [isScreenSharing, setIsScreenSharing] = useState(false);

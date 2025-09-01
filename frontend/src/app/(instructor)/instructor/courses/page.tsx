@@ -158,8 +158,8 @@ import {
   Badge,
   Button,
 } from "@tremor/react";
-import { DataTable } from "./_components/data-table";
-import { columns } from "./_components/columns";
+import { DataTable } from "./_components/DataTable";
+import { columns } from "./_components/CreatedCoursesColumns";
 import { useUserStore } from "@/zustand/userStore";
 import { Course } from "@/types";
 import { useParams, useRouter } from "next/navigation";

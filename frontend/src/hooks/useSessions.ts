@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Session, SessionResponse } from "@/types/session";
-import { sessionService } from "@/lib/api/services/sessionsService";
+import { sessionService, Session } from "@/lib/api/services/sessionsService";
 
 const fetchSessions = async (): Promise<Session[]> => {
   try {

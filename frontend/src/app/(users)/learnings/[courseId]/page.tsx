@@ -44,8 +44,6 @@ import { useUserStore } from "@/zustand/userStore";
 import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Chapter, Instructor } from "@/types/course-details-api-response";
-import CourseVideo from "@/app/(courses)/courses/[id]/courseContent/_components/CourseVideoNew";
-
 
 const CourseContentPage = () => {
   const params = useParams<{ userId: string; courseId: string }>();
@@ -148,8 +146,23 @@ const CourseContentPage = () => {
   return (
     <div className="h-auto overflow-x-hidden py-16">
       <CourseDetails
-        chapters={course.sections?.flatMap((section) => section.chapters) || []}
-        instructor={course.instructor}
+        chapters={course.sections?.flatMap((section) => section.Chapter) || []}
+        instructor={
+          course.instructor
+            ? {
+                ...course.instructor,
+                id: course.instructor.userId ?? course.instructor.userId ?? "",
+                websiteUrl:
+                  typeof course.instructor.socialLinks === "string"
+                    ? course.instructor.socialLinks
+                    : "",
+                user: {
+                  ...course.instructor.user,
+                  shortSummary: course.instructor.user.about ?? "",
+                },
+              }
+            : undefined
+        }
         courseId={courseId}
         userId={userId}
         isChaptersLoading={loadingState.loading}
@@ -183,7 +196,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
   chaptersError,
   courseAttachments = [],
 }) => {
-  const { updateCourseProgress } = useCoursesStore();
+  // const { updateCourseProgress } = useCoursesStore();
   const [activeChapterIndex, setActiveChapterIndex] = React.useState(0);
   const [showFullDescription, setShowFullDescription] = React.useState(false);
 
@@ -192,7 +205,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
 
   const handleProgressChange = () => {
     if (activeChapter?.id) {
-      updateCourseProgress(userId, courseId, activeChapter.id);
+      // updateCourseProgress(userId, courseId, activeChapter.id);
     }
   };
 
@@ -232,12 +245,12 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({
 
           {/* Video component */}
           <div className="w-full md:h-[360px]">
-            {activeChapter && (
+            {/* {activeChapter && (
               <CourseVideo
                 // activeChapter={activeChapter}
                 url={activeChapter.content.videoUrl}
               />
-            )}
+            )} */}
           </div>
 
           {/* Mark as completed button */}

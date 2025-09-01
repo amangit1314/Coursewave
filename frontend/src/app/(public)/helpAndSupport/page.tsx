@@ -41,7 +41,7 @@ import {
 import { RiInstagramFill } from "react-icons/ri";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { ThemeModeToggle } from "@/app/(shared)/theme-mode-toggle";
+import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
 import { useUserStore } from "@/zustand/userStore";
 
 const HelpAndSupport = () => {

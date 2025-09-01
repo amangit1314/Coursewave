@@ -9,7 +9,8 @@ import { Loader2, Lock } from "lucide-react";
 
 import { cn } from "@/lib/utils/utils";
 import { useConfettiStore } from "@/hooks/useConfettiStore";
-import { useUserInfo } from "@/hooks/useUserInfo";
+import { useUserStore } from "@/zustand/userStore";
+// import { useUserInfo } from "@/hooks/useUserInfo";
 
 interface VideoPlayerProps {
   playbackId: string;
@@ -33,16 +34,16 @@ export const VideoPlayer = ({
   const [isReady, setIsReady] = useState(false);
   const router = useRouter();
   const confetti = useConfettiStore();
-  const user = useUserInfo();
+  const { user } = useUserStore();
 
   const onEnd = async () => {
     try {
       if (completeOnEnd) {
         await axios.put(
-          `/api/profile/${user.user.id}/enrolledCourses/${courseId}/sections/sectionId/chapters/${chapterId}/progress`,
+          `/api/profile/${user?.id}/enrolledCourses/${courseId}/sections/sectionId/chapters/${chapterId}/progress`,
           {
             isCompleted: true,
-          },
+          }
         );
 
         // if (!nextChapterId) {

@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { Badge } from "@tremor/react";
-import React from "react";
+import React, { JSX } from "react";
 import { FaStar } from "react-icons/fa6";
 
 type ReviewProps = {

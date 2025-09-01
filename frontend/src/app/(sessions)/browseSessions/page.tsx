@@ -1,10 +1,10 @@
 import React from "react";
-import { MeetOurCoaches } from "./_components/meet-our-coaches";
-import PopularTalksAndSessions from "./_components/popular-taks-and-sessions";
-import { YourUpComingSessions } from "./_components/your-upcomming-sessions";
-import { SearchAndFilter } from "./_components/search-and-filter";
-import { HeroSection } from "./_components/hero-section";
-import { FeaturedCategories } from "./_components/featured-categories";
+import { MeetOurCoaches } from "./_components/MeetOurCoaches";
+import PopularTalksAndSessions from "./_components/PopularTaksAndSessions";
+import { YourUpComingSessions } from "./_components/YourUpcommingSessions";
+import { SearchAndFilter } from "./_components/SearchAndFilter";
+import { HeroSection } from "./_components/BrowseSessionsHeroSection";
+import { FeaturedCategories } from "./_components/FeaturedCategories";
 
 const BrowseSessions = () => {
   return (

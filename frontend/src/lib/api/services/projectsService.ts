@@ -5,4 +5,5 @@ export const projectsService = {
     const response = await ApiManager.getInstance().get(`/projects`);
     console.log("Get Projects response:", response.data);
     return response.data;
-  },}
+  },
+};

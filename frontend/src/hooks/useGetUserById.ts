@@ -27,7 +27,7 @@
 // };
 
 import ApiManager from "@/lib/api/api-manager";
-import { User } from "@prisma/client";
+import { User } from "@/types/user";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -43,14 +43,14 @@ export const useGetUserByAuthorId = (authorId: string) => {
     console.log("Fetching user by authorId:", authorId);
     const url = `${API_BASE_URL}/users/${authorId}`;
 
-    const response = await ApiManager.getInstance().post(url, 
+    const response = await ApiManager.getInstance().post(
+      url
 
       // {
       //   headers: {
       //     access_token: "coursewave_access_token",
       //   },
       // }
-
     );
 
     return response.data;

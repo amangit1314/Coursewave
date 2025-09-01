@@ -32,7 +32,7 @@ import {
   Star,
   Loader2,
 } from "lucide-react";
-import { ThemeModeToggle } from "@/app/(shared)/theme-mode-toggle";
+import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
 import { sampleProjects } from "@/lib/mock/mockData";
 import { Project } from "@/types/project";
 import { useProjects } from "@/hooks/useProjects";
