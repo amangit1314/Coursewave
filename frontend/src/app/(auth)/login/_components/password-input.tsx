@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import type { InputHTMLAttributes } from "react";
 
 type InputProps = InputHTMLAttributes<HTMLInputElement>;
-import { cn } from "@/utils/utils";
+import { cn } from "@/lib/utils/utils";
 
 const PasswordInput = forwardRef<HTMLInputElement, InputProps>(
   ({ className, ...props }, ref) => {

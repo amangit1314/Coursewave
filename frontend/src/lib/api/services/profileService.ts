@@ -1,4 +1,4 @@
-import { ApiManager } from "../api-manager";
+import ApiManager  from "../api-manager";
 
 export interface ProfileData {
   name?: string;

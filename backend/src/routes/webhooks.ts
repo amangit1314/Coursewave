@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import bodyParser from "body-parser";
 import { createEnrollment } from "../core/services/enrollmentService";
 
+import { prisma } from '../config/prisma';
 
 const router = express.Router();
 

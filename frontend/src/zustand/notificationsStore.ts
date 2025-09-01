@@ -1,4 +1,4 @@
-import { generateUid } from "@/helpers/id-helper";
+import { generateUid } from "@/lib/helpers/id-helper";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { BellRing, X } from "lucide-react";

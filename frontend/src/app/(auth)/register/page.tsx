@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { FcGoogle } from "react-icons/fc";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import Image from "next/image";
 import {
   LucideLoader2,
   Mail,
@@ -18,7 +19,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { motion } from "framer-motion";
-import { orbitron, poppins } from "@/lib/fonts";
+import { orbitron, poppins } from "@/lib/config/fonts";
 import { useUserStore } from "@/zustand/userStore";
 
 axios.defaults.withCredentials = true;
@@ -28,7 +29,8 @@ const successNotification = (message: string) => toast.success(message);
 const errorNotification = (errorMessage: string) => toast.error(errorMessage);
 
 const RegisterPage = () => {
-  const { registerUser, loadingState } = useUserStore();
+  // const { register } = useUserStore();
+  const { register, loadingState } = useUserStore();
 
   const [user, setUser] = React.useState({
     email: "",
@@ -51,23 +53,7 @@ const RegisterPage = () => {
   }, [user]);
 
   const onRegister = async () => {
-    // try {
-    //   setLoading(true);
-    //   const url = "http://localhost:5002/api/auth/register";
-    //   await ApiManager.getInstance()
-    //     .post(url, user)
-    //     .then((res) => {
-    //       console.log("Registration response: ", res.data);
-    //       successNotification("Registration successful!");
-    //       router.push("/login");
-    //     });
-    // } catch (error: any) {
-    //   console.log("Signup failed", error.message);
-    //   toast.error(error.message);
-    // } finally {
-    //   setLoading(false);
-    // }
-    registerUser(user.email, user.password);
+    register(user.email, user.password);
   };
 
   const benefits = [
@@ -97,7 +83,7 @@ const RegisterPage = () => {
               className="flex flex-col justify-center space-y-8"
             >
               <div className="space-y-6">
-                <div className="flex items-center space-x-2">
+                {/* <div className="flex items-center space-x-2">
                   <div className="h-12 w-12 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
                     <span
                       className={`${orbitron.className} text-white font-bold text-lg`}
@@ -110,13 +96,29 @@ const RegisterPage = () => {
                   >
                     CourseWave
                   </span>
+                </div> */}
+
+                <div className="flex items-center space-x-2 transition-opacity">
+                  <Image
+                    src="/assets/images/logo/coursewave-favicon-color.png"
+                    alt="CourseWave Logo"
+                    width={32}
+                    height={32}
+                    priority
+                    className="h-8 w-8 sm:h-9 sm:w-9"
+                  />
+                  <p
+                    className={`${orbitron.className} text-lg font-extrabold capitalize tracking-tight text-blue-500 sm:text-xl`}
+                  >
+                    Coursewave
+                  </p>
                 </div>
 
                 <div className="space-y-4">
                   <h1
-                    className={`${poppins.className} text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl`}
+                    className={`${poppins.className} text-4xl tracking-tight font-bold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl`}
                   >
-                    Join CourseWave{" "}
+                    Join Coursewave{" "}
                     <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
                       for Free
                     </span>

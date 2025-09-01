@@ -102,7 +102,7 @@
 // );
 
 
-import { categoriesService } from "@/lib/api/categories";
+import { categoriesService } from "@/lib/api/services/categoriesService";
 import { Category } from "@/types/category";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";

@@ -1,11 +1,10 @@
 import express, { Request, Response } from "express";
 import { Router } from "express";
-import { PrismaClient, Prisma } from "@prisma/client";
+import { prisma } from '../config/prisma';
 import { verifyToken } from "../api/auth/auth.middleware";
 import { v4 as uuidv4 } from 'uuid';
 
 const router: Router = express.Router();
-const prisma = new PrismaClient();
 
 // Get course progress for a user
 router.get(

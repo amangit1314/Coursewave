@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
+
 import { 
   verifyToken, 
   requireInstructor,
@@ -11,9 +11,9 @@ import {
   sendError,
   invalidateCacheAfter
 } from '../core/middleware';
+import { prisma } from '../config/prisma';
 
 const router: Router = express.Router();
-const prisma = new PrismaClient();
 
 // Get all available sessions (public)
 // router.get('/', 

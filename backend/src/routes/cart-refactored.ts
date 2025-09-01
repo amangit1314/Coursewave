@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { Router } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../config/prisma';
 import { 
   verifyToken, 
   validateUUID,
@@ -13,7 +13,6 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 
 const router: Router = express.Router();
-const prisma = new PrismaClient();
 
 // Get user's cart
 router.get('/', 

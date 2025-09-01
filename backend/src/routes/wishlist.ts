@@ -1,10 +1,10 @@
 import express, { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { verifyToken } from '../api/auth/auth.middleware';
 import { generateResourceId } from '../core/utils/idGenerator';
+import { prisma } from '../config/prisma';
 
 const router = express.Router();
-const prisma = new PrismaClient();
+
 
 // Get user's wishlist
 router.get("/", verifyToken, async (req: Request, res: Response) => {

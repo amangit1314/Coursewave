@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 import { invalidateCache } from "../../config/redis";
 import { generateResourceId } from "../../core/utils/idGenerator";
 import { sendError, sendNotFound, sendSuccess } from "../../core/middleware";
@@ -27,18 +26,62 @@ import {
   writeReviewService,
 } from "./services/reviews.service";
 
-const prisma = new PrismaClient();
+import { prisma } from "../../config/prisma";
 
 // ------------------------------------------ COURSES ----------------------------------------
+// export const getAllPublishedCourses = async (req: Request, res: Response) => {
+//   try {
+//     const courses = await prisma.course.findMany({
+//       where: {
+//         isPublished: true,
+//       },
+//       include: {
+//         instructor: {
+//           include: {
+//             user: {
+//               select: {
+//                 id: true,
+//                 name: true,
+//                 email: true,
+//                 profileImageUrl: true,
+//               },
+//             },
+//           },
+//         },
+//         Category: true,
+//       },
+//       orderBy: {
+//         createdAt: "desc",
+//       },
+//     });
+
+//     return res.status(200).json({
+//       success: true,
+//       data: courses,
+//     });
+//   } catch (error: any) {
+//     console.log("ERROR in fetching courses: ", error.message);
+//     return res.status(500).json({
+//       success: false,
+//       error: error.message,
+//     });
+//   }
+// };
+
 export const getAllPublishedCourses = async (req: Request, res: Response) => {
   try {
+    const limit = parseInt(req.query.limit as string) || 20;
+    const cursor = req.query.cursor as string | undefined;
+
     const courses = await prisma.course.findMany({
-      where: {
-        isPublished: true,
-      },
-      include: {
+      where: { isPublished: true },
+      select: {
+        id: true,
+        title: true,
+        imageUrl: true,
+        createdAt: true,
         instructor: {
-          include: {
+          select: {
             user: {
               select: {
                 id: true,
@@ -49,25 +92,38 @@ export const getAllPublishedCourses = async (req: Request, res: Response) => {
             },
           },
         },
-        Category: true,
+        Category: { select: { id: true, name: true } },
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: { createdAt: "desc" },
+      take: limit + 1, // fetch one extra to check if there's a next page
+      ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}), // skip the current cursor
     });
+
+    // Determine next cursor
+    let nextCursor: string | null = null;
+    if (courses.length > limit) {
+      const nextItem = courses.pop(); // remove extra record
+      nextCursor = nextItem?.id || null;
+    }
 
     return res.status(200).json({
       success: true,
       data: courses,
+      pagination: {
+        nextCursor,
+        hasNext: !!nextCursor,
+        limit,
+      },
     });
   } catch (error: any) {
-    console.log("ERROR in fetching courses: ", error.message);
+    console.error("ERROR in fetching courses: ", error.message);
     return res.status(500).json({
       success: false,
       error: error.message,
     });
   }
 };
+
 
 export const getInstructorCreatedCourses = async (
   req: Request,
@@ -235,7 +291,19 @@ export const createCourse = async (req: Request, res: Response) => {
   try {
     const userId = req.user.id;
 
-    const { title, description, price, categories, imageUrl, categoryId, durationInSeconds, targetAudience, technologies, prerequisites, learningOutcomes  } = req.body;
+    const {
+      title,
+      description,
+      price,
+      categories,
+      imageUrl,
+      categoryId,
+      durationInSeconds,
+      targetAudience,
+      technologies,
+      prerequisites,
+      learningOutcomes,
+    } = req.body;
 
     const course = await prisma.course.create({
       data: {

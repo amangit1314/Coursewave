@@ -1,39 +1,157 @@
-import { ApiManager } from "../api-manager";
+// Refined CourseService with strict types and clean structure
+import { Review } from "@/types/review";
+import { apiManager, ApiResponse, PaginatedResponse } from "../api-manager";
+import { Course } from "@/types";
+
+// Models (keep them in separate files ideally)
+export interface CourseCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  imageUrl?: string;
+}
+
+export interface Instructor {
+  id: string;
+  name: string;
+  bio?: string;
+  profileImageUrl?: string;
+}
+
+export interface CourseSection {
+  id: string;
+  title: string;
+  description?: string;
+  position: number;
+  isPublished: boolean;
+  lessons: Chapter[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Chapter {
+  id: string;
+  title: string;
+  description?: string;
+  position: number;
+  isPublished: boolean;
+  isFree: boolean;
+  contentType: "VIDEO" | "QUIZ" | "TEXT" | "ASSIGNMENT";
+  content?: any;
+  video?: VideoContent;
+  duration?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface VideoContent {
+  id: string;
+  url: string;
+  provider: "MUX" | "CLOUDINARY" | "YOUTUBE" | "VIMEO";
+  duration?: number;
+  thumbnailUrl?: string;
+}
+
+export interface CourseProgress {
+  id: string;
+  enrollmentId: string;
+  completedChapters: number;
+  totalChapters: number;
+  lastAccessed?: string;
+  updatedAt: string;
+}
+
+export interface Enrollment {
+  id: string;
+  userId: string;
+  courseId: string;
+  status: "ACTIVE" | "COMPLETED" | "CANCELLED" | "EXPIRED";
+  progress: number;
+  startDate: string;
+  endDate?: string;
+  course: Course;
+  courseProgress?: CourseProgress;
+}
+
+export interface CourseQueryParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  category?: string;
+  level?: string;
+  instructor?: string;
+  price?: "free" | "paid";
+  sortBy?: "newest" | "popular" | "rating" | "price";
+  sortOrder?: "asc" | "desc";
+}
 
 export interface CreateCourseRequest {
   title: string;
-  description: string;
-  price: number;
-  imageUrl?: string;
-  instructorId: string;
-  categoryId: string;
-}
-
-export interface UpdateCourseRequest {
-  title?: string;
   description?: string;
   price?: number;
-  imageUrl?: string;
-  categoryId?: string;
+  isFree: boolean;
+  level: "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "ALL_LEVELS";
+  language?: string;
+  categoryIds: string[];
 }
 
-export interface CourseReviewRequest {
-  rating: number;
-  comment: string;
+export interface UpdateCourseRequest extends Partial<CreateCourseRequest> {
+  isPublished?: boolean;
 }
 
-export interface CourseProgressRequest {
+export interface CourseQueryParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  category?: string;
+  level?: string;
+  instructor?: string;
+  price?: "free" | "paid";
+  sortBy?: "newest" | "popular" | "rating" | "price";
+  sortOrder?: "asc" | "desc";
+}
+
+export interface CreateCourseRequest {
+  title: string;
+  description?: string;
+  price?: number;
+  isFree: boolean;
+  level: "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "ALL_LEVELS";
+  language?: string;
+  categoryIds: string[];
+}
+
+export interface UpdateCourseRequest extends Partial<CreateCourseRequest> {
+  isPublished?: boolean;
+}
+
+export interface CourseProgressUpdate {
   chapterId: string;
-  progress: number;
+  isCompleted: boolean;
 }
 
-export class CourseService {
-  private static instance: CourseService;
-  private apiManager: ApiManager;
+export interface CourseReview {
+  rating: number;
+  content?: string;
+}
 
-  private constructor() {
-    this.apiManager = ApiManager.getInstance();
-  }
+export interface CourseEnrollmentStats {
+  totalEnrollments: number;
+  activeEnrollments: number;
+  completedEnrollments: number;
+}
+
+export interface CourseEarnings {
+  totalEarnings: number;
+  currency: string;
+  lastPayoutDate?: string;
+}
+
+class CourseService {
+  private static instance: CourseService;
+
+  private constructor() {}
 
   public static getInstance(): CourseService {
     if (!CourseService.instance) {
@@ -42,174 +160,261 @@ export class CourseService {
     return CourseService.instance;
   }
 
-  // Course CRUD operations
-  async getAllCourses(params?: any): Promise<any> {
-    const response = await this.apiManager.get("/courses", { params });
-    return response.data;
+  async saveCourse(courseId: string) {
+    // const response = await ApiManager.getInstance().post(
+    //   `/users/${userId}/saved-courses`,
+    //   {
+    //     courseId,
+    //   }
+    // );
+    // return response.data;
+    return apiManager.post(`/users/me/saved-courses`, { courseId });
   }
 
-  async getCourseById(courseId: string): Promise<any> {
-    const response = await this.apiManager.get(`/courses/${courseId}`);
-    return response.data;
-  }
-
-  async createCourse(data: CreateCourseRequest): Promise<any> {
-    const response = await this.apiManager.post("/courses", data);
-    return response.data;
-  }
-
-  async updateCourse(courseId: string, data: UpdateCourseRequest): Promise<any> {
-    const response = await this.apiManager.put(`/courses/${courseId}`, data);
-    return response.data;
-  }
-
-  async deleteCourse(courseId: string): Promise<any> {
-    const response = await this.apiManager.delete(`/courses/${courseId}`);
-    return response.data;
-  }
-
-  // Course publishing
-  async publishCourse(courseId: string): Promise<any> {
-    const response = await this.apiManager.patch(`/courses/${courseId}/publish`);
-    return response.data;
-  }
-
-  async unpublishCourse(courseId: string): Promise<any> {
-    const response = await this.apiManager.patch(`/courses/${courseId}/unpublish`);
-    return response.data;
-  }
-
-  // Course enrollment and checkout
-  async checkoutCourse(courseId: string, userId: string): Promise<any> {
-    const response = await this.apiManager.post(`/courses/${courseId}/checkout`, { userId });
-    return response.data;
-  }
-
-  async enrollInCourse(courseId: string, userId: string): Promise<any> {
-    const response = await this.apiManager.post(`/courses/${courseId}/enroll`, { userId });
-    return response.data;
-  }
-
-  // Course content
-  async getCourseContent(courseId: string): Promise<any> {
-    const response = await this.apiManager.get(`/courses/${courseId}/content`);
-    return response.data;
-  }
-
-  async getCourseChapters(courseId: string): Promise<any> {
-    const response = await this.apiManager.get(`/courses/${courseId}/chapters`);
-    return response.data;
-  }
-
-  async getCourseSections(courseId: string): Promise<any> {
-    const response = await this.apiManager.get(`/courses/${courseId}/sections`);
-    return response.data;
-  }
-
-  // Course reviews
-  async getCourseReviews(courseId: string): Promise<any> {
-    const response = await this.apiManager.get(`/courses/${courseId}/reviews`);
-    return response.data;
-  }
-
-  async addCourseReview(courseId: string, data: CourseReviewRequest): Promise<any> {
-    const response = await this.apiManager.post(`/courses/${courseId}/reviews`, data);
-    return response.data;
-  }
-
-  async updateCourseReview(courseId: string, reviewId: string, data: CourseReviewRequest): Promise<any> {
-    const response = await this.apiManager.put(`/courses/${courseId}/reviews/${reviewId}`, data);
-    return response.data;
-  }
-
-  async deleteCourseReview(courseId: string, reviewId: string): Promise<any> {
-    const response = await this.apiManager.delete(`/courses/${courseId}/reviews/${reviewId}`);
-    return response.data;
-  }
-
-  // Course progress
-  async getCourseProgress(courseId: string, userId: string): Promise<any> {
-    const response = await this.apiManager.get(`/courses/${courseId}/progress/${userId}`);
-    return response.data;
-  }
-
-  async updateCourseProgress(courseId: string, data: CourseProgressRequest): Promise<any> {
-    const response = await this.apiManager.put(`/courses/${courseId}/progress`, data);
-    return response.data;
-  }
-
-  // Course attachments
-  async getCourseAttachments(courseId: string): Promise<any> {
-    const response = await this.apiManager.get(`/courses/${courseId}/attachments`);
-    return response.data;
-  }
-
-  async addCourseAttachment(courseId: string, attachment: any): Promise<any> {
-    const response = await this.apiManager.post(`/courses/${courseId}/attachments`, attachment);
-    return response.data;
-  }
-
-  async deleteCourseAttachment(courseId: string, attachmentId: string): Promise<any> {
-    const response = await this.apiManager.delete(`/courses/${courseId}/attachments/${attachmentId}`);
-    return response.data;
-  }
-
-  // Course analytics
-  async getCourseAnalytics(courseId: string): Promise<any> {
-    const response = await this.apiManager.get(`/courses/${courseId}/analytics`);
-    return response.data;
-  }
-
-  async getCourseStats(courseId: string): Promise<any> {
-    const response = await this.apiManager.get(`/courses/${courseId}/stats`);
-    return response.data;
-  }
-
-  // Course search and filtering
-  async searchCourses(query: string, filters?: any): Promise<any> {
-    const response = await this.apiManager.get("/courses/search", { 
-      params: { q: query, ...filters } 
+  async unsaveCourse(courseId: string) {
+    return apiManager.delete(`/users/me/saved-courses`, {
+      data: { courseId },
     });
+  }
+
+  // get wishlisted courses
+  // TODO: check this
+  async getWishlistedCourses(): Promise<PaginatedResponse<Course>> {
+    // const response = await ApiManager.getInstance().get(
+    //   `/users/${userId}/wishlist`
+    // );
+    // return response.data;
+    return apiManager.get<Course[]>("/users/me/wishlist");
+  }
+
+  async addToWishlist(
+    // userId: string,
+    courseId: string
+  ) {
+    // const response = await ApiManager.getInstance().post(
+    //   `/users/${userId}/wishlist`,
+    //   { courseId }
+    // );
+    // return response.data;
+    return apiManager.post(`/users/me/wishlist`, { courseId });
+  }
+
+  async removeFromWishlist(
+    // userId: string,
+    courseId: string
+  ) {
+    // const response = await ApiManager.getInstance().delete(
+    //   `/users/${userId}/wishlist/${courseId}`
+    // );
+    // return response.data;
+
+    // todo: make these without using userId
+    return apiManager.delete(`/users/me/wishlist/${courseId}`);
+  }
+
+  // Course CRUD Operations
+  async getCourses(params?: CourseQueryParams) {
+    const response = await apiManager.get<Course[]>("/courses", { params });
+    console.log("Get courses response:", response);
     return response.data;
   }
 
-  async getCoursesByCategory(categoryId: string): Promise<any> {
-    const response = await this.apiManager.get(`/categories/${categoryId}/courses`);
-    return response.data;
+  // get enrolled courses for the user without userId
+  async getEnrolledCourses(): Promise<PaginatedResponse<Enrollment>> {
+    return apiManager.get<Enrollment[]>("/users/me/enrollments");
   }
 
-  async getCoursesByInstructor(instructorId: string): Promise<any> {
-    const response = await this.apiManager.get(`/instructor/${instructorId}/courses`);
-    return response.data;
+  async getCourseById(courseId: string): Promise<ApiResponse<Course>> {
+    return apiManager.get<Course>(`/courses/${courseId}`);
   }
 
-  // Course recommendations
-  async getRecommendedCourses(userId: string): Promise<any> {
-    const response = await this.apiManager.get(`/courses/recommendations/${userId}`);
-    return response.data;
+  async createCourse(
+    courseData: CreateCourseRequest
+  ): Promise<ApiResponse<Course>> {
+    return apiManager.post<Course>("/courses", courseData);
   }
 
-  async getPopularCourses(): Promise<any> {
-    const response = await this.apiManager.get("/courses/popular");
-    return response.data;
+  async updateCourse(
+    courseId: string,
+    courseData: UpdateCourseRequest
+  ): Promise<ApiResponse<Course>> {
+    return apiManager.put<Course>(`/courses/${courseId}`, courseData);
   }
 
-  async getFeaturedCourses(): Promise<any> {
-    const response = await this.apiManager.get("/courses/featured");
-    return response.data;
+  async deleteCourse(courseId: string): Promise<ApiResponse<void>> {
+    return apiManager.delete<void>(`/courses/${courseId}`);
   }
 
-  // Course validation
-  async checkCourseAccess(courseId: string, userId: string): Promise<any> {
-    const response = await this.apiManager.get(`/courses/${courseId}/access/${userId}`);
-    return response.data;
+  // Course Status Management
+  async publishCourse(courseId: string): Promise<ApiResponse<Course>> {
+    return apiManager.patch<Course>(`/courses/${courseId}/publish`);
   }
 
-  async isCoursePurchased(courseId: string, userId: string): Promise<any> {
-    const response = await this.apiManager.get(`/courses/${courseId}/purchased/${userId}`);
-    return response.data;
+  async unpublishCourse(courseId: string): Promise<ApiResponse<Course>> {
+    return apiManager.patch<Course>(`/courses/${courseId}/unpublish`);
+  }
+
+  // Course Content
+  async getCourseSections(
+    courseId: string
+  ): Promise<ApiResponse<CourseSection[]>> {
+    return apiManager.get<CourseSection[]>(`/courses/${courseId}/sections`);
+  }
+
+  async getCourseChapters(courseId: string): Promise<ApiResponse<Chapter[]>> {
+    return apiManager.get<Chapter[]>(`/courses/${courseId}/chapters`);
+  }
+
+  async getCourseSectionChapters(courseId: string, sectionId: string) {
+    return apiManager.get<Chapter[]>(
+      `/courses/${courseId}/sections/${sectionId}/chapters`
+    );
+  }
+
+  async getCourseAttachments(courseId: string) {
+    return apiManager.get<{ attachments: any[] }>(
+      `/courses/${courseId}/attachments`
+    );
+  }
+
+  // Media Uploads
+  async uploadCourseImage(
+    courseId: string,
+    file: File,
+    onProgress?: (progress: number) => void
+  ): Promise<ApiResponse<{ imageUrl: string }>> {
+    return apiManager.upload<{ imageUrl: string }>(
+      `/courses/${courseId}/image`,
+      file,
+      onProgress
+    );
+  }
+
+  async checkoutCourse(
+    courseId: string,
+    userId: string
+  ): Promise<ApiResponse<{ url: string }>> {
+    console.log("=== courseService.checkoutCourse called ===");
+    console.log("Course ID:", courseId);
+    console.log("User ID:", userId);
+    console.log(
+      "Making POST request to Next.js API route:",
+      `/api/courses/${courseId}/checkout`
+    );
+    console.log("Request body:", { userId });
+
+    try {
+      // Use Next.js API route instead of backend server
+      const response = await fetch(`/api/courses/${courseId}/checkout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+        body: JSON.stringify({ userId }),
+      });
+
+      console.log("Checkout API response status:", response.status);
+      console.log(
+        "Checkout API response headers:",
+        Object.fromEntries(response.headers.entries())
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Checkout API error response:", errorText);
+        throw new Error(
+          `Checkout failed: ${response.status} ${response.statusText} - ${errorText}`
+        );
+      }
+
+      const data = await response.json();
+      console.log("Checkout API success response:", data);
+
+      if (!data.success || !data.url) {
+        console.error("Checkout response missing success or URL:", data);
+        throw new Error("Checkout failed - invalid response format");
+      }
+
+      return {
+        success: true,
+        data: { url: data.url },
+        message: "Checkout session created successfully",
+      };
+    } catch (error) {
+      console.error("Checkout API error:", error);
+      throw error;
+    }
+  }
+
+  // Check if already purchased
+  async checkAlreadyPurchased(
+    courseId: string
+  ): Promise<ApiResponse<{ alreadyPurchased: boolean }>> {
+    return await apiManager.get<{ alreadyPurchased: boolean }>(
+      `/courses/${courseId}/alreadyPurchased`
+    );
+  }
+
+  // Enrollment & Progress
+  async enrollInCourse(courseId: string): Promise<ApiResponse<Enrollment>> {
+    return apiManager.post<Enrollment>(`/courses/${courseId}/enroll`);
+  }
+
+  async getCourseProgress(
+    courseId: string
+  ): Promise<ApiResponse<CourseProgress>> {
+    return apiManager.get<CourseProgress>(`/courses/${courseId}/progress`);
+  }
+
+  async updateChapterProgress(
+    courseId: string,
+    chapterId: string,
+    isCompleted: boolean
+  ): Promise<ApiResponse<void>> {
+    return apiManager.patch<void>(
+      `/courses/${courseId}/progress/${chapterId}`,
+      { isCompleted }
+    );
+  }
+
+  // Reviews & Ratings
+  async getCourseReviews(courseId: string): Promise<ApiResponse<Review[]>> {
+    return apiManager.get<Review[]>(`/courses/${courseId}/reviews`);
+  }
+
+  async addCourseReview(
+    courseId: string,
+    review: CourseReview
+  ): Promise<ApiResponse<Review>> {
+    return apiManager.post<Review>(`/courses/${courseId}/reviews`, review);
+  }
+
+  // Analytics
+  async getCourseEnrollmentStats(
+    courseId: string
+  ): Promise<ApiResponse<CourseEnrollmentStats>> {
+    return apiManager.get<CourseEnrollmentStats>(
+      `/courses/${courseId}/stats/enrollments`
+    );
+  }
+
+  async getCourseEarnings(
+    courseId: string
+  ): Promise<ApiResponse<CourseEarnings>> {
+    return apiManager.get<CourseEarnings>(`/courses/${courseId}/earnings`);
+  }
+
+  async getCourseInstructor(courseId: string) {
+    return apiManager.get<Instructor>(`/courses/${courseId}/instructor`);
+  }
+
+  // Categories
+  async getCourseCategories(
+    courseId: string
+  ): Promise<ApiResponse<CourseCategory[]>> {
+    return apiManager.get<CourseCategory[]>(`/courses/${courseId}/categories`);
   }
 }
 
-// Export singleton instance
-export const courseService = CourseService.getInstance(); 
+export const courseService = CourseService.getInstance();

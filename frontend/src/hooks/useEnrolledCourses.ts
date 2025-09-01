@@ -1,21 +1,21 @@
+import { userService } from "@/lib/api/services";
 import { useQuery } from "@tanstack/react-query";
-import { db } from "../lib/db";
 
-// TODO: ! NOT RECOMMENDED TO DO DIRECT DB CALLS IN CUSTOM HOOK
-export const useEnrolledCourses = (userId: string) => {
+export const useEnrolledCourses = () => {
   const fetchEnrolledCourses = async () => {
-    const enrollments = await db.enrollment.findMany({
-      where: {
-        userId: userId,
-      },
-    });
-
+    const enrollments = await userService.getEnrolledCourses();
+    console.log("Enrolled courses response:", enrollments);
     return enrollments;
   };
 
-  return useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["enrolledCourses"],
     queryFn: fetchEnrolledCourses,
-    staleTime: 4,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: true,
+    retry: 1,
   });
+
+  return { data, isLoading, error };
 };

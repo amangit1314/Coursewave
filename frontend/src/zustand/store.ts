@@ -14,7 +14,7 @@ import {
   User,
 } from "@prisma/client";
 import { LearningGoal } from "@/types/learning-goal";
-import { fetchCourseInfo } from "@/helpers/data-fetching-methods";
+import { fetchCourseInfo } from "@/lib/helpers/data-fetching-methods";
 
 type CoursewaveState = {
   // user

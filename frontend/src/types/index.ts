@@ -28,7 +28,7 @@ export type { LearningGoal } from './learning-goal';
 
 // Subscription Types
 export type { UserSubscription } from '../lib/subscription';
-export type { SubscriptionPlan } from '../lib/subscriptionPlans';
+export type { SubscriptionPlan } from '../lib/config/subscriptionPlans';
 
 // API Response Types
 export interface ApiResponse<T> {

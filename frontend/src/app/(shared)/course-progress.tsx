@@ -1,5 +1,5 @@
 import { Progress } from "@/components/ui/progress";
-import { cn } from "@/utils/utils";
+import { cn } from "@/lib/utils/utils";
 import { CheckCircle2, Clock } from "lucide-react";
 
 interface CourseProgressProps {

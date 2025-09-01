@@ -16,7 +16,7 @@ import {
   X,
   Menu
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 
 const orbitron = Orbitron({
   weight: ["400", "500", "600", "700", "800", "900"],

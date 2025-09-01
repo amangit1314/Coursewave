@@ -1,7 +1,7 @@
 "use server";
 
-import { stripe } from "@/config/stripe";
-import { absoluteUrl } from "@/utils/utils";
+import { stripe } from "@/lib/config/stripe";
+import { absoluteUrl } from "@/lib/utils/utils";
 
 interface ManageStripeSubscriptionActionProps {
   isSubscribed: boolean;

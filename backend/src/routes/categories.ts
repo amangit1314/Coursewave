@@ -1,9 +1,9 @@
 import express, { Request, Response, Router } from 'express';
-import { PrismaClient, Prisma } from '@prisma/client';
+import { prisma } from '../config/prisma';
 import { invalidateCache } from '../config/redis';
 
 const router: Router = express.Router();
-const prisma = new PrismaClient();
+
 
 // Get all categories
 router.get('/', async (req: Request, res: Response) => {

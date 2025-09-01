@@ -1,35 +1,26 @@
 import { useQuery } from "@tanstack/react-query";
-import { BlogWithComments } from "@/types/blog-with-comments";
-import { articleService } from "@/lib/api/articles";
+import { articleService } from "@/lib/api/services/articlesService";
 import { BlogArticle } from "@/types/blog-api-response";
-
-const fetchArticles = async () => {
-  // const articlesUrl =
-  //   process.env.ENVIRONMENT! === "DEVELOPMENT"
-  //     ? `/api/articles`
-  //     : `api/articles`;
-
-  // const response = await fetch(articlesUrl);
-
-  // if (!response.ok) {
-  //   throw new Error(`Failed to get articles info from ${articlesUrl} ...`);
-  // }
-
-  // return await response.json();
-
-   const data = await articleService.getArticles();
-
-   return data;
-};
-
 export const useArticles = () => {
-  const { data, error, isLoading } = useQuery({
+  const {
+    data,
+    error,
+    isLoading,
+    isFetching,
+    refetch,
+    isError,
+  } = useQuery({
     queryKey: ["articles"],
-    queryFn: fetchArticles,
-    staleTime: 4,
+    queryFn: async () => {
+      const response = await articleService.getArticles();
+      console.log("API Response:", response); // Still keep for confirmation
+      return response || [];
+    },
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: true,
+    retry: 1,
   });
 
-  const articles: BlogArticle[] = data?.data! as BlogArticle[];
-
-  return { articles, error, isLoading };
+  return { data, error, isLoading, isFetching, refetch, isError };
 };

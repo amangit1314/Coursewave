@@ -1,7 +1,7 @@
 "use client";
 
 import { getToken } from "@/app/_actions/actions";
-import { generateUid } from "@/helpers/id-helper";
+import { generateUid } from "@/lib/helpers/id-helper";
 import {useUserInfo} from "@/hooks/useUserInfo";
 import { User } from "@/types";
 import { StreamVideo, StreamVideoClient } from "@stream-io/video-react-sdk";

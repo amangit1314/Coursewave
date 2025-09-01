@@ -1,10 +1,9 @@
 import { Request, Response, Router } from "express";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from '../config/prisma';
 import { verifyToken } from "../api/auth/auth.middleware";
 import { requireInstructor } from "../core/middleware/roleCheck";
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // Get instructor by user ID
 router.get("/user/:userId", async (req: Request, res: Response) => {

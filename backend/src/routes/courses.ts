@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { Router } from "express";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from '../config/prisma';
 
 import { invalidateCache } from "../config/redis";
 import { generateResourceId } from "../core/utils/idGenerator";
@@ -25,7 +25,6 @@ import { chapterExists } from "../api/courses/middlewares/chapterExists.middlewa
 import { extractPublicId } from "../core/utils/utils";
 
 const router: Router = express.Router();
-const prisma = new PrismaClient();
 
 /// ? ================================= COURSES ==================================
 // Get all published courses
@@ -123,61 +122,61 @@ router.get(
 );
 
 // Get enrolled courses
-router.get(
-  "/enrolled/courses",
-  verifyToken,
-  async (req: Request, res: Response) => {
-    try {
-      const userId = req.user.id;
+// router.get(
+//   "/enrolled/courses",
+//   verifyToken,
+//   async (req: Request, res: Response) => {
+//     try {
+//       const userId = req.user.id;
 
-      const enrollments = await prisma.enrollment.findMany({
-        where: {
-          userId,
-          status: "ACTIVE",
-        },
-        include: {
-          course: {
-            include: {
-              instructor: {
-                include: {
-                  user: {
-                    select: {
-                      id: true,
-                      name: true,
-                      email: true,
-                    },
-                  },
-                },
-              },
-              Category: true,
-              sections: {
-                include: {
-                  Chapter: true,
-                },
-              },
-            },
-          },
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
+//       const enrollments = await prisma.enrollment.findMany({
+//         where: {
+//           userId,
+//           status: "ACTIVE",
+//         },
+//         include: {
+//           course: {
+//             include: {
+//               instructor: {
+//                 include: {
+//                   user: {
+//                     select: {
+//                       id: true,
+//                       name: true,
+//                       email: true,
+//                     },
+//                   },
+//                 },
+//               },
+//               Category: true,
+//               sections: {
+//                 include: {
+//                   Chapter: true,
+//                 },
+//               },
+//             },
+//           },
+//         },
+//         orderBy: {
+//           createdAt: "desc",
+//         },
+//       });
 
-      const courses = enrollments.map((enrollment: any) => enrollment.course);
+//       const courses = enrollments.map((enrollment: any) => enrollment.course);
 
-      return res.status(200).json({
-        success: true,
-        data: courses,
-      });
-    } catch (error: any) {
-      console.log("ERROR in fetching enrolled courses: ", error.message);
-      return res.status(500).json({
-        success: false,
-        error: error.message,
-      });
-    }
-  }
-);
+//       return res.status(200).json({
+//         success: true,
+//         data: courses,
+//       });
+//     } catch (error: any) {
+//       console.log("ERROR in fetching enrolled courses: ", error.message);
+//       return res.status(500).json({
+//         success: false,
+//         error: error.message,
+//       });
+//     }
+//   }
+// );
 
 /// * ================================= Course =====================================
 
@@ -185,6 +184,9 @@ router.get(
 router.get("/:courseId", courseExists, async (req: Request, res: Response) => {
   try {
     const course = (req as any).course;
+
+    console.log("Course fetched: ", course.id);
+    console.log("Course: ", JSON.stringify(course, null, 2));
 
     return res.status(200).json({
       success: true,

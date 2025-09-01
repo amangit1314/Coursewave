@@ -4,6 +4,7 @@ export interface User {
   email: string;
   profileImageUrl: string | null;
   about: string | null;
+  shortSummary?: string | null;
   isEmailVerified: boolean;
   roles: string[];
   createdAt: string;

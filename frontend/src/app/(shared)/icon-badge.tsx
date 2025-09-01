@@ -1,7 +1,7 @@
 import { LucideIcon } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 
-import { cn } from "@/utils/utils";
+import { cn } from "@/lib/utils/utils";
 import { Icon } from "@tremor/react";
 
 const backgroundVariants = cva(

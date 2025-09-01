@@ -7,18 +7,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/// --------------------------- USER & AUTH -------------------------------
 model User {
-  id                String            @id @default(uuid())
+  id                String              @id @default(uuid())
   name              String?
-  email             String            @unique
+  email             String              @unique
   password          String
   profileImageUrl   String?
   about             String?
   shortSummary      String?
-  isEmailVerified   Boolean           @default(false)
-  preferences       Json              @default("{}")
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
+  slug              String?             @unique
+  isEmailVerified   Boolean             @default(false)
+  preferences       Json                @default("{}")
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
   authoredBlogs     Blog[]
   blogComments      BlogComment[]
   BlogLike          BlogLike[]
@@ -40,6 +42,13 @@ model User {
   roles             UserRole[]
   subscriptions     UserSubscription?
   Wishlist          Wishlist?
+  CommunityMember   CommunityMember[]
+  Message           Message[]
+  PinnedMessage     PinnedMessage[]
+  ModerationLog     ModerationLog[]
+  Reaction          Reaction[]
+  ProjectSubmission ProjectSubmission[]
+  SavedArticle      SavedArticle[]
 
   @@index([email])
   @@index([createdAt])
@@ -113,187 +122,28 @@ enum TokenStatus {
   REVOKED
 }
 
-model BlogLike {
-  id        String   @id
-  blogId    String
-  userId    String
-  createdAt DateTime @default(now())
-  Blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
-  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([blogId, userId])
-  @@index([blogId])
-  @@index([userId])
-}
-
-model BlogView {
-  id        String   @id
-  blogId    String
-  userId    String?
-  ip        String?
-  createdAt DateTime @default(now())
-  Blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
-  User      User?    @relation(fields: [userId], references: [id])
-
-  @@index([blogId])
-  @@index([userId])
-}
-
-model Cart {
-  id        String     @id
-  userId    String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime
-  User      User       @relation(fields: [userId], references: [id])
-  CartItem  CartItem[]
-
-  @@index([userId])
-}
-
-model CartItem {
-  id        String   @id
-  courseId  String
-  quantity  Int      @default(1)
-  createdAt DateTime @default(now())
-  updatedAt DateTime
-  cartId    String
-  Cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  Course    Course   @relation(fields: [courseId], references: [id])
-
-  @@unique([cartId, courseId])
-  @@index([cartId])
-  @@index([courseId])
-}
-
-model Course {
-  isFree            Boolean             @default(false)
-  instructorId      String?
-  isLive            Boolean             @default(false)
-  isPublished       Boolean             @default(false)
-  categoryId        String?
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  averageRating     Float?              @default(0.0)
-  categories        String[]
-  description       String?
-  duration          Int?
-  id                String              @id @default(uuid())
-  imageUrl          String?
-  learningOutcomes  String[]
-  prerequisites     String[]
-  price             Float?
-  targetAudience    String[]
-  technologies      String[]
-  title             String
-  dealPrice         Float?
-  discount          Float?
-  CartItem          CartItem[]
-  Chapter           Chapter[]
-  Category          Category?           @relation(fields: [categoryId], references: [id])
-  instructor        Instructor?         @relation(fields: [instructorId], references: [userId])
-  CourseAttachment  CourseAttachment[]
-  CourseProgress    CourseProgress[]
-  CoursePurchase    CoursePurchase[]
-  sections          CourseSection[]
-  Enrollment        Enrollment[]
-  InstructorEarning InstructorEarning[]
-  Payment           Payment[]
-  Review            Review[]
-  Wishlist          Wishlist[]          @relation("CourseToWishlist")
-
-  @@index([instructorId])
-  @@index([isPublished])
-  @@index([averageRating])
-  @@index([categoryId])
-  @@index([price])
-}
-
-model Category {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  Blog        Blog[]
-  Course      Course[]
-
-  @@index([name])
-}
-
-model CourseSection {
-  id          String    @id @default(uuid())
-  title       String
-  description String?
-  position    Int
-  courseId    String
-  isPublished Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  Chapter     Chapter[]
-  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
-
-  @@index([courseId])
-  @@index([position])
-}
-
-model Enrollment {
-  id              String            @id @default(uuid())
-  userId          String
-  courseId        String
-  status          EnrollmentStatus  @default(ACTIVE)
-  progress        Int               @default(0)
-  startDate       DateTime          @default(now())
-  endDate         DateTime?
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  ChapterProgress ChapterProgress[]
-  course          Course            @relation(fields: [courseId], references: [id])
-  user            User              @relation(fields: [userId], references: [id])
-
-  @@unique([userId, courseId])
-  @@index([userId])
-  @@index([courseId])
-  @@index([status])
-}
-
-model CourseProgress {
-  id              String            @id @default(uuid())
-  courseId        String
-  userId          String
-  isCompleted     Boolean           @default(false)
-  progress        Int               @default(0)
-  lastAccessed    DateTime          @default(now())
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  ChapterProgress ChapterProgress[]
-  Course          Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  User            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([courseId, userId])
-  @@index([courseId])
-  @@index([userId])
-}
-
+/// --------------------------- BLOG SYSTEM -------------------------------
 model Blog {
-  id          String        @id @default(uuid())
-  title       String
-  content     String
-  slug        String        @unique
-  excerpt     String?
-  coverImage  String?
-  readTime    Int?
-  isPublished Boolean       @default(false)
-  publishedAt DateTime?
-  tags        String[]
-  authorId    String
-  categoryId  String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  author      User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  Category    Category?     @relation(fields: [categoryId], references: [id])
-  comments    BlogComment[]
-  BlogLike    BlogLike[]
-  BlogView    BlogView[]
+  id           String         @id @default(uuid())
+  title        String
+  content      String
+  slug         String         @unique
+  excerpt      String?
+  coverImage   String?
+  readTime     Int?
+  isPublished  Boolean        @default(false)
+  publishedAt  DateTime?
+  tags         String[]
+  authorId     String
+  categoryId   String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  author       User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  Category     Category?      @relation(fields: [categoryId], references: [id])
+  comments     BlogComment[]
+  BlogLike     BlogLike[]
+  BlogView     BlogView[]
+  SavedArticle SavedArticle[]
 
   @@index([slug])
   @@index([authorId])
@@ -320,6 +170,32 @@ model BlogComment {
   @@index([parentId])
 }
 
+model BlogLike {
+  id        String   @id
+  blogId    String
+  userId    String
+  createdAt DateTime @default(now())
+  Blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([blogId, userId])
+  @@index([blogId])
+  @@index([userId])
+}
+
+model BlogView {
+  id        String   @id
+  blogId    String
+  userId    String?
+  ip        String?
+  createdAt DateTime @default(now())
+  Blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  User      User?    @relation(fields: [userId], references: [id])
+
+  @@index([blogId])
+  @@index([userId])
+}
+
 model CommentLike {
   id          String       @id
   commentId   String
@@ -334,199 +210,109 @@ model CommentLike {
   @@index([userId])
 }
 
-model Review {
-  id        String   @id @default(uuid())
-  rating    Float
-  comment   String
-  userId    String
-  courseId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  course    Course   @relation(fields: [courseId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+model SavedArticle {
+  userId  String
+  blogId  String
+  savedAt DateTime @default(now())
 
-  @@unique([userId, courseId])
-  @@index([userId])
-  @@index([courseId])
-  @@index([rating])
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@id([userId, blogId]) // Composite primary key
 }
 
-model Payment {
-  id        String   @id @default(uuid())
-  userId    String
-  courseId  String
-  amount    Float
-  currency  String   @default("USD")
-  status    String
-  paymentId String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  course    Course   @relation(fields: [courseId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
-
-  @@index([userId])
-  @@index([status])
-  @@index([courseId])
+enum ReactionType {
+  LIKE
+  DISLIKE
+  LOVE
+  LAUGH
 }
 
-model SubscriptionPlan {
-  id                      String                   @id @default(uuid())
-  name                    String
-  type                    PlanType
-  price                   Float
-  currency                String                   @default("USD")
-  interval                Interval                 @default(MONTHLY)
-  features                Json                     @default("{}")
-  isActive                Boolean                  @default(true)
-  createdAt               DateTime                 @default(now())
-  updatedAt               DateTime                 @updatedAt
-  instructorSubscriptions InstructorSubscription[]
-  userSubscriptions       UserSubscription[]
+/// --------------------------- COURSE & LEARNING -------------------------------
 
-  @@index([isActive])
-  @@index([price])
-  @@index([type])
-}
+model Course {
+  isFree            Boolean             @default(false)
+  instructorId      String?
+  isLive            Boolean             @default(false)
+  isPublished       Boolean             @default(false)
+  categoryId        String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  averageRating     Float?              @default(0.0)
+  categories        String[]
+  description       String?
+  duration          Int?
+  id                String              @id @default(uuid())
+  slug              String?             @unique
+  imageUrl          String?
+  learningOutcomes  String[]
+  prerequisites     String[]
+  price             Float?
+  targetAudience    String[]
+  technologies      String[]
+  title             String
+  dealPrice         Float?
+  discount          Float?
+  CartItem          CartItem[]
+  Chapter           Chapter[]
+  CourseAttachment  CourseAttachment[]
+  CourseProgress    CourseProgress[]
+  CoursePurchase    CoursePurchase[]
+  sections          CourseSection[]
+  Enrollment        Enrollment[]
+  InstructorEarning InstructorEarning[]
+  Payment           Payment[]
+  Review            Review[]
+  Project           Project[]
+  Wishlist          Wishlist[]          @relation("CourseToWishlist")
 
-model UserSubscription {
-  id                   String             @id @default(uuid())
-  userId               String             @unique
-  planId               String
-  stripeCustomerId     String             @unique
-  stripeSubscriptionId String?
-  stripePriceId        String?
-  status               SubscriptionStatus @default(ACTIVE)
-  currentPeriodStart   DateTime?
-  currentPeriodEnd     DateTime?
-  cancelAtPeriodEnd    Boolean            @default(false)
-  canceledAt           DateTime?
-  endedAt              DateTime?
-  createdAt            DateTime           @default(now())
-  updatedAt            DateTime
-  plan                 SubscriptionPlan   @relation(fields: [planId], references: [id])
-  StripeCustomer       StripeCustomer     @relation(fields: [stripeCustomerId], references: [id])
-  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([currentPeriodEnd])
-  @@index([planId])
-  @@index([status])
-}
-
-model Instructor {
-  userId           String                  @id @unique
-  bio              String?
-  expertise        String[]
-  socialLinks      Json?                   @default("{}")
-  createdAt        DateTime                @default(now())
-  updatedAt        DateTime                @updatedAt
-  courses          Course[]
-  CourseAttachment CourseAttachment[]
-  user             User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  earnings         InstructorEarning[]
-  subscription     InstructorSubscription?
-  Session          Session[]
-  SessionBooking   SessionBooking[]
-
-  @@index([userId])
-}
-
-model InstructorSubscription {
-  id                   String             @id @default(uuid())
-  instructorId         String             @unique
-  planId               String
-  stripeAccountId      String
-  stripeSubscriptionId String?
-  stripePriceId        String?
-  status               SubscriptionStatus @default(ACTIVE)
-  currentPeriodStart   DateTime?
-  currentPeriodEnd     DateTime?
-  cancelAtPeriodEnd    Boolean            @default(false)
-  canceledAt           DateTime?
-  endedAt              DateTime?
-  createdAt            DateTime           @default(now())
-  updatedAt            DateTime
-  instructor           Instructor         @relation(fields: [instructorId], references: [userId], onDelete: Cascade)
-  plan                 SubscriptionPlan   @relation(fields: [planId], references: [id])
-
-  @@index([planId])
-  @@index([status])
-}
-
-model InstructorEarning {
-  id           String     @id @default(uuid())
-  instructorId String
-  courseId     String
-  amount       Float
-  currency     String     @default("USD")
-  status       String
-  paymentId    String?
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  course       Course     @relation(fields: [courseId], references: [id])
-  instructor   Instructor @relation(fields: [instructorId], references: [userId])
+  Category   Category?   @relation(fields: [categoryId], references: [id])
+  instructor Instructor? @relation(fields: [instructorId], references: [userId])
 
   @@index([instructorId])
-  @@index([status])
-  @@index([courseId])
+  @@index([isPublished])
+  @@index([averageRating])
+  @@index([categoryId])
+  @@index([price])
 }
 
-model SessionBooking {
-  id               String         @id @default(uuid())
-  sessionId        String
-  userId           String
-  paymentStatus    PaymentStatus  @default(PENDING)
-  amountPaid       Float?
-  paymentMethod    PaymentMethod?
-  stripePaymentId  String?
-  joinedAt         DateTime?
-  leftAt           DateTime?
-  durationAttended Int?
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime
-  instructorId     String?
-  Instructor       Instructor?    @relation(fields: [instructorId], references: [userId])
-  session          Session        @relation(fields: [sessionId], references: [id])
-  user             User           @relation(fields: [userId], references: [id])
-
-  @@unique([sessionId, userId])
-  @@index([sessionId])
-  @@index([userId])
-  @@index([paymentStatus])
-}
-
-model StripeCustomer {
-  stripeCustomerId       String            @unique
-  userId                 String            @unique
-  stripeSubscriptionId   String?
-  stripePriceId          String?
-  stripeCurrentPeriodEnd DateTime?
-  createdAt              DateTime          @default(now())
-  updatedAt              DateTime          @updatedAt
-  id                     String            @id @default(uuid())
-  user                   User              @relation(fields: [userId], references: [id])
-  UserSubscription       UserSubscription?
-}
-
-model Chapter {
-  id          String    @id
+model CourseSection {
+  id          String    @id @default(uuid())
   title       String
   description String?
   position    Int
-  sectionId   String
   courseId    String
   isPublished Boolean   @default(false)
-  isFree      Boolean   @default(false)
-  content     Json? // holds video/text/quiz data accordingly
-  createdAt   DateTime? @default(now())
-  updatedAt   DateTime? @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  Chapter     Chapter[]
+  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
+  @@index([courseId])
+  @@index([position])
+}
+
+model Chapter {
+  id              String             @id
+  slug            String?            @unique
+  title           String
+  description     String?
+  position        Int
+  sectionId       String
+  courseId        String
+  isPublished     Boolean            @default(false)
+  isFree          Boolean            @default(false)
+  content         Json? // holds video/text/quiz data accordingly
+  createdAt       DateTime?          @default(now())
+  updatedAt       DateTime?          @updatedAt
   contentType     ChapterContentType @default(VIDEO)
   videoMetadata   VideoAsset? // only populated if VIDEO
-  Course          Course             @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  CourseSection   CourseSection      @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   ChapterNote     ChapterNote[]
   ChapterProgress ChapterProgress[]
+
+  Course        Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  CourseSection CourseSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 
   @@index([courseId])
   @@index([position])
@@ -548,6 +334,15 @@ model VideoAsset {
   updatedAt DateTime      @updatedAt
 
   Chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+}
+
+enum ChapterContentType {
+  VIDEO
+  TEXT
+  QUIZ
+  ASSIGNMENT
+  RESOURCE
+  LIVE
 }
 
 enum VideoProvider {
@@ -592,6 +387,24 @@ model ChapterProgress {
   @@index([userId])
 }
 
+model CourseProgress {
+  id              String            @id @default(uuid())
+  courseId        String
+  userId          String
+  isCompleted     Boolean           @default(false)
+  progress        Int               @default(0)
+  lastAccessed    DateTime          @default(now())
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  ChapterProgress ChapterProgress[]
+  Course          Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  User            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, userId])
+  @@index([courseId])
+  @@index([userId])
+}
+
 model CourseAttachment {
   id           String     @id
   name         String
@@ -626,8 +439,500 @@ model CoursePurchase {
   @@index([userId])
 }
 
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+  PROCESSING
+}
+
+enum PaymentMethod {
+  STRIPE
+  FREE
+  PAYPAL
+  BANK_TRANSFER
+}
+
+model Enrollment {
+  id              String            @id @default(uuid())
+  userId          String
+  courseId        String
+  status          EnrollmentStatus  @default(ACTIVE)
+  progress        Int               @default(0)
+  startDate       DateTime          @default(now())
+  endDate         DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  ChapterProgress ChapterProgress[]
+  course          Course            @relation(fields: [courseId], references: [id])
+  user            User              @relation(fields: [userId], references: [id])
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+  @@index([status])
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  PAUSED
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  rating    Float
+  comment   String
+  userId    String
+  courseId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  course    Course   @relation(fields: [courseId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+  @@index([rating])
+}
+
+/// ---------------------- CART, Wishlist, Payments -----------------------------------
+
+model Cart {
+  id        String     @id
+  userId    String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime
+  User      User       @relation(fields: [userId], references: [id])
+  CartItem  CartItem[]
+
+  @@index([userId])
+}
+
+model CartItem {
+  id        String   @id
+  courseId  String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  cartId    String
+  Cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  Course    Course   @relation(fields: [courseId], references: [id])
+
+  @@unique([cartId, courseId])
+  @@index([cartId])
+  @@index([courseId])
+}
+
+model Wishlist {
+  id        String   @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  userId    String   @unique
+  User      User     @relation(fields: [userId], references: [id])
+  Course    Course[] @relation("CourseToWishlist")
+}
+
+model Payment {
+  id        String   @id @default(uuid())
+  userId    String
+  courseId  String
+  amount    Float
+  currency  String   @default("USD")
+  status    String
+  paymentId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  course    Course   @relation(fields: [courseId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@index([courseId])
+}
+
+/// -------------------- Community & Chat --------------------------
+model Community {
+  id          String   @id @default(uuid())
+  slug        String?  @unique
+  title       String
+  description String?
+  tags        String[]
+  categoryId  String
+  isPublic    Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  isTrending  Boolean  @default(false)
+  isPopular   Boolean  @default(false)
+
+  avatarUrls   String[]
+  thumbnailUrl String?
+  bannerUrl    String?
+
+  lastActiveAt DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  members        CommunityMember[]
+  category       Category?         @relation(fields: [categoryId], references: [id])
+  messages       Message[]
+  pinnedMessages PinnedMessage[]
+  ModerationLog  ModerationLog[]
+}
+
+/// Manages the relationship between a user and a community, including their role
+model CommunityMember {
+  id          String        @id @default(uuid())
+  userId      String
+  communityId String
+  role        CommunityRole @default(MEMBER)
+  joinedAt    DateTime      @default(now())
+  lastReadAt  DateTime      @default(now())
+
+  // New field to track user-specific archiving
+  isArchivedByUser Boolean @default(false)
+  isOnline         Boolean @default(true)
+
+  // Relations
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, communityId])
+}
+
+enum CommunityRole {
+  ADMIN
+  MODERATOR
+  MEMBER
+}
+
+model Message {
+  id          String @id @default(uuid())
+  communityId String
+  senderId    String
+  slug        String @unique
+
+  // Text content of the message
+  content String?
+
+  // Use a Json field to store a list of media attachments
+  // This can hold URLs, file metadata, and types (e.g., 'image', 'video')
+  attachments Json?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Status flags
+  isPinned Boolean @default(false)
+
+  // For replies
+  parentId String?
+
+  // Relations
+  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  sender    User      @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  // Self-referencing relations for replies
+  parentMessage Message?  @relation("MessageReplies", fields: [parentId], references: [id], onDelete: SetNull)
+  replies       Message[] @relation("MessageReplies")
+
+  // Relation to the new Reaction model
+  reactions     Reaction[]
+  PinnedMessage PinnedMessage?
+}
+
+model Reaction {
+  id        String       @id @default(uuid())
+  messageId String
+  userId    String
+  // This enum would define the types of reactions, e.g., 'LIKE', 'LOVE', 'LAUGH', etc.
+  // You already have a ReactionType enum in your schema.
+  type      ReactionType
+  createdAt DateTime     @default(now())
+
+  // Relations
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // A user can only have one reaction of a certain type on a single message
+  @@unique([messageId, userId, type])
+  @@index([messageId])
+  @@index([userId])
+}
+
+model PinnedMessage {
+  id             String   @id @default(uuid())
+  communityId    String
+  messageId      String   @unique
+  pinnedByUserId String
+  pinnedAt       DateTime @default(now())
+
+  // Relations
+  community    Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  message      Message   @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  pinnedByUser User      @relation(fields: [pinnedByUserId], references: [id], onDelete: Cascade)
+}
+
+model ModerationLog {
+  id              String   @id @default(uuid())
+  moderatorId     String
+  communityId     String
+  action          String // e.g., "USER_REMOVED", "MESSAGE_DELETED"
+  targetUserId    String?
+  targetMessageId String?
+  reason          String?
+  createdAt       DateTime @default(now())
+
+  // Relations
+  moderator User      @relation(fields: [moderatorId], references: [id], onDelete: Cascade)
+  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+}
+
+/// -------------- Subscription & Stripe ---------------------
+
+model SubscriptionPlan {
+  id                      String                   @id @default(uuid())
+  slug                    String?                  @unique
+  name                    String
+  type                    PlanType
+  price                   Float
+  currency                String                   @default("USD")
+  interval                Interval                 @default(MONTHLY)
+  features                Json                     @default("{}")
+  isActive                Boolean                  @default(true)
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+  instructorSubscriptions InstructorSubscription[]
+  userSubscriptions       UserSubscription[]
+
+  @@index([isActive])
+  @@index([price])
+  @@index([type])
+}
+
+enum PlanType {
+  USER
+  INSTRUCTOR
+  ENTERPRISE
+}
+
+enum Interval {
+  MONTHLY
+  YEARLY
+  WEEKLY
+}
+
+model UserSubscription {
+  id                   String             @id @default(uuid())
+  userId               String             @unique
+  slug                 String?            @unique
+  planId               String
+  stripeCustomerId     String             @unique
+  stripeSubscriptionId String?
+  stripePriceId        String?
+  status               SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  canceledAt           DateTime?
+  endedAt              DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime
+  plan                 SubscriptionPlan   @relation(fields: [planId], references: [id])
+  StripeCustomer       StripeCustomer     @relation(fields: [stripeCustomerId], references: [id])
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([currentPeriodEnd])
+  @@index([planId])
+  @@index([status])
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  UNPAID
+  TRIAL
+  INCOMPLETE
+}
+
+model StripeCustomer {
+  stripeCustomerId       String            @unique
+  userId                 String            @unique
+  stripeSubscriptionId   String?
+  stripePriceId          String?
+  stripeCurrentPeriodEnd DateTime?
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+  id                     String            @id @default(uuid())
+  user                   User              @relation(fields: [userId], references: [id])
+  UserSubscription       UserSubscription?
+}
+
+/// -------------------------------- Projects ------------------------------
+
+model Project {
+  id               String             @id @default(uuid())
+  slug             String?            @unique
+  title            String
+  description      String             @db.Text
+  courseId         String
+  instructorId     String
+  thumbnailUrl     String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  // e.g., DRAFT, PUBLISHED, ARCHIVED
+  deadline         DateTime? // Optional deadline for project submission
+  maxSubmissions   Int? // Optional limit on number of submissions
+  status           ProjectStatus      @default(PUBLISHED)
+  difficulty       ProjectDifficulty? // e.g., "Beginner", "Intermediate", "Advanced"
+  isPublic         Boolean            @default(false) // Whether the project is visible to all users or only enrolled students
+  startDate        DateTime? // Optional start date for the project
+  endDate          DateTime? // Optional end date for the project
+  categories       String[] // e.g., ["web", "mobile", "data science"]
+  tags             String[] // e.g., ["JavaScript", "Python", "Machine Learning"]
+  prerequisites    String[] // e.g., ["Basic HTML", "Python Basics"]
+  technologies     String[] // e.g., ["React", "Node.js", "Python"]
+  learningOutcomes String[] // e.g., ["Build a web app", "Learn REST APIs"]
+  resources        String[] // e.g., ["Documentation", "Tutorials"]
+
+  // Relations
+  course      Course              @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  instructor  Instructor          @relation(fields: [instructorId], references: [userId])
+  submissions ProjectSubmission[]
+
+  @@index([courseId])
+  @@index([instructorId])
+}
+
+enum ProjectStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ProjectDifficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+model ProjectSubmission {
+  id            String   @id @default(uuid())
+  projectId     String
+  studentId     String
+  submissionUrl String // e.g., a link to a GitHub repository or a file
+  submittedAt   DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  project  Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  student  User             @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  feedback ProjectFeedback?
+
+  @@unique([projectId, studentId]) // A user can only submit a project once per project
+  @@index([projectId])
+  @@index([studentId])
+}
+
+model ProjectFeedback {
+  id           String   @id @default(uuid())
+  submissionId String   @unique
+  instructorId String
+  feedbackText String   @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  submission ProjectSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  instructor Instructor        @relation(fields: [instructorId], references: [userId])
+}
+
+/// --------------------------------------- CATEGORY ------------------------------------
+model Category {
+  id          String      @id @default(uuid())
+  name        String      @unique
+  description String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  Blog        Blog[]
+  Course      Course[]
+  Community   Community[]
+
+  @@index([name])
+}
+
+/// --------------------------------------- INSTRUCTOR -----------------------
+model Instructor {
+  userId           String                  @id @unique
+  slug             String?                 @unique
+  bio              String?
+  expertise        String[]
+  socialLinks      Json?                   @default("{}")
+  createdAt        DateTime                @default(now())
+  updatedAt        DateTime                @updatedAt
+  courses          Course[]
+  CourseAttachment CourseAttachment[]
+  user             User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  earnings         InstructorEarning[]
+  subscription     InstructorSubscription?
+  Session          Session[]
+  SessionBooking   SessionBooking[]
+  Project          Project[]
+  ProjectFeedback  ProjectFeedback[]
+
+  @@index([userId])
+}
+
+model InstructorSubscription {
+  id                   String             @id @default(uuid())
+  instructorId         String             @unique
+  planId               String
+  stripeAccountId      String
+  stripeSubscriptionId String?
+  stripePriceId        String?
+  status               SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  canceledAt           DateTime?
+  endedAt              DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime
+  instructor           Instructor         @relation(fields: [instructorId], references: [userId], onDelete: Cascade)
+  plan                 SubscriptionPlan   @relation(fields: [planId], references: [id])
+
+  @@index([planId])
+  @@index([status])
+}
+
+model InstructorEarning {
+  id           String     @id @default(uuid())
+  instructorId String
+  courseId     String
+  amount       Float
+  currency     String     @default("USD")
+  status       String
+  paymentId    String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  course       Course     @relation(fields: [courseId], references: [id])
+  instructor   Instructor @relation(fields: [instructorId], references: [userId])
+
+  @@index([instructorId])
+  @@index([status])
+  @@index([courseId])
+}
+
+/// ------------------------------------- SESSIONS-----------------------------
+
 model Session {
   id           String           @id
+  slug         String?          @unique
   title        String
   description  String?
   imageUrl     String?
@@ -654,57 +959,28 @@ model Session {
   @@index([status])
 }
 
-model Wishlist {
-  id        String   @id
-  createdAt DateTime @default(now())
-  updatedAt DateTime
-  userId    String   @unique
-  User      User     @relation(fields: [userId], references: [id])
-  Course    Course[] @relation("CourseToWishlist")
-}
+model SessionBooking {
+  id               String         @id @default(uuid())
+  sessionId        String
+  userId           String
+  paymentStatus    PaymentStatus  @default(PENDING)
+  amountPaid       Float?
+  paymentMethod    PaymentMethod?
+  stripePaymentId  String?
+  joinedAt         DateTime?
+  leftAt           DateTime?
+  durationAttended Int?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime
+  instructorId     String?
+  Instructor       Instructor?    @relation(fields: [instructorId], references: [userId])
+  session          Session        @relation(fields: [sessionId], references: [id])
+  user             User           @relation(fields: [userId], references: [id])
 
-enum EnrollmentStatus {
-  ACTIVE
-  COMPLETED
-  CANCELLED
-  PAUSED
-}
-
-enum ReactionType {
-  LIKE
-  DISLIKE
-  LOVE
-  LAUGH
-}
-
-enum PaymentStatus {
-  PENDING
-  COMPLETED
-  FAILED
-  REFUNDED
-  PROCESSING
-}
-
-enum PaymentMethod {
-  STRIPE
-  FREE
-  PAYPAL
-  BANK_TRANSFER
-}
-
-enum Interval {
-  MONTHLY
-  YEARLY
-  WEEKLY
-}
-
-enum SubscriptionStatus {
-  ACTIVE
-  CANCELED
-  PAST_DUE
-  UNPAID
-  TRIAL
-  INCOMPLETE
+  @@unique([sessionId, userId])
+  @@index([sessionId])
+  @@index([userId])
+  @@index([paymentStatus])
 }
 
 enum SessionStatus {
@@ -713,21 +989,6 @@ enum SessionStatus {
   COMPLETED
   CANCELLED
   ARCHIVED
-}
-
-enum ChapterContentType {
-  VIDEO
-  TEXT
-  QUIZ
-  ASSIGNMENT
-  RESOURCE
-  LIVE
-}
-
-enum PlanType {
-  USER
-  INSTRUCTOR
-  ENTERPRISE
 }
 
 enum RtcType {

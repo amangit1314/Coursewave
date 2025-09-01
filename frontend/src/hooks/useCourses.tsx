@@ -1,29 +1,28 @@
+import { courseService } from "@/lib/api/services";
+import { Course } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { Course } from "@prisma/client";
 
 export const useCourses = () => {
-  const fetchCourses = async () => {
-    const coursesUrl =
-      process.env.ENVIRONMENT! === "DEVELOPMENT"
-        ? `/api/courses`
-        : `api/courses`;
-
-    const response = await fetch(`/api/courses`);
-
-    if (!response.ok) {
-      throw new Error(`Failed to get course info from ${coursesUrl} ...`);
-    }
-
-    return await response.json();
-  };
-
-  const { data, error, isLoading } = useQuery({
+  const { data, error, isLoading, isFetching, refetch, isError } = useQuery<
+    Course[],
+    Error
+  >({
     queryKey: ["courses"],
-    queryFn: fetchCourses,
-    staleTime: 4,
+    queryFn: async () => {
+      const result = await courseService.getCourses(); // ✅ No params passed here
+      return result ?? [];
+    },
+    staleTime: 1000 * 60 * 5, // 5 mins cache
+    refetchOnWindowFocus: false,
+    retry: 1,
   });
 
-  const courses: Course[] = data?.data as Course[];
-
-  return { courses, error, isLoading };
+  return {
+    courses: data ?? [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+    isFetching,
+  };
 };

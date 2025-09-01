@@ -1,13 +1,13 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../config/prisma';
 import TokenService from '../core/services/tokenService';
 import EmailService from '../core/services/emailService';
 import CSRFService from '../core/services/csrfService';
 
 const router = express.Router();
-const prisma = new PrismaClient();
+
 
 // JWT configuration
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';

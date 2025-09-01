@@ -5,7 +5,7 @@ import {
   Notification,
 } from "@/zustand/notificationsStore";
 import { CiBellOn, CiCircleCheck, CiTrash } from "react-icons/ci";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 
 import React from "react";
 type NotificationItemProps = Omit<Notification, "icon"> & { icon?: React.ReactNode };

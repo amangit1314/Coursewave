@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
-import { formatPrice } from "@/lib/format";
+import { formatPrice } from "@/lib/utils/format";
 import { IconBadge } from "../(instructor)/instructor/[id]/courses/createdCourses/[courseId]/_components/icon-badge";
 import { CourseProgress } from "./course-progress";
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ImageIcon, Upload, X } from "lucide-react";
 import Image from "next/image";
-import { uploadToCloudinary } from "@/lib/cloudinary";
+import { uploadToCloudinary } from "@/lib/config/cloudinary";
 
 interface FileUploadProps {
   onChange: (url: string) => void;

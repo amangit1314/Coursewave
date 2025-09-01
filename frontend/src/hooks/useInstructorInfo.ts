@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Instructor } from "@/types/instructor";
-import { instructorService } from "@/lib/api/services/instructor-service";
+import { instructorService } from "@/lib/api/services/instructorService";
 
 export const useInstructorInfo = (userId: string) => {
   const fetchInstructorInfo = async () => {

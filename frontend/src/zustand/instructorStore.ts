@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Instructor } from "@/types/instructor";
 import { Course } from "@/types/course";
-import { instructorService } from "@/lib/api/services/instructor-service";
+import { instructorService } from "@/lib/api/services/instructorService";
 import { useQuery } from "@tanstack/react-query";
 
 type LoadingState = {

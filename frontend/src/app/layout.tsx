@@ -1,13 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import './globals.css'
+import "./globals.css";
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
 import { RootProvider } from "@/providers/root-provider";
-
-const poppins = Poppins({
-  weight: ["400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-});
+import { poppins } from "@/lib/config/fonts";
 
 export const metadata: Metadata = {
   title: "Coursewave",

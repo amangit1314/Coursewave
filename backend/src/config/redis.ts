@@ -267,6 +267,15 @@ export const invalidateCache = {
     await cacheManager.delPattern(`${CACHE_PREFIXES.BLOGS}:*`);
   },
 
+  // Invalidate user-related enrollments cache
+  enrollments: async (userId?: string) => {
+    const cacheManager = CacheManager.getInstance();
+    if (userId) {
+      await cacheManager.del(`${CACHE_PREFIXES.USERS}:${userId}:enrollments`);
+    }
+    await cacheManager.delPattern(`${CACHE_PREFIXES.USERS}:*`);
+  },
+
   // Invalidate user-related cache
   users: async (userId?: string) => {
     const cacheManager = CacheManager.getInstance();

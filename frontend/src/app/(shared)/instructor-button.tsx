@@ -26,7 +26,8 @@ const InstructorButton = () => {
     }
 
     if (isInstructor && instructor?.id) {
-      router.push(`/instructor/${instructor.id}/analytics`);
+      // router.push(`/instructor/${instructor.id}/analytics`);
+      router.push(`/instructor/analytics`);
     } else if (isInstructor && !instructor?.id) {
       toast.error("Instructor profile not found. Please contact support.");
     } else {
@@ -44,11 +45,14 @@ const InstructorButton = () => {
         throw new Error("User ID is required.");
       }
 
-      becomeInstructor(formData.bio, formData.expertise, formData.socialLinks);
+      // TODO: implement become instructor
+      // formData.bio, formData.expertise, formData.socialLinks
+      becomeInstructor();
       toast.success("Congratulations! You are now an instructor.");
       setShowForm(false);
       if (user?.id) {
-        router.push(`/profile/${user.id}`);
+        // router.push(`/profile/${user.id}`);
+        router.push(`/instructor/analytics`);
       }
     } catch (error: any) {
       console.error("Error becoming instructor:", error);

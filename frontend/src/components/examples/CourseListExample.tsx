@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { courseService, Course, CourseQueryParams } from '@/lib/api/services';
-import { useApiData, useApiPagination } from '@/hooks/use-api';
+import { useApiData, useApiPagination } from '@/hooks/useApi';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';

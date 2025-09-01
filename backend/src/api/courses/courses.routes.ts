@@ -58,7 +58,7 @@ router.get(
 );
 
 // Get enrolled courses
-router.get("/enrolled/courses", verifyToken, getEnrolledCourses);
+// router.get("/enrolled/courses", verifyToken, getEnrolledCourses);
 
 /// * ================================= Course =====================================
 

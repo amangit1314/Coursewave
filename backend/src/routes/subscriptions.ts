@@ -1,10 +1,11 @@
 import express, { Request, Response } from "express";
 import { Router } from "express";
-import { PrismaClient } from "@prisma/client";
 import { verifyToken } from "../api/auth/auth.middleware";
 
+import { prisma } from '../config/prisma';
+
 const router: Router = express.Router();
-const prisma = new PrismaClient();
+
 
 // Get all subscription plans (public)
 router.get("/plans", async (req: Request, res: Response) => {

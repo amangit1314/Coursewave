@@ -1,10 +1,9 @@
 import { Request, Response, Router } from "express";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from '../config/prisma';
 import { verifyToken } from "../api/auth/auth.middleware";
 import { v4 as uuidv4 } from 'uuid';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // Get user's enrolled courses
 router.get("/enrolledCourses", verifyToken, async (req: Request, res: Response) => {

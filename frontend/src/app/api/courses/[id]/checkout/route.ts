@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe } from "@/config/stripe";
+import { stripe } from "@/lib/config/stripe";
 
 export const dynamic = 'force-dynamic';
 

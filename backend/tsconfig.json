@@ -12,7 +12,11 @@
     "resolveJsonModule": true,
     // "baseUrl": ".",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    // "typeRoots": [
+    //   "./node_modules/@types",
+    //   "./src/types"
+    // ]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

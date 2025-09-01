@@ -29,12 +29,12 @@ const UserAvatar = () => {
       name: "Profile",
       link: `/profile/${user?.id}/`,
     },
-    {
-      // icon: <RiMoneyDollarCircleLine className="h-4 w-4" />,
-      icon: <AiOutlineTransaction className="h-4 w-4" />,
-      name: "Subscription",
-      link: `/subscription`,
-    },
+    // {
+    //   // icon: <RiMoneyDollarCircleLine className="h-4 w-4" />,
+    //   icon: <AiOutlineTransaction className="h-4 w-4" />,
+    //   name: "Subscription",
+    //   link: `/subscription`,
+    // },
     {
       icon: <FiShoppingCart className="h-4 w-4" />,
       name: "Cart",

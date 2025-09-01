@@ -7,7 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ThemeModeToggle } from "./theme-mode-toggle";
 import { useUserStore } from "@/zustand/userStore";
 import { Skeleton } from "@/components/ui/skeleton";
-import { orbitron, poppins } from "@/lib/fonts";
+import { orbitron, poppins } from "@/lib/config/fonts";
 
 import InstructorButton from "./instructor-button";
 import SearchButton from "./search-button";
@@ -18,11 +18,11 @@ const NavbarRoutes = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { user, loadingState } = useUserStore();
+  const { user } = useUserStore();
 
-  if (loadingState.loading) {
-    return <Skeleton className="h-12 w-12 rounded-md" />;
-  }
+  // if (loadingState.loading) {
+  //   return <Skeleton className="h-12 w-12 rounded-md" />;
+  // }
 
   const gotToSignIn = () => {
     router.push("/login");
@@ -43,9 +43,9 @@ const NavbarRoutes = () => {
           <Toaster />
 
           {/* instructor button */}
-          {/* <div className={orbitron.className}>
+          <div className={orbitron.className}>
             {user ? <InstructorButton /> : <div></div>}
-          </div> */}
+          </div>
 
           {/* theme toggle */}
           <div className="mx-2">

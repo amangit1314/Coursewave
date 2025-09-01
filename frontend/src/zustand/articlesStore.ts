@@ -1,5 +1,5 @@
 // src/stores/articles.store.ts
-import { articleService } from "@/lib/api/articles";
+import { articleService } from "@/lib/api/services/articlesService";
 import { BlogArticle } from "@/types/blog-api-response";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";

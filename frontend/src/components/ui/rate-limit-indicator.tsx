@@ -3,8 +3,8 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Clock, AlertTriangle, CheckCircle } from 'lucide-react';
-import { useRateLimitStatus } from '@/hooks/use-api';
-import { getRateLimitStatus } from '@/lib/api/rate-limiter';
+import { useRateLimitStatus } from '@/hooks/useApi';
+import { getRateLimitStatus } from '@/lib/api/core/rate-limiter';
 
 interface RateLimitIndicatorProps {
   url: string;

@@ -1,10 +1,9 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import authRoutes from "./routes/auth";
+import authRoutes from "./api/auth/auth.routes";
 import userRoutes from "./routes/users";
-import blogRoutes from "./routes/blogs";
-// import courseRoutes from "./routes/courses";
+import blogRoutes from "./api/blogs/blogs.routes";
 import courseRoutes from "./api/courses/courses.routes";
 import courseProgressRoutes from "./routes/course-progress";
 import cartRoutes from "./routes/cart";
@@ -12,21 +11,23 @@ import wishlistRoutes from "./routes/wishlist";
 import categoriesRoutes from "./routes/categories";
 import sessionsRoutes from "./routes/sessions";
 import subscriptionRoutes from "./routes/subscriptions";
+import projectRoutes from "./routes/projects";
+import communityRoutes from "./routes/communities";
 import instructorRoutes from "./routes/instructor";
 import profileRoutes from "./routes/profile";
 import tokenManagementRoutes from "./routes/tokenManagement";
 import secureAuthRoutes from "./routes/secureAuth";
-import { checkAccessToken } from "./core/middleware";
 import stripeWebhookRoutes from "./routes/webhooks";
 import compression from "compression";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import { courseCacheMiddleware } from "./config/redis";
+import { checkAccessToken } from "./core/middleware";
 
 // Load environment variables
 dotenv.config();
 
-// Check for required environment variables
+// ----------------- Check for required environment variables --------------------------
 const requiredEnvVars = ["DATABASE_URL", "JWT_SECRET", "JWT_REFRESH_SECRET"];
 
 const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
@@ -38,28 +39,12 @@ if (missingEnvVars.length > 0) {
   console.error("Server will start but some features may not work correctly");
 }
 
-// Check for optional environment variables
-const optionalEnvVars = ["UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN"];
-
-const missingOptionalEnvVars = optionalEnvVars.filter(
-  (envVar) => !process.env[envVar]
-);
-
-if (missingOptionalEnvVars.length > 0) {
-  console.warn(
-    `Missing optional environment variables: ${missingOptionalEnvVars.join(
-      ", "
-    )}`
-  );
-  console.warn("Redis caching features will not be available");
-}
-
 // --------------------------------------------------------------------------------
 
 const app = express();
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 mins
+  windowMs: 15 * 60 * 1000, // 1 min
   max: 100, // limit each IP to 100 requests per window
 });
 
@@ -117,7 +102,8 @@ app.use(
   //  blogCacheMiddleware,
   blogRoutes
 );
-
+app.use("/api/projects", projectRoutes);
+app.use("/api/communities", communityRoutes);
 app.use("/api/course-progress", courseProgressRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);

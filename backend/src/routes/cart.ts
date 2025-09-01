@@ -1,12 +1,13 @@
 import express, { Request, Response } from 'express';
 import { Router } from 'express';
-import { PrismaClient, Prisma } from '@prisma/client';
+
 import { verifyToken } from '../api/auth/auth.middleware';
 import { invalidateCache } from '../config/redis';
 import { v4 as uuidv4 } from 'uuid';
+import { prisma } from '../config/prisma';
 
 const router: Router = express.Router();
-const prisma = new PrismaClient();
+
 
 // Get user's cart
 router.get('/', verifyToken, async (req: Request, res: Response) => {
