@@ -118,7 +118,7 @@ const mockArticles: BlogArticle[] = [
   }
 ];
 
-const AuthorPage = () => {
+const AuthorPage = ({ params }: { params: { authorId: string } }) => {
   const articles: BlogArticle[] = mockArticles;
 
   return (
