@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { FC } from "react";
 
-type Props = {}
+const AuthorArticles: FC<{ params: { authorId: string } }> = ({ params }) => {
+  const { authorId } = params;
+  return <div>AuthorArticles</div>;
+};
 
-const AuthorArticles = (props: Props) => {
-  return (
-    <div>AuthorArticles</div>
-  )
-}
+export default AuthorArticles;
