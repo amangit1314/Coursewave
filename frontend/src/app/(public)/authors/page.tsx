@@ -129,14 +129,16 @@ const mockArticles: BlogArticle[] = [
 ];
 
 interface AuthorPageProps {
-  params: { authorId: string };
+  // params: { authorId: string };
 }
 
-export default function AuthorPage({ params }: AuthorPageProps) {
-  const { authorId } = params;
-  const articles = mockArticles.filter(
-    (article) => article.authorId === authorId
-  );
+export default function AuthorPage() {
+  // const { authorId } = params;
+  // const articles = mockArticles.filter(
+  //   (article) => article.authorId === authorId
+  // );
+
+  const articles = mockArticles;
 
   return (
     <div className="max-w-7xl overflow-x-hidden px-10 py-8">
