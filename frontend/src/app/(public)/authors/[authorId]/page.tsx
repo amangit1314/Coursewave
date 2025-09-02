@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { FC } from "react";
 
 import { BlogArticle } from "@/types/blog-api-response";
 import { ArticleCard } from "../../articles/_components/ArticleCard";
@@ -47,7 +47,8 @@ const mockArticles: BlogArticle[] = [
   {
     id: "blog-1",
     title: "Getting Started with React",
-    content: "This article explains how to start using React for building modern web applications...",
+    content:
+      "This article explains how to start using React for building modern web applications...",
     slug: "getting-started-with-react",
     excerpt: "Learn the basics of React, components, and state management.",
     coverImage: "/images/react-guide.jpg",
@@ -65,27 +66,30 @@ const mockArticles: BlogArticle[] = [
       email: "john@example.com",
       profileImageUrl: "/images/john-doe.jpg",
       about: "Full-stack developer and tech writer.",
-      shortSummary: "Writes about JavaScript and web development."
+      shortSummary: "Writes about JavaScript and web development.",
     },
     category: {
       id: "category-1",
       name: "Web Development",
-      description: "Articles about web technologies and development best practices.",
+      description:
+        "Articles about web technologies and development best practices.",
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     },
     _count: {
       likes: 120,
       views: 3500,
-      comments: 12
-    }
+      comments: 12,
+    },
   },
   {
     id: "blog-2",
     title: "Understanding TypeScript",
-    content: "TypeScript adds type safety to JavaScript, making it easier to manage large codebases...",
+    content:
+      "TypeScript adds type safety to JavaScript, making it easier to manage large codebases...",
     slug: "understanding-typescript",
-    excerpt: "Explore TypeScript features and why it’s popular for modern apps.",
+    excerpt:
+      "Explore TypeScript features and why it’s popular for modern apps.",
     coverImage: "/images/typescript-guide.jpg",
     readTime: 10,
     isPublished: true,
@@ -101,24 +105,26 @@ const mockArticles: BlogArticle[] = [
       email: "jane@example.com",
       profileImageUrl: "/images/jane-smith.jpg",
       about: "Frontend engineer and UI/UX enthusiast.",
-      shortSummary: "Specializes in TypeScript and React."
+      shortSummary: "Specializes in TypeScript and React.",
     },
     category: {
       id: "category-1",
       name: "Web Development",
-      description: "Articles about web technologies and development best practices.",
+      description:
+        "Articles about web technologies and development best practices.",
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     },
     _count: {
       likes: 95,
       views: 2900,
-      comments: 8
-    }
-  }
+      comments: 8,
+    },
+  },
 ];
 
-const AuthorPage = ({ params }: { params: { authorId: string } }) => {
+const AuthorPage: FC<{ params: { authorId: string } }> = ({ params }) => {
+  const { authorId } = params;
   const articles: BlogArticle[] = mockArticles;
 
   return (
@@ -130,7 +136,7 @@ const AuthorPage = ({ params }: { params: { authorId: string } }) => {
         Browse articles on topics you like
       </p>
 
-      <div>
+      {/* <div>
         {articles && articles.length ? (
           <div className="my-8 grid grid-cols-2 gap-8 md:grid-cols-3">
             {articles.map((article) => (
@@ -142,7 +148,7 @@ const AuthorPage = ({ params }: { params: { authorId: string } }) => {
         ) : (
           <div className="my-8 grid grid-cols-3 gap-8">No Articles yet</div>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };
