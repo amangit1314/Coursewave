@@ -46,7 +46,7 @@
 
 import React from "react";
 import { BlogArticle } from "@/types/blog-api-response";
-import { ArticleCard } from "../../articles/_components/ArticleCard";
+import { ArticleCard } from "../articles/_components/ArticleCard";
 
 const mockArticles: BlogArticle[] = [
   {
