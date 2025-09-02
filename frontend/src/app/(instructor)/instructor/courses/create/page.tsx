@@ -24,12 +24,13 @@
 
 // export default CreateCourse;
 
-
+"use client";
+import { useUserStore } from "@/zustand/userStore";
 import CreateCourseForm from "./_components/CreateCourseForm";
 
-const CreateCourse = async ({ params }: { params: { id: string } }) => {
-  const instructorId = params.id;
+const CreateCourse = () => {
 
+const {user} = useUserStore();
   return (
     <div className="mx-auto flex h-full min-h-screen w-full max-w-7xl flex-col justify-start py-20 dark:bg-zinc-900 md:items-start">
       <div className="flex flex-col px-4 md:px-8">
@@ -43,7 +44,7 @@ const CreateCourse = async ({ params }: { params: { id: string } }) => {
       </div>
 
       <div className="my-2 px-4 md:px-8">
-        <CreateCourseForm instructorId={instructorId} />
+        <CreateCourseForm instructorId={user?.id ?? ""} />
       </div>
     </div>
   );
