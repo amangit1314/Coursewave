@@ -1,9 +1,9 @@
-"use client";
+// "use client";
 
-import React, { FC } from "react";
+// import React, { FC } from "react";
 
-import { BlogArticle } from "@/types/blog-api-response";
-import { ArticleCard } from "../../articles/_components/ArticleCard";
+// import { BlogArticle } from "@/types/blog-api-response";
+// import { ArticleCard } from "../../articles/_components/ArticleCard";
 
 // const AuthorPage = async () => {
 //   // TODO: use useArticles zustand store here in place of directly accessing it from db
@@ -42,6 +42,11 @@ import { ArticleCard } from "../../articles/_components/ArticleCard";
 // };
 
 // export default AuthorPage;
+"use client";
+
+import React from "react";
+import { BlogArticle } from "@/types/blog-api-response";
+import { ArticleCard } from "../../articles/_components/ArticleCard";
 
 const mockArticles: BlogArticle[] = [
   {
@@ -123,9 +128,15 @@ const mockArticles: BlogArticle[] = [
   },
 ];
 
-const AuthorPage: FC<{ params: { authorId: string } }> = ({ params }) => {
+interface AuthorPageProps {
+  params: { authorId: string };
+}
+
+export default function AuthorPage({ params }: AuthorPageProps) {
   const { authorId } = params;
-  const articles: BlogArticle[] = mockArticles;
+  const articles = mockArticles.filter(
+    (article) => article.authorId === authorId
+  );
 
   return (
     <div className="max-w-7xl overflow-x-hidden px-10 py-8">
@@ -136,8 +147,8 @@ const AuthorPage: FC<{ params: { authorId: string } }> = ({ params }) => {
         Browse articles on topics you like
       </p>
 
-      {/* <div>
-        {articles && articles.length ? (
+      <div>
+        {articles.length ? (
           <div className="my-8 grid grid-cols-2 gap-8 md:grid-cols-3">
             {articles.map((article) => (
               <div key={article.id}>
@@ -146,11 +157,9 @@ const AuthorPage: FC<{ params: { authorId: string } }> = ({ params }) => {
             ))}
           </div>
         ) : (
-          <div className="my-8 grid grid-cols-3 gap-8">No Articles yet</div>
+          <div className="my-8">No Articles yet for this author.</div>
         )}
-      </div> */}
+      </div>
     </div>
   );
-};
-
-export default AuthorPage;
+}
