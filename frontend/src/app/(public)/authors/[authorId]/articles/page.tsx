@@ -1,8 +1,13 @@
-import React, { FC } from "react";
+interface AuthorPageProps {
+  params: { authorId: string };
+}
 
-const AuthorArticles: FC<{ params: { authorId: string } }> = ({ params }) => {
+export default function AuthorArticles({ params }: AuthorPageProps) {
   const { authorId } = params;
-  return <div>AuthorArticles</div>;
-};
 
-export default AuthorArticles;
+  return (
+    <div>
+      <h1>Articles for Author ID: {authorId}</h1>
+    </div>
+  );
+}
