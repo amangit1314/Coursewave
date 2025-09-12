@@ -7,3 +7,5 @@ const InstructorProjects = (props: Props) => {
     <div>InstructorProjects</div>
   )
 }
+
+export default InstructorProjects;

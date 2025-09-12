@@ -15,17 +15,14 @@ import ChatMessages from "./_components/ChatMessages";
 import PinnedMessagesTopBanner from "./_components/PinnedMessagesTopBanner";
 import MessageInput from "./_components/MessageInput";
 import { initCommunitySocket } from "@/lib/socket/communitySocket";
+import { useParams } from "next/navigation";
 
-const CommunityPage = ({
-  params,
-}: {
-  params: {
-    userId?: string;
-    communityChatId?: string;
-  };
-}) => {
+const CommunityPage = () => {
+  const { user, token } = useUserStore();
+  const userId = user?.id!;
+
+  const params = useParams<{ communityChatId?: string }>();
   const communityId = params?.communityChatId!;
-  const userId = params?.userId!;
 
   // -----------------------------------------------------------------------------
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -43,7 +40,6 @@ const CommunityPage = ({
     addMessage,
     setIsTyping,
   } = useCommunityChatStore();
-  const { user, token } = useUserStore();
 
   // ----------------------------------------------------------------------------------------------------
 

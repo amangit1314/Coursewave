@@ -1,9 +1,9 @@
 import React from 'react'
 
-type Props = {}
-
-const InstructorPage = (props: Props) => {
+const InstructorPage = () => {
   return (
     <div>InstructorPage</div>
   )
 }
+
+export default InstructorPage;

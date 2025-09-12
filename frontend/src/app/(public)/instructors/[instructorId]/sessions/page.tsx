@@ -7,3 +7,5 @@ const InstructorSessions = (props: Props) => {
     <div>InstructorSessions</div>
   )
 }
+
+export default InstructorSessions;

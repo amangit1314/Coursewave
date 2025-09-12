@@ -1,9 +1,9 @@
-import React from 'react'
+import React from "react";
 
-type Props = {}
+type Props = {};
 
 const InstructorArticles = (props: Props) => {
-  return (
-    <div>InstructorArticles</div>
-  )
-}
+  return <div>InstructorArticles</div>;
+};
+
+export default InstructorArticles;
