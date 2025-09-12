@@ -134,7 +134,7 @@ interface AuthorPageProps {
 
 export default function AuthorPage() {
   // const { authorId } = params;
-  // const articles = mockArticles.filter(
+  // const articles = mockArticles.filter( 
   //   (article) => article.authorId === authorId
   // );
 

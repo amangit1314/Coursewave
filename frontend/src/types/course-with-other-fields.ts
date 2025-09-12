@@ -1,4 +1,4 @@
-import { Instructor } from "@prisma/client";
+import { Instructor } from "./instructor";
 
 export type CourseWithOtherFields = {
     courseId: string;

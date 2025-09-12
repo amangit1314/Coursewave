@@ -95,6 +95,7 @@ export class ProfileService {
   // Instructor related
   async becomeInstructor(userId: string): Promise<any> {
     const response = await this.apiManager.post(`/api/profile/${userId}/becomeInstructor`);
+    // `http://localhost:5002/api/profile/${user.id}/become-instructor`
     return response.data;
   }
 

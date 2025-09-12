@@ -36,10 +36,10 @@ const RecommendedFromCoursewave = () => {
 
   console.log(
     "Articles in the recommended from coursewave before filtering: ",
-    articlesData.articles
+    articlesData.data.articles
   );
 
-  const articles = articlesData.articles.filter(
+  const articles = articlesData.data.articles.filter(
     (article: BlogArticle) => article.id !== articleId
   );
 

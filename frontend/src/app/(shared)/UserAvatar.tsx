@@ -21,7 +21,7 @@ import { RiMoneyDollarCircleLine } from "react-icons/ri";
 import { AiOutlineTransaction } from "react-icons/ai";
 
 const UserAvatar = () => {
-  const { user, logOutUser } = useUserStore();
+  const { user, logout } = useUserStore();
 
   const options = [
     {
@@ -53,7 +53,7 @@ const UserAvatar = () => {
   ];
 
   const onLogout = async () => {
-    logOutUser();
+    logout();
   };
 
   return (

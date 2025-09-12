@@ -1,4 +1,4 @@
-import { BlogComment } from "@prisma/client";
+import { BlogComment } from "./blog-comment";
 
 export type BlogWithComments = {
   id: string;

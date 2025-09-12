@@ -9,10 +9,10 @@ import { useCoursesStore } from "@/zustand/coursesStore";
 import { useUserStore } from "@/zustand/userStore";
 import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
 import UserAvatar from "@/app/(shared)/UserAvatar";
-import Notifications from "@/app/(shared)/notification-button";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import Notifications from "@/app/(shared)/NotificationButton";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700"],

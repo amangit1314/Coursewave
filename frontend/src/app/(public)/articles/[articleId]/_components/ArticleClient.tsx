@@ -5,8 +5,7 @@ import RecommendedFromCoursewave from "./RecommendedFromCoursewave";
 import ArticleAuthorCard from "./ArticleAuthorCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import ArticleAuthorInfo from "./ArticleAuthorInfo";
-import UserAvatar from "@/app/(shared)/UserAvatar";
-import Notifications from "@/app/(shared)/notification-button";
+
 import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
 import {
   Eye,
@@ -41,6 +40,8 @@ import { useUserStore } from "@/zustand/userStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { articleService } from "@/lib/api/services/articlesService";
+import Notifications from "@/app/(shared)/NotificationButton";
+import UserAvatar from "@/app/(shared)/UserAvatar";
 
 const ArticleClient = ({ articleId }: { articleId: string }) => {
   const [isBookmarked, setIsBookmarked] = React.useState<boolean>(false);
@@ -506,25 +507,34 @@ const ArticleClient = ({ articleId }: { articleId: string }) => {
             <div>
               {articleData?.content ? (
                 <div className="prose prose-lg max-w-none dark:prose-invert text-md text-base tracking-tight text-zinc-700 dark:text-gray-100">
-                  {articleData.content.split('\\n').map((paragraph, index) => {
+                  {articleData.content.split("\\n").map((paragraph, index) => {
                     // Handle markdown headers
-                    if (paragraph.startsWith('# ')) {
+                    if (paragraph.startsWith("# ")) {
                       return (
-                        <h1 key={index} className="text-3xl font-bold mb-4 text-zinc-800 dark:text-white">
+                        <h1
+                          key={index}
+                          className="text-3xl font-bold mb-4 text-zinc-800 dark:text-white"
+                        >
                           {paragraph.substring(2)}
                         </h1>
                       );
                     }
-                    if (paragraph.startsWith('## ')) {
+                    if (paragraph.startsWith("## ")) {
                       return (
-                        <h2 key={index} className="text-2xl font-bold mb-3 text-zinc-800 dark:text-white">
+                        <h2
+                          key={index}
+                          className="text-2xl font-bold mb-3 text-zinc-800 dark:text-white"
+                        >
                           {paragraph.substring(3)}
                         </h2>
                       );
                     }
-                    if (paragraph.startsWith('### ')) {
+                    if (paragraph.startsWith("### ")) {
                       return (
-                        <h3 key={index} className="text-xl font-bold mb-2 text-zinc-800 dark:text-white">
+                        <h3
+                          key={index}
+                          className="text-xl font-bold mb-2 text-zinc-800 dark:text-white"
+                        >
                           {paragraph.substring(4)}
                         </h3>
                       );

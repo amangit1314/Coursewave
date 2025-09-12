@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useConfettiStore } from "@/hooks/useConfettiStore";
-import { ConfirmModal } from "@/app/(shared)/modals/confirm-modal";
+import { ConfirmModal } from "@/app/(shared)/custom/modals/confirm-modal";
 
 interface ActionsProps {
   disabled: boolean;

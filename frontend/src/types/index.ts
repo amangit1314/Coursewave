@@ -27,7 +27,6 @@ export type { SessionResponse, SessionType, Instructor } from './session';
 export type { LearningGoal } from './learning-goal';
 
 // Subscription Types
-export type { UserSubscription } from '../lib/subscription';
 export type { SubscriptionPlan } from '../lib/config/subscriptionPlans';
 
 // API Response Types

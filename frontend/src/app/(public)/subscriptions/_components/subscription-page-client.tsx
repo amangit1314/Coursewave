@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from "react";
 import SubscriptionContent from "./subscription-content";
 import { useUserStore } from "@/zustand/userStore";
-import { UserSubscription } from "@/types";
-import { getUserSubscriptionPlan } from "@/lib/utils/subscription";
+// import { UserSubscription } from "@/types";
+import { getUserSubscriptionPlan, UserSubscription } from "@/lib/utils/subscription";
 
 export default function SubscriptionPageClient() {
   const { user } = useUserStore();

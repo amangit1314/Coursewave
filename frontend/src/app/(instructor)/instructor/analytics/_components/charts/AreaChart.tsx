@@ -120,9 +120,6 @@ const chartData = [
 ];
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
   desktop: {
     label: "Desktop",
     color: "hsl(var(--chart-1))",
@@ -253,7 +250,20 @@ export function Are() {
               stroke="var(--color-desktop)"
               stackId="a"
             />
-            <ChartLegend content={<ChartLegendContent payload={chartConfig} />} />
+            <ChartLegend
+              content={
+                <ChartLegendContent
+                  payload={Object.entries(chartConfig).map(
+                    ([key, { label, color }]) => ({
+                      value: label,
+                      type: "square", // legend marker type
+                      color,
+                      dataKey: key,
+                    })
+                  )}
+                />
+              }
+            />
           </AreaChart>
         </ChartContainer>
       </CardContent>

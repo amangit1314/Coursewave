@@ -3,7 +3,7 @@ import Link from "next/link";
 import { BookOpen } from "lucide-react";
 import { formatPrice } from "@/lib/utils/format";
 import { CourseProgress } from "./CourseProgress";
-import { IconBadge } from "./IconBadge";
+import { IconBadge } from "./custom/IconBadge";
 
 interface CourseCardProps {
   id: string;
