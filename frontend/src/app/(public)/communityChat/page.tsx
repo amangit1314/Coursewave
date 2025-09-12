@@ -15,20 +15,15 @@ import { CommunityCard } from "./_components/CommunityCard";
 import { CommunityListCard } from "./_components/CommunityListCard";
 import { useSocket } from "@/hooks/useSocket";
 
-const CommunityChat = ({
-  params,
-}: {
-  params: {
-    userId?: string;
-  };
-}) => {
-  const userId = params?.userId!;
+const CommunityChat = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const { data: communitiesData, isLoading } = useCommunities(); // <--- Call the hook
   const { user, token } = useUserStore();
+  const userId = user?.id!;
+  
   const socket = useSocket(token); // socket connects when this page renders
 
   const filteredCommunities = useMemo(() => {
