@@ -6,7 +6,7 @@ import ArticleAuthorCard from "./ArticleAuthorCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import ArticleAuthorInfo from "./ArticleAuthorInfo";
 
-import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
+import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
 import {
   Eye,
   EyeOff,
@@ -40,8 +40,8 @@ import { useUserStore } from "@/zustand/userStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { articleService } from "@/lib/api/services/articlesService";
-import Notifications from "@/app/(shared)/NotificationButton";
-import UserAvatar from "@/app/(shared)/UserAvatar";
+import Notifications from "@/components/common/NotificationButton";
+import UserAvatar from "@/components/common/UserAvatar";
 
 const ArticleClient = ({ articleId }: { articleId: string }) => {
   const [isBookmarked, setIsBookmarked] = React.useState<boolean>(false);

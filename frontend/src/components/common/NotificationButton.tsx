@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import NotificationItem from "./notifications/notification-item";
+import NotificationItem from "../notifications/notification-item";
 import { BellRing, X } from "lucide-react";
 import { CiBellOn } from "react-icons/ci";
 

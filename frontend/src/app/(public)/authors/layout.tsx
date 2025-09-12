@@ -9,9 +9,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "react-hot-toast";
 import { Sidebar } from "lucide-react";
 import ArticlesSearchButton from "../articles/_components/ArticlesSearchButton";
-import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
-import UserAvatar from "@/app/(shared)/UserAvatar";
-import Notifications from "@/app/(shared)/NotificationButton";
+import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
+import UserAvatar from "@/components/common/UserAvatar";
+import Notifications from "@/components/common/NotificationButton";
 
 interface BrowseArticlesLayoutProps {
   children: React.ReactNode;

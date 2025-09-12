@@ -4,10 +4,10 @@ import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useUserStore } from "@/zustand/userStore";
 import { toast } from "react-hot-toast";
-import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
-import UserAvatar from "@/app/(shared)/UserAvatar";
+import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
+import UserAvatar from "@/components/common/UserAvatar";
 import Sidebar from "../browse/_components/Sidebar";
-import Notifications from "@/app/(shared)/NotificationButton";
+import Notifications from "@/components/common/NotificationButton";
 
 interface BrowseCommunityChatLayoutProps {
   children: React.ReactNode;

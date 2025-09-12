@@ -5,9 +5,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { useUserStore } from "@/zustand/userStore";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { ThemeModeToggle } from "../(shared)/ThemeModeToggle";
-import Notifications from "../(shared)/NotificationButton";
-import UserAvatar from "../(shared)/UserAvatar";
+import { ThemeModeToggle } from "../../components/common/ThemeModeToggle";
+import Notifications from "../../components/common/NotificationButton";
+import UserAvatar from "../../components/common/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, Users, Video, Menu, X, Sidebar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";

@@ -896,13 +896,13 @@ import React from "react";
 
 import { useParams } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { CourseProgress } from "@/app/(shared)/CourseProgress";
-import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
+import { CourseProgress } from "@/components/CourseProgress";
+import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
 import { useCoursesStore } from "@/zustand/coursesStore";
 import { useUserStore } from "@/zustand/userStore";
 import { Callout } from "@tremor/react";
 
-import UserAvatar from "@/app/(shared)/UserAvatar";
+import UserAvatar from "@/components/common/UserAvatar";
 import VideoSummary from "./_components/VideoSummary";
 import CourseAttachments from "./_components/CourseAttachments";
 

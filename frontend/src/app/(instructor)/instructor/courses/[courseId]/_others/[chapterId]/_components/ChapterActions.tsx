@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { ConfirmModal } from "@/app/(shared)/custom/modals/confirm-modal";
+import { ConfirmModal } from "@/components/custom/modals/confirm-modal";
 
 interface ChapterActionsProps {
   disabled: boolean;

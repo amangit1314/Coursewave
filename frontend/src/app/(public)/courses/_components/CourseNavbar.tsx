@@ -9,11 +9,11 @@ import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUserStore } from "@/zustand/userStore";
 import { useRouter } from "next/navigation";
-import InstructorButton from "@/app/(shared)/InstructorButton";
-import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
-import UserAvatar from "@/app/(shared)/UserAvatar";
+import InstructorButton from "@/components/InstructorButton";
+import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
+import UserAvatar from "@/components/common/UserAvatar";
 import { ChevronRight, Home } from "lucide-react";
-import Notifications from "@/app/(shared)/NotificationButton";
+import Notifications from "@/components/common/NotificationButton";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700"],

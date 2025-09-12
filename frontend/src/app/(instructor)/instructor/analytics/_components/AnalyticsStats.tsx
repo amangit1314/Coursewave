@@ -2,7 +2,7 @@ import React from "react";
 import { BsPersonVideo2 } from "react-icons/bs";
 import { TbMoneybag } from "react-icons/tb";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import CardDataStats from "@/app/(shared)/CardDataStats";
+import CardDataStats from "@/components/CardDataStats";
 
 type AnalyticsStats = {
   totalEarning: string;

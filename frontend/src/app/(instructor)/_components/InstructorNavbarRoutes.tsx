@@ -4,11 +4,11 @@ import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
-import UserAvatar from "@/app/(shared)/UserAvatar";
+import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
+import UserAvatar from "@/components/common/UserAvatar";
 import { useUserStore } from "@/zustand/userStore";
 import { poppins } from "@/lib/config/fonts";
-import Notifications from "@/app/(shared)/NotificationButton";
+import Notifications from "@/components/common/NotificationButton";
 
 // const InstructorNavbarRoutes = () => {
 //   const pathname = usePathname();

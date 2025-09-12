@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import toast from "react-hot-toast";
 import CourseNavbar from "../../_components/CourseNavbar";
 import { useUserStore } from "@/zustand/userStore";
-import { Footer } from "@/app/(shared)/LandingPage/footer";
+import { Footer } from "@/components/LandingPage/footer";
 import { CoursePreviewLoadingSkeleton } from "./skeletons/CoursePreviewLoadingSekeleton";
 import { ErrorMessage } from "./ErrorMessage";
 import { CourseRatingsSection } from "./CourseRatingsSection";

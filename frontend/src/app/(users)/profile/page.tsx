@@ -27,7 +27,7 @@ import { RiInstagramFill } from "react-icons/ri";
 import { FaGithub, FaSquareXTwitter, FaLinkedinIn } from "react-icons/fa6";
 import toast, { Toaster } from "react-hot-toast";
 import "@uploadthing/react/styles.css";
-import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
+import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
 import { useRouter } from "next/navigation";
 import { useInstructorInfo } from "@/hooks/useInstructorInfo";
 import { PiSignOut, PiStudentFill } from "react-icons/pi";

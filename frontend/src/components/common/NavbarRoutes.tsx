@@ -9,8 +9,8 @@ import { useUserStore } from "@/zustand/userStore";
 import { Skeleton } from "@/components/ui/skeleton";
 import { orbitron, poppins } from "@/lib/config/fonts";
 
-import InstructorButton from "./InstructorButton";
-import SearchButton from "./SearchButton";
+import InstructorButton from "../InstructorButton";
+import SearchButton from "../SearchButton";
 import Notifications from "./NotificationButton";
 import Cart from "./CartButton";
 

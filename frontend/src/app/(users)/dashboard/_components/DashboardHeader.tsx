@@ -1,6 +1,6 @@
-import InstructorButton from "@/app/(shared)/InstructorButton";
-import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
-import UserAvatar from "@/app/(shared)/UserAvatar";
+import InstructorButton from "@/components/InstructorButton";
+import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
+import UserAvatar from "@/components/common/UserAvatar";
 import Notifications from "../notifications/page";
 
 const DashboardHeader = () => {

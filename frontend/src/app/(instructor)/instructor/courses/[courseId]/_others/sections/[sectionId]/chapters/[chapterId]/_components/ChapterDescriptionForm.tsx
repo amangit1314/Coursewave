@@ -19,8 +19,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/utils";
 import { Chapter } from "@/types/course-details-api-response";
-import { Preview } from "@/app/(shared)/Preview";
-import { Editor } from "@/app/(shared)/custom/ReactQuillEditor";
+import { Preview } from "@/components/Preview";
+import { Editor } from "@/components/custom/ReactQuillEditor";
 
 interface ChapterDescriptionFormProps {
   initialData: Chapter;

@@ -7,12 +7,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCoursesStore } from "@/zustand/coursesStore";
 import { useUserStore } from "@/zustand/userStore";
-import { ThemeModeToggle } from "@/app/(shared)/ThemeModeToggle";
-import UserAvatar from "@/app/(shared)/UserAvatar";
+import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
+import UserAvatar from "@/components/common/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import Notifications from "@/app/(shared)/NotificationButton";
+import Notifications from "@/components/common/NotificationButton";
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700"],

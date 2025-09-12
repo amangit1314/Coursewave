@@ -2,16 +2,16 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import LandingPageHeader from "./(shared)/LandingPage/header";
-import HeroSection from "./(shared)/LandingPage/hero-section";
-import About from "./(shared)/LandingPage/about";
-import AchieveCodingGoals from "./(shared)/LandingPage/achieve-coding-goals";
-import HomeBrowseSection from "./(shared)/LandingPage/home-browse-section";
-import LandingCoursewaveStats from "./(shared)/LandingPage/landing-stats";
-import Offerings from "./(shared)/LandingPage/offerings";
-import Testimonials from "./(shared)/LandingPage/testimonials";
-import { Footer } from "./(shared)/LandingPage/footer";
-import FeaturedCourses from "./(shared)/LandingPage/featured-courses";
+import LandingPageHeader from "../components/LandingPage/header";
+import HeroSection from "../components/LandingPage/hero-section";
+import About from "../components/LandingPage/about";
+import AchieveCodingGoals from "../components/LandingPage/achieve-coding-goals";
+import HomeBrowseSection from "../components/LandingPage/home-browse-section";
+import LandingCoursewaveStats from "../components/LandingPage/landing-stats";
+import Offerings from "../components/LandingPage/offerings";
+import Testimonials from "../components/LandingPage/testimonials";
+import { Footer } from "../components/LandingPage/footer";
+import FeaturedCourses from "../components/LandingPage/featured-courses";
 
 const Home = () => {
   const router = useRouter();
