@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+📚 Coursewave – LMS Platform
 
-## Getting Started
+Coursewave is a full-stack Learning Management System (LMS) built with **Next.js (frontend)**, **Node.js/Express (backend)**, **Supabase + Prisma (database & auth)**, and integrated services like **Stripe** and **SendGrid**.
 
-First, run the development server:
+The platform supports students, instructors, and admins with modules like user management, content management, subscriptions, and payments.
+
+---
+
+## 🚀 Project Structure
+
+coursewave/
+│── backend/ # Node.js + Express API (business logic, payments, DB access)
+│── frontend/ # Next.js app (UI, dashboards, course pages)
+│── prisma/ # Prisma schema & migrations
+
+---
+
+## ⚙️ Tech Stack
+
+- **Frontend:** Next.js (App Router), React, TailwindCSS
+- **Backend:** Node.js, Express, Prisma ORM
+- **Database:** PostgreSQL (via Supabase)
+- **Auth:** Supabase Auth (email + OAuth), JWT sessions
+- **Payments:** Stripe (subscriptions, instructor payouts)
+- **Emails:** SendGrid (welcome, notifications, password reset)
+- **Storage:** Supabase Storage (course videos, files)
+- **Deployment:** Vercel (frontend), AWS/Docker (backend)
+
+---
+
+## 🏗️ Features (MVP)
+
+- 🔐 User Authentication (student, instructor, admin roles)
+- 📚 Course Management (create, update, enroll, watch content)
+- 💳 Subscription Payments (Stripe)
+- 📩 Email Notifications (SendGrid)
+- 📊 Instructor Dashboard (basic analytics, income view)
+
+---
+
+## 🖥️ Getting Started
+
+### 1. Clone the repo
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/your-username/coursewave.git
+cd coursewave
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Setup Environment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a .env file in both backend/ and frontend/ with:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+DATABASE_URL=your_supabase_postgres_url
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_KEY=your_supabase_service_role_key
+STRIPE_SECRET_KEY=your_stripe_secret
+SENDGRID_API_KEY=your_sendgrid_api_key
+JWT_SECRET=your_jwt_secret
+```
 
-## Learn More
+3. Install dependencies
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+cd backend && npm install
+cd ../frontend && npm install
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. Run the development servers
+   Backend (Node.js + Express):
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+cd backend
+npm run build && npm run start
+```
 
-## Deploy on Vercel
+Frontend (Next.js):
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+cd frontend
+npm run dev
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open http://localhost:3000 for frontend.
+
+Backend will run at http://localhost:5000 (or your configured port).
+
+📦 Database & Migrations
+Using Prisma + Supabase (Postgres).
+
+bash
+Copy code
+npx prisma migrate dev
+📌 Roadmap (Future Enhancements)
+✅ Testing & Certifications (PDF generation)
+
+✅ Real-time Community Chat (WebSockets or Firebase)
+
+✅ Project Collaboration (file sharing, mentorship)
+
+✅ Admin Dashboard (income reports, platform management)
+
+✅ Instructor Payouts (Stripe Connect)
+
+📜 License
+MIT
