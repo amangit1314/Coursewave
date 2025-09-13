@@ -7,12 +7,13 @@ The platform supports students, instructors, and admins with modules like user m
 ---
 
 ## 🚀 Project Structure
-
+```
 coursewave/
 │── backend/ # Node.js + Express API (business logic, payments, DB access)
+      │── prisma/ # Prisma schema & migrations
 │── frontend/ # Next.js app (UI, dashboards, course pages)
-│── prisma/ # Prisma schema & migrations
 
+```
 ---
 
 ## ⚙️ Tech Stack
@@ -86,13 +87,19 @@ Open http://localhost:3000 for frontend.
 
 Backend will run at http://localhost:5000 (or your configured port).
 
-📦 Database & Migrations
+---
+
+## 📦 Database & Migrations
 Using Prisma + Supabase (Postgres).
 
-bash
-Copy code
+```bash
 npx prisma migrate dev
-📌 Roadmap (Future Enhancements)
+```
+
+---
+
+## 📌 Roadmap (Future Enhancements)
+
 ✅ Testing & Certifications (PDF generation)
 
 ✅ Real-time Community Chat (WebSockets or Firebase)
@@ -103,5 +110,7 @@ npx prisma migrate dev
 
 ✅ Instructor Payouts (Stripe Connect)
 
-📜 License
+---
+
+## 📜 License
 MIT
