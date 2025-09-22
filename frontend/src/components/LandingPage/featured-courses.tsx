@@ -5,15 +5,17 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { 
-  ArrowRight, 
-  Sparkles, 
+import {
+  ArrowRight,
+  Sparkles,
   Star,
   Clock,
   Users,
   Play,
-  TrendingUp
+  TrendingUp,
 } from "lucide-react";
+import Image from "next/image";
+import { cn } from "@/lib/utils/utils";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,10 +33,11 @@ const FeaturedCourses = () => {
       duration: "45 hours",
       price: "$89.99",
       originalPrice: "$199.99",
-      image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=250&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400&h=250&fit=crop",
       category: "Frontend",
       level: "Beginner",
-      badge: "Bestseller"
+      badge: "Bestseller",
     },
     {
       id: "2",
@@ -45,10 +48,11 @@ const FeaturedCourses = () => {
       duration: "32 hours",
       price: "$79.99",
       originalPrice: "$149.99",
-      image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=250&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&h=250&fit=crop",
       category: "Backend",
       level: "Intermediate",
-      badge: "Hot"
+      badge: "Hot",
     },
     {
       id: "3",
@@ -59,10 +63,11 @@ const FeaturedCourses = () => {
       duration: "56 hours",
       price: "$99.99",
       originalPrice: "$249.99",
-      image: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=400&h=250&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=400&h=250&fit=crop",
       category: "Data Science",
       level: "Advanced",
-      badge: "Trending"
+      badge: "Trending",
     },
     {
       id: "4",
@@ -73,11 +78,12 @@ const FeaturedCourses = () => {
       duration: "38 hours",
       price: "$69.99",
       originalPrice: "$129.99",
-      image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=250&fit=crop",
+      image:
+        "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=250&fit=crop",
       category: "Mobile",
       level: "Intermediate",
-      badge: "New"
-    }
+      badge: "New",
+    },
   ];
 
   useEffect(() => {
@@ -116,14 +122,16 @@ const FeaturedCourses = () => {
         },
       }
     );
-
   }, []);
 
   return (
-    <div ref={sectionRef} className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div
+      ref={sectionRef}
+      className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8"
+    >
       <div className="flex flex-col space-y-16">
         {/* Header Section */}
-        <motion.div 
+        <motion.div
           className="text-center"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -140,23 +148,28 @@ const FeaturedCourses = () => {
           <h2 className="featured-title text-3xl font-bold tracking-tight text-zinc-800 dark:text-white sm:text-4xl lg:text-5xl">
             Most Popular
             <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
-              {" "}Courses
+              {" "}
+              Courses
             </span>
           </h2>
           <p className="mx-auto mt-6 max-w-3xl text-lg text-zinc-600 dark:text-gray-300 sm:text-xl">
-            Join thousands of students learning from our most popular and highly-rated courses
+            Join thousands of students learning from our most popular and
+            highly-rated courses
           </p>
         </motion.div>
 
         {/* Featured Courses Grid */}
-        <div ref={cardsRef} className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          ref={cardsRef}
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {featuredCourses.map((course, index) => (
             <CourseCard key={course.id} {...course} index={index} />
           ))}
         </div>
 
         {/* CTA Section */}
-        <motion.div 
+        <motion.div
           className="text-center"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -180,124 +193,137 @@ const FeaturedCourses = () => {
   );
 };
 
-const CourseCard = ({ 
+const badgeColors: Record<string, string> = {
+  Bestseller: "from-yellow-400 to-orange-500",
+  Hot: "from-red-400 to-pink-500",
+  Trending: "from-purple-400 to-pink-500",
+  Default: "from-green-400 to-emerald-500",
+};
+
+export const CourseCard = ({
   id,
-  title, 
-  instructor, 
-  rating, 
-  students, 
-  duration, 
-  price, 
-  originalPrice, 
-  image, 
-  category, 
-  level, 
+  title,
+  instructor,
+  rating,
+  students,
+  duration,
+  price,
+  originalPrice,
+  image,
+  category,
+  level,
   badge,
-  index 
 }: any) => {
   return (
     <motion.div
-      className="course-card group relative h-full cursor-pointer"
-      whileHover={{ y: -8 }}
-      transition={{ duration: 0.3 }}
+      whileHover={{ y: -6 }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
+      className="group relative h-full cursor-pointer"
     >
-      <Link href={`/courses/${id}`} className="block h-full">
-        <div className="relative h-full overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg transition-all duration-300 hover:shadow-2xl dark:border-gray-800 dark:bg-gray-900">
-          {/* Badge */}
-          {badge && (
-            <div className="absolute top-3 left-3 z-10">
-              <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${
-                badge === "Bestseller" ? "bg-gradient-to-r from-yellow-400 to-orange-500 text-white" :
-                badge === "Hot" ? "bg-gradient-to-r from-red-400 to-pink-500 text-white" :
-                badge === "Trending" ? "bg-gradient-to-r from-purple-400 to-pink-500 text-white" :
-                "bg-gradient-to-r from-green-400 to-emerald-500 text-white"
-              }`}>
-                {badge}
+      <Link
+        href={`/courses/${id}`}
+        className="block h-full overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm transition-all duration-300 hover:shadow-2xl dark:border-zinc-800 dark:bg-zinc-900"
+      >
+        {/* Badge */}
+        {badge && (
+          <div className="absolute top-3 left-3 z-20">
+            <span
+              className={cn(
+                "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold text-white shadow-sm",
+                `bg-gradient-to-r ${
+                  badgeColors[badge] ?? badgeColors["Default"]
+                }`
+              )}
+            >
+              {badge}
+            </span>
+          </div>
+        )}
+
+        {/* Course Image */}
+        <div className="relative h-44 sm:h-48 overflow-hidden rounded-t-3xl">
+          <Image
+            src={image}
+            alt={title}
+            fill
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+
+          {/* Play Button */}
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 shadow-md backdrop-blur-sm">
+              <Play className="h-6 w-6 text-gray-800" />
+            </div>
+          </div>
+        </div>
+
+        {/* Card Body */}
+        <div className="flex flex-col justify-between p-5 sm:p-6">
+          {/* Category + Level */}
+          <div className="mb-2 flex items-center justify-between text-xs">
+            <span className="font-medium text-blue-600 dark:text-blue-400">
+              {category}
+            </span>
+            <span className="text-gray-500 dark:text-gray-400">{level}</span>
+          </div>
+
+          {/* Title */}
+          <h3 className="mb-2 line-clamp-2 text-base sm:text-lg font-semibold text-zinc-900 dark:text-white">
+            {title}
+          </h3>
+
+          {/* Instructor */}
+          <p className="mb-3 text-sm text-zinc-600 dark:text-zinc-400">
+            by <span className="font-medium">{instructor}</span>
+          </p>
+
+          {/* Stats */}
+          <div className="mb-4 flex flex-wrap items-center gap-4 text-sm">
+            <div className="flex items-center gap-1">
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <span className="font-medium text-zinc-800 dark:text-white">
+                {rating}
               </span>
             </div>
-          )}
-
-          {/* Course Image */}
-          <div className="relative h-48 overflow-hidden">
-            <img
-              src={image}
-              alt={title}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-            
-            {/* Play Button Overlay */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 shadow-lg">
-                <Play className="h-6 w-6 text-gray-800" />
-              </div>
+            <div className="flex items-center gap-1">
+              <Users className="h-4 w-4 text-gray-400" />
+              <span className="text-gray-500 dark:text-gray-400">
+                {students}
+              </span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Clock className="h-4 w-4 text-gray-400" />
+              <span className="text-gray-500 dark:text-gray-400">
+                {duration}
+              </span>
             </div>
           </div>
 
-          {/* Course Content */}
-          <div className="p-6">
-            {/* Category and Level */}
-            <div className="mb-3 flex items-center justify-between">
-              <span className="text-xs font-medium text-blue-600 dark:text-blue-400">
-                {category}
+          {/* Price */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-baseline gap-2">
+              <span className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white">
+                {price}
               </span>
-              <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                {level}
-              </span>
-            </div>
-
-            {/* Title */}
-            <h3 className="mb-2 line-clamp-2 text-lg font-bold text-zinc-800 dark:text-white">
-              {title}
-            </h3>
-
-            {/* Instructor */}
-            <p className="mb-3 text-sm text-zinc-600 dark:text-gray-300">
-              by {instructor}
-            </p>
-
-            {/* Rating and Students */}
-            <div className="mb-4 flex items-center space-x-4">
-              <div className="flex items-center space-x-1">
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <span className="text-sm font-medium text-zinc-800 dark:text-white">
-                  {rating}
-                </span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Users className="h-4 w-4 text-gray-400" />
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                  {students}
-                </span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Clock className="h-4 w-4 text-gray-400" />
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                  {duration}
-                </span>
-              </div>
-            </div>
-
-            {/* Price */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <span className="text-xl font-bold text-zinc-800 dark:text-white">
-                  {price}
-                </span>
+              {originalPrice && (
                 <span className="text-sm text-gray-500 line-through dark:text-gray-400">
                   {originalPrice}
                 </span>
-              </div>
-              <TrendingUp className="h-5 w-5 text-green-500" />
+              )}
             </div>
+            <TrendingUp className="h-5 w-5 text-green-500" />
           </div>
-
-          {/* Hover Effect */}
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/5 to-cyan-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         </div>
+
+        {/* Hover Glow */}
+        {/* <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-500/5 to-cyan-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" /> */}
+          <div
+            className={`absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-500/10 to-blue-500/50 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-15`}
+          />
       </Link>
     </motion.div>
   );
 };
 
-export default FeaturedCourses; 
+export default FeaturedCourses;

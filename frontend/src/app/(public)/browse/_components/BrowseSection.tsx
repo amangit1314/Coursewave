@@ -2,26 +2,21 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { FiSearch } from "react-icons/fi";
-
-// import { useUserStore } from "@/zustand/userStore";
-import { useCoursesStore } from "@/zustand/coursesStore";
 import { useCategoriesStore } from "@/zustand/categoriesStore";
 
 import CategoriesComponent from "../../courses/_components/CategoriesComponent";
 import FilteredCoursesComponent from "./FilteredCourses";
+import { dmSans } from "@/lib/config/fonts";
+import { useCourses } from "@/hooks/useCourses";
 
 const BrowseSection = () => {
-  const [activeCategoryIndex, setActiveCategoryIndex] = React.useState<number>(0);
+  const [activeCategoryIndex, setActiveCategoryIndex] =
+    React.useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>("");
-
-  const { courses, fetchCourses } = useCoursesStore();
   const { loading, error, categories, fetchCategories } = useCategoriesStore();
-  // const { user, loadingState } = useUserStore();
+ 
 
-  useEffect(() => {
-    fetchCourses();
-  }, [fetchCourses]);
-
+  // convert this useEffect to hook also
   useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
@@ -54,11 +49,14 @@ const BrowseSection = () => {
     <div className="w-full space-y-6 overflow-x-hidden px-6 py-6 md:py-0 md:space-y-0 max-w-7xl mx-auto">
       {/* Section Header */}
       <div className="mb-6 mt-10 flex flex-col items-center justify-center">
-        <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-2 text-center">
+        <h1
+          className={`${dmSans.className} text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-2 text-center`}
+        >
           Browse Courses
         </h1>
         <p className="text-lg text-zinc-600 dark:text-zinc-300 max-w-2xl mx-auto text-center">
-          Discover your next skill. Filter by category or search for something specific. All courses are hand-picked and updated regularly.
+          Discover your next skill. Filter by category or search for something
+          specific. All courses are hand-picked and updated regularly.
         </p>
       </div>
 

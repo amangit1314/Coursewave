@@ -3,7 +3,7 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Callout } from "@tremor/react";
 import React, { useRef, useEffect } from "react";
-import { useCommunityById } from "@/hooks/useCommunityById";
+import { useCommunityById } from "@/hooks/useCommunities";
 import { useCommunityChatStore } from "@/zustand/communityChatStore";
 import { useUserStore } from "@/zustand/userStore";
 

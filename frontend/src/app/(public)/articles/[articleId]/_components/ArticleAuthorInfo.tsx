@@ -1,16 +1,16 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import Image from "next/image";
-import { useGetUserByAuthorId } from "@/hooks/useGetUserById";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useGetUserById } from "@/hooks/useGetUserById";
 import { Callout } from "@tremor/react";
+import { IMAGES } from "@/constants/images";
+import ArticleAuthorInfoLoadingSkeleton from "./skeletons/ArticleAuthotInfoLoadingSkeleton";
 
 type ArticleAuthorInfoProps = {
   authorId: string;
   authorProfileImageUrl: string | null;
   authorName: string | null;
-
   estimatedReadingTime: string;
   articleCreatedAtDate: string;
 };
@@ -22,31 +22,31 @@ const ArticleAuthorInfo = ({
   estimatedReadingTime,
   articleCreatedAtDate,
 }: ArticleAuthorInfoProps) => {
-  // const authorData = useGetUserByAuthorId(authorId);
-  // const author = authorData.user;
+  const authorData = useGetUserById(authorId);
+  const author = authorData.user;
 
-  // if (authorData.isLoading) {
-  //   return <ArticleAuthorInfoLoadingSkeleton />;
-  // }
+  if (authorData.isLoading) {
+    return <ArticleAuthorInfoLoadingSkeleton />;
+  }
 
-  // if (authorData.error) {
-  //   return (
-  //     <div className="max-w-7xl w-full mx-auto flex items-center justify-center align-middle">
-  //       <Callout
-  //         className=""
-  //         title="Failed to Fetch Article Author Info 🚨❌"
-  //         // color="red"
-  //       >
-  //         <span>{authorData.error.message} 🚨❌ ...</span>
-  //       </Callout>
-  //     </div>
-  //   );
-  // }
+  if (authorData.error) {
+    return (
+      <div className="max-w-7xl w-full mx-auto flex items-center justify-center align-middle">
+        <Callout
+          className=""
+          title="Failed to Fetch Article Author Info 🚨❌"
+          // color="red"
+        >
+          <span>{authorData.error.message} 🚨❌ ...</span>
+        </Callout>
+      </div>
+    );
+  }
 
   const date = new Date(articleCreatedAtDate);
 
   // Options for formatting
-  // const options = { day: "numeric", month: "long", year: "numeric" };
+  const options = { day: "numeric", month: "long", year: "numeric" };
 
   // Format the date
   const formattedArticleDate = date.toLocaleDateString("en-GB");
@@ -54,12 +54,7 @@ const ArticleAuthorInfo = ({
   return (
     <div className="flex space-x-4">
       <Image
-        // src={
-        //   author && author?.profileImageUrl
-        //     ? author?.profileImageUrl
-        //     : "https://www.shutterstock.com/image-vector/young-smiling-man-avatar-brown-600nw-2261401207.jpg"
-        // }
-        src={authorProfileImageUrl ?? "https://www.shutterstock.com/image-vector/young-smiling-man-avatar-brown-600nw-2261401207.jpg"}
+        src={authorProfileImageUrl ?? IMAGES.DEFAULT_AVATAR}
         alt=""
         height={40}
         width={40}
@@ -69,8 +64,6 @@ const ArticleAuthorInfo = ({
       <div className="ml-2">
         <div className="flex items-center justify-start space-x-2 text-sm">
           <p className="text-base font-semibold text-zinc-800 dark:text-white">
-            {/* {author?.name ?? "Author Name"}
-             */}
             {authorName ?? "Author Name"}
           </p>
           <p className="cursor-pointer text-xs text-green-500">Follow</p>
@@ -87,27 +80,3 @@ const ArticleAuthorInfo = ({
 };
 
 export default ArticleAuthorInfo;
-
-const ArticleAuthorInfoLoadingSkeleton = () => {
-  return (
-    <div className="flex items-center justify-start space-x-4">
-      <Skeleton className="h-[40px] w-[40px] rounded-full" />
-
-      <div className="space-y-2">
-        <div className="flex items-center justify-start space-x-2">
-          <div className="flex items-center justify-start space-x-2">
-            <Skeleton className="h-6 w-[195px]" />
-            <Skeleton className="h-6 w-[50px]" />
-          </div>
-
-          {/* <p className="text-xs text-green-500 cursor-pointer">Follow</p> */}
-        </div>
-
-        <div className="flex items-center justify-start space-x-2">
-          <Skeleton className="h-4 w-[40px]" />
-          <Skeleton className="h-4 w-[195px]" />
-        </div>
-      </div>
-    </div>
-  );
-};

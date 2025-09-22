@@ -1,51 +1,10 @@
 "use client";
 
-import axios from "axios";
-import React, { useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import React from "react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import {
-  Camera,
-  Settings,
-  Trash2,
-  LogOut,
-  User,
-  Mail,
-  Globe,
-  Users,
-  Award,
-  HelpCircle,
-  Share2,
-  ChevronRight,
-  Crown,
-  Zap,
-  Heart,
-  Bell,
-  Lock,
-} from "lucide-react";
-import { SiGmail } from "react-icons/si";
-import { RiInstagramFill } from "react-icons/ri";
-import { FaGithub, FaSquareXTwitter, FaLinkedinIn } from "react-icons/fa6";
-import toast, { Toaster } from "react-hot-toast";
-// import { useUserInfo } from "@/hooks/useUserInfo";
+import { ChevronRight, Lock } from "lucide-react";
+import toast from "react-hot-toast";
 import "@uploadthing/react/styles.css";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import {
   Dialog,
   DialogContent,
@@ -68,13 +27,10 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UploadDropzone } from "@/lib/utils/uploadthing";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
-import { useRouter } from "next/navigation";
-import { useInstructorInfo } from "@/hooks/useInstructorInfo";
-import { PiSignOut, PiStudentFill } from "react-icons/pi";
 import { useUserStore } from "@/zustand/userStore";
+import { useChangePassword } from "@/hooks/useAccount";
+import { ChangePasswordData } from "@/types/profile.service.types";
 
 const changePasswordFormSchema = z.object({
   oldPassword: z.string().min(6, "Password must be at least 6 characters"),
@@ -82,7 +38,7 @@ const changePasswordFormSchema = z.object({
 });
 
 const ChangePasswordWidget = () => {
-  const { user } = useUserStore();
+  const { mutate: changePassword, isPending, error } = useChangePassword();
 
   const form = useForm({
     resolver: zodResolver(changePasswordFormSchema),
@@ -96,19 +52,27 @@ const ChangePasswordWidget = () => {
 
   const onSubmit = async (values: z.infer<typeof changePasswordFormSchema>) => {
     try {
-      const response = await axios.patch(
-        `api/profile/${user?.id}/changePassword`,
+      changePassword(
         {
-          oldPassword: values.oldPassword,
+          currentPassword: values.oldPassword,
           newPassword: values.newPassword,
+        } as ChangePasswordData,
+        {
+          onSuccess: () => {
+            toast.success("Password changed successfully!");
+            form.reset();
+          },
+          onError: (err: any) => {
+            console.log("Error in updating password: ", err.message);
+            toast.error(
+              err.response?.data?.message || "Failed to change password"
+            );
+          },
         }
       );
-      console.log("Response data after changing password: ", response);
-      toast.success("Password changed successfully!");
-      form.reset();
     } catch (err: any) {
-      console.log("Error in updating password: ", err.message);
-      toast.error(err.response?.data?.message || "Failed to change password");
+      console.log("Error in updating password in catch: ", err.message);
+      toast.error(err.response?.data?.message || "Failed to change password in catch");
     }
   };
 
@@ -199,8 +163,8 @@ const ChangePasswordWidget = () => {
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={!isValid || isSubmitting}>
-                {isSubmitting ? "Updating..." : "Update Password"}
+              <Button type="submit" disabled={!isValid || isSubmitting || isPending}>
+                {isSubmitting || isPending ? "Updating..." : "Update Password"}
               </Button>
             </div>
           </form>

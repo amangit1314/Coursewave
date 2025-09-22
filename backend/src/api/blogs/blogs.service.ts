@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../config/prisma";
-import { invalidateCache } from "../../config/redis";
+// import { invalidateCache } from "../../config/redis";
 import { generateResourceId } from "../../core/utils/idGenerator";
 
 export const BlogsService = {
@@ -146,7 +146,7 @@ export const BlogsService = {
       },
     });
 
-    await invalidateCache.blogs();
+    // await invalidateCache.blogs();
     return blog;
   },
 
@@ -213,7 +213,7 @@ export const BlogsService = {
       },
     });
 
-    await invalidateCache.blogs(existingBlog.slug);
+    // await invalidateCache.blogs(existingBlog.slug);
     return updatedBlog;
   },
 
@@ -231,7 +231,7 @@ export const BlogsService = {
       where: { id },
     });
 
-    await invalidateCache.blogs(existingBlog.slug);
+    // await invalidateCache.blogs(existingBlog.slug);
     return { message: "Blog deleted successfully" };
   },
 

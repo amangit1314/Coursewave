@@ -1,19 +1,22 @@
+import ErrorMessage from "./ErrorMessage";
+import EmptyState from "./EmptyState";
+
 import { formatDateToMMDDYYYY } from "@/lib/utils/utils";
 import { useMemo } from "react";
 import { EnrolledCoursesTableSkeleton } from "../loading";
-import ErrorMessage from "./ErrorMessage";
 import { GraduationCapIcon } from "lucide-react";
 import { DataTable } from "./enrolled-courses-tables/data-table";
 import { enrollmentColumns } from "./enrolled-courses-tables/columns";
-import EmptyState from "./EmptyState";
-import { useEnrolledCourses } from "@/hooks/useEnrolledCourses";
+import { useEnrolledCourses } from "@/hooks/useAccount";
 
 const EnrolledCourses = () => {
   const {
-    data: enrolledCourses,
+    data: enrolledCoursesData,
     isLoading: areEnrolledCoursesLoading,
     error: enrolledCoursesError,
   } = useEnrolledCourses();
+
+  const enrolledCourses = enrolledCoursesData ?? [];
 
   const enrolledCoursesTableData = useMemo(() => {
     if (!enrolledCourses || !Array.isArray(enrolledCourses)) {

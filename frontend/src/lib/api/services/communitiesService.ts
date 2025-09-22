@@ -1,17 +1,66 @@
-import ApiManager from "../api-manager";
+import {
+  Community,
+  CreateCommunityRequest,
+  UpdateCommunityRequest,
+} from "@/types/community.service.types";
+import { apiManager, ApiResponse, PaginatedResponse } from "../api-manager";
 
-export const communitiesService = {
-  async getCommunities() {
-    const response = await ApiManager.getInstance().get(`/communities`);
-    console.log("Get communities response:", response.data);
-    return response.data;
-  },
+class CommunitiesService {
+  private static instance: CommunitiesService;
+  private api = apiManager;
 
-  async getCommunityById(communityId: string) {
-    const response = await ApiManager.getInstance().get(
-      `/communities/${communityId}`
-    );
-    console.log("Get community by ID response:", response.data);
-    return response.data;
-  },
-};
+  private constructor() {}
+
+  public static getInstance(): CommunitiesService {
+    if (!CommunitiesService.instance) {
+      CommunitiesService.instance = new CommunitiesService();
+    }
+    return CommunitiesService.instance;
+  }
+
+  // === CRUD ===
+  async getCommunities(
+    params?: Record<string, any>
+  ): Promise<PaginatedResponse<Community>> {
+    const query = new URLSearchParams(params as any).toString();
+    return this.api.get<Community[]>(`/communities${query ? `?${query}` : ""}`);
+  }
+
+  async getCommunityById(id: string): Promise<ApiResponse<Community>> {
+    return this.api.get<Community>(`/communities/${id}`);
+  }
+
+  async createCommunity(
+    data: CreateCommunityRequest
+  ): Promise<ApiResponse<Community>> {
+    return this.api.post<Community>("/communities", data);
+  }
+
+  async updateCommunity(
+    id: string,
+    data: UpdateCommunityRequest
+  ): Promise<ApiResponse<Community>> {
+    return this.api.put<Community>(`/communities/${id}`, data);
+  }
+
+  async deleteCommunity(id: string): Promise<ApiResponse<void>> {
+    return this.api.delete<void>(`/communities/${id}`);
+  }
+
+  // === Members ===
+  async joinCommunity(id: string): Promise<ApiResponse<void>> {
+    return this.api.post<void>(`/communities/${id}/join`);
+  }
+
+  async leaveCommunity(id: string): Promise<ApiResponse<void>> {
+    return this.api.post<void>(`/communities/${id}/leave`);
+  }
+
+  async getCommunityMembers(
+    id: string
+  ): Promise<ApiResponse<{ userId: string; username: string }[]>> {
+    return this.api.get(`/communities/${id}/members`);
+  }
+}
+
+export const communitiesService = CommunitiesService.getInstance();

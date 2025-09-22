@@ -133,8 +133,8 @@ import { ArticleHeader } from "./_components/ArticleHeader";
 import { ArticleContent } from "./_components/ArticleContent";
 import { ArticleSidebar } from "./_components/ArticleSidebar";
 import { ArticleFooter } from "./_components/ArticleFooter";
-import { ArticleLoadingSkeleton } from "./_components/article-loading-skeleton";
-import { useArticleBySlug } from "@/hooks/useArticleBySlug";
+import { ArticleLoadingSkeleton } from "./_components/skeletons/article-loading-skeleton";
+import { useArticleBySlug } from "@/hooks/useArticles";
 
 export default function ArticlePage() {
   const { articleId } = useParams<{ articleId: string }>();

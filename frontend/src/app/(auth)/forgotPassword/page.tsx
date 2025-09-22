@@ -6,10 +6,18 @@ import Link from "next/link";
 import { toast, Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Orbitron, Poppins } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mail, ArrowLeft, CheckCircle, RefreshCw, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
+import {
+  Mail,
+  ArrowLeft,
+  CheckCircle,
+  RefreshCw,
+  Lock,
+  Eye,
+  EyeOff,
+  AlertCircle,
+} from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,18 +30,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-const orbitron = Orbitron({
-  weight: ["400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const poppins = Poppins({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
+import { dmSans, poppins } from "@/lib/config/fonts";
+import AuthBackgroundPattern from "@/components/auth/AuthBackgroundPattern";
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -42,13 +40,13 @@ const formSchema = z.object({
 const ForgotPasswordPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState<'email' | 'reset' | 'success'>('email');
-  const [verificationCode, setVerificationCode] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [step, setStep] = useState<"email" | "reset" | "success">("email");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
+  const [userEmail, setUserEmail] = useState("");
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -63,15 +61,17 @@ const ForgotPasswordPage = () => {
     try {
       setLoading(true);
       setUserEmail(values.email);
-      const url = process.env.ENVIRONMENT === "DEVELOPMENT"
-        ? "/api/auth/forgotPassword"
-        : "api/auth/forgotPassword";
-          
-      await axios.post(url, { email: values.email })
+      const url =
+        process.env.ENVIRONMENT === "DEVELOPMENT"
+          ? "/api/auth/forgotPassword"
+          : "api/auth/forgotPassword";
+
+      await axios
+        .post(url, { email: values.email })
         .then((res) => {
           console.log("Forgot email sent successfully ✔ ...", res.data);
           toast.success("Password reset code sent to your email!");
-          setStep('reset');
+          setStep("reset");
         })
         .catch((err: any) => {
           console.error("Forgot password failed", err.message);
@@ -87,26 +87,26 @@ const ForgotPasswordPage = () => {
 
   const handleResetPassword = async () => {
     if (!verificationCode || !newPassword || !confirmPassword) {
-      toast.error('Please fill in all fields');
+      toast.error("Please fill in all fields");
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error("Passwords do not match");
       return;
     }
 
     if (newPassword.length < 8) {
-      toast.error('Password must be at least 8 characters long');
+      toast.error("Password must be at least 8 characters long");
       return;
     }
-    
+
     setLoading(true);
     // Simulate API call for password reset
     setTimeout(() => {
       setLoading(false);
-      setStep('success');
-      toast.success('Password reset successfully!');
+      setStep("success");
+      toast.success("Password reset successfully!");
     }, 2000);
   };
 
@@ -115,43 +115,49 @@ const ForgotPasswordPage = () => {
     // Simulate API call
     setTimeout(() => {
       setLoading(false);
-      toast.success('New reset code sent!');
+      toast.success("New reset code sent!");
     }, 2000);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <motion.div 
+    <div className="relative min-h-screen overflow-hidden  bg-white dark:bg-gray-950">
+      <AuthBackgroundPattern />
+      <div className="relative z-10 flex min-h-screen items-center justify-center p-4">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="w-full max-w-md"
         >
           <div className="rounded-2xl bg-white/80 p-8 shadow-2xl backdrop-blur-xl dark:bg-gray-800/80">
             {/* Header */}
             <div className="text-center mb-8">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-cyan-500">
-                {step === 'success' ? (
+                {step === "success" ? (
                   <CheckCircle className="h-8 w-8 text-white" />
                 ) : (
                   <Lock className="h-8 w-8 text-white" />
                 )}
               </div>
-              
-              <h1 className={`${poppins.className} text-2xl font-bold text-gray-900 dark:text-white`}>
-                {step === 'success' ? 'Password Reset Success!' : 'Reset Your Password'}
+
+              <h1
+                className={`${poppins.className} text-2xl font-bold text-gray-900 dark:text-white`}
+              >
+                {step === "success"
+                  ? "Password Reset Success!"
+                  : "Reset Your Password"}
               </h1>
-              
-              <p className={`${poppins.className} mt-2 text-sm text-gray-600 dark:text-gray-400`}>
-                {step === 'success' 
-                  ? 'Your password has been successfully reset. You can now log in with your new password.'
-                  : 'Enter your email address and we\'ll send you a link to reset your password.'
-                }
+
+              <p
+                className={`${poppins.className} mt-2 text-sm text-gray-600 dark:text-gray-400`}
+              >
+                {step === "success"
+                  ? "Your password has been successfully reset. You can now log in with your new password."
+                  : "Enter your email address and we'll send you a link to reset your password."}
               </p>
             </div>
 
-            {step === 'email' && (
+            {step === "email" && (
               /* Email Input Step */
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
@@ -160,13 +166,18 @@ const ForgotPasswordPage = () => {
                 className="space-y-6"
               >
                 <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
+                  >
                     <FormField
                       control={form.control}
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className={`${poppins.className} text-sm font-medium text-gray-700 dark:text-gray-300`}>
+                          <FormLabel
+                            className={`${poppins.className} text-sm font-medium text-gray-700 dark:text-gray-300`}
+                          >
                             Email address
                           </FormLabel>
                           <FormControl>
@@ -180,7 +191,9 @@ const ForgotPasswordPage = () => {
                               />
                             </div>
                           </FormControl>
-                          <FormDescription className={`${poppins.className} text-xs text-gray-500 dark:text-gray-400`}>
+                          <FormDescription
+                            className={`${poppins.className} text-xs text-gray-500 dark:text-gray-400`}
+                          >
                             We'll send a reset code to this email address
                           </FormDescription>
                           <FormMessage />
@@ -191,7 +204,7 @@ const ForgotPasswordPage = () => {
                     <Button
                       type="submit"
                       disabled={!isValid || isSubmitting || loading}
-                      className={`${orbitron.className} group relative h-12 w-full overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25 disabled:opacity-50`}
+                      className={`${dmSans.className} group relative h-12 w-full overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25 disabled:opacity-50`}
                     >
                       {loading ? (
                         <RefreshCw className="h-5 w-5 animate-spin" />
@@ -206,7 +219,7 @@ const ForgotPasswordPage = () => {
                 </Form>
 
                 <div className="text-center">
-                  <Link 
+                  <Link
                     href="/login"
                     className={`${poppins.className} flex items-center justify-center text-sm text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200`}
                   >
@@ -217,7 +230,7 @@ const ForgotPasswordPage = () => {
               </motion.div>
             )}
 
-            {step === 'reset' && (
+            {step === "reset" && (
               /* Password Reset Step */
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
@@ -228,7 +241,9 @@ const ForgotPasswordPage = () => {
                 <div className="space-y-4">
                   {/* Verification Code */}
                   <div className="space-y-2">
-                    <label className={`${poppins.className} text-sm font-medium text-gray-700 dark:text-gray-300`}>
+                    <label
+                      className={`${poppins.className} text-sm font-medium text-gray-700 dark:text-gray-300`}
+                    >
                       Reset Code
                     </label>
                     <Input
@@ -239,14 +254,18 @@ const ForgotPasswordPage = () => {
                       placeholder="000000"
                       maxLength={6}
                     />
-                    <p className={`${poppins.className} text-xs text-gray-500 dark:text-gray-400`}>
+                    <p
+                      className={`${poppins.className} text-xs text-gray-500 dark:text-gray-400`}
+                    >
                       Enter the 6-digit code sent to {userEmail}
                     </p>
                   </div>
 
                   {/* New Password */}
                   <div className="space-y-2">
-                    <label className={`${poppins.className} text-sm font-medium text-gray-700 dark:text-gray-300`}>
+                    <label
+                      className={`${poppins.className} text-sm font-medium text-gray-700 dark:text-gray-300`}
+                    >
                       New Password
                     </label>
                     <div className="relative">
@@ -263,14 +282,20 @@ const ForgotPasswordPage = () => {
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                       >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
                       </button>
                     </div>
                   </div>
 
                   {/* Confirm Password */}
                   <div className="space-y-2">
-                    <label className={`${poppins.className} text-sm font-medium text-gray-700 dark:text-gray-300`}>
+                    <label
+                      className={`${poppins.className} text-sm font-medium text-gray-700 dark:text-gray-300`}
+                    >
                       Confirm New Password
                     </label>
                     <div className="relative">
@@ -284,10 +309,16 @@ const ForgotPasswordPage = () => {
                       />
                       <button
                         type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                       >
-                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showConfirmPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
                       </button>
                     </div>
                   </div>
@@ -296,8 +327,13 @@ const ForgotPasswordPage = () => {
                 <div className="space-y-3">
                   <Button
                     onClick={handleResetPassword}
-                    disabled={loading || !verificationCode || !newPassword || !confirmPassword}
-                    className={`${orbitron.className} group relative h-12 w-full overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25 disabled:opacity-50`}
+                    disabled={
+                      loading ||
+                      !verificationCode ||
+                      !newPassword ||
+                      !confirmPassword
+                    }
+                    className={`${dmSans.className} group relative h-12 w-full overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25 disabled:opacity-50`}
                   >
                     {loading ? (
                       <RefreshCw className="h-5 w-5 animate-spin" />
@@ -324,7 +360,7 @@ const ForgotPasswordPage = () => {
                 </div>
 
                 <button
-                  onClick={() => setStep('email')}
+                  onClick={() => setStep("email")}
                   className={`${poppins.className} flex items-center justify-center w-full text-sm text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200`}
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" />
@@ -334,7 +370,7 @@ const ForgotPasswordPage = () => {
             )}
 
             {/* Success State */}
-            {step === 'success' && (
+            {step === "success" && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -344,7 +380,9 @@ const ForgotPasswordPage = () => {
                 <div className="rounded-xl bg-green-50 p-4 dark:bg-green-900/20">
                   <div className="flex items-center space-x-3">
                     <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
-                    <p className={`${poppins.className} text-sm text-green-800 dark:text-green-200`}>
+                    <p
+                      className={`${poppins.className} text-sm text-green-800 dark:text-green-200`}
+                    >
                       Your password has been successfully reset!
                     </p>
                   </div>
@@ -352,7 +390,9 @@ const ForgotPasswordPage = () => {
 
                 <div className="space-y-3">
                   <Link href="/login">
-                    <Button className={`${orbitron.className} group relative h-12 w-full overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25`}>
+                    <Button
+                      className={`${dmSans.className} group relative h-12 w-full overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25`}
+                    >
                       Continue to Login
                       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-blue-600/0 to-cyan-600/0 transition-all duration-300 group-hover:from-blue-600/20 group-hover:to-cyan-600/20" />
                     </Button>
@@ -372,10 +412,12 @@ const ForgotPasswordPage = () => {
 
             {/* Footer Links */}
             <div className="mt-8 text-center">
-              <p className={`${poppins.className} text-sm text-gray-600 dark:text-gray-400`}>
+              <p
+                className={`${poppins.className} text-sm text-gray-600 dark:text-gray-400`}
+              >
                 Need help?{" "}
-                <Link 
-                  href="/help" 
+                <Link
+                  href="/help"
                   className="font-semibold text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
                 >
                   Contact Support

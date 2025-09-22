@@ -43,10 +43,9 @@ export const useInstructorStore = create<InstructorState & InstructorActions>()(
       fetchInstructorById: async (userId: string) => {
         set({ loadingState: { loading: true, error: null } });
         try {
-          const instructor =
-            await instructorService.getInstructorByUserId(userId);
+          const instructor = await instructorService.getInstructorById(userId);
           set({
-            instructor,
+            instructor: instructor?.data,
             loadingState: { loading: false, error: null },
           });
         } catch (error: any) {
@@ -61,23 +60,18 @@ export const useInstructorStore = create<InstructorState & InstructorActions>()(
         set({ loadingState: { loading: true, error: null } });
         try {
           // First get the instructor by user ID
-          const instructor =
-            await instructorService.getInstructorByUserId(userId);
-          if (!instructor) {
+          const instructor = await instructorService.getInstructorById(userId);
+          if (!instructor?.data) {
             throw new Error("Instructor not found");
           }
 
           // Then get analytics using the instructor ID
           const analytics = await instructorService.getInstructorAnalytics(
-            instructor?.id ?? ""
+            instructor?.data.id ?? ""
           );
-          // set({
-          //   instructorCreatedCourses: analytics.createdCourses,
-          //   instructorStudentsCount: analytics.totalStudents,
-          //   instructorAverageStarRating: analytics.averageStarRating,
-          //   loadingState: { loading: false, error: null },
-          // });
+
           set({
+
             instructorStudentsCount: analytics.data?.totalStudents, /// todo: fix it
             instructorAverageStarRating: analytics.data?.averageRating,
             loadingState: { loading: false, error: null },
@@ -105,14 +99,14 @@ export const useFetchInstructorCreatedCourses = (userId: string) => {
     queryKey: ["instructorCourses", userId],
     queryFn: async () => {
       // First get the instructor by user ID
-      const instructor = await instructorService.getInstructorByUserId(userId);
+      const instructor = await instructorService.getInstructorById(userId);
       if (!instructor) {
         throw new Error("Instructor not found");
       }
 
       // Then get courses using the instructor ID
       const courses = await instructorService.getInstructorCourses(
-        instructor?.id ?? ""
+        instructor.data?.id ?? ""
       );
       return courses;
     },
@@ -125,7 +119,7 @@ export const useFetchInstructorEarnings = (userId: string) => {
   return useQuery({
     queryKey: ["instructorEarnings", userId],
     queryFn: async () => {
-      // This endpoint might not exist yet, so we'll return a placeholder
+      // TODO: IMPLEMENT (This endpoint might not exist yet, so we'll return a placeholder)
       return { earnings: 0 };
     },
     enabled: !!userId,

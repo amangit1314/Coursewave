@@ -38,6 +38,7 @@ import { RoadmapFlowView } from "./_components/RoadmapFlow";
 import { RoadmapTimelineView } from "./_components/RoadmapTimeline";
 import { RoadmapListView } from "./_components/RoadmapList";
 import { downloadRoadmap, getTemplateRoadmap } from "@/lib/utils/roadmap-utils";
+import { dmSans } from "@/lib/config/fonts";
 
 const RoadmapPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -103,13 +104,15 @@ const RoadmapPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-zinc-900 dark:to-blue-900/20 pt-20 pb-12">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-transparent dark:to-zinc-900 pt-20 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Hero Section */}
-        <div className="text-center mb-12">
+        <div className="text-center my-12">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Sparkles className="h-8 w-8 text-blue-500" />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+            <h1
+              className={`${dmSans.className} text-3xl lg:text-4xl tracking-tight font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent`}
+            >
               AI-Powered Learning Roadmaps
             </h1>
             <Sparkles className="h-8 w-8 text-cyan-500" />
@@ -130,7 +133,7 @@ const RoadmapPage = () => {
               <Input
                 type="text"
                 placeholder="What skill do you want to learn? (e.g., React, Machine Learning, AWS)"
-                className="pl-10 pr-12 py-6 text-lg border-2 border-gray-300 dark:border-zinc-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-zinc-800/50"
+                className="pl-10 pr-12 py-6 text-lg border-2 border-gray-300 dark:border-zinc-800 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-zinc-800/50"
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -163,13 +166,13 @@ const RoadmapPage = () => {
                   {suggestions.map((suggestion, index) => (
                     <li
                       key={index}
-                      className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-zinc-700 cursor-pointer flex items-center"
+                      className=" py-2 hover:bg-gray-100 dark:hover:bg-zinc-700 cursor-pointer flex items-center"
                       onClick={() => {
                         setSearchQuery(suggestion);
                         handleSearch(suggestion);
                       }}
                     >
-                      <Search className="h-4 w-4 text-gray-400 mr-2" />
+                      <Search className="h-4 w-4 text-gray-400" />
                       {suggestion}
                     </li>
                   ))}
@@ -182,7 +185,7 @@ const RoadmapPage = () => {
         {/* Categories */}
         <div className="mb-8">
           <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-            <TabsList className="flex h-26 md:h-14 overflow-x-auto py-4 px-4 md:px-0 md:py-2 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm rounded-xl border border-gray-200 dark:border-zinc-700">
+            <TabsList className="flex justify-between items-center h-26 md:h-14 overflow-x-auto py-4 px-4 md:px-2 md:py-2 bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm rounded-xl border border-gray-200 dark:border-zinc-700">
               {categories.map((category) => (
                 <TabsTrigger
                   key={category.name}
@@ -199,7 +202,9 @@ const RoadmapPage = () => {
 
         {/* Popular Skills */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+          <h2
+            className={`${dmSans.className} text-2xl font-bold text-gray-900 dark:text-white mb-6`}
+          >
             Popular Skill Roadmaps
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -210,26 +215,13 @@ const RoadmapPage = () => {
                   skill.category === selectedCategory
               )
               .map((skill) => (
-                <Card
-                  key={skill.name}
-                  className="cursor-pointer hover:shadow-lg transition-shadow"
+                <SkillCard
+                  skill={skill}
                   onClick={() => {
                     setSearchQuery(skill.name);
                     handleSearch(skill.name);
                   }}
-                >
-                  <CardContent className="p-4 flex flex-col items-center text-center">
-                    <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center mb-3">
-                      <skill.icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <h3 className="font-medium text-gray-900 dark:text-white">
-                      {skill.name}
-                    </h3>
-                    <Badge variant="outline" className="mt-2 text-xs">
-                      {skill.category}
-                    </Badge>
-                  </CardContent>
-                </Card>
+                />
               ))}
           </div>
         </div>
@@ -405,3 +397,42 @@ const RoadmapPage = () => {
 };
 
 export default RoadmapPage;
+
+type Props = {
+  skill: {
+    name: string;
+    category: string;
+    icon: React.ElementType;
+  };
+  onClick?: () => void;
+};
+
+const SkillCard = ({ skill, onClick }: Props) => {
+  return (
+    <Card
+      key={skill.name}
+      onClick={onClick}
+      className="group cursor-pointer shadow-none rounded-2xl border border-gray-200 bg-white/60 transition-all hover:-translate-y-1 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900/80 backdrop-blur-lg"
+    >
+      <CardContent className="flex flex-col items-center px-6 py-8 text-center">
+        {/* Icon wrapper */}
+        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-blue-100 to-blue-200 dark:from-zinc-800 dark:to-zinc-700  transition-transform">
+          <skill.icon className="h-7 w-7 text-blue-600 dark:text-blue-400" />
+        </div>
+
+        {/* Skill name */}
+        <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+          {skill.name}
+        </h3>
+
+        {/* Category badge */}
+        <Badge
+          variant="outline"
+          className="mt-3 rounded-full shadow-nonw border-none bg-blue-500/90 px-3 py-0.5 text-xs font-medium text-white shadow-sm dark:bg-blue-600/60"
+        >
+          {skill.category}
+        </Badge>
+      </CardContent>
+    </Card>
+  );
+};

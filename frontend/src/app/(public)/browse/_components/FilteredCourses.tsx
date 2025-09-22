@@ -9,7 +9,6 @@ import { CoursesPagination } from "../../courses/_components/CoursesPagination";
 import { useCourses } from "@/hooks/useCourses";
 import { Course } from "@/types";
 
-
 interface FilteredCoursesComponentProps {
   activeCategory: string | null;
   searchQuery: string | null;
@@ -20,7 +19,9 @@ export default function FilteredCoursesComponent({
   activeCategory,
   searchQuery,
 }: FilteredCoursesComponentProps) {
-  const { courses, isLoading, isError, error, refetch } = useCourses();
+  const { data: courses, isLoading, isError, error, refetch } = useCourses();
+
+  console.log("Courses in Filtered COurses: ", JSON.stringify(courses));
 
   const [currentPage, setCurrentPage] = useState(1);
   const coursesPerPage = 6;
@@ -36,9 +37,7 @@ export default function FilteredCoursesComponent({
 
     return (
       course.title?.includes(category) ||
-      course.categories?.some(
-        (cat) => cat?.includes(category)
-      )
+      course.categories?.some((cat) => cat?.includes(category))
     );
   };
 
@@ -49,9 +48,7 @@ export default function FilteredCoursesComponent({
 
     return (
       course.title?.toLowerCase().includes(q) ||
-      course.categories?.some((cat) =>
-        cat?.toLowerCase().includes(q)
-      )
+      course.categories?.some((cat) => cat?.toLowerCase().includes(q))
     );
   };
 

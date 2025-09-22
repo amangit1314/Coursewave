@@ -29,19 +29,22 @@ import toast, { Toaster } from "react-hot-toast";
 import "@uploadthing/react/styles.css";
 import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
 import { useRouter } from "next/navigation";
-import { useInstructorInfo } from "@/hooks/useInstructorInfo";
 import { PiSignOut, PiStudentFill } from "react-icons/pi";
-import { useUserStore } from "@/zustand/userStore";
+
 import DeleteAccountWidget from "./_components/DeleteAccountWidget";
 import ChangePasswordWidget from "./_components/ChangePasswordWidget";
 import EditProfileWidget from "./_components/EditProfileWidget";
+import { useUserStore } from "@/zustand/userStore";
+import { useMyInstructorProfile } from "@/hooks/useInstructor";
 
 const Profile = () => {
   const { user } = useUserStore();
   const router = useRouter();
-  const { instructor } = useInstructorInfo(user?.id || "");
+  const { data: instructor, isLoading: instructorLoading } =
+    useMyInstructorProfile();
+  user?.id || "";
 
-  console.log("User in profile: ", user);
+  // console.log("User in profile: ", user);
 
   // Check if user is an instructor
   const isInstructor = user?.roles?.includes("INSTRUCTOR") || false;

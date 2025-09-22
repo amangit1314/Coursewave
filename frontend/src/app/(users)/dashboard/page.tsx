@@ -2,20 +2,18 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { useParams } from "next/navigation";
 import { poppins } from "@/lib/config/fonts";
-import { useEnrolledCourses } from "@/hooks/useEnrolledCourses";
 import { ClockIcon, Divide, TrendingUpIcon } from "lucide-react";
 
 import UserDashboardStats from "./_components/UserDashboardStats";
 import LearningGoals from "./_components/learning-goals/learning-goals";
 import LearningActivityLineChart from "./_components/user-learning-activity/learning-activity-line-chart";
 import EnrolledCourses from "./_components/EnrolledCourses";
-
 import LearningProgress from "./_components/LearningProgress";
-import { Enrollment } from "@/lib/api/services";
-import { Callout } from "@tremor/react";
 import ArticlesSection from "./_components/ArticlesSection";
+
+import { Callout } from "@tremor/react";
+import { Enrollment } from "@/types/user-enrollments-api-response";
 
 ///* ---------------------------- DESIRED SECTIONS --------------------
 /**
@@ -82,42 +80,49 @@ const itemVariants = {
 // ---------------------------------------------------------------------------------------
 
 const DashboardPage = () => {
-  const {
-    data: enrolledCourses,
-    isLoading: areEnrolledCoursesLoading,
-    error: enrolledCoursesError,
-  } = useEnrolledCourses();
+  // const {
+  //   data: enrolledCourses,
+  //   isLoading: areEnrolledCoursesLoading,
+  //   error: enrolledCoursesError,
+  // } = useEnrolledCourses();
 
-  const totalEnrolledCourses = enrolledCourses?.length || 0;
-  const totalCompletedCourses =
-    enrolledCourses?.filter(
-      (enrollment: Enrollment) => enrollment.status === "COMPLETED"
-    ).length || 0;
-  // const totalCompletedCourses = 0; // Placeholder for now
+  // const totalEnrolledCourses = enrolledCourses?.length || 0;
+  // const totalCompletedCourses =
+  //   enrolledCourses?.filter(
+  //     (enrollment: Enrollment) => enrollment.status === "COMPLETED"
+  //   ).length || 0;
 
-  const totalOngoingCourses =
-    enrolledCourses?.filter(
-      (course: any) => course.enrollmentStatus === "ACTIVE"
-    ).length || 0;
+  // const totalOngoingCourses =
+  //   enrolledCourses?.filter(
+  //     (course: any) => course.enrollmentStatus === "ACTIVE"
+  //   ).length || 0;
 
-  // Calculate completion rate
-  const completionRate =
-    totalEnrolledCourses > 0
-      ? Math.round((totalCompletedCourses / totalEnrolledCourses) * 100)
-      : 0;
-  // const completionRate = 0; // Placeholder for now
+  // // Calculate completion rate
+  // const completionRate =
+  //   totalEnrolledCourses > 0
+  //     ? Math.round((totalCompletedCourses / totalEnrolledCourses) * 100)
+  //     : 0;
 
-  console.log("Enrolled Courses:", enrolledCourses);
+  // console.log("Enrolled Courses:", enrolledCourses);
 
-  if (areEnrolledCoursesLoading) {
-    return (
-      <div>
-        <Callout title={"Loading enrolled courses"} color={"yellow"} />
-      </div>
-    );
-  } else if (enrolledCoursesError) {
-    return <Callout title={enrolledCoursesError.message} color={"red"} />;
-  }
+  // if (areEnrolledCoursesLoading) {
+  //   return (
+  //     <div>
+  //       <Callout title={"Loading enrolled courses"} color={"yellow"} />
+  //     </div>
+  //   );
+  // } else if (enrolledCoursesError) {
+  //   return <Callout title={enrolledCoursesError.message} color={"red"} />;
+  // }
+
+
+  /// ===================================================================================
+  
+  const totalEnrolledCourses = 2;
+  const totalCompletedCourses = 1;
+  const totalOngoingCourses = 1;
+
+  const completionRate = 75;
 
   return (
     <div className={poppins.className}>

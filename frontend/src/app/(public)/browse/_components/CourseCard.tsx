@@ -24,6 +24,8 @@ export const CourseCard = ({ course }: { course: Course }) => {
     // TODO: Hook this to a wishlist system
   };
 
+  console.log("Courses: ", JSON.stringify(course));
+
   return (
     <div
       className={cn(
@@ -71,7 +73,7 @@ export const CourseCard = ({ course }: { course: Course }) => {
               <FaStar className="text-yellow-600 dark:text-yellow-700" />
               <span>{course.averageRating?.toFixed(1) ?? "5.0"}</span>
             </Badge>
-            <Badge
+            {/* <Badge
               className={cn(
                 "rounded-full px-3 py-1 text-xs font-semibold",
                 course.isFree
@@ -80,6 +82,16 @@ export const CourseCard = ({ course }: { course: Course }) => {
               )}
             >
               {course.isFree ? "Free" : `$${course.price}`}
+            </Badge> */}
+            <Badge
+              className={cn(
+                "rounded-full px-3 py-1 text-xs font-semibold",
+                course.isFree
+                  ? "bg-green-500/90 text-white"
+                  : "bg-blue-600/90 text-white"
+              )}
+            >
+              {course.isFree ? "Free" : `$${course.price ?? 0}`}
             </Badge>
           </div>
         </div>

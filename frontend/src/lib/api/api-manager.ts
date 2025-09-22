@@ -5,20 +5,24 @@ import axios, {
   AxiosError,
 } from "axios";
 
-import { checkRateLimit, RateLimitError } from "./core/rate-limiter";
+import { checkRateLimit, getRateLimitStatus } from "./core/rate-limiter";
+import {
+  RefreshTokenResponse,
+  RefreshTokenResponseData,
+} from "@/types/auth.service.types";
+// import { authService } from "./services";
 
 const API_BASE_URL = "http://localhost:5002/api";
-// process.env.ENVIRONMENT === "DEVELOPMENT"
-//   ? process.env.API_LOCAL_URL
-//   : process.env.API_LIVE_URL;
-
+// // process.env.ENVIRONMENT === "DEVELOPMENT"
+// //   ? process.env.API_LOCAL_URL
+// //   : process.env.API_LIVE_URL;
 const API_TIMEOUT = 30000;
 const STATIC_TOKEN = "coursewave_access_token"; // static token header
 
 // === Types ===
 export interface ApiResponse<T = any> {
   success: boolean;
-  data?: T;
+  data: T;
   message?: string;
   error?: string;
 }
@@ -101,59 +105,137 @@ class ApiManager {
     }
     return ApiManager.instance;
   }
- 
+
+  static getRateLimitStatus(url: string, method: string = "GET") {
+    return getRateLimitStatus(url, method);
+  }
+
   private setupInterceptors(): void {
+    // Request interceptor
     this.axiosInstance.interceptors.request.use(
       (config) => {
         const token = ApiManager.getAuthToken();
-        if (token && config.headers?.set) {
-          config.headers.set("Authorization", `Bearer ${token}`);
-          config.headers.set("access_token", token);
+        if (token) {
+          if (token && config.headers?.set) {
+            config.headers.set("Authorization", `Bearer ${token}`);
+            config.headers.set("access_token", token);
+          }
         }
+
+        // ✅ Apply rate limiting
+        checkRateLimit(config.url!, config.method?.toUpperCase() || "GET");
+
+        // === Log request ===
+        console.groupCollapsed(
+          `%c[API Request] ${config.method?.toUpperCase()} ${config.url}`,
+          "color: blue;"
+        );
+        console.log("Headers:", config.headers);
+        if (config.data) console.log("Body:", config.data);
+        console.groupEnd();
+
         return config;
       },
-      (error) => Promise.reject(error)
+      (error) => {
+        console.error("[API Request Error]", error);
+        return Promise.reject(error);
+      }
     );
 
+    // Response interceptor
     this.axiosInstance.interceptors.response.use(
-      (response) => response,
-      (error) => this.handleError(error)
+      (response) => {
+        // === Log response ===
+        console.groupCollapsed(
+          `%c[API Response] ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`,
+          "color: green;"
+        );
+        console.log("Headers:", response.headers);
+        console.log("Data:", response.data);
+        console.groupEnd();
+
+        return response;
+      },
+      (error) => {
+        // Log error response
+        if (error.response) {
+          console.groupCollapsed(
+            `%c[API Error Response] ${error.config?.method?.toUpperCase()} ${error.config?.url} - ${error.response.status}`,
+            "color: red;"
+          );
+          console.log("Headers:", error.response.headers);
+          console.log("Data:", error.response.data);
+          console.groupEnd();
+        } else {
+          console.error("[API Error] No response received", error.message);
+        }
+
+        return this.handleError(error);
+      }
     );
   }
 
-  // private setupInterceptors(): void {
-  //   this.axiosInstance.interceptors.request.use((config) => {
-  //     const token = ApiManager.getAuthToken();
-  //     if (token) {
-  //       if (config.headers && typeof config.headers.set === "function") {
-  //         config.headers.set("Authorization", `Bearer ${token}`);
-  //         config.headers.set("access_token", token);
-  //       } else {
-  //         config.headers = {
-  //           ...(config.headers || {}),
-  //           Authorization: `Bearer ${token}`,
-  //           access_token: token,
-  //         } as any;
-  //       }
-  //     }
-  //     return config;
-  //   });
+  private getRefreshToken(): string | null {
+    if (typeof window !== "undefined") {
+      return (
+        localStorage.getItem("refreshToken") ||
+        sessionStorage.getItem("refreshToken")
+      );
+    }
+    return null;
+  }
 
-  //   this.axiosInstance.interceptors.response.use(
-  //     (response) => response,
-  //     (error) => this.handleError(error)
-  //   );
-  // }
-
-  private handleError(error: AxiosError): Promise<ApiError> {
+  private async handleError(error: AxiosError): Promise<ApiError | any> {
     if (error.response) {
       const { status, data } = error.response;
       const message = (data as any)?.message || error.message;
       const code = (data as any)?.code;
 
       if (status === 401 && typeof window !== "undefined") {
-        alert("Session expired. Please login again.");
-        window.location.href = "/login";
+        try {
+          const refreshToken = this.getRefreshToken();
+          if (!refreshToken) {
+            throw new Error("No refresh token available");
+          }
+
+          // Call refresh token endpoint
+          const response = await this.axiosInstance.post<
+            ApiResponse<RefreshTokenResponseData>
+          >("/auth/refresh-token", { refreshToken });
+
+          const res: RefreshTokenResponse = response.data;
+
+          if (res.success && res.data?.accessToken && error.config) {
+            // Store new tokens
+            ApiManager.setAuthToken(res.data.accessToken, true);
+            if (res.data.refreshToken) {
+              if (typeof window !== "undefined") {
+                localStorage.setItem("refreshToken", res.data.refreshToken);
+              }
+            }
+
+            // Update header with new token safely
+            if (
+              error.config.headers &&
+              typeof (error.config.headers as any).set === "function"
+            ) {
+              (error.config.headers as any).set(
+                "Authorization",
+                `Bearer ${res.data.accessToken}`
+              );
+            } else {
+              error.config.headers = {
+                ...error.config.headers,
+                Authorization: `Bearer ${res.data.accessToken}`,
+              } as any;
+            }
+
+            return this.axiosInstance.request(error.config); // retry failed request
+          }
+        } catch (refreshErr) {
+          ApiManager.clearTokens();
+          window.location.href = "/login";
+        }
       }
 
       return Promise.reject(new ApiError(message, status, code, data));
@@ -240,6 +322,7 @@ class ApiManager {
     const res = await this.axiosInstance.post<ApiResponse<T>>(url, formData, {
       ...config,
       headers: {
+        ...config?.headers,
         "Content-Type": "multipart/form-data",
         access_token: STATIC_TOKEN,
       },

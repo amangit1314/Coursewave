@@ -1,32 +1,219 @@
+// import { apiManager, ApiResponse, PaginatedResponse } from "../api-manager";
+// import { Course } from "@/types/course";
+// import { Instructor } from "@/types/instructor";
+// import {
+//   InstructorAnalytics,
+//   InstructorQueryParams,
+//   InstructorUpdateData,
+// } from "@/types/instructor.service.types";
+// import { Review } from "@/types/review";
+
+// class InstructorService {
+//   private static instance: InstructorService;
+
+//   private constructor() {}
+
+//   public static getInstance(): InstructorService {
+//     if (!InstructorService.instance) {
+//       InstructorService.instance = new InstructorService();
+//     }
+//     return InstructorService.instance;
+//   }
+
+//   // Instructor CRUD Operations
+//   async getInstructors(
+//     params?: InstructorQueryParams
+//   ): Promise<PaginatedResponse<Instructor>> {
+//     return apiManager.get<Instructor[]>("/instructors", { params });
+//   }
+
+//   async getInstructorById(
+//     instructorId: string
+//   ): Promise<ApiResponse<Instructor>> {
+//     return apiManager.get<Instructor>(`/instructors/${instructorId}`);
+//   }
+
+//   async getInstructorProfile(): Promise<Instructor> {
+//     const response = await apiManager.get<Instructor>(`/instructors/me`);
+//     if (!response.data) {
+//       throw new Error("OOPS, Instructor data is missing in API response");
+//     }
+//     return response.data; // ✅ return only the instructor object
+//   }
+
+//   async updateInstructorProfile(
+//     data: InstructorUpdateData
+//   ): Promise<ApiResponse<Instructor>> {
+//     return apiManager.put<Instructor>(`/instructors/me`, data);
+//   }
+
+//   // Instructor Courses
+//   async getInstructorCourses(
+//     instructorId: string,
+//     params?: { page?: number; limit?: number }
+//   ): Promise<PaginatedResponse<Course>> {
+//     return apiManager.get<Course[]>(`/instructors/${instructorId}/courses`, {
+//       params,
+//     });
+//   }
+
+//   async getMyCreatedCourses(
+//     instructorId: string,
+//     params?: { page?: number; limit?: number }
+//   ): Promise<PaginatedResponse<Course>> {
+//     return apiManager.get<Course[]>(`/instructors/${instructorId}/courses`, {
+//       params,
+//     });
+//   }
+
+//   // Analytics
+//   async getInstructorAnalytics(
+//     instructorId: string
+//   ): Promise<ApiResponse<InstructorAnalytics>> {
+//     return apiManager.get<InstructorAnalytics>(
+//       `/instructors/${instructorId}/analytics`
+//     );
+//   }
+
+//   async getInstructorEarnings(
+//     instructorId: string
+//   ): Promise<ApiResponse<{ totalEarnings: number; currency: string }>> {
+//     return apiManager.get<{ totalEarnings: number; currency: string }>(
+//       `/instructors/${instructorId}/earnings`
+//     );
+//   }
+
+//   // Reviews
+//   async getInstructorReviews(
+//     instructorId: string,
+//     params?: { page?: number; limit?: number }
+//   ): Promise<PaginatedResponse<Review>> {
+//     return apiManager.get<Review[]>(`/instructors/${instructorId}/reviews`, {
+//       params,
+//     });
+//   }
+
+//   async getInstructorAverageRating(
+//     instructorId: string
+//   ): Promise<ApiResponse<{ averageRating: number }>> {
+//     return apiManager.get<{ averageRating: number }>(
+//       `/instructors/${instructorId}/rating`
+//     );
+//   }
+// }
+
+// export const instructorService = InstructorService.getInstance();
+
+/**
+ * --------------------------------------------------------------------------------------------------------
+ */
+
+// import { apiManager, ApiResponse, PaginatedResponse } from "../api-manager";
+// import { Course } from "@/types/course";
+// import { Instructor } from "@/types/instructor";
+// import {
+//   InstructorAnalytics,
+//   InstructorQueryParams,
+//   InstructorUpdateData,
+// } from "@/types/instructor.service.types";
+// import { Review } from "@/types/review";
+
+// class InstructorService {
+//   private static instance: InstructorService;
+
+//   private constructor() {}
+
+//   public static getInstance(): InstructorService {
+//     if (!InstructorService.instance) {
+//       InstructorService.instance = new InstructorService();
+//     }
+//     return InstructorService.instance;
+//   }
+
+//   // ------------------------
+//   // PUBLIC INSTRUCTOR ROUTES
+//   // ------------------------
+
+//   async getInstructors(
+//     params?: InstructorQueryParams
+//   ): Promise<PaginatedResponse<Instructor>> {
+//     return apiManager.get<Instructor[]>("/instructors", { params });
+//   }
+
+//   async getInstructorById(
+//     instructorId: string
+//   ): Promise<ApiResponse<Instructor>> {
+//     return apiManager.get<Instructor>(`/instructors/${instructorId}`);
+//   }
+
+//   async getInstructorCourses(
+//     instructorId: string,
+//     params?: { page?: number; limit?: number }
+//   ): Promise<PaginatedResponse<Course>> {
+//     return apiManager.get<Course[]>(
+//       `/instructors/${instructorId}/courses`,
+//       { params }
+//     );
+//   }
+
+//   async getInstructorAnalytics(
+//     instructorId: string
+//   ): Promise<ApiResponse<InstructorAnalytics>> {
+//     return apiManager.get<InstructorAnalytics>(
+//       `/instructors/${instructorId}/analytics`
+//     );
+//   }
+
+//   // ------------------------
+//   // LOGGED-IN INSTRUCTOR ROUTES
+//   // ------------------------
+
+//   async getInstructorProfile(): Promise<Instructor> {
+//     const response = await apiManager.get<Instructor>(`/instructors/me`);
+//     if (!response.data) {
+//       throw new Error("OOPS, Instructor data is missing in API response");
+//     }
+//     return response.data;
+//   }
+
+//   async updateInstructorProfile(
+//     data: InstructorUpdateData
+//   ): Promise<ApiResponse<Instructor>> {
+//     return apiManager.put<Instructor>(`/instructors/me`, data);
+//   }
+
+//   async getMyCreatedCourses(
+//     params?: { page?: number; limit?: number }
+//   ): Promise<PaginatedResponse<Course>> {
+//     return apiManager.get<Course[]>(`/instructors/me/courses`, { params });
+//   }
+
+//   async getMyAnalytics(): Promise<ApiResponse<InstructorAnalytics>> {
+//     return apiManager.get<InstructorAnalytics>(`/instructors/me/analytics`);
+//   }
+
+//   async getMyStudentsCount(): Promise<ApiResponse<{ totalStudents: number }>> {
+//     return apiManager.get<{ totalStudents: number }>(`/instructors/me/students`);
+//   }
+// }
+
+// export const instructorService = InstructorService.getInstance();
+
+/**
+ * ---------------------------------------------------------------------------------------------------------
+ */
+
+// src/lib/api/services/instructorService.ts
+
 import { apiManager, ApiResponse, PaginatedResponse } from "../api-manager";
 import { Course } from "@/types/course";
 import { Instructor } from "@/types/instructor";
+import {
+  InstructorAnalytics,
+  InstructorQueryParams,
+  InstructorUpdateData,
+} from "@/types/instructor.service.types";
 import { Review } from "@/types/review";
-
-export interface InstructorQueryParams {
-  page?: number;
-  limit?: number;
-  search?: string;
-  sortBy?: "popular" | "rating" | "newest";
-  sortOrder?: "asc" | "desc";
-}
-
-export interface InstructorAnalytics {
-  totalEarnings: number;
-  currency: string;
-  totalStudents: number;
-  totalCourses: number;
-  averageRating: number;
-  enrollmentTrend: { date: string; count: number }[];
-  topCourses: Course[];
-}
-
-export interface InstructorUpdateData {
-  bio?: string;
-  expertise?: string[];
-  websiteUrl?: string;
-  socialLinks?: Record<string, string>;
-}
 
 class InstructorService {
   private static instance: InstructorService;
@@ -40,7 +227,10 @@ class InstructorService {
     return InstructorService.instance;
   }
 
-  // Instructor CRUD Operations
+  // ------------------------
+  // 🔹 PUBLIC INSTRUCTOR ROUTES
+  // ------------------------
+
   async getInstructors(
     params?: InstructorQueryParams
   ): Promise<PaginatedResponse<Instructor>> {
@@ -53,28 +243,6 @@ class InstructorService {
     return apiManager.get<Instructor>(`/instructors/${instructorId}`);
   }
 
-  // async getInstructorByUserId(userId: string): Promise<ApiResponse<Instructor>> {
-  //   return apiManager.get<Instructor>(`/instructors/user/${userId}`);
-  // }
-
-  async getInstructorByUserId(userId: string): Promise<Instructor> {
-    const response = await apiManager.get<Instructor>(
-      `/instructors/user/${userId}`
-    );
-    if (!response.data) {
-      throw new Error("Instructor data is missing in API response");
-    }
-    return response.data; // ✅ return only the instructor object
-  }
-
-  async updateInstructor(
-    instructorId: string,
-    data: InstructorUpdateData
-  ): Promise<ApiResponse<Instructor>> {
-    return apiManager.put<Instructor>(`/instructors/${instructorId}`, data);
-  }
-
-  // Instructor Courses
   async getInstructorCourses(
     instructorId: string,
     params?: { page?: number; limit?: number }
@@ -84,7 +252,6 @@ class InstructorService {
     });
   }
 
-  // Analytics
   async getInstructorAnalytics(
     instructorId: string
   ): Promise<ApiResponse<InstructorAnalytics>> {
@@ -101,7 +268,6 @@ class InstructorService {
     );
   }
 
-  // Reviews
   async getInstructorReviews(
     instructorId: string,
     params?: { page?: number; limit?: number }
@@ -116,6 +282,60 @@ class InstructorService {
   ): Promise<ApiResponse<{ averageRating: number }>> {
     return apiManager.get<{ averageRating: number }>(
       `/instructors/${instructorId}/rating`
+    );
+  }
+
+  // ------------------------
+  // 🔹 LOGGED-IN INSTRUCTOR ROUTES
+  // ------------------------
+
+  async getInstructorProfile(): Promise<Instructor> {
+    const response = await apiManager.get<Instructor>(`/instructors/me`);
+    if (!response.data) {
+      throw new Error("OOPS, Instructor data is missing in API response");
+    }
+    return response.data;
+  }
+
+  async updateInstructorProfile(
+    data: InstructorUpdateData
+  ): Promise<ApiResponse<Instructor>> {
+    return apiManager.put<Instructor>(`/instructors/me`, data);
+  }
+
+  async getMyCreatedCourses(params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<PaginatedResponse<Course>> {
+    return apiManager.get<Course[]>(`/instructors/me/courses`, { params });
+  }
+
+  async getMyAnalytics(): Promise<ApiResponse<InstructorAnalytics>> {
+    return apiManager.get<InstructorAnalytics>(`/instructors/me/analytics`);
+  }
+
+  async getMyEarnings(): Promise<
+    ApiResponse<{ totalEarnings: number; currency: string }>
+  > {
+    return apiManager.get<{ totalEarnings: number; currency: string }>(
+      `/instructors/me/earnings`
+    );
+  }
+
+  async getMyReviews(params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<PaginatedResponse<Review>> {
+    return apiManager.get<Review[]>(`/instructors/me/reviews`, { params });
+  }
+
+  async getMyAverageRating(): Promise<ApiResponse<{ averageRating: number }>> {
+    return apiManager.get<{ averageRating: number }>(`/instructors/me/rating`);
+  }
+
+  async getMyStudentsCount(): Promise<ApiResponse<{ totalStudents: number }>> {
+    return apiManager.get<{ totalStudents: number }>(
+      `/instructors/me/students`
     );
   }
 }

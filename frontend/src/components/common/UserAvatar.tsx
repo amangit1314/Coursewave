@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -13,12 +12,11 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUserStore } from "@/zustand/userStore";
+
 import { FiLogOut, FiShoppingCart } from "react-icons/fi";
 import { BsPersonFillCheck } from "react-icons/bs";
 import { TbJewishStar } from "react-icons/tb";
-import { RiMoneyDollarCircleLine } from "react-icons/ri";
-import { AiOutlineTransaction } from "react-icons/ai";
+import { useUserStore } from "@/zustand/userStore";
 
 const UserAvatar = () => {
   const { user, logout } = useUserStore();

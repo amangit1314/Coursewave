@@ -1,5 +1,11 @@
 "use client"; // required for {HeroSection} lottie-react because it use (useState) internally
 
+// import TestimonialsSection from "@/components/LandingPage/ai_generated_testimonials_section";
+// import CTASection from "@/components/LandingPage/cta-section";
+// import FeaturesSection from "@/components/LandingPage/features-section";
+// import HeroSection from "@/components/LandingPage/hero-section";
+// import StatsSection from "@/components/LandingPage/stats-section";
+
 import React from "react";
 import { useRouter } from "next/navigation";
 import LandingPageHeader from "../components/LandingPage/header";
@@ -73,3 +79,15 @@ const Home = () => {
 };
 
 export default Home;
+
+// export default function HomePage() {
+//   return (
+//     <main className="min-h-screen">
+//       <HeroSection />
+//       <FeaturesSection />
+//       <StatsSection />
+//       <TestimonialsSection />
+//       <CTASection />
+//     </main>
+//   );
+// }

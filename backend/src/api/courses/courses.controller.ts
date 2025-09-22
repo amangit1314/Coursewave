@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { invalidateCache } from "../../config/redis";
+// import { invalidateCache } from "../../config/redis";
 import { generateResourceId } from "../../core/utils/idGenerator";
 import { sendError, sendNotFound, sendSuccess } from "../../core/middleware";
 import z from "zod";
@@ -27,47 +27,9 @@ import {
 } from "./services/reviews.service";
 
 import { prisma } from "../../config/prisma";
+import { slugify } from "../../core/utils/slugify";
 
 // ------------------------------------------ COURSES ----------------------------------------
-// export const getAllPublishedCourses = async (req: Request, res: Response) => {
-//   try {
-//     const courses = await prisma.course.findMany({
-//       where: {
-//         isPublished: true,
-//       },
-//       include: {
-//         instructor: {
-//           include: {
-//             user: {
-//               select: {
-//                 id: true,
-//                 name: true,
-//                 email: true,
-//                 profileImageUrl: true,
-//               },
-//             },
-//           },
-//         },
-//         Category: true,
-//       },
-//       orderBy: {
-//         createdAt: "desc",
-//       },
-//     });
-
-//     return res.status(200).json({
-//       success: true,
-//       data: courses,
-//     });
-//   } catch (error: any) {
-//     console.log("ERROR in fetching courses: ", error.message);
-//     return res.status(500).json({
-//       success: false,
-//       error: error.message,
-//     });
-//   }
-// };
-
 export const getAllPublishedCourses = async (req: Request, res: Response) => {
   try {
     const limit = parseInt(req.query.limit as string) || 20;
@@ -80,6 +42,10 @@ export const getAllPublishedCourses = async (req: Request, res: Response) => {
         title: true,
         imageUrl: true,
         createdAt: true,
+        price: true,
+        isFree: true,
+        discount: true,
+        dealPrice: true,
         instructor: {
           select: {
             user: {
@@ -123,7 +89,6 @@ export const getAllPublishedCourses = async (req: Request, res: Response) => {
     });
   }
 };
-
 
 export const getInstructorCreatedCourses = async (
   req: Request,
@@ -309,6 +274,7 @@ export const createCourse = async (req: Request, res: Response) => {
       data: {
         id: generateResourceId("course"),
         title: title,
+        slug: slugify(title),
         description: description,
         price: price,
         imageUrl,
@@ -338,7 +304,7 @@ export const createCourse = async (req: Request, res: Response) => {
     });
 
     // Invalidate course cache after creation
-    await invalidateCache.courses();
+    // await invalidateCache.courses();
 
     return res.status(201).json({
       success: true,
@@ -392,7 +358,7 @@ export const updateCourse = async (req: Request, res: Response) => {
     });
 
     // Invalidate course cache after update
-    await invalidateCache.courses(courseId);
+    // await invalidateCache.courses(courseId);
 
     return res.status(200).json({
       success: true,
@@ -418,7 +384,7 @@ export const deleteCourse = async (req: Request, res: Response) => {
     });
 
     // Invalidate course cache after deletion
-    await invalidateCache.courses(courseId);
+    // await invalidateCache.courses(courseId);
 
     return res.status(200).json({
       success: true,
@@ -429,6 +395,116 @@ export const deleteCourse = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       error: error.message,
+    });
+  }
+};
+
+// -------------------------------------- COURSE PROGRESS -------------------------------------
+
+export const getCourseProgress = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user.id;
+    const courseId = req.params.courseId;
+
+    // Check enrollment and get progress with proper typing
+    const enrollment = await prisma.enrollment.findUnique({
+      where: {
+        userId_courseId: {
+          userId,
+          courseId,
+        },
+      },
+      include: {
+        course: {
+          include: {
+            sections: {
+              include: {
+                Chapter: {
+                  // Use 'Chapter' instead of 'chapters'
+                  include: {
+                    ChapterProgress: {
+                      where: { userId },
+                    },
+                  },
+                  orderBy: { position: "asc" },
+                },
+              },
+              orderBy: { position: "asc" },
+            },
+          },
+        },
+        ChapterProgress: {
+          where: { userId },
+        },
+      },
+    });
+
+    if (!enrollment) {
+      return res.status(404).json({
+        success: false,
+        message: "You are not enrolled in this course",
+      });
+    }
+
+    // Calculate overall progress
+    const totalChapters = enrollment.course.sections.reduce(
+      (total, section) => total + section.Chapter.length,
+      0
+    );
+
+    const completedChapters = enrollment.ChapterProgress.filter(
+      (cp) => cp.isCompleted
+    ).length;
+
+    const overallProgress =
+      totalChapters > 0
+        ? Math.round((completedChapters / totalChapters) * 100)
+        : 0;
+
+    // Format chapter progress by section for better frontend consumption
+    const sectionsWithProgress = enrollment.course.sections.map((section) => ({
+      id: section.id,
+      title: section.title,
+      position: section.position,
+      chapters: section.Chapter.map((chapter) => {
+        const chapterProgress = chapter.ChapterProgress[0] || null;
+        return {
+          id: chapter.id,
+          title: chapter.title,
+          position: chapter.position,
+          isFree: chapter.isFree,
+          contentType: chapter.contentType,
+          progress: chapterProgress,
+        };
+      }),
+    }));
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        enrollment: {
+          id: enrollment.id,
+          status: enrollment.status,
+          progress: overallProgress,
+          startDate: enrollment.startDate,
+          endDate: enrollment.endDate,
+        },
+        course: {
+          id: enrollment.course.id,
+          title: enrollment.course.title,
+          totalChapters,
+          completedChapters,
+          progress: overallProgress,
+        },
+        sections: sectionsWithProgress,
+        chapterProgress: enrollment.ChapterProgress,
+      },
+    });
+  } catch (error: any) {
+    console.error("Error fetching course progress:", error.message);
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
     });
   }
 };
@@ -736,6 +812,212 @@ export const deleteChapter = async (req: Request, res: Response) => {
   }
 };
 
+// ---------------------------------------- CHAPTER PROGRESS --------------------------------
+
+export const getChapterProgress = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user.id;
+    const chapterId = req.params.chapterId;
+
+    const chapterProgress = await prisma.chapterProgress.findUnique({
+      where: {
+        chapterId_userId: {
+          chapterId,
+          userId,
+        },
+      },
+      include: {
+        Chapter: {
+          include: {
+            CourseSection: {
+              include: {
+                course: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!chapterProgress) {
+      return res.status(404).json({
+        success: false,
+        message: "Chapter progress not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: chapterProgress,
+    });
+  } catch (error: any) {
+    console.error("Error fetching chapter progress:", error.message);
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
+    });
+  }
+};
+
+export const updateChapterProgress = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user.id;
+    const chapterId = req.params.chapterId;
+    const { isCompleted, progress: chapterProgress } = req.body;
+
+    // Get chapter with course info
+    const chapter = await prisma.chapter.findUnique({
+      where: { id: chapterId },
+      include: {
+        CourseSection: {
+          include: {
+            course: true,
+          },
+        },
+      },
+    });
+
+    if (!chapter) {
+      return res.status(404).json({
+        success: false,
+        message: "Chapter not found",
+      });
+    }
+
+    // Check enrollment
+    const enrollment = await prisma.enrollment.findUnique({
+      where: {
+        userId_courseId: {
+          userId,
+          courseId: chapter.CourseSection.courseId,
+        },
+      },
+    });
+
+    if (!enrollment) {
+      return res.status(403).json({
+        success: false,
+        message: "Not enrolled in this course",
+      });
+    }
+
+    // Update chapter progress within transaction
+    const result = await prisma.$transaction(async (tx) => {
+      // Update chapter progress
+      const updatedChapterProgress = await tx.chapterProgress.upsert({
+        where: {
+          chapterId_userId: {
+            chapterId,
+            userId,
+          },
+        },
+        update: {
+          isCompleted: isCompleted ?? undefined,
+          progress: chapterProgress ?? undefined,
+          lastAccessed: new Date(),
+          updatedAt: new Date(),
+        },
+        create: {
+          id: generateResourceId("chapterProgress"),
+          chapterId,
+          userId,
+          enrollmentId: enrollment.id,
+          isCompleted: isCompleted ?? false,
+          progress: chapterProgress ?? 0,
+          lastAccessed: new Date(),
+        },
+        include: {
+          Chapter: true,
+        },
+      });
+
+      // Calculate overall course progress
+      const allChapterProgress = await tx.chapterProgress.findMany({
+        where: {
+          userId,
+          Chapter: {
+            courseId: chapter.CourseSection.courseId,
+          },
+        },
+      });
+
+      const totalChapters = await tx.chapter.count({
+        where: {
+          CourseSection: {
+            courseId: chapter.CourseSection.courseId,
+          },
+        },
+      });
+
+      const completedChapters = allChapterProgress.filter(
+        (cp) => cp.isCompleted
+      ).length;
+
+      const overallProgress =
+        totalChapters > 0
+          ? Math.round((completedChapters / totalChapters) * 100)
+          : 0;
+
+      // Update course progress
+      const courseProgress = await tx.courseProgress.upsert({
+        where: {
+          courseId_userId: {
+            courseId: chapter.CourseSection.courseId,
+            userId,
+          },
+        },
+        update: {
+          progress: overallProgress,
+          isCompleted: overallProgress === 100,
+          lastAccessed: new Date(),
+        },
+        create: {
+          id: generateResourceId("courseProgress"),
+          courseId: chapter.CourseSection.courseId,
+          userId,
+          progress: overallProgress,
+          isCompleted: overallProgress === 100,
+          lastAccessed: new Date(),
+        },
+      });
+
+      // Update enrollment progress if needed
+      if (overallProgress === 100) {
+        await tx.enrollment.update({
+          where: { id: enrollment.id },
+          data: {
+            status: "COMPLETED",
+            progress: overallProgress,
+            endDate: new Date(),
+          },
+        });
+      } else {
+        await tx.enrollment.update({
+          where: { id: enrollment.id },
+          data: { progress: overallProgress },
+        });
+      }
+
+      return {
+        chapterProgress: updatedChapterProgress,
+        courseProgress,
+        overallProgress,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error: any) {
+    console.error("Error updating chapter progress:", error.message);
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
+    });
+  }
+};
+
 // ---------------------------------------- REVIEWS --------------------------------
 
 export const getAllReviewsForCourseId = async (req: Request, res: Response) => {
@@ -999,5 +1281,89 @@ export const deleteAttachment = async (req: Request, res: Response) => {
   } catch (err: any) {
     const statusCode = err.message.includes("Unauthorized") ? 403 : 404;
     sendError(res, err.message, statusCode);
+  }
+};
+
+// -------------------------------------------- LEARNING DASHBORAD ------------------------------
+
+export const getLearningDashboard = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user.id;
+
+    const enrollments = await prisma.enrollment.findMany({
+      where: { userId },
+      include: {
+        course: {
+          include: {
+            instructor: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                  },
+                },
+              },
+            },
+            sections: {
+              include: {
+                Chapter: {
+                  include: {
+                    ChapterProgress: {
+                      where: { userId },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        ChapterProgress: true,
+      },
+      orderBy: { updatedAt: "desc" },
+    });
+
+    const dashboard = enrollments.map((enrollment) => {
+      const totalChapters = enrollment.course.sections.reduce(
+        (total, section) => total + section.Chapter.length,
+        0
+      );
+
+      const completedChapters = enrollment.ChapterProgress.filter(
+        (cp) => cp.isCompleted
+      ).length;
+
+      const progress =
+        totalChapters > 0
+          ? Math.round((completedChapters / totalChapters) * 100)
+          : 0;
+
+      return {
+        enrollmentId: enrollment.id,
+        courseId: enrollment.course.id,
+        title: enrollment.course.title,
+        instructor: enrollment.course.instructor?.user.name,
+        imageUrl: enrollment.course.imageUrl,
+        status: enrollment.status,
+        progress,
+        completedChapters,
+        totalChapters,
+        lastAccessed: enrollment.updatedAt,
+        startDate: enrollment.startDate,
+        endDate: enrollment.endDate,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: dashboard,
+    });
+  } catch (error: any) {
+    console.error("Error fetching learning dashboard:", error.message);
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
+    });
   }
 };

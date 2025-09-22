@@ -2,6 +2,7 @@
 
 import React, { useEffect } from "react";
 import toast from "react-hot-toast";
+
 import CourseNavbar from "../../_components/CourseNavbar";
 import { useUserStore } from "@/zustand/userStore";
 import { Footer } from "@/components/LandingPage/footer";
@@ -11,88 +12,66 @@ import { CourseRatingsSection } from "./CourseRatingsSection";
 import { CourseSectionsAndChapters } from "./CourseSectionAndChapters";
 import { CourseDetailsRightSection } from "./CourseDetailsRightSection";
 import { CourseDetailsLeftSection } from "./CourseDetailsLeftSection";
-import { useCourseDetails } from "@/hooks/useCourseDetails";
-import { useCourseReviews } from "@/hooks/useCourseReviews";
-import { useCourseSections } from "@/hooks/useCourseSections";
+
+import { useCourse } from "@/hooks/useCourses";
+import { useCourseReviews } from "@/hooks/useCourses";
+import { useCourseSections } from "@/hooks/useCourses";
+import { useCheckAuth, useRefreshToken } from "@/hooks/useAuth";
+import { Review } from "@/types/review";
 
 const CoursePreviewClient = ({ courseId }: { courseId: string }) => {
-  console.log(
-    `Course id in courses/[id]/page.tsx before fetching data: ${courseId}`
-  );
+  // Fetch course data
+  const { data: course, isLoading, isError, error } = useCourse(courseId);
 
-  const {
-    data: course,
-    isLoading,
-    isError,
-    error,
-  } = useCourseDetails(courseId);
   const { data: reviews } = useCourseReviews(courseId);
   const { data: sections } = useCourseSections(courseId);
 
-  const { user, checkAuthToken, refreshAuthToken } = useUserStore();
+  // Auth management
+  const { user } = useUserStore();
+  const { refetch: checkAuth } = useCheckAuth();
+  const { mutateAsync: refreshAuth } = useRefreshToken();
 
-  console.log("Course Reviews: ", JSON.stringify(reviews));
-
-  // Handle success/cancel messages from Stripe checkout
+  // 🔹 Auto-refresh token when user is logged in
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const success = urlParams.get("success");
-    const canceled = urlParams.get("canceled");
+    if (!user?.id) return;
+
+    (async () => {
+      try {
+        const result = await checkAuth();
+        if (!result.data) {
+          await refreshAuth();
+        }
+      } catch (err) {
+        console.error("Auth check/refresh failed:", err);
+      }
+    })();
+  }, [user?.id, checkAuth, refreshAuth]);
+
+  // 🔹 Handle success/cancel messages from Stripe checkout
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const success = params.get("success");
+    const canceled = params.get("canceled");
 
     if (success === "1") {
       toast.success(
         "🎉 Payment successful! You are now enrolled in this course."
       );
-      // Clean up the URL
-      window.history.replaceState({}, document.title, window.location.pathname);
     } else if (canceled === "1") {
       toast.error("Payment was canceled. You can try again anytime.");
-      // Clean up the URL
+    }
+
+    if (success || canceled) {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, []);
 
-  // Auto-refresh token if user is authenticated but doesn't have a token
-  useEffect(() => {
-    const autoRefreshToken = async () => {
-      // console.log("=== Auto-refresh token check ===");
-      // console.log("User:", user);
-
-      if (user && user.id && user.id !== "null" && user.id !== "undefined") {
-        const hasToken = checkAuthToken();
-        // console.log("Has token:", hasToken);
-
-        if (!hasToken) {
-          // console.log(
-          //   "User authenticated but no token found, attempting auto-refresh..."
-          // );
-          try {
-            const refreshSuccess = await refreshAuthToken();
-            // console.log("Auto-refresh result:", refreshSuccess);
-
-            if (refreshSuccess) {
-              // console.log("Auth token auto-refreshed successfully");
-            } else {
-              // console.warn("Failed to auto-refresh auth token");
-            }
-          } catch (error) {
-            // console.error("Error during auto-refresh:", error);
-          }
-        } else {
-          // console.log("User has valid token, no refresh needed");
-        }
-      } else {
-        // console.log("No valid user found for auto-refresh");
-      }
-    };
-
-    autoRefreshToken();
-  }, [user, checkAuthToken, refreshAuthToken]);
-
+  // 🔹 Loading State
   if (isLoading) {
     return <CoursePreviewLoadingSkeleton />;
   }
 
+  // 🔹 Error State
   if (isError && error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-zinc-50 via-white to-blue-50/30 dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900">
@@ -110,59 +89,66 @@ const CoursePreviewClient = ({ courseId }: { courseId: string }) => {
     );
   }
 
-  // Handle course data - it might be an array or single object
-  const courseData = Array.isArray(course) ? course[0] : course;
+  // 🔹 Normalize data for safe rendering
+  const courseData = course?.data ?? null;
+  const safeReviews: Review[] = reviews?.data ? [reviews.data] : [];
 
-  // Provide fallback values only when rendering
-  const courseTitle = courseData?.title;
-  const instructor = courseData?.instructor;
+  const safeSections = Array.isArray(sections)
+    ? sections.map((s: any) => ({
+        ...s,
+        courseId,
+        Chapter: Array.isArray(s.Chapter) ? s.Chapter : [],
+      }))
+    : [];
+
+  if (!courseData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <ErrorMessage
+          title="Course Not Found"
+          message="This course does not exist or has been removed."
+        />
+      </div>
+    );
+  }
+
+  const courseTitle = courseData.title;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-50 via-white to-blue-50/30 dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900">
       <div className="container mx-auto max-w-7xl space-y-8 px-4 py-6 lg:space-y-12 lg:px-8">
-        {/* Course Navbar */}
+        {/* 🔹 Course Navbar */}
         {courseTitle && (
           <div className="sticky top-0 z-50 -mx-4 bg-white/80 px-4 py-3 backdrop-blur-md dark:bg-transparent lg:mx-0 lg:px-0">
             <CourseNavbar courseName={courseTitle} />
           </div>
         )}
 
-        {/* Course Content */}
-        {courseData && (
-          <div className="grid gap-8 lg:grid-cols-3">
-            <div className="lg:col-span-2">
-              <CourseDetailsLeftSection course={courseData} reviews={reviews ?? []} />
-            </div>
-            <div className="lg:col-span-1">
-              <CourseDetailsRightSection course={courseData} />
-            </div>
+        {/* 🔹 Course Content */}
+        <div className="grid gap-8 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <CourseDetailsLeftSection
+              course={courseData}
+              reviews={safeReviews}
+            />
           </div>
-        )}
-
-        {/* Course Sections and Chapters */}
-        <div className="mt-12">
-          <CourseSectionsAndChapters
-            courseId={courseId}
-            sections={
-              (sections ?? []).map((section: any) => ({
-                ...section,
-                courseId: section.courseId ?? courseId,
-                Chapter: section.Chapter ?? [],
-              }))
-            }
-          />
+          <div className="lg:col-span-1">
+            <CourseDetailsRightSection course={courseData} />
+          </div>
         </div>
 
-        {/* Course Ratings */}
-        <div className="mt-12">
-          <CourseRatingsSection reviews={reviews ?? []} course={courseData} />
-        </div>
+        {/* 🔹 Course Sections and Chapters */}
+        <CourseSectionsAndChapters
+          courseId={courseId}
+          sections={safeSections}
+        />
 
-        {/* Instructor Info */}
-        {/* {instructor && (
-          <div className="mt-12">
-            <CourseInstructorInformationSection instructor={instructor} />
-          </div>
+        {/* 🔹 Course Ratings */}
+        <CourseRatingsSection reviews={safeReviews} course={courseData} />
+
+        {/* 🔹 Instructor Info (optional) */}
+        {/* {courseData.instructor && (
+          <CourseInstructorInformationSection instructor={courseData.instructor} />
         )} */}
       </div>
 

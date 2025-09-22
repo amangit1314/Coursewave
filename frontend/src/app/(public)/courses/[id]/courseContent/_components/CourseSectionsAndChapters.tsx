@@ -140,6 +140,7 @@ import {
 import { Section } from "@/types/course-details-api-response";
 import { FaLock, FaUnlock } from "react-icons/fa6";
 import { FaPlayCircle } from "react-icons/fa";
+import { useCoursesStore } from "@/zustand/coursesStore";
 
 const sampleChapters = [
   { title: "Intro to Full Stack", isFree: true },
@@ -149,35 +150,48 @@ const sampleChapters = [
 
 type CourseSectionsAndChaptersProps = {
   sections: Section[];
-  activeSectionIndex: number;
-  setActiveSectionIndex: (idx: number) => void;
-  activeChapterIndex: number;
-  setActiveChapterIndex: (idx: number) => void;
-  chaptersError: any;
+  // activeSectionIndex: number;
+  // setActiveSectionIndex: (idx: number) => void;
+  // activeChapterIndex: number;
+  // setActiveChapterIndex: (idx: number) => void;
+  // chaptersError: any;
 };
 
 export default function CourseSectionsAndChapters({
   sections,
-  activeSectionIndex,
-  setActiveSectionIndex,
-  activeChapterIndex,
-  setActiveChapterIndex,
-  chaptersError,
+  // activeSectionIndex,
+  // setActiveSectionIndex,
+  // activeChapterIndex,
+  // setActiveChapterIndex,
+  // chaptersError,
 }: CourseSectionsAndChaptersProps) {
-  if (chaptersError) {
-    return (
-      <div className="text-red-500">
-        Error loading chapters: {chaptersError.message}
-      </div>
-    );
-  }
+  // if (chaptersError) {
+  //   return (
+  //     <div className="text-red-500">
+  //       Error loading chapters: {chaptersError.message}
+  //     </div>
+  //   );
+  // }
+
+  const activeSectionIndex = useCoursesStore(
+    (state) => state.activeSectionIndex
+  );
+  const setActiveSectionIndex = useCoursesStore(
+    (state) => state.setActiveSectionIndex
+  );
+  const activeChapterIndex = useCoursesStore(
+    (state) => state.activeChapterIndex
+  );
+  const setActiveChapterIndex = useCoursesStore(
+    (state) => state.setActiveChapterIndex
+  );
 
   const enrichedSections = sections.map((section) => {
     return {
       ...section,
       chapters:
-        section.chapters && section.chapters.length > 0
-          ? section.chapters
+        section.Chapter && section.Chapter.length > 0
+          ? section.Chapter
           : sampleChapters.map((ch, idx) => ({
               id: `sample-${section.id}-${idx}`,
               title: ch.title,
@@ -210,7 +224,6 @@ export default function CourseSectionsAndChapters({
           className="rounded-md border border-gray-200 dark:border-zinc-700 ring-0 focus:outline-none focus-visible:ring-0 focus:ring-0"
         >
           <AccordionTrigger className="px-2 py-2 text-left text-sm tracking-tight font-medium text-gray-800 dark:text-gray-200 focus:outline-none focus-visible:ring-0 focus:ring-0 focus:outline-transparent focus:ring-transparent">
-            
             {section.position}
             {". "}
             {section.title}

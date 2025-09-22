@@ -1,10 +1,9 @@
-import React from 'react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { Clock, AlertTriangle, CheckCircle } from 'lucide-react';
-import { useRateLimitStatus } from '@/hooks/useApi';
-import { getRateLimitStatus } from '@/lib/api/core/rate-limiter';
+import React from "react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Clock, AlertTriangle, CheckCircle } from "lucide-react";
+import ApiManager from "@/lib/api/api-manager";
 
 interface RateLimitIndicatorProps {
   url: string;
@@ -16,20 +15,40 @@ interface RateLimitIndicatorProps {
 
 export function RateLimitIndicator({
   url,
-  method = 'GET',
+  method = "GET",
   showProgress = true,
   showBadge = true,
-  className = '',
+  className = "",
 }: RateLimitIndicatorProps) {
-  const status = useRateLimitStatus(url, method);
+  const [status, setStatus] = React.useState(
+    ApiManager.getRateLimitStatus(url, method)
+  );
+  const [timeLeft, setTimeLeft] = React.useState(
+    Math.max(0, status.resetTime - Date.now())
+  );
+
+  // Poll rate limit status every second
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setStatus(ApiManager.getRateLimitStatus(url, method));
+      setTimeLeft(Math.max(0, status.resetTime - Date.now()));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [url, method, status.resetTime]);
 
   if (!status.isLimited && status.remaining === status.total) {
-    return null; // Don't show anything when no requests have been made
+    return null; // Don't show anything when unused
   }
 
-  const progressPercentage = ((status.total - status.remaining) / status.total) * 100;
+  const total = status.total || 1; // prevent div/0
+  const used = total - status.remaining;
+  const progressPercentage = (used / total) * 100;
   const resetTime = new Date(status.resetTime).toLocaleTimeString();
-  const timeUntilReset = Math.max(0, status.resetTime - Date.now());
+
+  // pick bar color dynamically
+  let barColor = "rgb(34 197 94)"; // green
+  if (progressPercentage > 75) barColor = "rgb(239 68 68)"; // red
+  else if (progressPercentage > 50) barColor = "rgb(234 179 8)"; // yellow
 
   return (
     <div className={`space-y-2 ${className}`}>
@@ -40,8 +59,8 @@ export function RateLimitIndicator({
             Rate Limit Exceeded
           </AlertTitle>
           <AlertDescription className="text-orange-700 dark:text-orange-300">
-            You've reached the maximum of {status.total} requests per minute. 
-            Try again after {resetTime}.
+            You&apos;ve reached the maximum of {status.total} requests per
+            minute. Try again after {resetTime}.
           </AlertDescription>
         </Alert>
       )}
@@ -52,16 +71,18 @@ export function RateLimitIndicator({
             <span className="text-gray-600 dark:text-gray-400">
               API Requests: {status.remaining}/{status.total}
             </span>
-            <span className="text-gray-500 dark:text-gray-500">
+            <span className="text-gray-500 dark:text-gray-400">
               Resets at {resetTime}
             </span>
           </div>
-          <Progress 
-            value={progressPercentage} 
+          <Progress
+            value={progressPercentage}
             className="h-2"
-            style={{
-              '--progress-background': status.isLimited ? 'rgb(239 68 68)' : 'rgb(34 197 94)'
-            } as React.CSSProperties}
+            style={
+              {
+                "--progress-background": barColor,
+              } as React.CSSProperties
+            }
           />
         </div>
       )}
@@ -82,25 +103,29 @@ export function RateLimitIndicator({
         </div>
       )}
 
-      {timeUntilReset > 0 && status.isLimited && (
+      {timeLeft > 0 && (
         <div className="text-xs text-gray-500 dark:text-gray-400">
-          Time until reset: {Math.ceil(timeUntilReset / 1000)}s
+          {status.isLimited
+            ? `Time until reset: ${Math.ceil(timeLeft / 1000)}s`
+            : `Resets in ${Math.ceil(timeLeft / 1000)}s`}
         </div>
       )}
     </div>
   );
 }
 
-// Hook for getting rate limit status for multiple endpoints
-export function useMultiEndpointRateLimit(endpoints: Array<{ url: string; method?: string }>) {
+// Hook for multiple endpoints
+export function useMultiEndpointRateLimit(
+  endpoints: Array<{ url: string; method?: string }>
+) {
   const [statuses, setStatuses] = React.useState<Record<string, any>>({});
 
   React.useEffect(() => {
     const interval = setInterval(() => {
       const newStatuses: Record<string, any> = {};
-      endpoints.forEach(({ url, method = 'GET' }) => {
+      endpoints.forEach(({ url, method = "GET" }) => {
         const key = `${method}:${url}`;
-        newStatuses[key] = getRateLimitStatus(url, method);
+        newStatuses[key] = ApiManager.getRateLimitStatus(url, method);
       });
       setStatuses(newStatuses);
     }, 1000);
@@ -111,30 +136,30 @@ export function useMultiEndpointRateLimit(endpoints: Array<{ url: string; method
   return statuses;
 }
 
-// Component for showing overall rate limit status
-export function GlobalRateLimitIndicator() {
-  const [globalStatus, setGlobalStatus] = React.useState({
-    totalRequests: 0,
-    limitedEndpoints: 0,
-    anyLimited: false,
-  });
+// Global Indicator
+export function GlobalRateLimitIndicator({
+  endpoints,
+}: {
+  endpoints: Array<{ url: string; method?: string }>;
+}) {
+  const statuses = useMultiEndpointRateLimit(endpoints);
 
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      // This would need to be implemented based on your specific needs
-      // You might want to track all endpoints globally
-      setGlobalStatus({
-        totalRequests: 0,
-        limitedEndpoints: 0,
-        anyLimited: false,
-      });
-    }, 1000);
+  const limitedEndpoints = Object.values(statuses).filter(
+    (s: any) => s?.isLimited
+  ).length;
+  const totalRequests = Object.values(statuses).reduce(
+    (sum: number, s: any) => sum + ((s?.total ?? 0) - (s?.remaining ?? 0)),
+    0
+  );
 
-    return () => clearInterval(interval);
-  }, []);
+  const anyLimited = limitedEndpoints > 0;
 
-  if (!globalStatus.anyLimited) {
-    return null;
+  if (!anyLimited) {
+    return (
+      <div className="text-xs text-gray-500 dark:text-gray-400">
+        Total API calls made: {totalRequests}
+      </div>
+    );
   }
 
   return (
@@ -144,8 +169,9 @@ export function GlobalRateLimitIndicator() {
         Rate Limits Active
       </AlertTitle>
       <AlertDescription className="text-yellow-700 dark:text-yellow-300">
-        {globalStatus.limitedEndpoints} endpoint(s) are currently rate limited.
+        {limitedEndpoints} endpoint(s) are currently rate limited. Total calls:{" "}
+        {totalRequests}
       </AlertDescription>
     </Alert>
   );
-} 
+}

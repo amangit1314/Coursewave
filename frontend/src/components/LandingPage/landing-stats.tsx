@@ -43,7 +43,7 @@ const LandingCoursewaveStats = () => {
   const statsData = [
     {
       icon: BookOpen,
-      number: courses.length || 250,
+      number: courses.length || 200,
       title: "Online Courses",
       description: "Comprehensive courses covering the latest technologies and frameworks",
       gradient: "from-blue-500 to-cyan-500",
@@ -197,7 +197,7 @@ const LandingCoursewaveStats = () => {
 const StatCard = ({ icon: Icon, number, title, description, gradient, bgGradient, darkBgGradient }: any) => {
   return (
     <motion.div
-      className="stat-card group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900"
+      className="stat-card group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-8 transition-all duration-300 hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900"
       whileHover={{ y: -8 }}
       transition={{ duration: 0.3 }}
     >
@@ -226,7 +226,7 @@ const StatCard = ({ icon: Icon, number, title, description, gradient, bgGradient
       </div>
 
       {/* Hover Effect */}
-      <div className="absolute inset-0 rounded-2xl border-2 border-transparent bg-gradient-to-r from-blue-500/0 to-cyan-500/0 transition-all duration-300 group-hover:from-blue-500/10 group-hover:to-cyan-500/10" />
+      {/* <div className="absolute inset-0 rounded-2xl border-2 border-transparent bg-gradient-to-r from-blue-500/0 to-cyan-500/0 transition-all duration-300 group-hover:from-blue-500/10 group-hover:to-cyan-500/10" /> */}
     </motion.div>
   );
 };

@@ -1,31 +1,32 @@
+import { sessionService } from "@/lib/api/services/sessionsService";
+import { Session } from "@/types/sessions.services.types";
 import { useQuery } from "@tanstack/react-query";
-import { sessionService, Session } from "@/lib/api/services/sessionsService";
 
 const fetchSessions = async (): Promise<Session[]> => {
   try {
     const response = await sessionService.getSessions();
-    console.log('Raw API Response:', response);
+    console.log("Raw API Response:", response);
 
     if (!response) {
-      console.error('No response received from API');
+      console.error("No response received from API");
       return [];
     }
 
     if (!response.success) {
-      console.error('API returned unsuccessful response:', response);
+      console.error("API returned unsuccessful response:", response);
       return [];
     }
 
     if (!response.data) {
-      console.error('No data in API response:', response);
+      console.error("No data in API response:", response);
       return [];
     }
 
     return response.data;
   } catch (error) {
-    console.error('Error fetching sessions:', error);
+    console.error("Error fetching sessions:", error);
     if (error instanceof Error) {
-      console.error('Error details:', {
+      console.error("Error details:", {
         message: error.message,
         stack: error.stack,
       });
@@ -42,9 +43,9 @@ export const useSessions = () => {
     retry: 1, // Only retry once on failure
   });
 
-  return { 
-    sessions: data || [], 
-    error, 
-    isLoading 
+  return {
+    sessions: data || [],
+    error,
+    isLoading,
   };
-}; 
+};

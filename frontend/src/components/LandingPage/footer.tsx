@@ -11,14 +11,7 @@ import {
 import { FaSquareXTwitter, FaYoutube } from "react-icons/fa6";
 import Newsletter from "./newsletter";
 import { SiDiscord, SiDribbble, SiGithub, SiLinkedin } from "react-icons/si";
-import { Orbitron } from "next/font/google";
-
-const orbitron = Orbitron({
-  weight: ["400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-  display: "swap",
-  preload: true,
-});
+import { dmSans, poppins } from "@/lib/config/fonts";
 
 const quickLinks = [
   {
@@ -68,31 +61,31 @@ const helpLinks = [
 
 export const CourseFooter = () => {
   return (
-    <div className="flex h-auto w-full flex-col items-center justify-between border-t border-gray-200 bg-white px-4 py-6 dark:border-gray-800 dark:bg-black sm:flex-row sm:px-6 lg:px-8">
+    <div className="flex h-auto w-full flex-col items-center justify-between border-t border-gray-200/80 bg-white/95 px-4 py-6 backdrop-blur-sm dark:border-gray-800/80 dark:bg-black/95 sm:flex-row sm:px-6 lg:px-8">
       <div className="mb-6 flex flex-col items-center space-y-4 sm:mb-0 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
         {/* Coursewave logo */}
-        <Link href="/" className="flex items-center transition-opacity hover:opacity-80">
+        <Link href="/" className="flex items-center transition-all duration-200 hover:opacity-80 hover:scale-105">
           <Image
             src="/courseWaveFaviconColored.png"
-            className="h-8 w-8"
+            className="h-8 w-8 drop-shadow-sm"
             alt="Coursewave Logo"
             height={32}
             width={32}
           />
-          <span className="ml-2 text-sm font-bold text-blue-500 dark:text-blue-500 sm:text-base">
+          <span className={`${dmSans.className} ml-2 text-sm font-bold text-blue-500 dark:text-blue-500 sm:text-base`}>
             CourseWave
           </span>
         </Link>
 
         {/* Copyright text */}
         <div className="flex flex-col items-center space-y-1 text-center sm:flex-row sm:space-x-1 sm:space-y-0">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className={`${poppins.className} text-sm text-gray-500 dark:text-gray-400`}>
             © 2023
-            <Link href="/" className="hover:underline">
+            <Link href="/" className="hover:text-blue-500 hover:underline">
               Coursewave™
             </Link>
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className={`${poppins.className} text-sm text-gray-500 dark:text-gray-400`}>
             . All Rights Reserved.
           </p>
         </div>
@@ -100,10 +93,10 @@ export const CourseFooter = () => {
 
       {/* Social icons */}
       <div className="flex items-center justify-center">
-        <div className="flex space-x-4">
+        <div className="flex space-x-5">
           <Link
             href="#"
-            className="text-gray-500 transition-colors hover:text-gray-900 dark:hover:text-white"
+            className="text-gray-500 transition-all duration-200 hover:scale-110 hover:text-blue-500 dark:hover:text-blue-400"
           >
             <svg
               className="h-4 w-4"
@@ -122,7 +115,7 @@ export const CourseFooter = () => {
           </Link>
           <Link
             href="#"
-            className="text-gray-500 transition-colors hover:text-gray-900 dark:hover:text-white"
+            className="text-gray-500 transition-all duration-200 hover:scale-110 hover:text-blue-500 dark:hover:text-blue-400"
           >
             <svg
               className="h-4 w-4"
@@ -137,7 +130,7 @@ export const CourseFooter = () => {
           </Link>
           <Link
             href="#"
-            className="text-gray-500 transition-colors hover:text-gray-900 dark:hover:text-white"
+            className="text-gray-500 transition-all duration-200 hover:scale-110 hover:text-blue-500 dark:hover:text-blue-400"
           >
             <svg
               className="h-4 w-4"
@@ -156,7 +149,7 @@ export const CourseFooter = () => {
           </Link>
           <Link
             href="#"
-            className="text-gray-500 transition-colors hover:text-gray-900 dark:hover:text-white"
+            className="text-gray-500 transition-all duration-200 hover:scale-110 hover:text-blue-500 dark:hover:text-blue-400"
           >
             <svg
               className="h-4 w-4"
@@ -175,7 +168,7 @@ export const CourseFooter = () => {
           </Link>
           <Link
             href="#"
-            className="text-gray-500 transition-colors hover:text-gray-900 dark:hover:text-white"
+            className="text-gray-500 transition-all duration-200 hover:scale-110 hover:text-blue-500 dark:hover:text-blue-400"
           >
             <svg
               className="h-4 w-4"
@@ -207,7 +200,7 @@ export const Footer = () => {
       </div> */}
 
       {/* Main Footer Content */}
-      <div className="border-t border-neutral-700 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="border-t border-neutral-700/60 px-4 py-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col space-y-8 lg:flex-row lg:items-start lg:justify-between lg:space-y-0 lg:space-x-12">
             {/* Logo and Links Section */}
@@ -221,15 +214,15 @@ export const Footer = () => {
                     width={32}
                     height={32}
                     priority
-                    className="h-8 w-8"
+                    className="h-8 w-8 drop-shadow-md"
                   />
-                  <span className={orbitron.className}>
+                  <span className={`${dmSans.className}`}>
                     <p className="ml-2 text-lg font-extrabold capitalize tracking-tight text-blue-500">
                       Coursewave
                     </p>
                   </span>
                 </div>
-                <p className="max-w-xs text-sm text-slate-400">
+                <p className={`${poppins.className} max-w-xs text-sm text-slate-400`}>
                   Empowering developers worldwide with cutting-edge courses, mentorship, and a vibrant community.
                 </p>
               </div>
@@ -238,7 +231,7 @@ export const Footer = () => {
               <div className="hidden lg:flex lg:space-x-12">
                 {/* Get Help */}
                 <div className="space-y-4">
-                  <p className="text-sm font-bold uppercase tracking-tight text-slate-100">
+                  <p className={`${dmSans.className} text-sm font-bold uppercase tracking-tight text-slate-100`}>
                     Get Help
                   </p>
                   <ul className="flex list-none flex-col space-y-3">
@@ -246,7 +239,7 @@ export const Footer = () => {
                       <li key={index}>
                         <Link
                           href={helpLink.link}
-                          className="text-sm tracking-tight text-slate-400 transition-colors hover:text-slate-100"
+                          className={`${poppins.className} text-sm tracking-tight text-slate-400 transition-colors duration-200 hover:text-blue-400`}
                         >
                           {helpLink.name}
                         </Link>
@@ -257,7 +250,7 @@ export const Footer = () => {
 
                 {/* Quick Links */}
                 <div className="space-y-4">
-                  <p className="text-sm font-bold uppercase tracking-tight text-slate-100">
+                  <p className={`${dmSans.className} text-sm font-bold uppercase tracking-tight text-slate-100`}>
                     Quick Links
                   </p>
                   <ul className="flex list-none flex-col space-y-3">
@@ -265,7 +258,7 @@ export const Footer = () => {
                       <li key={index}>
                         <Link
                           href={quickLink.link}
-                          className="text-sm tracking-tight text-slate-400 transition-colors hover:text-slate-100"
+                          className={`${poppins.className} text-sm tracking-tight text-slate-400 transition-colors duration-200 hover:text-blue-400`}
                         >
                           {quickLink.name}
                         </Link>
@@ -283,45 +276,45 @@ export const Footer = () => {
 
             {/* Social Icons */}
             <div className="flex items-center justify-center lg:justify-end">
-              <div className="flex space-x-4">
+              <div className="flex space-x-5">
                 <Link
                   href="https://discord.gg/gemZ3T6r"
-                  className="text-gray-500 transition-colors hover:text-blue-500"
+                  className="text-gray-500 transition-all duration-200 hover:scale-110 hover:text-blue-500"
                 >
                   <SiLinkedin className="h-5 w-5" />
                   <span className="sr-only">LinkedIn</span>
                 </Link>
                 <Link
                   href="https://discord.gg/gemZ3T6r"
-                  className="text-gray-500 transition-colors hover:text-blue-500"
+                  className="text-gray-500 transition-all duration-200 hover:scale-110 hover:text-blue-500"
                 >
                   <SiDiscord className="h-5 w-5" />
                   <span className="sr-only">Discord community</span>
                 </Link>
                 <Link
                   href="https://x.com/soni07_aman"
-                  className="text-gray-500 transition-colors hover:text-blue-500"
+                  className="text-gray-500 transition-all duration-200 hover:scale-110 hover:text-blue-500"
                 >
                   <FaSquareXTwitter className="h-5 w-5" />
                   <span className="sr-only">Twitter page</span>
                 </Link>
                 <Link
                   href="https://github.com/amangit1314"
-                  className="text-gray-500 transition-colors hover:text-blue-500"
+                  className="text-gray-500 transition-all duration-200 hover:scale-110 hover:text-blue-500"
                 >
                   <SiGithub className="h-5 w-5" />
                   <span className="sr-only">GitHub account</span>
                 </Link>
                 <Link
                   href="#"
-                  className="text-gray-500 transition-colors hover:text-blue-500"
+                  className="text-gray-500 transition-all duration-200 hover:scale-110 hover:text-blue-500"
                 >
                   <SiDribbble className="h-5 w-5" />
                   <span className="sr-only">Dribbble account</span>
                 </Link>
                 <Link
                   href="https://discord.gg/gemZ3T6r"
-                  className="text-gray-500 transition-colors hover:text-blue-500"
+                  className="text-gray-500 transition-all duration-200 hover:scale-110 hover:text-blue-500"
                 >
                   <FaYoutube className="h-5 w-5" />
                   <span className="sr-only">Youtube channel</span>
@@ -333,7 +326,7 @@ export const Footer = () => {
       </div>
 
       {/* Bottom Section */}
-      <div className="border-t border-neutral-700 px-4 py-6 sm:px-6 lg:px-8">
+      <div className="border-t border-neutral-700/60 px-4 py-6 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col-reverse items-center justify-between space-y-4 space-y-reverse sm:flex-row sm:space-y-0">
             <CopyRightText />
@@ -342,25 +335,25 @@ export const Footer = () => {
             <div className="flex flex-wrap items-center justify-center space-x-4 sm:justify-end">
               <Link
                 href=""
-                className="text-xs font-light text-slate-400 transition-colors hover:text-blue-500"
+                className={`${poppins.className} text-xs font-light text-slate-400 transition-colors duration-200 hover:text-blue-400`}
               >
                 Changelog
               </Link>
               <Link
                 href=""
-                className="text-xs font-light text-slate-400 transition-colors hover:text-blue-500"
+                className={`${poppins.className} text-xs font-light text-slate-400 transition-colors duration-200 hover:text-blue-400`}
               >
                 Refund Policy
               </Link>
               <Link
                 href=""
-                className="text-xs font-light text-slate-400 transition-colors hover:text-blue-500"
+                className={`${poppins.className} text-xs font-light text-slate-400 transition-colors duration-200 hover:text-blue-400`}
               >
                 Privacy Policy
               </Link>
               <Link
                 href=""
-                className="text-xs font-light text-slate-400 transition-colors hover:text-blue-500"
+                className={`${poppins.className} text-xs font-light text-slate-400 transition-colors duration-200 hover:text-blue-400`}
               >
                 Licence
               </Link>
@@ -374,9 +367,9 @@ export const Footer = () => {
 
 const CopyRightText = () => {
   return (
-    <p className="text-center text-xs text-slate-100 sm:text-left">
+    <p className={`${poppins.className} text-center text-xs text-slate-100 sm:text-left`}>
       &copy; 2023{" "}
-      <span className={orbitron.className}>
+      <span className={`${dmSans.className}`}>
         <strong className="text-xs font-bold text-blue-500">Coursewave </strong>
       </span>{" "}
       by Aman Soni. All rights reserved.
@@ -396,14 +389,14 @@ export const MobileFooterAccordionSection = () => {
   return (
     <Accordion type="single" collapsible className="w-full">
       <AccordionItem value="item-1">
-        <AccordionTrigger className="text-slate-100">
+        <AccordionTrigger className={`${dmSans.className} text-slate-100 hover:text-blue-400`}>
           Get Help
         </AccordionTrigger>
         <AccordionContent className="space-y-2 text-zinc-400">
           {points.map((point, index) => (
             <div
               key={index}
-              className="cursor-pointer text-sm transition-colors hover:text-slate-100"
+              className={`${poppins.className} cursor-pointer text-sm transition-colors duration-200 hover:text-blue-400`}
             >
               {point}
             </div>
@@ -412,14 +405,14 @@ export const MobileFooterAccordionSection = () => {
       </AccordionItem>
 
       <AccordionItem value="item-2">
-        <AccordionTrigger className="text-slate-100">
+        <AccordionTrigger className={`${dmSans.className} text-slate-100 hover:text-blue-400`}>
           About Coursewave
         </AccordionTrigger>
         <AccordionContent className="space-y-2 text-zinc-400">
-          <div className="cursor-pointer text-sm transition-colors hover:text-slate-100">
+          <div className={`${poppins.className} cursor-pointer text-sm transition-colors duration-200 hover:text-blue-400`}>
             About Page
           </div>
-          <div className="cursor-pointer text-sm transition-colors hover:text-slate-100">
+          <div className={`${poppins.className} cursor-pointer text-sm transition-colors duration-200 hover:text-blue-400`}>
             Newsletter
           </div>
         </AccordionContent>

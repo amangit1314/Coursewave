@@ -7,17 +7,10 @@ import { motion } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Orbitron } from "next/font/google";
 import { Sparkles, Play, Users, Award, Zap } from "lucide-react";
+import { dmSans } from "@/lib/config/fonts";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
-
-const orbitron = Orbitron({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
-  display: "swap",
-  preload: true,
-});
 
 // Pre-calculate particle positions using a deterministic pattern
 const particles = Array.from({ length: 20 }, (_, i) => {
@@ -159,7 +152,7 @@ const HeroSection = () => {
   };
 
   const stats = [
-    { icon: Users, value: "50K+", label: "Active Students" },
+    { icon: Users, value: "10K+", label: "Active Students" },
     { icon: Award, value: "200+", label: "Expert Courses" },
     { icon: Zap, value: "95%", label: "Success Rate" },
   ];
@@ -167,25 +160,27 @@ const HeroSection = () => {
   return (
     <div
       ref={containerRef}
-      className="relative pt-8 flex min-h-screen w-full items-center justify-center overflow-hidden bg-gradient-to-br from-neutral-950 via-neutral-900 to-black px-4 sm:px-6 lg:px-8"
+      className="relative pt-8 flex min-h-screen w-full items-center justify-center overflow-hidden dark:bg-gradient-to-br dark:from-neutral-950 dark:via-neutral-900 dark:to-black px-4 sm:px-6 lg:px-8"
     >
       {/* Background Particles */}
-      <div className="absolute inset-0 overflow-hidden">
-        {mounted && particles.map((particle, i) => (
-          <div
-            key={i}
-            className="bg-particle absolute h-1 w-1 rounded-full bg-blue-500/30"
-            style={{
-              left: `${particle.left}%`,
-              top: `${particle.top}%`,
-              animationDelay: `${particle.delay}s`,
-            }}
-          />
-        ))}
-      </div>
+      {/* <div className="absolute inset-0 overflow-hidden">
+        {mounted &&
+          particles.map((particle, i) => (
+            <div
+              key={i}
+              className="bg-particle absolute h-1 w-1 rounded-full bg-transparent
+              "
+              style={{
+                left: `${particle.left}%`,
+                top: `${particle.top}%`,
+                animationDelay: `${particle.delay}s`,
+              }}
+            />
+          ))}
+      </div> */}
 
       {/* Animated grid background */}
-      <div ref={gridRef} className="absolute inset-0 z-0 flex justify-center">
+      {/* <div ref={gridRef} className="absolute inset-0 z-0 flex justify-center">
         <div className="absolute h-full w-full max-w-6xl">
           {[...Array(20)].map((_, i) => (
             <div
@@ -195,7 +190,7 @@ const HeroSection = () => {
             />
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Enhanced floating futuristic shapes */}
       <div className="absolute inset-0 overflow-hidden opacity-40">
@@ -206,7 +201,7 @@ const HeroSection = () => {
       </div>
 
       {/* Enhanced pulsing connection dots */}
-      <div className="absolute inset-0 z-0">
+      {/* <div className="absolute inset-0 z-0">
         {[...Array(12)].map((_, i) => (
           <div
             key={i}
@@ -217,7 +212,7 @@ const HeroSection = () => {
             }}
           />
         ))}
-      </div>
+      </div> */}
 
       {/* Main Content */}
       <div className="relative z-10 mx-auto w-full max-w-6xl text-center">
@@ -229,73 +224,93 @@ const HeroSection = () => {
           transition={{ duration: 0.8, delay: 0.5 }}
         >
           <Sparkles className="h-5 w-5 text-blue-400" />
-          <span className="text-sm font-medium text-blue-400">Welcome to CourseWave</span>
+          <span className="text-sm font-medium text-blue-400">
+            Welcome to CourseWave
+          </span>
           <Sparkles className="h-5 w-5 text-blue-400" />
         </motion.div>
 
         {/* Main Title */}
         <h1
           ref={titleRef}
-          className={`${orbitron.className} mb-6 text-4xl font-bold tracking-tighter text-white sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl`}
+          className={`${dmSans.className} mb-6 text-4xl font-bold tracking-tighter dark:text-white sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl`}
         >
           {renderAnimatedTitle("Master the Future")}
           <br />
-          <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-600 bg-clip-text text-transparent">
-            {renderAnimatedTitle("of Technology")}
+          <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-blue-600 bg-clip-text text-transparent">
+            {/* {renderAnimatedTitle("of Technology")} */}
+            {"of Technology"}
           </span>
         </h1>
 
         {/* Subtitle */}
         <p
           ref={subtitleRef}
-          className="mx-auto mb-10 max-w-3xl text-base text-neutral-300 sm:text-lg md:text-xl lg:text-2xl"
+          className="mx-auto mb-10 max-w-3xl text-base text-md sm:text-lg dark:text-neutral-300"
         >
-          Join thousands of developers mastering cutting-edge skills with our 
-          <span className="text-blue-400 font-semibold"> interactive courses</span>, 
-          <span className="text-cyan-400 font-semibold"> expert mentorship</span>, and 
-          <span className="text-purple-400 font-semibold"> vibrant community</span>
+          Join thousands of developers mastering cutting-edge skills with our
+          <span className="text-blue-400 font-semibold">
+            {" "}
+            interactive courses
+          </span>
+          ,
+          <span className="text-cyan-400 font-semibold">
+            {" "}
+            expert mentorship
+          </span>
+          , and
+          <span className="text-purple-400 font-semibold">
+            {" "}
+            vibrant community
+          </span>
         </p>
 
         {/* CTA Section */}
-        <div ref={ctaRef} className="mb-16 flex flex-col items-center space-y-6 sm:flex-row sm:justify-center sm:space-x-6 sm:space-y-0">
+        <div
+          // ref={ctaRef}
+          className="mb-16 flex flex-col items-center space-y-1 sm:flex-row sm:justify-center sm:space-x-6 sm:space-y-0"
+        >
           <motion.button
             onClick={() => (window.location.href = "/browse")}
-            className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 px-8 py-4 text-lg font-semibold text-white shadow-2xl transition-all duration-300 hover:shadow-blue-500/25 hover:scale-105"
-            whileHover={{ scale: 1.05 }}
+            className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 px-8 py-4 text-lg font-semibold text-white shadow-2xl transition-all duration-300 hover:shadow-blue-500/25"
+            // whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <span>Start Learning Now</span>
-            <IoArrowForward className="transition-transform group-hover:translate-x-1" />
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 opacity-0 blur transition-opacity group-hover:opacity-20" />
+            <IoArrowForward className="hidden group-hover:flex transition-transform group-hover:translate-x-1 group-hover:animate-pulse" />
+            {/* <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 opacity-0 blur transition-opacity group-hover:opacity-20" /> */}
           </motion.button>
 
-          <motion.button
+          {/* <motion.button
             className="group inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-8 py-4 text-lg font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/20 hover:scale-105"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <Play className="h-5 w-5" />
             <span>Watch Demo</span>
-          </motion.button>
+          </motion.button> */}
         </div>
 
         {/* Stats Section */}
-        <div ref={statsRef} className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+        <div
+          ref={statsRef}
+          className="grid grid-cols-1 gap-6 sm:grid-cols-3 mb-16"
+        >
           {stats.map((stat, index) => (
             <motion.div
               key={index}
-              className="stat-item group relative rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:scale-105"
+              className="stat-item group relative rounded-2xl border border-blue-200 dark:border-white/10 bg-blue-500 group-hover:bg-blue-600 dark:bg-white/5 p-6 backdrop-blur-sm transition-all duration-300 dark:hover:bg-white/10 hover:scale-105"
               whileHover={{ y: -5 }}
             >
               <div className="flex items-center justify-center space-x-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-blue-500/20 to-cyan-500/20">
-                  <stat.icon className="h-6 w-6 text-blue-400" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 dark:from-blue-500/20 dark:to-cyan-500/20">
+                  <stat.icon className="h-6 w-6 text-white dark:text-blue-400 group-hover:text-white dark:group-hover:text-blue-400" />
                 </div>
                 <div className="text-left">
-                  <div className="text-2xl font-bold text-white sm:text-3xl">
+                  <div className="text-2xl font-bold text-white group-hover:text-white dark:text-white dark:group-hover:text-white sm:text-3xl">
                     {stat.value}
                   </div>
-                  <div className="text-sm text-neutral-300 sm:text-base">
+                  <div className="text-sm text-neutral-300/60 group-hover:text-white/85 dark:text-neutral-300 dark:group-hover:text-neutral-300 sm:text-base">
                     {stat.label}
                   </div>
                 </div>
@@ -303,6 +318,8 @@ const HeroSection = () => {
             </motion.div>
           ))}
         </div>
+
+        <div className="h-12 w-2"></div>
       </div>
 
       {/* Enhanced scanning line */}

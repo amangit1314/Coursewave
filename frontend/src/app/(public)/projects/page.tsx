@@ -13,29 +13,22 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Plus,
   PlusCircle,
-  Users,
   Search,
-  Filter,
   Grid3X3,
   List,
   Eye,
-  Share2,
-  Bookmark,
-  BookmarkPlus,
   Sparkles,
   ArrowRight,
   Code2,
   Star,
   Loader2,
 } from "lucide-react";
-import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
-import { sampleProjects } from "@/lib/mock/mockData";
 import { Project } from "@/types/project";
 import { useProjects } from "@/hooks/useProjects";
+import { dmSans } from "@/lib/config/fonts";
 
 // Helper functions
 const getStatusColor = (status: string) => {
@@ -70,7 +63,7 @@ const getDifficultyColor = (difficulty: string) => {
 
 const ProjectsPage = () => {
   // Use the hook to fetch data
-  const { data: projects, isLoading, isError, error } = useProjects();
+  const { data: projectsData, isLoading, isError, error } = useProjects();
 
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -80,6 +73,8 @@ const ProjectsPage = () => {
   const [sortBy, setSortBy] = useState("recent");
   const [open, setOpen] = useState(false);
 
+  const projects = projectsData?.data || [];
+
   // Filter and sort projects whenever projects data or filters change
   useEffect(() => {
     // Ensure projects data is available before filtering
@@ -88,31 +83,21 @@ const ProjectsPage = () => {
       return;
     }
 
-    let filtered = projects.filter(
-      (project: {
-        title: string;
-        description: string;
-        tags: any[];
-        category: string;
-        status: string;
-      }) => {
-        const matchesSearch =
-          project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          project.description
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          project.tags.some((tag) =>
-            tag.toLowerCase().includes(searchTerm.toLowerCase())
-          );
+    let filtered = projects.filter((project: Project) => {
+      const matchesSearch =
+        project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.tags.some((tag) =>
+          tag.toLowerCase().includes(searchTerm.toLowerCase())
+        );
 
-        const matchesCategory =
-          selectedCategory === "all" || project.category === selectedCategory;
-        const matchesStatus =
-          selectedStatus === "all" || project.status === selectedStatus;
+      const matchesCategory =
+        selectedCategory === "all" || project.category === selectedCategory;
+      const matchesStatus =
+        selectedStatus === "all" || project.status === selectedStatus;
 
-        return matchesSearch && matchesCategory && matchesStatus;
-      }
-    );
+      return matchesSearch && matchesCategory && matchesStatus;
+    });
 
     // Sort projects
     switch (sortBy) {
@@ -159,9 +144,9 @@ const ProjectsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900">
+    <div className="min-h-screen bg-white dark:bg-gradient-to-br dark:from-zinc-900 dark:to-black">
       {/* Header */}
-      <div className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md dark:bg-zinc-900/80 dark:border-zinc-700">
+      {/* <div className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md dark:bg-zinc-900/80 dark:border-zinc-700">
         <div className="flex items-center justify-between px-4 py-3 md:px-8">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -183,9 +168,9 @@ const ProjectsPage = () => {
           </motion.div>
           <ThemeModeToggle />
         </div>
-      </div>
+      </div> */}
 
-      <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
+      <div className="mx-auto max-w-7xl mt-16 px-4 py-8 md:px-8">
         {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -201,7 +186,9 @@ const ProjectsPage = () => {
             >
               <Sparkles className="h-8 w-8 text-white" />
             </motion.div>
-            <h2 className="mb-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl lg:text-5xl">
+            <h2
+              className={`${dmSans.className} mb-4 text-3xl lg:text-4xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl`}
+            >
               Turn Learning into Doing
             </h2>
             <p className="mx-auto max-w-2xl text-lg text-gray-600 dark:text-gray-300">
@@ -216,7 +203,7 @@ const ProjectsPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="rounded-xl bg-white/80 p-4 backdrop-blur-sm dark:bg-zinc-800/80"
+              className="rounded-xl bg-gray-100 dark:bg-zinc-800 p-4 backdrop-blur-sm"
             >
               <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                 {projects?.length || 0}
@@ -229,7 +216,7 @@ const ProjectsPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="rounded-xl bg-white/80 p-4 backdrop-blur-sm dark:bg-zinc-800/80"
+              className="rounded-xl bg-gray-100 dark:bg-zinc-800 p-4 backdrop-blur-sm"
             >
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                 {projects?.filter((p: any) => p.status === "completed")
@@ -243,7 +230,7 @@ const ProjectsPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="rounded-xl bg-white/80 p-4 backdrop-blur-sm dark:bg-zinc-800/80"
+              className="rounded-xl bg-gray-100 dark:bg-zinc-800 p-4 backdrop-blur-sm "
             >
               <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
                 {projects?.filter((p: any) => p.status === "in-progress")
@@ -272,7 +259,7 @@ const ProjectsPage = () => {
                   placeholder="Search projects..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 border border-gray-200 dark:border-zinc-800 rounded-lg"
                 />
               </div>
             </div>
@@ -282,6 +269,7 @@ const ProjectsPage = () => {
                 variant={viewMode === "grid" ? "default" : "outline"}
                 size="icon"
                 onClick={() => setViewMode("grid")}
+                className="border border-gray-200 dark:border-zinc-800 rounded-lg"
               >
                 <Grid3X3 className="h-4 w-4" />
               </Button>
@@ -289,6 +277,11 @@ const ProjectsPage = () => {
                 variant={viewMode === "list" ? "default" : "outline"}
                 size="icon"
                 onClick={() => setViewMode("list")}
+                className={
+                  viewMode === "list"
+                    ? ""
+                    : "border border-gray-200 dark:border-zinc-800 rounded-lg"
+                }
               >
                 <List className="h-4 w-4" />
               </Button>
@@ -429,7 +422,7 @@ const ProjectCard = ({
 
   if (viewMode === "list") {
     return (
-      <Card className="group relative overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:shadow-zinc-800/50">
+      <Card className="group relative border border-gray-200 dark:border-zinc-800 overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:shadow-zinc-800/50">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             {/* Left: Icon + Text */}
@@ -452,7 +445,7 @@ const ProjectCard = ({
                     <Badge
                       key={tag}
                       variant="secondary"
-                      className="text-xs bg-blue-100 text-blue-600 rounded-full font-medium tracking-tight"
+                      className="text-xs bg-blue-100 dark:bg-blue-500 text-blue-600 dark:text-white rounded-full font-medium tracking-tight"
                     >
                       {tag}
                     </Badge>
@@ -495,7 +488,7 @@ const ProjectCard = ({
   }
 
   return (
-    <Card className="group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 dark:hover:shadow-zinc-800/50">
+    <Card className="group border shadow-none border-gray-200 dark:border-zinc-800 hover:border-blue-500 dark:hover:border-blue-500 relative overflow-hidden transition-all duration-300 hover:shadow-sm  dark:hover:shadow-blue-500">
       <CardContent className="p-4">
         {/* Header */}
         <div className="mb-4 flex items-start justify-between">

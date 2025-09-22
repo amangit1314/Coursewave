@@ -22,16 +22,10 @@ import { BiBroadcast } from "react-icons/bi";
 import { PiChatsTeardropFill } from "react-icons/pi";
 import { RiRoadMapLine } from "react-icons/ri";
 import { GoProjectTemplate } from "react-icons/go";
-import { Orbitron } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 import { Divider } from "@tremor/react";
-
-const orbitron = Orbitron({
-  weight: ["400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-  display: "swap",
-});
+import { dmSans } from "@/lib/config/fonts";
 
 interface BrowseSessionsLayoutProps {
   children: React.ReactNode;
@@ -39,7 +33,7 @@ interface BrowseSessionsLayoutProps {
 
 const BrowseSessionsLayout = ({ children }: BrowseSessionsLayoutProps) => {
   const pathname = usePathname();
-  const isMeetRoute = pathname.includes('/meet');
+  const isMeetRoute = pathname.includes("/meet");
 
   return (
     <div className="h-full min-h-screen dark:bg-zinc-900">
@@ -52,9 +46,9 @@ const BrowseSessionsLayout = ({ children }: BrowseSessionsLayoutProps) => {
           <Sidebar />
         </div>
       )}
-      
+
       {/* Main Content */}
-      <div className={` h-full ${!isMeetRoute ? 'md:pl-64 pt-6' : ''}`}>
+      <div className={` h-full ${!isMeetRoute ? "md:pl-64 pt-6" : ""}`}>
         {/* SessionsTabs - Hidden on meet routes */}
         {!isMeetRoute && <SessionsTabs />}
         {children}
@@ -68,59 +62,63 @@ const SessionsHeader = () => {
 
   return (
     <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md dark:bg-zinc-900/80 dark:border-zinc-700 ">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            {/* Mobile Menu Button */}
-            <div className="md:hidden">
-              <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Menu className="h-5 w-5" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="left" className="w-80 p-0">
-                  <MobileSidebar onClose={() => setIsMobileMenuOpen(false)} />
-                </SheetContent>
-              </Sheet>
-            </div>
-
-            {/* Logo and Title */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="flex items-center space-x-3"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500">
-                <Video className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white">Sessions Hub</h1>
-                <p className="text-sm text-gray-600 dark:text-gray-300">Book, join, and manage your sessions</p>
-              </div>
-            </motion.div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-80 p-0">
+                <MobileSidebar onClose={() => setIsMobileMenuOpen(false)} />
+              </SheetContent>
+            </Sheet>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-4">
-            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-              <Clock className="h-4 w-4" />
-              <span>Book your next session</span>
+          {/* Logo and Title */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center space-x-3"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500">
+              <Video className="h-6 w-6 text-white" />
             </div>
-            <ThemeModeToggle />
-            <Notifications />
-            <SessionsNavbarRoutes />
-          </div>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+                Sessions Hub
+              </h1>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                Book, join, and manage your sessions
+              </p>
+            </div>
+          </motion.div>
+        </div>
 
-          {/* Mobile Actions */}
-          {/* <div className="flex items-center space-x-2 md:hidden">
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-4">
+          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+            <Clock className="h-4 w-4" />
+            <span>Book your next session</span>
+          </div>
+          <ThemeModeToggle />
+          <Notifications />
+          <SessionsNavbarRoutes />
+        </div>
+
+        {/* Mobile Actions */}
+        {/* <div className="flex items-center space-x-2 md:hidden">
             <ThemeModeToggle />
             <Notifications />
             <SessionsNavbarRoutes />
           </div> */}
-        </div>
       </div>
+    </div>
   );
-}
+};
 
 const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
   const { user } = useUserStore();
@@ -191,22 +189,27 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
   return (
     <div className="h-full bg-white dark:bg-zinc-900">
       {/* Mobile Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-zinc-700" style={{ width: "100%", marginLeft: 64 }}>
+      <div
+        className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-zinc-700"
+        style={{ width: "100%", marginLeft: 64 }}
+      >
         <Link href="/browseCourses" className="flex items-center space-x-2">
           <Image
-        src="/assets/images/logo/coursewave-favicon-color.png"
-        alt="CourseWave Logo"
-        width={30}
-        height={30}
-        priority
+            src="/assets/images/logo/coursewave-favicon-color.png"
+            alt="CourseWave Logo"
+            width={30}
+            height={30}
+            priority
           />
-          <span className={`${orbitron.className} text-lg font-bold text-blue-500`}>
-        CourseWave
+          <span
+            className={`${dmSans.className} text-lg font-bold text-blue-500`}
+          >
+            CourseWave
           </span>
         </Link>
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={onClose}
           className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200 transition-colors duration-200"
         >
@@ -233,7 +236,9 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
                     : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800"
                 }`}
               >
-                <span className="text-gray-500 dark:text-gray-400">{route.icon}</span>
+                <span className="text-gray-500 dark:text-gray-400">
+                  {route.icon}
+                </span>
                 <span className="font-medium">{route.label}</span>
               </button>
             </motion.div>
@@ -246,11 +251,7 @@ const MobileSidebar = ({ onClose }: { onClose: () => void }) => {
 
 const SessionsNavbarRoutes = () => {
   const router = useRouter();
-  const { user, loadingState } = useUserStore();
-
-  if (loadingState.loading) {
-    return <Skeleton className="h-10 w-32 rounded-md" />;
-  }
+  const { user } = useUserStore();
 
   const gotToSignIn = () => {
     router.push("/login");
@@ -283,26 +284,26 @@ const SessionsTabs = () => {
       name: "Browse Sessions",
       href: "/sessions/browseSessions",
       icon: Video,
-      description: "Discover and book sessions"
+      description: "Discover and book sessions",
     },
     {
       name: "Upcoming",
       href: "/sessions/upcomingSessions",
       icon: Calendar,
-      description: "Your scheduled sessions"
+      description: "Your scheduled sessions",
     },
     {
       name: "Past Sessions",
       href: "/sessions/pastSessions",
       icon: Clock,
-      description: "Session history"
+      description: "Session history",
     },
     {
       name: "Book Session",
       href: "/sessions/bookSession",
       icon: Users,
-      description: "Schedule new session"
-    }
+      description: "Schedule new session",
+    },
   ];
 
   return (

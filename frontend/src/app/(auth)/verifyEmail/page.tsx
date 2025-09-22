@@ -13,7 +13,8 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { toast, Toaster } from "react-hot-toast";
-import { orbitron, poppins } from "@/lib/config/fonts";
+import { dmSans, poppins } from "@/lib/config/fonts";
+import AuthBackgroundPattern from "@/components/auth/AuthBackgroundPattern";
 
 const VerifyEmail = () => {
   const [email, setEmail] = useState("");
@@ -62,12 +63,13 @@ const VerifyEmail = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="flex min-h-screen items-center justify-center p-4">
+    <div className="relative min-h-screen overflow-hidden bg-white dark:bg-zinc-950">
+      <AuthBackgroundPattern />
+      <div className="relative z-10 flex min-h-screen items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="w-full max-w-md"
         >
           <div className="rounded-2xl bg-white/80 p-8 shadow-2xl backdrop-blur-xl dark:bg-gray-800/80">
@@ -127,7 +129,7 @@ const VerifyEmail = () => {
                     <Button
                       onClick={handleSendCode}
                       disabled={isLoading || !email}
-                      className={`${orbitron.className} group relative h-12 w-full overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25 disabled:opacity-50`}
+                      className={`${dmSans.className} group relative h-12 w-full overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25 disabled:opacity-50`}
                     >
                       {isLoading ? (
                         <RefreshCw className="h-5 w-5 animate-spin" />
@@ -175,7 +177,7 @@ const VerifyEmail = () => {
                       <Button
                         onClick={handleVerifyCode}
                         disabled={isLoading || !verificationCode}
-                        className={`${orbitron.className} group relative h-12 w-full overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25 disabled:opacity-50`}
+                        className={`${dmSans.className} group relative h-12 w-full overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25 disabled:opacity-50`}
                       >
                         {isLoading ? (
                           <RefreshCw className="h-5 w-5 animate-spin" />
@@ -235,7 +237,7 @@ const VerifyEmail = () => {
                 <div className="space-y-3">
                   <Link href="/login">
                     <Button
-                      className={`${orbitron.className} group relative h-12 w-full overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25`}
+                      className={`${dmSans.className} group relative h-12 w-full overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25`}
                     >
                       Continue to Login
                       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-blue-600/0 to-cyan-600/0 transition-all duration-300 group-hover:from-blue-600/20 group-hover:to-cyan-600/20" />

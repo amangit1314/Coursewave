@@ -1,43 +1,43 @@
 "use client";
 
-import { Skeleton } from "@/components/ui/skeleton";
+import React from "react";
 import { useUserStore } from "@/zustand/userStore";
 import { Callout } from "@tremor/react";
-import React from "react";
-import { AiOutlineComment } from "react-icons/ai";
-import { FaHandsClapping, FaShareFromSquare } from "react-icons/fa6";
-import { MdMoreHoriz } from "react-icons/md";
 import { ArticleCard } from "../../_components/ArticleCard";
 import { BlogArticle } from "@/types/blog-api-response";
+import MoreFromAuthorLoadingSkeleton from "./skeletons/MoreFromAuthorLoadingSkeleton";
+import { useArticles } from "@/hooks/useArticles";
+import { AlertCircle, FileText } from "lucide-react";
 
 const MoreFromAuthor = ({ authorId }: { authorId: string }) => {
+  const { user } = useUserStore();
+  const { data: articles, isLoading, error } = useArticles();
 
-  const { user, createdArticles, fetchCreatedArticles, loadingState } =
-    useUserStore();
-
-  React.useEffect(() => {
-    fetchCreatedArticles(authorId);
-  }, [fetchCreatedArticles, authorId]);
-
-  if (loadingState.loading) {
+  if (isLoading) {
     return <MoreFromAuthorLoadingSkeleton />;
   }
 
-  if (loadingState.error) {
+  if (error) {
     return (
-      <div className="w-full mx-auto flex items-center justify-center align-middle">
+      <div className="w-full mx-auto flex items-center justify-center py-12">
         <Callout
-          className=""
-          title="Failed to fetch more articles from Author in more-from-author.tsx 🚨❌"
-          // color="red"
+          className="max-w-lg text-sm"
+          title="Oops! Something went wrong"
+          color="red"
+          icon={AlertCircle}
         >
-          <span>{loadingState.error} 🚨❌ ...</span>
+          <p className="text-red-600 dark:text-red-300">
+            We couldn’t fetch more articles from this author.
+            <span className="block mt-1 text-xs opacity-80">
+              {error.message}
+            </span>
+          </p>
         </Callout>
       </div>
     );
   }
 
-  const articles = createdArticles.filter(
+  const createdArticles = articles?.filter(
     (article: BlogArticle) => article.authorId === authorId
   );
 
@@ -46,32 +46,34 @@ const MoreFromAuthor = ({ authorId }: { authorId: string }) => {
       <p className="text-base font-semibold tracking-tight text-zinc-800 dark:text-white">
         More from{" "}
         <span className="font-bold text-blue-500">
-          {user ? user.name : "(Failed to load author name)"}
+          {user ? user.name : "(Unknown Author)"}
         </span>
       </p>
 
       <div>
-        {articles && articles.length ? (
+        {createdArticles && createdArticles.length ? (
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-8">
-              {articles.map((article: BlogArticle) => {
-                return (
-                  <div key={article.id}>
-                    <ArticleCard article={article} />
-                  </div>
-                );
-              })}
+              {createdArticles.map((article: BlogArticle) => (
+                <div key={article.id}>
+                  <ArticleCard article={article} />
+                </div>
+              ))}
             </div>
 
             <div className="flex items-center justify-start">
-              <div className="border-stroke flex w-full max-w-20 cursor-pointer items-center justify-center rounded-full border border-blue-500 bg-transparent px-4 py-2 text-xs text-blue-500 transition-all duration-300 hover:border-transparent hover:bg-blue-700 hover:text-white">
-                {" "}
+              <button className="border-stroke flex w-full max-w-20 cursor-pointer items-center justify-center rounded-full border border-blue-500 bg-transparent px-4 py-2 text-xs font-medium text-blue-500 transition-all duration-300 hover:border-transparent hover:bg-blue-700 hover:text-white">
                 See All
-              </div>
+              </button>
             </div>
           </div>
         ) : (
-          <div className="my-8 gap-8">No Articles yet</div>
+          <div className="my-12 flex flex-col items-center justify-center text-center space-y-3">
+            <FileText className="h-10 w-10 text-zinc-400" />
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              This author hasn’t published any articles yet.
+            </p>
+          </div>
         )}
       </div>
     </div>
@@ -79,76 +81,3 @@ const MoreFromAuthor = ({ authorId }: { authorId: string }) => {
 };
 
 export default MoreFromAuthor;
-
-/// --------------------------------- SKELETONS ----------------------------------
-const MoreFromAuthorLoadingSkeleton = () => {
-  return (
-    <div className="space-y-8">
-      <p className="text-base font-semibold tracking-tight text-zinc-800 dark:text-white">
-        Recommended from{" "}
-        <span className="font-bold text-blue-500">CourseWave</span>
-      </p>
-
-      <div className="grid grid-cols-2 gap-8">
-        <MoreFromAuthorLoadingSkeletonItem />
-        <MoreFromAuthorLoadingSkeletonItem />
-        <MoreFromAuthorLoadingSkeletonItem />
-        <MoreFromAuthorLoadingSkeleton />
-      </div>
-    </div>
-  );
-};
-
-const MoreFromAuthorLoadingSkeletonItem = () => {
-  return (
-    <div className="space-y-4">
-      {/* image */}
-      <Skeleton className="h-[210px] w-full rounded-md" />
-
-      {/* getting started, 10 min read text */}
-      <div className="flex items-center justify-start space-x-2">
-        <Skeleton className="w-25 h-4 rounded-md" />
-        <Skeleton className="w-95 h-4 rounded-md" />
-      </div>
-
-      {/* title */}
-      <div className="space-y-2">
-        <Skeleton className="h-8 w-full rounded-md" />
-        <Skeleton className="h-8 w-[90px] rounded-md" />
-      </div>
-
-      {/* description */}
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-full rounded-md" />
-        {/* <Skeleton className="rounded-md h-4 w-full" /> */}
-        <Skeleton className="h-4 w-[120px] rounded-md" />
-      </div>
-
-      <div className="flex items-center justify-between">
-        <div className="flex space-x-4 px-1">
-          <div className="flex items-center justify-start space-x-2 hover:text-zinc-900 dark:hover:text-blue-600">
-            <FaHandsClapping size={18} />
-            <Skeleton className="h-4 w-[50px] rounded-md" />
-          </div>
-
-          <div className="flex items-center justify-start space-x-2 hover:text-zinc-900 dark:hover:text-blue-600">
-            <AiOutlineComment size={18} />
-            <Skeleton className="h-4 w-[50px] rounded-md" />
-          </div>
-        </div>
-
-        <div className="flex space-x-4 px-1">
-          {/* share */}
-          <div className="flex cursor-pointer items-center justify-start space-x-2 hover:text-blue-500">
-            <FaShareFromSquare size={18} />
-          </div>
-
-          {/* more */}
-          <div className="flex cursor-pointer items-center justify-start space-x-2 hover:text-blue-500 dark:hover:text-blue-500">
-            <MdMoreHoriz size={18} />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};

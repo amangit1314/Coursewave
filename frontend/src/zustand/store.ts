@@ -4,9 +4,10 @@ import { LearningGoal } from "@/types/learning-goal";
 import { fetchCourseInfo } from "@/lib/helpers/data-fetching-methods";
 import { User } from "@/types/user";
 import { Course } from "@/types/course";
-import { Blog, CourseProgress, CourseSection } from "@/lib/api/services";
 import { Category, Chapter, Instructor } from "@/types/user-enrollments-api-response";
 import { Review } from "@/types/review";
+import { Blog } from "@/types/blog.service.types";
+import { CourseProgress, CourseSection } from "@/types/courses.service.types";
 
 type CoursewaveState = {
   // user

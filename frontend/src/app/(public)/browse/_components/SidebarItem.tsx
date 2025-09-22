@@ -120,7 +120,7 @@ const SidebarItem = ({
         type="button"
         disabled={isLocked}
         className={cn(
-          "group flex w-full items-center rounded-md text-gray-900 transition-all hover:bg-gray-100 disabled:cursor-not-allowed dark:text-white dark:hover:bg-gray-700",
+          "group flex w-full cursor-pointer items-center rounded-md text-gray-900 transition-all hover:bg-gray-100 disabled:cursor-not-allowed dark:text-white dark:hover:bg-gray-700",
           isActive &&
             "bg-blue-200/20 text-blue-500 hover:bg-blue-200/20 hover:text-blue-500",
         )}

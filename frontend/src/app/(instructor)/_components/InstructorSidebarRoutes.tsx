@@ -7,32 +7,9 @@ import { TbBrandGoogleAnalytics } from "react-icons/tb";
 import { FaHandsHelping } from "react-icons/fa";
 import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/utils";
-
-import { useInstructorInfo } from "@/hooks/useInstructorInfo";
-import { Instructor } from "@/types/instructor";
-import { Poppins } from "next/font/google";
-import { useUserStore } from "@/zustand/userStore";
-
-const poppins = Poppins({
-  weight: ["400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-});
+import { poppins } from "@/lib/config/fonts";
 
 const InstructorSideBarRoutes = () => {
-  const { user } = useUserStore();
-  const userId = user?.id;
-
-  // const instructorData = useInstructorInfo(userId);
-
-  // // let instructorId = instructor.data?.data.instructorID! as string;
-  // const instructor: Instructor | undefined = instructorData?.instructor;
-  // const instructorId = instructor?.id;
-
-  // Early return if no instructor data
-  // if (!instructorId) {
-  //   return <div>Loading...</div>;
-  // }
-
   const routes = [
     {
       icon: <TbBrandGoogleAnalytics size={22} />,

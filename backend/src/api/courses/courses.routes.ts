@@ -25,9 +25,13 @@ import {
   getAllReviewsForCourseId,
   getAttachmentById,
   getChapterById,
+  getChapterProgress,
+  getCourseProgress,
   getEnrolledCourses,
   getInstructorCreatedCourses,
+  getLearningDashboard,
   updateAttachment,
+  updateChapterProgress,
   updateCourse,
   writeReview,
 } from "./courses.controller";
@@ -84,7 +88,13 @@ router.get("/:courseId", courseExists, async (req: Request, res: Response) => {
 router.post("/", verifyToken, requireInstructor, createCourse);
 
 // Update course
-router.put("/:courseId", verifyToken, requireInstructor, ownsCourse, updateCourse);
+router.put(
+  "/:courseId",
+  verifyToken,
+  requireInstructor,
+  ownsCourse,
+  updateCourse
+);
 
 // Delete course
 router.delete(
@@ -98,7 +108,12 @@ router.delete(
 ///? --------------------------------- SECTIONS --------------------------------------
 
 // Get all sections of a course
-router.get("/:courseId/sections", verifyToken, courseExists, getAllCourseSections);
+router.get(
+  "/:courseId/sections",
+  verifyToken,
+  courseExists,
+  getAllCourseSections
+);
 
 // Create a section of a course
 router.post(
@@ -272,5 +287,17 @@ router.delete(
   validateUUID("attachmentId"),
   deleteAttachment
 );
+
+// Get course progress for authenticated user
+router.get("/:courseId/progress", verifyToken, getCourseProgress);
+
+// Update chapter progress and sync course progress
+router.put("/chapters/:chapterId/progress", verifyToken, updateChapterProgress);
+
+// Get user's learning dashboard (all enrolled courses progress)
+router.get("/learning-dashboard", verifyToken, getLearningDashboard);
+
+// Get specific chapter progress
+router.get("/chapters/:chapterId/progress", verifyToken, getChapterProgress);
 
 export default router;

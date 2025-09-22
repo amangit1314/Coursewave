@@ -23,36 +23,32 @@ const CommunityChat = () => {
   const { data: communitiesData, isLoading } = useCommunities(); // <--- Call the hook
   const { user, token } = useUserStore();
   const userId = user?.id!;
-  
+
   const socket = useSocket(token); // socket connects when this page renders
+
+  const communities = communitiesData?.data || [];
 
   const filteredCommunities = useMemo(() => {
     if (!communitiesData) {
       return [];
     }
 
-    return communitiesData.filter(
-      (community: {
-        title: string;
-        description: string;
-        tags: any[];
-        category: string;
-      }) => {
-        const matchesSearch =
-          community.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          community.description
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          community.tags.some((tag) =>
-            tag.toLowerCase().includes(searchQuery.toLowerCase())
-          );
+    return communities.filter((community: Community) => {
+      const matchesSearch =
+        community.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        community.description
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        community.tags.some((tag) =>
+          tag.toLowerCase().includes(searchQuery.toLowerCase())
+        );
 
-        const matchesCategory =
-          selectedCategory === "all" || community.category === selectedCategory;
+      const matchesCategory =
+        selectedCategory === "all" ||
+        community.category.name === selectedCategory;
 
-        return matchesSearch && matchesCategory;
-      }
-    );
+      return matchesSearch && matchesCategory;
+    });
   }, [searchQuery, selectedCategory, communitiesData]); // <--- Add communitiesData to dependencies
 
   // Update categories to use the real data
@@ -63,7 +59,7 @@ const CommunityChat = () => {
     }
     // Map to the category's name property
     const uniqueCategories = Array.from(
-      new Set(communitiesData.map((c: any) => c.category.name))
+      new Set(communities.map((c: any) => c.category.name))
     ) as string[];
     return ["all", ...uniqueCategories];
   }, [communitiesData]);

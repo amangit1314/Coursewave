@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { Poppins, Orbitron } from "next/font/google";
 import {
   Sheet,
   SheetContent,
@@ -12,18 +11,7 @@ import { Menu, X } from "lucide-react";
 import SideBarRoutes from "./SidebarRoutes";
 import Image from "next/image";
 import Link from "next/link";
-
-const poppins = Poppins({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const orbitron = Orbitron({
-  weight: ["400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-  display: "swap",
-});
+import { dmSans } from "@/lib/config/fonts";
 
 const MobileSidebar = () => {
   const [open, setOpen] = useState(false);
@@ -55,7 +43,7 @@ const MobileSidebar = () => {
               priority
             />
             <p
-              className={`${orbitron.className} pl-2 text-blue-500 font-bold text-lg`}
+              className={`${dmSans.className} pl-2 text-blue-500 font-bold text-lg`}
             >
               CourseWave
             </p>

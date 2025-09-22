@@ -9,6 +9,7 @@ import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
 import UserAvatar from "@/components/common/UserAvatar";
 import Sidebar from "../browse/_components/Sidebar";
 import Notifications from "@/components/common/NotificationButton";
+import { dmSans } from "@/lib/config/fonts";
 
 interface BrowseArticlesLayoutProps {
   children: React.ReactNode;
@@ -75,12 +76,14 @@ const ArticlesNavbarRoutes = ({ name }: { name?: string }) => {
         {user ? (
           <UserAvatar />
         ) : (
-          <button
-            onClick={gotToSignIn}
-            className="text-base hover:text-blue-600"
-          >
-            Sign In
-          </button>
+          <span className={dmSans.className}>
+            <button
+              onClick={gotToSignIn}
+              className="text-sm cursor-pointer hover:text-white h-10 text-center dark:hover:bg-blue-600 flex justify-center dark:hover:border-transparent items-center w-auto px-4 rounded-md border border-gray-200 dark:border-zinc-800 hover:border-transparent bg-white dark:bg-zinc-800 hover:bg-blue-600 transition-all duration-100"
+            >
+              Sign In
+            </button>
+          </span>
         )}
       </div>
     </div>

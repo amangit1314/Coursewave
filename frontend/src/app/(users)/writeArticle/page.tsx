@@ -26,9 +26,10 @@ import {
   Calendar,
   Router,
 } from "lucide-react";
-import { useWriteArticle } from "@/hooks/useWriteArticle";
-import { useUserStore } from "@/zustand/userStore";
+import { useCreateArticle } from "@/hooks/useArticles";
+
 import { Toaster } from "react-hot-toast";
+import { useUserStore } from "@/zustand/userStore";
 
 const PremiumArticleEditor = () => {
   const [title, setTitle] = useState("");
@@ -52,7 +53,7 @@ const PremiumArticleEditor = () => {
     isPending,
     isSuccess,
     error,
-  } = useWriteArticle();
+  } = useCreateArticle();
   const { user } = useUserStore();
 
   const contentRef = useRef(null);

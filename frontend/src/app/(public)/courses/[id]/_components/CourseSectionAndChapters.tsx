@@ -1,23 +1,11 @@
 "use client";
 
-import React, { useEffect } from "react";
-
+import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-
 import { Skeleton } from "@/components/ui/skeleton";
-
-//* icons
 import {
-  Loader,
-  Clock,
-  Users,
-  BookOpen,
-  CheckCircle,
   Play,
-  Award,
-  Shield,
-  Zap,
   Lock,
   ChevronDown,
   ChevronRight,
@@ -25,36 +13,26 @@ import {
   FileText,
   HelpCircle,
   Info,
-  ClipboardList,
-  ListChecks,
 } from "lucide-react";
-
-//* custom hooks
 import { useCoursesStore } from "@/zustand/coursesStore";
-
-//* types
 import { CourseSection } from "@/types/course-details-api-response";
-
-// * Custom Components
-
 import { useUserStore } from "@/zustand/userStore";
-
 import { ErrorMessage } from "./ErrorMessage";
-
 import { SampleCourseContent } from "./SampleCourseContent";
+import { useCourse } from "@/hooks/useCourses";
 
 export const CourseSectionsAndChapters = ({
   courseId,
   sections,
 }: {
   courseId: string;
-  sections: CourseSection[] | null;
+  sections?: CourseSection[];
 }) => {
   const [expandedSections, setExpandedSections] = React.useState<Set<string>>(
     new Set()
   );
   const { user } = useUserStore();
-  const { loadingState } = useCoursesStore();
+  const { isLoading, error } = useCourse(courseId);
 
   const toggleSection = (sectionId: string) => {
     const newExpanded = new Set(expandedSections);
@@ -70,7 +48,7 @@ export const CourseSectionsAndChapters = ({
     user && user.id && user.id !== "null" && user.id !== "undefined";
 
   // Handle loading state
-  if (loadingState.loading) {
+  if (isLoading) {
     return (
       <Card className="border-0 shadow-lg dark:bg-zinc-900/90">
         <CardHeader>
@@ -110,7 +88,7 @@ export const CourseSectionsAndChapters = ({
   }
 
   // Handle error state
-  if (loadingState.error) {
+  if (error) {
     return (
       <Card className="border-0 shadow-lg dark:bg-zinc-900/90">
         <CardHeader>
@@ -121,7 +99,7 @@ export const CourseSectionsAndChapters = ({
         <CardContent>
           <ErrorMessage
             title="Failed to load course content"
-            message={loadingState.error}
+            message={error.message}
           />
         </CardContent>
       </Card>
@@ -218,7 +196,7 @@ export const CourseSectionsAndChapters = ({
                     onClick={() => toggleSection(section.id)}
                     className="w-full px-4 py-3 flex items-center justify-between bg-gray-50 hover:bg-gray-100 dark:bg-zinc-900 dark:hover:bg-gray-800 transition-colors rounded-lg"
                   >
-                    <div className="flex items-center space-x-3">
+                    <div className="flex justify-start items-center space-x-3">
                       {expandedSections.has(section.id) ? (
                         <ChevronDown className="h-5 w-5 text-gray-500" />
                       ) : (
@@ -226,12 +204,12 @@ export const CourseSectionsAndChapters = ({
                       )}
 
                       {/* Section title */}
-                      <div>
+                      <div className="flex flex-col ">
                         <h3 className="font-semibold text-gray-900 dark:text-white text-left">
                           Section {sectionIndex + 1}: {section.title}
                         </h3>
 
-                        <p className="text-left text-sm text-gray-600 dark:text-gray-400">
+                        <p className="flex justify-start items-center text-left text-sm text-gray-600 dark:text-gray-400">
                           {lessons.length} lessons
                         </p>
                       </div>

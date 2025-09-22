@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { cacheManager } from '../../config/redis';
+// import { cacheManager } from '../../config/redis';
 
 // Rate limiter middleware
 export const rateLimiter = (options: {
@@ -27,31 +27,32 @@ export const rateLimiter = (options: {
 
     try {
       // Get current count for this IP and endpoint
-      const current = await cacheManager.get<number>(key);
-      const count = current || 0;
+      // const current = await cacheManager.get<number>(key);
+      // const count = current || 0;
 
       // Set expiry on first request
-      if (count === 0) {
-        await cacheManager.set(key, 1, Math.floor(windowMs / 1000));
-      } else if (count >= max) {
+      // if (count === 0) {
+      //   await cacheManager.set(key, 1, Math.floor(windowMs / 1000));
+      // } else if (count >= max) {
         // Too many requests
-        const resetTime = Math.floor(Date.now() / 1000) + Math.floor(windowMs / 1000);
-        return res.status(429).json({
-          success: false,
-          message,
-          retryAfter: Math.floor(windowMs / 1000),
-          resetTime: resetTime * 1000, // Convert to milliseconds for frontend
-          remaining: 0,
-          total: max
-        });
-      } else {
-        // Increment counter
-        await cacheManager.set(key, count + 1, Math.floor(windowMs / 1000));
-      }
+        // const resetTime = Math.floor(Date.now() / 1000) + Math.floor(windowMs / 1000);
+        // return res.status(429).json({
+        //   success: false,
+        //   message,
+        //   retryAfter: Math.floor(windowMs / 1000),
+        //   resetTime: resetTime * 1000, // Convert to milliseconds for frontend
+        //   remaining: 0,
+        //   total: max
+        // });
+      // } 
+      // else {
+      //   // Increment counter
+      //   await cacheManager.set(key, count + 1, Math.floor(windowMs / 1000));
+      // }
 
       // Add headers
       res.setHeader('X-RateLimit-Limit', max);
-      res.setHeader('X-RateLimit-Remaining', Math.max(0, max - (count + 1)));
+      res.setHeader('X-RateLimit-Remaining', max); // Set remaining to max since Redis is disabled
       res.setHeader('X-RateLimit-Reset', Math.floor(Date.now() / 1000) + Math.floor(windowMs / 1000));
 
       next();

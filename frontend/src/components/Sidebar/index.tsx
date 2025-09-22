@@ -2,8 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { Orbitron, Poppins } from "next/font/google";
-import { 
+import {
   Home,
   BookOpen,
   GraduationCap,
@@ -14,21 +13,10 @@ import {
   HelpCircle,
   BarChart3,
   X,
-  Menu
+  Menu,
 } from "lucide-react";
 import { cn } from "@/lib/utils/utils";
-
-const orbitron = Orbitron({
-  weight: ["400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const poppins = Poppins({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
+import { dmSans, poppins } from "@/lib/config/fonts";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -77,7 +65,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   // Handle sidebar state in localStorage
   useEffect(() => {
     localStorage.setItem("sidebar-expanded", sidebarExpanded.toString());
-    document.documentElement.classList.toggle("sidebar-expanded", sidebarExpanded);
+    document.documentElement.classList.toggle(
+      "sidebar-expanded",
+      sidebarExpanded
+    );
   }, [sidebarExpanded]);
 
   const menuItems = [
@@ -110,10 +101,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     >
       {/* Header */}
       <div className="flex h-16 items-center justify-between px-4">
-        <Link
-          href="/browseCourses"
-          className="flex items-center gap-3"
-        >
+        <Link href="/browseCourses" className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 shadow-lg shadow-blue-500/20">
             <Image
               src="/courseWaveFaviconColored.png"
@@ -124,11 +112,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               priority
             />
           </div>
-          <span className={cn(
-            orbitron.className,
-            "text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700",
-            "dark:from-white dark:to-gray-300"
-          )}>
+          <span
+            className={cn(
+              dmSans.className,
+              "text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700",
+              "dark:from-white dark:to-gray-300"
+            )}
+          >
             CourseWave
           </span>
         </Link>
@@ -138,7 +128,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="block rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200 lg:hidden transition-colors duration-200"
         >
-          {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {sidebarOpen ? (
+            <X className="h-5 w-5" />
+          ) : (
+            <Menu className="h-5 w-5" />
+          )}
         </button>
       </div>
 
@@ -146,11 +140,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       <div className="flex-1 overflow-y-auto px-4 py-3">
         <nav className="space-y-6">
           <div>
-            <h3 className={cn(
-              poppins.className,
-              "px-3 text-xs font-semibold uppercase tracking-wider",
-              "text-gray-500 dark:text-gray-400"
-            )}>
+            <h3
+              className={cn(
+                poppins.className,
+                "px-3 text-xs font-semibold uppercase tracking-wider",
+                "text-gray-500 dark:text-gray-400"
+              )}
+            >
               Menu
             </h3>
             <ul className="mt-3 space-y-1">
@@ -164,15 +160,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       "hover:bg-gray-100 dark:hover:bg-gray-800",
                       pathname === href
                         ? "bg-blue-50 text-blue-600 dark:bg-gray-800 dark:text-blue-400"
-                        : "text-gray-700 dark:text-gray-300",
+                        : "text-gray-700 dark:text-gray-300"
                     )}
                   >
-                    <Icon className={cn(
-                      "h-5 w-5 flex-shrink-0 transition-colors duration-150",
-                      pathname === href
-                        ? "text-blue-600 dark:text-blue-400"
-                        : "text-gray-500 group-hover:text-blue-600 dark:text-gray-400 dark:group-hover:text-blue-400"
-                    )} />
+                    <Icon
+                      className={cn(
+                        "h-5 w-5 flex-shrink-0 transition-colors duration-150",
+                        pathname === href
+                          ? "text-blue-600 dark:text-blue-400"
+                          : "text-gray-500 group-hover:text-blue-600 dark:text-gray-400 dark:group-hover:text-blue-400"
+                      )}
+                    />
                     <span className={poppins.className}>{label}</span>
                   </Link>
                 </li>
@@ -181,11 +179,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           </div>
 
           <div>
-            <h3 className={cn(
-              poppins.className,
-              "px-3 text-xs font-semibold uppercase tracking-wider",
-              "text-gray-500 dark:text-gray-400"
-            )}>
+            <h3
+              className={cn(
+                poppins.className,
+                "px-3 text-xs font-semibold uppercase tracking-wider",
+                "text-gray-500 dark:text-gray-400"
+              )}
+            >
               Support
             </h3>
             <ul className="mt-3 space-y-1">
@@ -199,15 +199,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       "hover:bg-gray-100 dark:hover:bg-gray-800",
                       pathname === href
                         ? "bg-blue-50 text-blue-600 dark:bg-gray-800 dark:text-blue-400"
-                        : "text-gray-700 dark:text-gray-300",
+                        : "text-gray-700 dark:text-gray-300"
                     )}
                   >
-                    <Icon className={cn(
-                      "h-5 w-5 flex-shrink-0 transition-colors duration-150",
-                      pathname === href
-                        ? "text-blue-600 dark:text-blue-400"
-                        : "text-gray-500 group-hover:text-blue-600 dark:text-gray-400 dark:group-hover:text-blue-400"
-                    )} />
+                    <Icon
+                      className={cn(
+                        "h-5 w-5 flex-shrink-0 transition-colors duration-150",
+                        pathname === href
+                          ? "text-blue-600 dark:text-blue-400"
+                          : "text-gray-500 group-hover:text-blue-600 dark:text-gray-400 dark:group-hover:text-blue-400"
+                      )}
+                    />
                     <span className={poppins.className}>{label}</span>
                   </Link>
                 </li>

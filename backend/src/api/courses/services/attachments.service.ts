@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { generateResourceId } from "../../../core/utils/idGenerator";
-import { invalidateCache } from "../../../config/redis";
+// import { invalidateCache } from "../../../config/redis";
 
 const prisma = new PrismaClient();
 
@@ -73,7 +73,7 @@ export const createNewAttachment = async (
     },
   });
 
-  await invalidateCache.courses(courseId);
+  // await invalidateCache.courses(courseId);
 
   return attachment;
 };
@@ -104,7 +104,7 @@ export const updateExistingAttachment = async (
     data: { name, url },
   });
 
-  await invalidateCache.courses(attachment.courseId);
+  // await invalidateCache.courses(attachment.courseId);
 
   return updatedAttachment;
 };
@@ -132,7 +132,7 @@ export const deleteAttachmentById = async (
     where: { id: attachmentId },
   });
 
-  await invalidateCache.courses(attachment.courseId);
+  // await invalidateCache.courses(attachment.courseId);
 
   return true;
 };

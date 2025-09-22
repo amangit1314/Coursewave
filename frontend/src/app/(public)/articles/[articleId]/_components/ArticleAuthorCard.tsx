@@ -2,10 +2,10 @@
 
 import React from "react";
 import Image from "next/image";
-import { Callout } from "@tremor/react";
 import { Separator } from "@/components/ui/separator";
-import { useGetUserByAuthorId } from "@/hooks/useGetUserById";
+import { useGetUserById } from "@/hooks/useGetUserById";
 import { Skeleton } from "@/components/ui/skeleton";
+import { IMAGES } from "@/constants/images";
 
 const ArticleAuthorCard = ({
   authorId,
@@ -22,7 +22,7 @@ const ArticleAuthorCard = ({
   authorFollowers: number;
   haveAlreadyFollowed: boolean;
 }) => {
-  const authorData = useGetUserByAuthorId(authorId);
+  const authorData = useGetUserById(authorId);
   const author = authorData.user;
 
   // if (authorData.isLoading) {
@@ -46,16 +46,7 @@ const ArticleAuthorCard = ({
   return (
     <div className="my-8 flex flex-col space-y-4">
       <Image
-        // src={
-        //   author && author.profileImageUrl
-        //     ? author.profileImageUrl
-        //     : "https://www.shutterstock.com/image-vector/young-smiling-man-avatar-brown-600nw-2261401207.jpg"
-        // }
-        src={
-          authorImage
-            ? authorImage
-            : "https://www.shutterstock.com/image-vector/young-smiling-man-avatar-brown-600nw-2261401207.jpg"
-        }
+        src={authorImage ? authorImage : IMAGES.DEFAULT_AVATAR}
         alt=""
         height={60}
         width={60}
@@ -108,35 +99,4 @@ const ArticleAuthorCard = ({
 
 export default ArticleAuthorCard;
 
-const ArticleAuthorCardLoadingSkeleton = () => {
-  return (
-    <div className="my-8 space-y-6">
-      <Skeleton className="h-[60px] w-[60px] rounded-full" />
 
-      <div className="space-y-4">
-        <div className="flex w-full items-center justify-between">
-          <div className="flex items-center justify-start space-x-2">
-            <Skeleton className="h-8 w-[45px]" />
-            <Skeleton className="h-8 w-[150px]" />
-          </div>
-
-          <p className="border-stroke cursor-pointer rounded-badge border px-4 py-2 text-center text-xs text-green-700 transition-all duration-200 hover:bg-green-700 hover:text-white">
-            Follow
-          </p>
-        </div>
-
-        <div className="flex items-center justify-start space-x-2">
-          <Skeleton className="h-4 w-[40px]" />
-          <Skeleton className="h-4 w-[95px]" />
-        </div>
-
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-[75px]" />
-        </div>
-      </div>
-    </div>
-  );
-};

@@ -1,6 +1,6 @@
 {
   "name": "coursewave",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -77,7 +77,7 @@
     "embla-carousel-react": "^8.6.0",
     "flowbite": "^3.1.2",
     "framer-motion": "^12.23.12",
-    "gsap": "^3.13.0",
+    "gsap": "^3.12.2",
     "input-otp": "^1.4.2",
     "jose": "^6.0.11",
     "jost": "^0.0.2",

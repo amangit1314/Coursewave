@@ -19,7 +19,7 @@ const SideBarRoutes = () => {
     {
       icon: <MdDashboard size={22} />,
       label: "Dashboard",
-      href: `/dashboard/analytics`,
+      href: `/dashboard`,
       isLocked: user ? false : true,
     },
     {
@@ -52,18 +52,18 @@ const SideBarRoutes = () => {
       href: `/projects`,
       isLocked: false,
     },
-    {
-      icon: <PiChatsTeardropFill size={22} />,
-      label: "Community Chat",
-      href: `/communityChat`,
-      isLocked: user ? false : true,
-    },
-    {
-    icon: <AiOutlineTransaction size={22} />,
-    label: "Subscription",
-    href: `/subscription`,
-      isLocked: user ? false : true,
-    },
+    // {
+    //   icon: <PiChatsTeardropFill size={22} />,
+    //   label: "Community Chat",
+    //   href: `/communityChat`,
+    //   isLocked: user ? false : true,
+    // },
+    // {
+    // icon: <AiOutlineTransaction size={22} />,
+    // label: "Subscription",
+    // href: `/subscription`,
+    //   isLocked: user ? false : true,
+    // },
     {
       icon: <AiFillSetting size={22} />,
       label: "Settings",

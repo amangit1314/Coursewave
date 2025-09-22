@@ -4,19 +4,7 @@ import DropdownMessage from "./dropdown-message";
 import DropdownNotification from "./dropdown-notification";
 import DropdownUser from "./dropdown-user";
 import Image from "next/image";
-import { Orbitron, Poppins } from "next/font/google";
-
-const orbitron = Orbitron({
-  weight: ["400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const poppins = Poppins({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
+import { dmSans, poppins } from "@/lib/config/fonts";
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
@@ -78,7 +66,9 @@ const Header = (props: {
                 alt="CourseWave Logo"
                 className="h-8 w-8"
               />
-              <span className={`${orbitron.className} ml-2 text-lg font-bold text-gray-900 dark:text-white`}>
+              <span
+                className={`${dmSans.className} ml-2 text-lg font-bold text-gray-900 dark:text-white`}
+              >
                 CourseWave
               </span>
             </div>

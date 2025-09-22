@@ -49,16 +49,12 @@ const ArticlesNavbarRoutes = ({ name }: { name?: string }) => {
   const pathname = usePathname();
 
   // const user = useUserInfo();
-  const { user, loadingState } = useUserStore();
+  const { user } = useUserStore();
 
   // Move these calls before the if statement
   const [isInstructor, setIsInstructor] = React.useState<boolean>(
     user?.roles?.includes("INSTRUCTOR") ?? false
   );
-
-  if (loadingState.loading) {
-    return <Skeleton className="h-12 w-12 rounded-md" />;
-  }
 
   const switchToInstructorView = () => {
     if (!user?.id) {

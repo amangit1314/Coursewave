@@ -5,10 +5,10 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { 
-  BookOpen, 
-  Users, 
-  MessageSquare, 
+import {
+  BookOpen,
+  Users,
+  MessageSquare,
   Calendar,
   ArrowRight,
   Sparkles,
@@ -17,7 +17,10 @@ import {
   Award,
   Zap,
   Play,
-  Star
+  Star,
+  Projector,
+  HammerIcon,
+  BrainIcon,
 } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -30,50 +33,110 @@ const Offerings = () => {
     {
       link: "/browseCourses",
       title: "Premium Courses",
-      description: "Master in-demand skills with our comprehensive, project-based courses designed by industry experts.",
+      description:
+        "Master in-demand skills with our comprehensive, project-based courses designed by industry experts.",
       icon: BookOpen,
       gradient: "from-blue-500 to-cyan-500",
       bgGradient: "from-blue-50 to-cyan-50",
       darkBgGradient: "from-blue-950/20 to-cyan-950/20",
-      features: ["200+ Expert Courses", "Live Projects", "Industry Certificates", "Lifetime Access"],
+      features: [
+        "200+ Expert Courses",
+        "Live Projects",
+        "Industry Certificates",
+        "Lifetime Access",
+      ],
       stats: "50K+ Students",
-      badge: "Most Popular"
+      badge: "Most Popular",
     },
     {
       link: "/articles",
       title: "Community Articles",
-      description: "Dive into cutting-edge technical content and insights shared by our vibrant developer community.",
+      description:
+        "Dive into cutting-edge technical content and insights shared by our vibrant developer community.",
       icon: Users,
       gradient: "from-purple-500 to-pink-500",
       bgGradient: "from-purple-50 to-pink-50",
       darkBgGradient: "from-purple-950/20 to-pink-950/20",
-      features: ["Expert Insights", "Latest Trends", "Community Driven", "Free Access"],
+      features: [
+        "Expert Insights",
+        "Latest Trends",
+        "Community Driven",
+        "Free Access",
+      ],
       stats: "1000+ Articles",
-      badge: "Free"
+      badge: "Free",
     },
     {
       link: "/browseSessions",
       title: "1-on-1 Mentorship",
-      description: "Get personalized guidance from industry professionals to accelerate your learning journey.",
+      description:
+        "Get personalized guidance from industry professionals to accelerate your learning journey.",
       icon: MessageSquare,
       gradient: "from-emerald-500 to-teal-500",
       bgGradient: "from-emerald-50 to-teal-50",
       darkBgGradient: "from-emerald-950/20 to-teal-950/20",
-      features: ["Personalized Guidance", "Flexible Schedule", "Direct Feedback", "Career Planning"],
+      features: [
+        "Personalized Guidance",
+        "Flexible Schedule",
+        "Direct Feedback",
+        "Career Planning",
+      ],
       stats: "500+ Mentors",
-      badge: "Premium"
+      badge: "Premium",
     },
     {
       link: "/browseSessions",
       title: "Live Sessions",
-      description: "Join interactive live sessions on the latest technology trends and industry best practices.",
+      description:
+        "Join interactive live sessions on the latest technology trends and industry best practices.",
       icon: Calendar,
-      gradient: "from-orange-500 to-red-500",
-      bgGradient: "from-orange-50 to-red-50",
-      darkBgGradient: "from-orange-950/20 to-red-950/20",
-      features: ["Live Q&A", "Real-time Learning", "Networking", "Recorded Sessions"],
+      gradient: "from-red-500 to-red-500",
+      bgGradient: "from-red-50 to-red-50",
+      darkBgGradient: "from-red-950/20 to-red-950/20",
+      features: [
+        "Live Q&A",
+        "Real-time Learning",
+        "Networking",
+        "Recorded Sessions",
+      ],
       stats: "100+ Sessions/Month",
-      badge: "Interactive"
+      badge: "Interactive",
+    },
+    {
+      link: "/projects",
+      title: "Project-Based Learning",
+      description:
+        "Gain hands-on experience by building real projects while taking our courses. Learn by doing, not just watching.",
+      icon: HammerIcon,
+      gradient: "from-yellow-500 to-rose-500",
+      bgGradient: "from-yellow-50 to-rose-50",
+      darkBgGradient: "from-yellow-950/20 to-rose-950/20",
+      features: [
+        "Build real-world projects",
+        "Apply concepts in practical scenarios",
+        "Receive feedback from instructors",
+        "Showcase projects in a portfolio",
+      ],
+      stats: "100+ Projects/Month",
+      badge: "Hands-On",
+    },
+    {
+      link: "/roadmaps",
+      title: "AI Learning Roadmaps",
+      description:
+        "Enter any skill and instantly get a personalized, step-by-step roadmap powered by AI. Learn smarter with guided paths you can view or download.",
+      icon: BrainIcon,
+      gradient: "from-indigo-500 to-cyan-500",
+      bgGradient: "from-indigo-50 to-cyan-50",
+      darkBgGradient: "from-indigo-950/20 to-cyan-950/20",
+      features: [
+        "AI-powered roadmap generation",
+        "Personalized skill paths",
+        "Downloadable & shareable roadmaps",
+        "Clear milestones and goals",
+      ],
+      stats: "100+ Skills Covered",
+      badge: "AI-Powered",
     },
   ];
 
@@ -81,23 +144,27 @@ const Offerings = () => {
     {
       icon: Code,
       title: "Hands-on Projects",
-      description: "Build real-world applications with industry-standard tools and technologies"
+      description:
+        "Build real-world applications with industry-standard tools and technologies",
     },
     {
       icon: Globe,
       title: "Global Community",
-      description: "Connect with developers worldwide and learn from diverse perspectives"
+      description:
+        "Connect with developers worldwide and learn from diverse perspectives",
     },
     {
       icon: Award,
       title: "Certified Learning",
-      description: "Earn recognized certificates to boost your career and portfolio"
+      description:
+        "Earn recognized certificates to boost your career and portfolio",
     },
     {
       icon: Zap,
       title: "Fast-track Success",
-      description: "Accelerate your learning with proven methodologies and expert guidance"
-    }
+      description:
+        "Accelerate your learning with proven methodologies and expert guidance",
+    },
   ];
 
   useEffect(() => {
@@ -156,21 +223,23 @@ const Offerings = () => {
 
     // Floating animation for icons
     gsap.to(".floating-icon", {
-      y: -10,
-      duration: 2,
+      scale: 1.1,
+      opacity: 0.7,
+      duration: 1.5,
       repeat: -1,
       yoyo: true,
       ease: "sine.inOut",
-      stagger: 0.3,
     });
-
   }, []);
 
   return (
-    <div ref={sectionRef} className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div
+      ref={sectionRef}
+      className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8"
+    >
       <div className="flex flex-col space-y-20">
         {/* Header Section */}
-        <motion.div 
+        <motion.div
           className="text-center"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -187,16 +256,21 @@ const Offerings = () => {
           <h2 className="section-title text-3xl font-bold tracking-tight text-zinc-800 dark:text-white sm:text-4xl lg:text-5xl">
             Everything You Need to
             <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
-              {" "}Succeed in Tech
+              {" "}
+              Succeed in Tech
             </span>
           </h2>
           <p className="mx-auto mt-6 max-w-3xl text-lg text-zinc-600 dark:text-gray-300 sm:text-xl">
-            From beginner to expert, we provide the complete toolkit for your tech career journey
+            From beginner to expert, we provide the complete toolkit for your
+            tech career journey
           </p>
         </motion.div>
 
         {/* Offerings Grid */}
-        <div ref={cardsRef} className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          ref={cardsRef}
+          className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {offerings.map((offering, index) => (
             <OfferingCard key={index} {...offering} index={index} />
           ))}
@@ -211,10 +285,11 @@ const Offerings = () => {
                 Why Choose CourseWave?
               </h3>
               <p className="text-lg text-zinc-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Join thousands of successful developers who transformed their careers with our proven approach
+                Join thousands of successful developers who transformed their
+                careers with our proven approach
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {highlights.map((highlight, index) => (
                 <HighlightCard key={index} {...highlight} />
@@ -224,7 +299,7 @@ const Offerings = () => {
         </div>
 
         {/* CTA Section */}
-        <motion.div 
+        <motion.div
           className="text-center"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -236,10 +311,11 @@ const Offerings = () => {
               Ready to Transform Your Career?
             </h3>
             <p className="text-lg text-zinc-600 dark:text-gray-300">
-              Start your journey today and join our community of successful developers
+              Start your journey today and join our community of successful
+              developers
             </p>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link href="/browseCourses">
               <motion.button
@@ -252,7 +328,7 @@ const Offerings = () => {
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 opacity-0 blur transition-opacity group-hover:opacity-20" />
               </motion.button>
             </Link>
-            
+
             <Link href="/browseSessions">
               <motion.button
                 className="group inline-flex items-center gap-3 rounded-full border border-gray-300 bg-white px-8 py-4 text-lg font-semibold text-zinc-800 transition-all duration-300 hover:bg-gray-50 hover:scale-105 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
@@ -270,18 +346,18 @@ const Offerings = () => {
   );
 };
 
-const OfferingCard = ({ 
-  link, 
-  title, 
-  description, 
-  icon: Icon, 
-  gradient, 
-  bgGradient, 
-  darkBgGradient, 
-  features, 
+const OfferingCard = ({
+  link,
+  title,
+  description,
+  icon: Icon,
+  gradient,
+  bgGradient,
+  darkBgGradient,
+  features,
   stats,
   badge,
-  index 
+  index,
 }: any) => {
   return (
     <motion.div
@@ -290,16 +366,23 @@ const OfferingCard = ({
       transition={{ duration: 0.3 }}
     >
       <Link href={link} className="block h-full">
-        <div className={`relative h-full overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-br ${bgGradient} p-6 shadow-lg transition-all duration-300 hover:shadow-2xl dark:border-gray-800 dark:bg-gradient-to-br ${darkBgGradient}`}>
+        <div
+          className={`relative h-full overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-br ${bgGradient} p-6 shadow-lg transition-all duration-300 hover:shadow-2xl dark:border-gray-800 dark:bg-gradient-to-br ${darkBgGradient}`}
+        >
           {/* Badge */}
           {badge && (
-            <div className="absolute -top-2 -right-2 z-10">
-              <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                badge === "Most Popular" ? "bg-gradient-to-r from-yellow-400 to-orange-500 text-white" :
-                badge === "Free" ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white" :
-                badge === "Premium" ? "bg-gradient-to-r from-purple-400 to-pink-500 text-white" :
-                "bg-gradient-to-r from-blue-400 to-cyan-500 text-white"
-              }`}>
+            <div className="absolute top-6 right-6 z-10">
+              <span
+                className={`inline-flex items-center px-3 p-1 rounded-full text-xs font-semibold ${
+                  badge === "Most Popular"
+                    ? "bg-gradient-to-r from-yellow-400 to-orange-500 text-white"
+                    : badge === "Free"
+                      ? "bg-gradient-to-r from-green-400 to-emerald-500 text-white"
+                      : badge === "Premium"
+                        ? "bg-gradient-to-r from-purple-400 to-pink-500 text-white"
+                        : "bg-gradient-to-r from-blue-400 to-cyan-500 text-white"
+                }`}
+              >
                 {badge}
               </span>
             </div>
@@ -312,7 +395,9 @@ const OfferingCard = ({
 
           {/* Icon */}
           <div className="relative mb-6">
-            <div className={`inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-r ${gradient} p-3 shadow-lg`}>
+            <div
+              className={`inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-r ${gradient} p-3 shadow-lg`}
+            >
               <Icon className="floating-icon h-8 w-8 text-white" />
             </div>
           </div>
@@ -340,7 +425,9 @@ const OfferingCard = ({
             <div className="space-y-2">
               {features.map((feature: string, idx: number) => (
                 <div key={idx} className="flex items-center space-x-2">
-                  <div className={`h-1.5 w-1.5 rounded-full bg-gradient-to-r ${gradient}`} />
+                  <div
+                    className={`h-1.5 w-1.5 rounded-full bg-gradient-to-r ${gradient}`}
+                  />
                   <span className="text-xs font-medium text-zinc-700 dark:text-gray-300">
                     {feature}
                   </span>
@@ -349,13 +436,17 @@ const OfferingCard = ({
             </div>
 
             {/* Arrow */}
-            <div className="pt-4">
-              <ArrowRight className={`h-5 w-5 text-transparent transition-all duration-300 group-hover:text-current group-hover:translate-x-1 bg-gradient-to-r ${gradient} bg-clip-text`} />
-            </div>
+            {/* <div className="pt-4">
+              <ArrowRight
+                className={`h-5 w-5 text-transparent transition-all duration-300 group-hover:text-current group-hover:translate-x-1 bg-gradient-to-r ${gradient} bg-clip-text`}
+              />
+            </div> */}
           </div>
 
           {/* Hover Effect */}
-          <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-5`} />
+          <div
+            className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-5`}
+          />
         </div>
       </Link>
     </motion.div>
@@ -366,7 +457,7 @@ const HighlightCard = ({ icon: Icon, title, description }: any) => {
   return (
     <motion.div
       className="highlight-item text-center"
-      whileHover={{ y: -5 }}
+      // whileHover={{ y: -5 }}
       transition={{ duration: 0.3 }}
     >
       <div className="flex flex-col items-center space-y-4">

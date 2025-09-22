@@ -44,23 +44,24 @@ export default function Notifications() {
     <Sheet>
       {/* Bell Icon */}
       <SheetTrigger asChild>
-        <div className="relative">
-          <button
-            className="relative rounded-md transition-all w-10 h-10 duration-200 ease-in-out dark:bg-transparent group dark:hover:border-transparent hover:border-transparent dark:group-hover:bg-blue-600 group-hover:bg-blue-600 group-hover:text-white cursor-pointer"
-            aria-label="Notification"
-          >
-            <div className="cursor-pointer flex items-center justify-center w-full h-full rounded-md border border-opacity-10 bg-transparent transition-all duration-200 group-hover:bg-slate-50 dark:group-hover:border-opacity-100 dark:group-hover:bg-zinc-800">
-              <IoNotificationsOutline size={16} />
-            </div>
-            {unreadNotifications.length > 0 && (
-              <span className="absolute -top-1 -right-1">
-                <div className="inline-flex items-center rounded-full bg-blue-800 px-1.5 py-0.5 text-xs font-semibold leading-4 text-white">
-                  {unreadNotifications.length}
-                </div>
-              </span>
-            )}
-          </button>
-        </div>
+        {/* <div className="relative">
+          
+        </div> */}
+        <button
+          className="relative rounded-md border border-gray-200 dark:border-zinc-800 transition-all w-10 h-10 duration-200 ease-in-out dark:bg-transparent group dark:hover:border-transparent hover:border-transparent dark:group-hover:bg-blue-600 group-hover:bg-blue-600 group-hover:text-white cursor-pointer"
+          aria-label="Notification"
+        >
+          <div className="cursor-pointer flex items-center justify-center w-full h-full rounded-md border-gray-200 dark:border-zinc-800 bg-transparent transition-all duration-200 group-hover:bg-slate-50 dark:group-hover:border-opacity-100 dark:group-hover:bg-zinc-800">
+            <IoNotificationsOutline size={16} />
+          </div>
+          {unreadNotifications.length > 0 && (
+            <span className="absolute -top-1 -right-1">
+              <div className="inline-flex items-center rounded-full bg-blue-800 px-1.5 py-0.5 text-xs font-semibold leading-4 text-white">
+                {unreadNotifications.length}
+              </div>
+            </span>
+          )}
+        </button>
       </SheetTrigger>
 
       {/* Notifications Sheet */}
@@ -105,7 +106,11 @@ export default function Notifications() {
             ) : (
               <div className="min-h-[70vh] flex items-center justify-center">
                 <div className="text-center">
-                  <img src="/assets/illustrations/no-notifications.webp" alt="No Notifications" className="w-32 h-32 mb-4 mx-auto" />
+                  <img
+                    src="/assets/illustrations/no-notifications.webp"
+                    alt="No Notifications"
+                    className="w-32 h-32 mb-4 mx-auto"
+                  />
                   <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">
                     No notifications for now
                   </p>

@@ -8,21 +8,34 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Users, CheckCircle, ClipboardList, ListChecks } from "lucide-react";
 import { FaStar } from "react-icons/fa6";
 import { Course } from "@/types/course-details-api-response";
+import { Review } from "@/types/review";
 
 export const CourseDetailsLeftSection = ({
   course,
   reviews,
 }: {
   course: Course;
-  reviews: any[];
+  reviews: Review[];
 }) => {
+  // Safe defaults
+  const learningOutcomes = course?.learningOutcomes ?? [
+    "Master modern web development techniques",
+    "Build real-world projects from scratch",
+    "Learn industry best practices",
+    "Get hands-on coding experience",
+    "Understand advanced concepts",
+    "Deploy applications to production",
+  ];
+  const prerequisites = course?.prerequisites ?? [];
+  const reviewList = reviews ?? [];
+
   const avgRating =
-    reviews.length > 0
-      ? reviews.reduce((sum, review) => sum + (review.rating || 0), 0) /
-        reviews.length
+    reviewList.length > 0
+      ? reviewList.reduce((sum, review) => sum + (Number(review.rating) || 0), 0) /
+        reviewList.length
       : course?.averageRating || 0.0;
 
-  const totalReviews = reviews.length || 0;
+  const totalReviews = reviewList.length;
 
   console.log(
     "Course in state cards in left section: ",
@@ -109,6 +122,7 @@ export const CourseDetailsLeftSection = ({
                           View {course.instructor.user?.name}'s profile
                         </span>
                       </a>
+
                       {/* Instructor Info */}
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
@@ -254,7 +268,6 @@ export const CourseDetailsLeftSection = ({
       </Card>
 
       {/* What You'll Learn */}
-
       <Card className="border-0 shadow-lg bg-gradient-to-br from-slate-50 to-blue-50/30 dark:from-zinc-900/95 dark:to-blue-950/20 backdrop-blur-sm">
         <CardHeader className="pb-6">
           <div className="flex items-center gap-4">
@@ -277,8 +290,8 @@ export const CourseDetailsLeftSection = ({
 
         <CardContent className="pt-0">
           <div className="space-y-4">
-            {(course.learningOutcomes.length > 0
-              ? course.learningOutcomes
+            {(learningOutcomes.length > 0
+              ? learningOutcomes
               : [
                   "Master modern web development techniques",
                   "Build real-world projects from scratch",
@@ -317,9 +330,7 @@ export const CourseDetailsLeftSection = ({
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-purple-500"></div>
                 <span>
-                  {course.learningOutcomes.length > 0
-                    ? course.learningOutcomes.length
-                    : 6}{" "}
+                  {learningOutcomes.length > 0 ? learningOutcomes.length : 6}{" "}
                   skills to master
                 </span>
               </div>
@@ -351,8 +362,8 @@ export const CourseDetailsLeftSection = ({
 
         <CardContent className="pt-0">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {(course.prerequisites.length > 0
-              ? course.prerequisites
+            {(prerequisites.length > 0
+              ? prerequisites
               : [
                   "Basic programming knowledge",
                   "A computer with internet connection",
@@ -416,9 +427,7 @@ export const CourseDetailsLeftSection = ({
               </div>
               <div className="text-right">
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                  {course.prerequisites.length > 0
-                    ? course.prerequisites.length
-                    : 4}{" "}
+                  {prerequisites.length > 0 ? prerequisites.length : 4}{" "}
                   requirements
                 </p>
                 <div className="flex items-center gap-1 mt-1">

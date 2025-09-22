@@ -898,70 +898,63 @@ import { useParams } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { CourseProgress } from "@/components/CourseProgress";
 import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
-import { useCoursesStore } from "@/zustand/coursesStore";
 import { useUserStore } from "@/zustand/userStore";
+import { useCourse } from "@/hooks/useCourses";
+import { Course } from "@/types/course";
 import { Callout } from "@tremor/react";
 
 import UserAvatar from "@/components/common/UserAvatar";
 import VideoSummary from "./_components/VideoSummary";
 import CourseAttachments from "./_components/CourseAttachments";
-
 import CourseNotes from "./_components/CourseNotes";
 import CourseContentInstructorCard from "./_components/CourseContentInstructorCard";
 import CourseSectionsAndChapters from "./_components/CourseSectionsAndChapters";
+import { useCoursesStore } from "@/zustand/coursesStore";
+
 // import CourseVideo from "./_components/CourseVideoNew";
 
 const CourseContentPage = () => {
   const { courseId } = useParams<{ courseId: string }>();
-  const { user, loadingState: userLoading } = useUserStore();
+  const { user } = useUserStore();
   const userId = user?.id;
-  const {
-    course,
-    attachments,
-    fetchCourse,
-    // fetchCourseCloudinaryData,
-    fetchCourseAttachments,
-    fetchCourseProgress,
-    fetchCourseReviews,
-    loadingState,
-  } = useCoursesStore();
-  // const { updateCourseProgress } = useCoursesStore();
 
-  // Track active section and chapter
-  const [activeSectionIndex, setActiveSectionIndex] = React.useState(0);
-  const [activeChapterIndex, setActiveChapterIndex] = React.useState(0);
-  const [showFullDescription, setShowFullDescription] = React.useState(false);
+  const {
+    data: courseData,
+    isLoading: isCourseLoading,
+    error: courseError,
+  } = useCourse(courseId);
+  const course = courseData?.data ?? ({} as Course);
 
   // Ensure sections is always an array
   const sections = Array.isArray((course as any)?.sections)
     ? (course as any).sections
     : [];
 
-  // Get the active chapter based on section/chapter index
-  const activeSection = sections[activeSectionIndex];
-  const activeChapter = activeSection?.chapters?.[activeChapterIndex];
-  const aboutChapter =
-    activeChapter?.description || "No chapter description available.";
+  // // Track active section and chapter
+  // const [activeSectionIndex, setActiveSectionIndex] = React.useState(0);
+  // const [activeChapterIndex, setActiveChapterIndex] = React.useState(0);
 
-  React.useEffect(() => {
-    if (courseId && userId) {
-      fetchCourse(courseId);
-      // fetchCourseCloudinaryData(courseId);
-      fetchCourseAttachments(courseId);
-      fetchCourseProgress(courseId, userId);
-      fetchCourseReviews(courseId);
-    }
-  }, [courseId, userId]);
+  // // Get the active chapter based on section/chapter index
+  // const activeSection = sections[activeSectionIndex];
+  // const activeChapter = activeSection?.chapters?.[activeChapterIndex];
+  // const aboutChapter =
+  //   activeChapter?.description || "No chapter description available.";
 
-  if (userLoading.loading || loadingState.loading) {
+  const activeSection = useCoursesStore((state) => state.getActiveSection());
+  const activeChapter = useCoursesStore((state) => state.getActiveChapter());
+  const aboutChapter = useCoursesStore((state) => state.getAboutChapter());
+
+  // todo: implement all loadings
+  if (isCourseLoading) {
     return <div className="p-8 text-center">Loading...</div>;
   }
 
-  if (loadingState.error) {
+  // todo: implement all error
+  if (courseError) {
     return (
       <div className="flex h-screen items-center justify-center">
         <Callout title="Error loading course" color="red">
-          {loadingState.error}
+          {courseError.message}
         </Callout>
       </div>
     );
@@ -1015,18 +1008,18 @@ const CourseContentPage = () => {
           <TabsContent value="chapters">
             <CourseSectionsAndChapters
               sections={sections}
-              activeSectionIndex={activeSectionIndex}
-              setActiveSectionIndex={setActiveSectionIndex}
-              activeChapterIndex={activeChapterIndex}
-              setActiveChapterIndex={setActiveChapterIndex}
-              chaptersError={loadingState.error}
+              // activeSectionIndex={activeSectionIndex}
+              // setActiveSectionIndex={setActiveSectionIndex}
+              // activeChapterIndex={activeChapterIndex}
+              // setActiveChapterIndex={setActiveChapterIndex}
+              // chaptersError={loadingState.error}
             />
           </TabsContent>
           <TabsContent value="notes">
             <CourseNotes />
           </TabsContent>
           <TabsContent value="resources">
-            <CourseAttachments courseAttachments={attachments} />
+            <CourseAttachments />
           </TabsContent>
         </Tabs>
       </aside>
@@ -1056,7 +1049,7 @@ const CourseContentPage = () => {
               About this Class
             </h2>
             <p className="text-gray-600 dark:text-gray-400">
-              {course.description || "No description provided."}
+              {aboutChapter || "No description provided."}
             </p>
           </div>
           <div>

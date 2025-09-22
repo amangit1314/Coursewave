@@ -20,7 +20,7 @@ export const ThemeModeToggle = () => {
     setMounted(true);
   }, []);
 
-  // Return a placeholder or null on the server to prevent the mismatch.
+  // Return a placeholder with consistent size on the server to prevent hydration mismatch
   if (!mounted) {
     return (
       <Button
@@ -29,8 +29,7 @@ export const ThemeModeToggle = () => {
         className="flex justify-center cursor-pointer items-center h-10 w-10 rounded-md dark:bg-transparent dark:hover:bg-zinc-800 transition-all duration-200"
         aria-label="Toggle theme"
       >
-        <div className="h-9 w-9" />{" "}
-        {/* Placeholder for consistent server-rendered HTML */}
+        <div className="h-[1.125rem] w-[1.125rem]" />
       </Button>
     );
   }
@@ -42,13 +41,13 @@ export const ThemeModeToggle = () => {
         <Button
           variant="outline"
           size="icon"
-          className="flex justify-center cursor-pointer items-center h-10 w-10 rounded-md dark:bg-transparent dark:hover:bg-zinc-800 transition-all duration-200"
+          className="flex justify-center shadow-none border-gray-200 dark:border-zinc-800 cursor-pointer items-center h-10 w-10 rounded-md dark:bg-transparent dark:hover:bg-zinc-800 transition-all duration-200"
           aria-label="Toggle theme"
         >
           {theme === "dark" ? (
-            <SunIcon className="h-9 w-9" />
+            <SunIcon className="h-[1.125rem] w-[1.125rem]" />
           ) : (
-            <MoonIcon className="h-9 w-9" />
+            <MoonIcon className="h-[1.125rem] w-[1.125rem]" />
           )}
           <span className="sr-only">Toggle theme</span>
         </Button>

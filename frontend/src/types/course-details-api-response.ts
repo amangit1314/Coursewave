@@ -50,30 +50,35 @@ export interface Course {
     createdAt: string;
     updatedAt: string;
   };
-  sections: Array<{
-    id: string;
-    title: string;
-    description: string | null;
-    position: number;
-    courseId: string;
-    isPublished: boolean;
-    createdAt: string;
-    updatedAt: string;
-    Chapter: Array<{
-      id: string;
-      title: string;
-      description: string | null;
-      position: number;
-      sectionId: string;
-      courseId: string;
-      isPublished: boolean;
-      isFree: boolean;
-      contentType: string;
-      content: string;
-      createdAt: string;
-      updatedAt: string;
-    }>;
-  }>;
+  sections: Array<Section>;
+}
+
+export interface Section {
+  id: string;
+  title: string;
+  description: string | null;
+  position: number;
+  courseId: string;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
+  Chapter: Array<Chapter>;
+}
+
+export interface Chapter {
+  id: string;
+  title: string;
+  description: string | null;
+  position: number;
+  sectionId: string;
+  courseId: string;
+  isPublished: boolean;
+  isFree: boolean;
+  contentType: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  duration?: number; // Add duration as optional, since code expects lesson.duration
 }
 
 export interface Instructor {
@@ -101,33 +106,35 @@ export interface Category {
   [key: string]: any;
 }
 
-export interface Section {
-  id: string;
-  title: string;
-  description: string;
-  position: number;
-  courseId: string;
-  isPublished: boolean;
-  createdAt: string;
-  updatedAt: string;
-  chapters: Chapter[];
-}
+/**----------------------------------------------------------------------------------------------------------------------------------- */
 
-export interface Chapter {
-  id: string;
-  title: string;
-  description: string | null;
-  position: number;
-  sectionId: string;
-  courseId: string;
-  isPublished: boolean;
-  isFree: boolean;
-  contentType: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-  duration?: number; // Add duration as optional, since code expects lesson.duration
-}
+// export interface Section {
+//   id: string;
+//   title: string;
+//   description: string;
+//   position: number;
+//   courseId: string;
+//   isPublished: boolean;
+//   createdAt: string;
+//   updatedAt: string;
+//   chapters: Chapter[];
+// }
+
+// export interface Chapter {
+//   id: string;
+//   title: string;
+//   description: string | null;
+//   position: number;
+//   sectionId: string;
+//   courseId: string;
+//   isPublished: boolean;
+//   isFree: boolean;
+//   contentType: string;
+//   content: string;
+//   createdAt: string;
+//   updatedAt: string;
+//   duration?: number; // Add duration as optional, since code expects lesson.duration
+// }
 
 export interface CourseSection {
   id: string;

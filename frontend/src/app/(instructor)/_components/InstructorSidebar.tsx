@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import InstructorSidebarRoutes from "./InstructorSidebarRoutes";
 import Link from "next/link";
-import { orbitron } from "@/lib/config/fonts";
+import { dmSans } from "@/lib/config/fonts";
 
 const InstructorSidebar = () => {
   return (
@@ -36,7 +36,7 @@ const Logo = () => {
         priority
       />
       <p
-        className={`${orbitron.className} pl-2 text-blue-500 font-bold text-lg`}
+        className={`${dmSans.className} pl-2 text-blue-500 font-bold text-lg`}
       >
         Coursewave
       </p>

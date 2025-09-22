@@ -42,8 +42,6 @@
 
 
 -------------------------------------------------------------------------------------------------
-
-[] In mobile view that Coursewave text color on sidebar, change its font to orbitron / similar to landing page main text.
 [] On theme toggle when i hover on any light, dark or system a light color bg must follow to indicate user follow and that cursor should be pointer while hovering.
 [] correct the cart bg, its looking like mirror just a lot of text on glass.
 [] Same bg of the cart in notifications too.

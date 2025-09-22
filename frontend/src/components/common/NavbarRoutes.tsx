@@ -5,14 +5,12 @@ import React, { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 import { usePathname, useRouter } from "next/navigation";
 import { ThemeModeToggle } from "./ThemeModeToggle";
-import { useUserStore } from "@/zustand/userStore";
-import { Skeleton } from "@/components/ui/skeleton";
-import { orbitron, poppins } from "@/lib/config/fonts";
+import { dmSans, poppins } from "@/lib/config/fonts";
 
 import InstructorButton from "../InstructorButton";
 import SearchButton from "../SearchButton";
 import Notifications from "./NotificationButton";
-import Cart from "./CartButton";
+import { useUserStore } from "@/zustand/userStore";
 
 const NavbarRoutes = () => {
   const router = useRouter();
@@ -38,19 +36,17 @@ const NavbarRoutes = () => {
             {isBrowseCoursesScreen ? <SearchButton /> : <div></div>}
           </div>
         </div>
-        
+
         <div className="ml-auto flex justify-end gap-x-2">
           <Toaster />
 
           {/* instructor button */}
-          <div className={orbitron.className}>
+          <div className={dmSans.className}>
             {user ? <InstructorButton /> : <div></div>}
           </div>
 
           {/* theme toggle */}
-          <div className="mx-2">
-            <ThemeModeToggle />
-          </div>
+          <ThemeModeToggle />
 
           {/* cart */}
           {/* <Cart /> */}
@@ -59,14 +55,14 @@ const NavbarRoutes = () => {
           <Notifications />
 
           {/* user profile */}
-          <div className={poppins.className}>
+          <div>
             {user ? (
               <UserAvatar />
             ) : (
-              <span className={orbitron.className}>
+              <span className={dmSans.className}>
                 <button
                   onClick={gotToSignIn}
-                  className="text-sm cursor-pointer hover:text-white h-10 text-center dark:hover:bg-blue-600 flex justify-center dark:hover:border-transparent items-center w-auto px-4 rounded-md border border-stroke hover:border-transparent bg-white dark:bg-zinc-800 hover:bg-blue-600 transition-all duration-100"
+                  className="text-sm cursor-pointer hover:text-white h-10 text-center dark:hover:bg-blue-600 flex justify-center dark:hover:border-transparent items-center w-auto px-4 rounded-md border border-gray-200 dark:border-zinc-800 hover:border-transparent bg-white dark:bg-zinc-800 hover:bg-blue-600 transition-all duration-100"
                 >
                   Sign In
                 </button>

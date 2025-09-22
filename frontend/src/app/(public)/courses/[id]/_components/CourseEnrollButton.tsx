@@ -1,11 +1,6 @@
-import { useCheckCourseIsPurchased } from "@/hooks/useCheckCourseIsPuchased"; // TODO:
-
 import { Course } from "@/types/course-details-api-response";
-import { absoluteUrl } from "@/lib/utils/utils";
 import { useNotificationsStore } from "@/zustand/notificationsStore";
-// import { Course } from "@prisma/client";
 import { Button } from "@tremor/react";
-import axios from "axios";
 import { BookOpen, Loader } from "lucide-react";
 import React from "react";
 import toast from "react-hot-toast";
@@ -90,14 +85,7 @@ import { courseService } from "@/lib/api/services";
 export const CourseEnrollButton = React.memo(
   ({ course, courseId }: { course: Course; courseId: string }) => {
     const [isLoading, setIsLoading] = React.useState(false);
-    const {
-      user,
-      // loadingState,
-      fetchEnrolledCourses,
-      enrolledCourses,
-      // checkAuthToken,
-      // refreshAuthToken,
-    } = useUserStore();
+    const { user } = useUserStore();
     const setNotification = useNotificationsStore(
       (state) => state.setNotification
     );

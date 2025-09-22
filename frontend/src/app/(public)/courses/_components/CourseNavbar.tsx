@@ -3,10 +3,8 @@
 
 import React from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { Poppins, Orbitron } from "next/font/google";
 import Link from "next/link";
 import Image from "next/image";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useUserStore } from "@/zustand/userStore";
 import { useRouter } from "next/navigation";
 import InstructorButton from "@/components/InstructorButton";
@@ -14,35 +12,11 @@ import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
 import UserAvatar from "@/components/common/UserAvatar";
 import { ChevronRight, Home } from "lucide-react";
 import Notifications from "@/components/common/NotificationButton";
-
-const poppins = Poppins({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const orbitron = Orbitron({
-  weight: ["400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-  display: "swap",
-});
+import { dmSans } from "@/lib/config/fonts";
 
 const CourseNavbar = ({ courseName }: { courseName: string }) => {
   const router = useRouter();
   const { user } = useUserStore();
-
-  // if (loadingState.loading) {
-  //   return (
-  //     <div className="flex w-full items-center justify-between px-4 py-3">
-  //       <Skeleton className="h-8 w-48" />
-  //       <div className="flex gap-2">
-  //         <Skeleton className="h-8 w-8 rounded-full" />
-  //         <Skeleton className="h-8 w-8 rounded-full" />
-  //         <Skeleton className="h-8 w-16 rounded-lg" />
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   const gotToSignIn = () => {
     router.push("/login");
@@ -68,7 +42,7 @@ const CourseNavbar = ({ courseName }: { courseName: string }) => {
               priority
             />
           </div>
-          <span className={`text-lg font-bold text-blue-600 dark:text-blue-400 ${orbitron.className}`}>
+          <span className={`text-lg font-bold text-blue-600 dark:text-blue-400 ${dmSans.className}`}>
             CourseWave
           </span>
         </Link>

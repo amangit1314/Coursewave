@@ -244,16 +244,16 @@ model Course {
   description       String?
   duration          Int?
   id                String              @id @default(uuid())
-  slug              String?             @unique
+  slug              String              @unique
   imageUrl          String?
   learningOutcomes  String[]
   prerequisites     String[]
-  price             Float?
+  price             Float               @default(0)
   targetAudience    String[]
   technologies      String[]
   title             String
-  dealPrice         Float?
-  discount          Float?
+  dealPrice         Float               @default(0)
+  discount          Float               @default(0)
   CartItem          CartItem[]
   Chapter           Chapter[]
   CourseAttachment  CourseAttachment[]
@@ -374,7 +374,7 @@ model ChapterProgress {
   progress         Int             @default(0)
   lastAccessed     DateTime        @default(now())
   createdAt        DateTime        @default(now())
-  updatedAt        DateTime
+  updatedAt        DateTime @updatedAt
   Chapter          Chapter         @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   CourseProgress   CourseProgress? @relation(fields: [courseProgressId], references: [id])
   Enrollment       Enrollment?     @relation(fields: [enrollmentId], references: [id])
@@ -950,7 +950,7 @@ model Session {
   endsAt       DateTime
   instructorId String
   createdAt    DateTime         @default(now())
-  updatedAt    DateTime
+  updatedAt    DateTime         @updatedAt
   Instructor   Instructor       @relation(fields: [instructorId], references: [userId])
   bookings     SessionBooking[]
 
@@ -971,7 +971,7 @@ model SessionBooking {
   leftAt           DateTime?
   durationAttended Int?
   createdAt        DateTime       @default(now())
-  updatedAt        DateTime
+  updatedAt        DateTime       @updatedAt
   instructorId     String?
   Instructor       Instructor?    @relation(fields: [instructorId], references: [userId])
   session          Session        @relation(fields: [sessionId], references: [id])

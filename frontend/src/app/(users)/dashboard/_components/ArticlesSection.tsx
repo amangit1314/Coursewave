@@ -1,7 +1,7 @@
 import React from "react";
 
-import { useCreatedArticles } from "@/hooks/useCreatedArticles";
-import { useSavedArticles } from "@/hooks/useSavedArticles";
+import { useCreatedArticles } from "@/hooks/useArticles";
+import { useSavedArticles } from "@/hooks/useArticles";
 import {
   Callout,
   Tab,
@@ -52,10 +52,10 @@ const ArticlesSection = () => {
         </div>
 
         <Articles
-          savedArticles={savedArticles}
+          savedArticles={savedArticles?.data|| []}
           savedArticlesLoading={isSavedArticlesLoading}
           savedArticlesError={savedArticlesError?.message || null}
-          createdArticles={createdArticles}
+          createdArticles={createdArticles?.data || []}
           createdArticlesLoading={isCreatedArticlesLoading}
           createdArticlesError={error?.message || null}
         />

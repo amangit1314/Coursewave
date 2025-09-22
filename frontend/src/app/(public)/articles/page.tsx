@@ -97,14 +97,14 @@ const ArticlesPage = () => {
         <div className="flex items-center gap-3 mt-4 md:mt-0">
           <div className="relative w-72">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <Input
+            <input
               placeholder="Search articles..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 pr-4 py-2 rounded-xl border-2 border-gray-200 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
+              className="pl-10 pr-4 py-2 rounded-md shadow-none border border-gray-200 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white"
             />
           </div>
-          <Button variant="outline" onClick={() => setSearch("")}>
+          <Button variant="outline" onClick={() => setSearch("")} className="cursor-pointer hover:bg-gray-100 shadow-none dark:hover:bg-zinc-800 border border-gray-200 dark:border-zinc-800 transition-all duration-200">
             Clear
           </Button>
         </div>

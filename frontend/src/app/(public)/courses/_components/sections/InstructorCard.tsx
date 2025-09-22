@@ -5,12 +5,8 @@
 import Image from "next/image";
 import React, { useEffect } from "react";
 import "swiper/css";
-import { useInstructorInfo } from "@/hooks/useInstructorInfo";
-import { Separator } from "@/components/ui/separator";
-import { Callout } from "@tremor/react";
+
 import { Skeleton } from "@/components/ui/skeleton";
-import { useQuery } from "@tanstack/react-query";
-import { useInstructorStore } from "@/zustand/instructorStore";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
