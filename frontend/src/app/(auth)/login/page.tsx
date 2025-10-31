@@ -3,8 +3,8 @@
 import { Toaster } from "react-hot-toast";
 import { motion } from "framer-motion";
 import LoginLeftSection from "./_components/LoginLeftSection";
-import LoginForm from "./_components/LoginForm";
 import AuthBackgroundPattern from "@/components/auth/AuthBackgroundPattern";
+import LoginForm from "./_components/LoginForm";
 
 const Login = () => {
   return (
