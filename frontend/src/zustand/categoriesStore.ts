@@ -101,16 +101,10 @@
 //   ),
 // );
 
-
 import { categoriesService } from "@/lib/api/services/categoriesService";
 import { Category } from "@/types/category";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-type LoadingState = {
-  loading: boolean;
-  error: string | null;
-};
 
 type CategoriesState = {
   categories: Category[];
@@ -121,7 +115,9 @@ type CategoriesState = {
 
 type CategoriesActions = {
   fetchCategories: () => Promise<void>;
+  setCategories: (categories: Category[]) => void;
   selectCategory: (categoryName: string | null) => void;
+  // Remove these if they're not used or implement them properly
   filterArticles: () => void;
   filterCourses: () => void;
   filterSessions: () => void;
@@ -137,56 +133,138 @@ export const useCategoriesStore = create<CategoriesState & CategoriesActions>()(
 
       fetchCategories: async () => {
         try {
-          set({ loading: true });
+          set({ loading: true, error: null });
 
           const data = await categoriesService.getCategories();
           console.log(
             "API response for categories in categories-zustand-store: ",
-            data,
+            data
           );
 
           const categories: Category[] = data?.data || [];
           set({ categories, error: null });
         } catch (error: any) {
           console.error("Error fetching categories:", error);
-          set({ error: error?.message || "Unknown error while fetching categories" });
+          set({
+            error: error?.message || "Unknown error while fetching categories",
+          });
         } finally {
           set({ loading: false });
         }
       },
 
+      setCategories: (categories: Category[]) => {
+        set({ categories, error: null });
+      },
+
       selectCategory: (categoryName: string | null) => {
         set({ selectedCategory: categoryName });
-
-        // Automatically trigger filters
-        get().filterArticles();
-        get().filterCourses();
-        get().filterSessions();
+        // Remove the automatic filter calls to prevent cascading updates
       },
 
       filterArticles: () => {
-        const { selectedCategory } = get();
-        if (!selectedCategory) return;
-
-        // Filtering logic for articles
+        // Implement if needed, but remove from selectCategory
       },
 
       filterCourses: () => {
-        const { selectedCategory } = get();
-        if (!selectedCategory) return;
-
-        // Filtering logic for courses
+        // Implement if needed, but remove from selectCategory
       },
 
       filterSessions: () => {
-        const { selectedCategory } = get();
-        if (!selectedCategory) return;
-
-        // Filtering logic for sessions
+        // Implement if needed, but remove from selectCategory
       },
     }),
     {
       name: "Coursewave-Categories-Store",
-    },
-  ),
+    }
+  )
 );
+
+// import { categoriesService } from "@/lib/api/services/categoriesService";
+// import { Category } from "@/types/category";
+// import { create } from "zustand";
+// import { persist } from "zustand/middleware";
+
+// type LoadingState = {
+//   loading: boolean;
+//   error: string | null;
+// };
+
+// type CategoriesState = {
+//   categories: Category[];
+//   selectedCategory: string | null;
+//   loading: boolean;
+//   error: string | null;
+// };
+
+// type CategoriesActions = {
+//   fetchCategories: () => Promise<void>;
+//   selectCategory: (categoryName: string | null) => void;
+//   filterArticles: () => void;
+//   filterCourses: () => void;
+//   filterSessions: () => void;
+// };
+
+// export const useCategoriesStore = create<CategoriesState & CategoriesActions>()(
+//   persist(
+//     (set, get) => ({
+//       categories: [],
+//       selectedCategory: null,
+//       loading: false,
+//       error: null,
+
+//       fetchCategories: async () => {
+//         try {
+//           set({ loading: true });
+
+//           const data = await categoriesService.getCategories();
+//           console.log(
+//             "API response for categories in categories-zustand-store: ",
+//             data,
+//           );
+
+//           const categories: Category[] = data?.data || [];
+//           set({ categories, error: null });
+//         } catch (error: any) {
+//           console.error("Error fetching categories:", error);
+//           set({ error: error?.message || "Unknown error while fetching categories" });
+//         } finally {
+//           set({ loading: false });
+//         }
+//       },
+
+//       selectCategory: (categoryName: string | null) => {
+//         set({ selectedCategory: categoryName });
+
+//         // Automatically trigger filters
+//         get().filterArticles();
+//         get().filterCourses();
+//         get().filterSessions();
+//       },
+
+//       filterArticles: () => {
+//         const { selectedCategory } = get();
+//         if (!selectedCategory) return;
+
+//         // Filtering logic for articles
+//       },
+
+//       filterCourses: () => {
+//         const { selectedCategory } = get();
+//         if (!selectedCategory) return;
+
+//         // Filtering logic for courses
+//       },
+
+//       filterSessions: () => {
+//         const { selectedCategory } = get();
+//         if (!selectedCategory) return;
+
+//         // Filtering logic for sessions
+//       },
+//     }),
+//     {
+//       name: "Coursewave-Categories-Store",
+//     },
+//   ),
+// );

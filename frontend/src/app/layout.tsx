@@ -1,15 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+
+// 'use client';
+
 import "./globals.css";
 import type { Metadata } from "next";
 import { RootProvider } from "@/providers/root-provider";
 import { DM_Sans, Poppins } from "next/font/google";
+import { Toaster } from "react-hot-toast";
+import CurrencyDetector from "@/components/CurrencyDetector";
 
 export const metadata: Metadata = {
   title: "Coursewave",
   description: "Unlock your infinite learning potential with Coursewave.",
   icons: {
-    icon: "/courseWaveFaviconColored.ico",
-    shortcut: "/courseWaveFaviconColored.ico",
+    icon: "/courseWaveFaviconColored.png",
+    shortcut: "/courseWaveFaviconColored.png",
   },
 };
 
@@ -33,9 +38,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${poppins.variable} ${dmSans.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${poppins.variable} ${dmSans.variable}`}
+    >
       <body className="font-poppins" suppressHydrationWarning>
-        <RootProvider>{children}</RootProvider>
+        {/* <RootProvider>{children}</RootProvider> */}
+        <RootProvider>
+          <CurrencyDetector />
+          {children}
+          <Toaster position="top-right" />
+        </RootProvider>
       </body>
     </html>
   );

@@ -17,3 +17,18 @@ export function extractPublicId(url: string): string | null {
     }
   }
   
+
+  // Helper function to normalize content type
+export const normalizeContentType = (contentType: string): string => {
+  const typeMap: Record<string, string> = {
+    'video': 'VIDEO',
+    'text': 'TEXT', 
+    'quiz': 'QUIZ',
+    'assignment': 'ASSIGNMENT',
+    'resource': 'RESOURCE',
+    'live': 'LIVE'
+  };
+  
+  return typeMap[contentType.toLowerCase()] || contentType.toUpperCase();
+};
+

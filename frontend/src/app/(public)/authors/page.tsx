@@ -68,12 +68,12 @@ const mockArticles: BlogArticle[] = [
     author: {
       id: "author-1",
       name: "John Doe",
-      email: "john@example.com",
+      // email: "john@example.com",
       profileImageUrl: "/images/john-doe.jpg",
-      about: "Full-stack developer and tech writer.",
+      // about: "Full-stack developer and tech writer.",
       shortSummary: "Writes about JavaScript and web development.",
     },
-    category: {
+    Category: {
       id: "category-1",
       name: "Web Development",
       description:
@@ -82,7 +82,7 @@ const mockArticles: BlogArticle[] = [
       updatedAt: new Date().toISOString(),
     },
     _count: {
-      likes: 120,
+      BlogLike: 120,
       views: 3500,
       comments: 12,
     },
@@ -107,12 +107,12 @@ const mockArticles: BlogArticle[] = [
     author: {
       id: "author-2",
       name: "Jane Smith",
-      email: "jane@example.com",
+      // email: "jane@example.com",
       profileImageUrl: "/images/jane-smith.jpg",
-      about: "Frontend engineer and UI/UX enthusiast.",
+      // about: "Frontend engineer and UI/UX enthusiast.",
       shortSummary: "Specializes in TypeScript and React.",
     },
-    category: {
+    Category: {
       id: "category-1",
       name: "Web Development",
       description:
@@ -121,7 +121,7 @@ const mockArticles: BlogArticle[] = [
       updatedAt: new Date().toISOString(),
     },
     _count: {
-      likes: 95,
+      BlogLike: 95,
       views: 2900,
       comments: 8,
     },

@@ -279,16 +279,19 @@ import {
   CourseProgress,
   CourseQueryParams,
   CourseReview,
-  CourseSection,
+  // CourseSection,
   CreateCourseRequest,
   Enrollment,
-  Instructor,
+  // Instructor,
   UpdateCourseRequest,
 } from "@/types/courses.service.types";
+import { Chapter as CourseChapter } from "@/types/course-details-api-response";
+import { CourseSection } from "@/types/course-details-api-response";
 import { apiManager, ApiResponse, PaginatedResponse } from "../api-manager";
 import { Review } from "@/types/review";
 import { useUserStore } from "@/zustand/userStore";
 import { Attachment } from "@/types/attachment";
+import { Instructor } from "@/types/instructor";
 
 class CourseService {
   private static instance: CourseService;
@@ -328,7 +331,9 @@ class CourseService {
     id: string,
     data: UpdateCourseRequest
   ): Promise<ApiResponse<Course>> {
-    return this.api.put<Course>(`/courses/${id}`, data);
+    const response = await this.api.put<Course>(`/courses/${id}`, data);
+    return response;
+    // newCourseTitle: values.title,
   }
 
   async deleteCourse(id: string): Promise<ApiResponse<void>> {
@@ -403,6 +408,15 @@ class CourseService {
   // ------------------------
   // 🔹 Chapters
   // ------------------------
+  async getChapters(
+    courseId: string,
+    sectionId: string
+  ): Promise<ApiResponse<Chapter[]>> {
+    return this.api.get<Chapter[]>(
+      `/courses/${courseId}/sections/${sectionId}/chapters`
+    );
+  }
+
   async addChapter(
     courseId: string,
     sectionId: string,
@@ -418,7 +432,7 @@ class CourseService {
     courseId: string,
     sectionId: string,
     chapterId: string,
-    data: Partial<Chapter>
+    data: Partial<CourseChapter>
   ): Promise<ApiResponse<Chapter>> {
     return this.api.put<Chapter>(
       `/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}`,
@@ -467,8 +481,14 @@ class CourseService {
   // ------------------------
   // 🔹 Instructor
   // ------------------------
-  async getCourseInstructor(courseId: string): Promise<ApiResponse<Review>> {
-    return this.api.get(`/courses/${courseId}/instructor`);
+  async getCourseInstructor(
+    courseId: string
+  ): Promise<ApiResponse<Instructor>> {
+    const response = await this.api.get<Instructor>(
+      `/courses/${courseId}/instructor`
+    );
+    console.log("RESPONSE in course instructor: ", JSON.stringify(response));
+    return response;
   }
 
   // ------------------------
@@ -547,14 +567,24 @@ class CourseService {
     courseId: string,
     userId: string
   ): Promise<ApiResponse<any>> {
-    return this.api.post("/checkout", { courseId, userId });
+    return this.api.post(`/courses/${courseId}/checkout`, { courseId, userId });
   }
 
+  // async checkAlreadyPurchased(
+  //   courseId: string
+  // ): Promise<ApiResponse<{ purchased: boolean }>> {
+  //   return this.api.get<{ purchased: boolean }>(
+  //     `/courses/${courseId}/enrollment-status`
+  //   );
+  // }
+
+  // Update return type and destructure correct field
   async checkAlreadyPurchased(
     courseId: string
-  ): Promise<ApiResponse<{ purchased: boolean }>> {
-    return this.api.get<{ purchased: boolean }>(
-      `/courses/${courseId}/purchased`
+  ): Promise<ApiResponse<{ isEnrolled: boolean; enrollment?: any }>> {
+    // The API returns { data: { isEnrolled, enrollment } }
+    return this.api.get<{ isEnrolled: boolean; enrollment?: any }>(
+      `/courses/${courseId}/enrollment-status`
     );
   }
 
@@ -572,7 +602,39 @@ class CourseService {
   async getCourseAttachments(
     courseId: string
   ): Promise<ApiResponse<Attachment[]>> {
-    return this.api.get<Attachment[]>(`/courses/${courseId}/attachments`);
+    return this.api.get<Attachment[]>(
+      `/courses/${courseId}/course-attachments`
+    );
+  }
+
+  async addAttachment(
+    courseId: string,
+    attachmentData: { name: string; url: string }
+  ) {
+    const response = await apiManager.post(
+      `/courses/${courseId}/course-attachments`,
+      attachmentData
+    );
+    return response.data;
+  }
+
+  async updateAttachment(
+    courseId: string,
+    attachmentId: string,
+    attachmentData: { name: string; url: string }
+  ) {
+    const response = await apiManager.put(
+      `/courses/${courseId}/course-attachments/${attachmentId}`,
+      attachmentData
+    );
+    return response.data;
+  }
+
+  async deleteAttachment(courseId: string, attachmentId: string) {
+    const response = await apiManager.delete(
+      `/courses/${courseId}/course-attachments/${attachmentId}`
+    );
+    return response.data;
   }
 }
 

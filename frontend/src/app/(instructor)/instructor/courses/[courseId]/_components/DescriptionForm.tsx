@@ -20,6 +20,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/utils";
 import { Textarea } from "@/components/ui/textarea";
 import { Course } from "@/types/course";
+import { dmSans } from "@/lib/config/fonts";
+import { useUpdateCourse } from "@/hooks/useCourses";
 
 const formSchema = z.object({
   description: z.string().min(1, {
@@ -33,6 +35,7 @@ export const DescriptionForm = ({ course }: { course: Course }) => {
   const toggleEdit = () => setIsEditing((current) => !current);
 
   const router = useRouter();
+  const { mutate: updateCourse } = useUpdateCourse();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -44,33 +47,40 @@ export const DescriptionForm = ({ course }: { course: Course }) => {
   const { isSubmitting, isValid } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+
     try {
-      await axios.patch(
-        `api/instructor/${course.instructor?.id}/dashboard/courses/${course.id}`,
+      updateCourse(
+        { courseId: course.id, updates: values },
         {
-          newCourseDescription: values.description,
-        },
+          onSuccess: () => {
+            toast.success("course description updated successfully ...");
+            toggleEdit();
+            router.refresh();
+          },
+          onError: (error) => {
+            toast.error(error.message || "Something went wrong ...");
+          },
+        }
       );
-      toast.success("course description updated successfully ...");
-      toggleEdit();
-      router.refresh();
-    } catch (err: any) {
-      console.log("Error in updating description: ", err.message);
-      toast.error(`Something went wrong, ERROR: ${err.message} ...`);
+    } catch {
+      toast.error("Something went wrong ...");
     }
   };
 
   return (
-    <div className="mt-6 rounded-2xl border bg-slate-100 p-4 dark:bg-zinc-700">
-      <div className="flex items-center justify-between font-medium">
+    // border
+    <div className="mt-6 rounded-2xl  bg-slate-100 p-4 dark:bg-zinc-900">
+      <div
+        className={`${dmSans.className} flex items-center justify-between font-medium`}
+      >
         Course description
-        <Button onClick={toggleEdit} variant="ghost">
+        <Button onClick={toggleEdit} variant="outline" className="rounded-full">
           {isEditing ? (
             <>Cancel</>
           ) : (
             <>
-              <Pencil className="mr-2 h-4 w-4" />
-              Edit description
+              <Pencil className="h-4 w-4" />
+              Edit
             </>
           )}
         </Button>
@@ -79,8 +89,7 @@ export const DescriptionForm = ({ course }: { course: Course }) => {
         <p
           className={cn(
             "mt-2 line-clamp-6 text-sm",
-            !course.description &&
-              "italic text-gray-500 dark:text-gray-400",
+            !course.description && "italic text-gray-500 dark:text-gray-400"
             //  : "text-md text-base font-semibold"
           )}
         >
@@ -100,7 +109,7 @@ export const DescriptionForm = ({ course }: { course: Course }) => {
                 <FormItem>
                   <FormControl>
                     <Textarea
-                      className="dark:bg-zinc-800"
+                      className="dark:bg-zinc-900 p-4"
                       disabled={isSubmitting}
                       placeholder="e.g. 'This course is about...'"
                       {...field}
@@ -112,7 +121,7 @@ export const DescriptionForm = ({ course }: { course: Course }) => {
             />
             <div className="flex items-center gap-x-2">
               <Button
-                className="dark:bg-zinc-800 dark:text-white"
+                className="dark:bg-zinc-950 dark:text-white"
                 disabled={!isValid || isSubmitting}
                 type="submit"
               >

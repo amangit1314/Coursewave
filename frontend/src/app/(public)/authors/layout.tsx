@@ -1,6 +1,5 @@
 "use client";
 
-
 import React from "react";
 
 import { usePathname, useRouter } from "next/navigation";
@@ -26,10 +25,10 @@ export default function BrowseArticlesLayout({
         <ArticlesNavbar />
       </div>
 
-      <div className="fixed inset-y-0 z-50 hidden h-full md:flex">
+      {/* <div className="fixed inset-y-0 z-50 hidden h-full md:flex">
         <Sidebar />
-      </div>
-      <div className="h-full md:pl-64">{children}</div>
+      </div> */}
+      <div className="h-full ">{children}</div>
     </div>
   );
 }
@@ -44,7 +43,6 @@ const ArticlesNavbar = () => {
 };
 
 const ArticlesNavbarRoutes = ({ name }: { name?: string }) => {
-
   const router = useRouter();
   const pathname = usePathname();
 
@@ -78,33 +76,28 @@ const ArticlesNavbarRoutes = ({ name }: { name?: string }) => {
 
   const isBrowseCoursesScreen = pathname.match("/browseCourses");
 
-
   return (
-    <div className="ml-auto flex w-full items-center justify-between md:ml-16 md:mr-8">
+    <div className="ml-auto flex w-full items-center justify-between  md:mx-8">
       {/* <div className="hidden md:flex md:mr-auto text-black dark:text-white  tracking-tight items-center bg-transparent">
         <p className="text-md text-base font-bold">Hello, </p>
         <span className="text-blue-600 ml-1 text-xl font-bold">
           {user.user?.name}
         </span>
       </div> */}
-      <div className="">
-        {/* {isBrowseCoursesScreen ? */}
-        <ArticlesSearchButton />
-        {/* // : <div></div>} */}
-      </div>
+
       <div className="ml-auto flex items-center justify-end gap-x-2">
         <ThemeModeToggle />
         <Notifications />
         {user ? (
-            <UserAvatar />
-          ) : (
-            <button
-              onClick={gotToSignIn}
-              className="text-base hover:text-blue-600"
-            >
-              Sign In
-            </button>
-          )}
+          <UserAvatar />
+        ) : (
+          <button
+            onClick={gotToSignIn}
+            className="text-base hover:text-blue-600"
+          >
+            Sign In
+          </button>
+        )}
       </div>
     </div>
   );

@@ -63,8 +63,11 @@
 //   },
 // };
 
-
-import { BlogCategory, CreateCategoryRequest, UpdateCategoryRequest } from "@/types/blog.service.types";
+import {
+  BlogCategory,
+  CreateCategoryRequest,
+  UpdateCategoryRequest,
+} from "@/types/blog.service.types";
 import { apiManager, ApiResponse } from "../api-manager";
 
 class CategoriesService {
@@ -82,28 +85,37 @@ class CategoriesService {
 
   // ====================== GET CATEGORIES ======================
   async getCategories(): Promise<ApiResponse<BlogCategory[]>> {
-    return this.api.get<BlogCategory[]>("/blogs/categories");
+    const response = this.api.get("/categories");
+    console.log("Response from getCategories:", JSON.stringify(response));
+    return response;
   }
 
-  async getCategoryById(categoryId: string): Promise<ApiResponse<BlogCategory>> {
-    return this.api.get<BlogCategory>(`/blogs/categories/${categoryId}`);
+  async getCategoryById(
+    categoryId: string
+  ): Promise<ApiResponse<BlogCategory>> {
+    return this.api.get<BlogCategory>(`/categories/${categoryId}`);
   }
 
   async getCategoryBySlug(slug: string): Promise<ApiResponse<BlogCategory>> {
-    return this.api.get<BlogCategory>(`/blogs/categories/slug/${slug}`);
+    return this.api.get<BlogCategory>(`/categories/slug/${slug}`);
   }
 
   // ====================== CREATE / UPDATE / DELETE ======================
-  async createCategory(data: CreateCategoryRequest): Promise<ApiResponse<BlogCategory>> {
-    return this.api.post<BlogCategory>("/blogs/categories", data);
+  async createCategory(
+    data: CreateCategoryRequest
+  ): Promise<ApiResponse<BlogCategory>> {
+    return this.api.post<BlogCategory>("/categories", data);
   }
 
-  async updateCategory(categoryId: string, data: UpdateCategoryRequest): Promise<ApiResponse<BlogCategory>> {
-    return this.api.put<BlogCategory>(`/blogs/categories/${categoryId}`, data);
+  async updateCategory(
+    categoryId: string,
+    data: UpdateCategoryRequest
+  ): Promise<ApiResponse<BlogCategory>> {
+    return this.api.put<BlogCategory>(`/categories/${categoryId}`, data);
   }
 
   async deleteCategory(categoryId: string): Promise<ApiResponse<void>> {
-    return this.api.delete<void>(`/blogs/categories/${categoryId}`);
+    return this.api.delete<void>(`/categories/${categoryId}`);
   }
 }
 

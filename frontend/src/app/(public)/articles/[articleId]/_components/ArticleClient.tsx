@@ -3,7 +3,6 @@
 import { Callout, Divider } from "@tremor/react";
 import RecommendedFromCoursewave from "./RecommendedFromCoursewave";
 import ArticleAuthorCard from "./ArticleAuthorCard";
-import { Skeleton } from "@/components/ui/skeleton";
 import ArticleAuthorInfo from "./ArticleAuthorInfo";
 
 import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
@@ -46,14 +45,15 @@ import { useArticlesStore } from "@/zustand/articlesStore";
 import ArticleContentLoadingSkeleton from "./skeletons/ArticleContentLoadingSkeleton";
 import ArticleNotFoundWidget from "./ArticleNotFoundWidget";
 import ArticleErrorWidget from "./ArticleErrorWidget";
-import { useArticle } from "@/hooks/useArticles";
+import { useArticleBySlug } from "@/hooks/useArticles";
+import { IMAGES } from "@/constants/images";
 
 const ArticleClient = ({ articleId }: { articleId: string }) => {
   const [isBookmarked, setIsBookmarked] = React.useState<boolean>(false);
   const { saveArticle, unsaveArticle } = useArticlesStore();
 
   // Use React Query instead of Zustand for better caching
-  const { data: article, isLoading, error } = useArticle(articleId);
+  const { data: article, isLoading, error } = useArticleBySlug(articleId);
 
   // Loading skeleton
   if (isLoading) {
@@ -86,7 +86,6 @@ const ArticleClient = ({ articleId }: { articleId: string }) => {
   return (
     <div className="h-full flex flex-col overflow-x-hidden">
       {/*  header */}
-      {/* border-b border-zinc-200/50 dark:border-zinc-800/50 */}
       <div className="sticky top-0 z-50  bg-white/95 dark:bg-zinc-950/95 backdrop-blur-xl shadow-sm dark:shadow-zinc-800/20 transition-all duration-300">
         <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-8">
           <div className="flex h-14 sm:h-16 items-center justify-between">
@@ -166,7 +165,6 @@ const ArticleClient = ({ articleId }: { articleId: string }) => {
       </div>
 
       {/* Scrollable content */}
-      {/* flex-1 overflow-y-auto */}
       <div className="">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -180,7 +178,7 @@ const ArticleClient = ({ articleId }: { articleId: string }) => {
           </h1>
 
           {/* author info */}
-          <ArticleAuthorInfo
+          {/* <ArticleAuthorInfo
             authorId={articleData?.authorId ?? ""}
             authorProfileImageUrl={
               articleData?.author?.profileImageUrl ??
@@ -191,6 +189,17 @@ const ArticleClient = ({ articleId }: { articleId: string }) => {
             articleCreatedAtDate={
               articleData?.createdAt?.toString() ?? "Unknown"
             }
+          /> */}
+
+          <ArticleAuthorInfo
+            authorId={article?.authorId ?? ""}
+            authorProfileImageUrl={
+              article?.author?.profileImageUrl ?? IMAGES.YOUNG_IMAGE
+            }
+            authorName={article?.author?.name ?? "Unknown"}
+            estimatedReadingTime={article?.readTime?.toString() ?? "N/A"}
+            articleCreatedAtDate={article?.createdAt?.toString() ?? "Unknown"}
+            blogId={article?.id} // Add this line
           />
 
           <Divider />
@@ -216,7 +225,7 @@ const ArticleClient = ({ articleId }: { articleId: string }) => {
                   className="group-hover:text-green-500"
                 />
                 <div className="mt-1 text-xs">
-                  {articleData?._count?.likes?.toString() ?? 0}
+                  {articleData?._count?.BlogLike?.toString() ?? 0}
                 </div>
               </div>
               <div
@@ -371,15 +380,17 @@ const ArticleClient = ({ articleId }: { articleId: string }) => {
 
           {/* author Card */}
           <ArticleAuthorCard
-            authorId={articleData?.authorId!}
+            blogId={articleData?.id}
+            authorId={articleData?.authorId}
             authorImage={
-              articleData?.author?.profileImageUrl ??
-              "https://www.shutterstock.com/image-vector/young"
+              articleData?.author?.profileImageUrl ?? IMAGES.YOUNG_IMAGE
             }
             authorName={articleData?.author?.name ?? "Unknown"}
-            authorBio={articleData?.author?.shortSummary ?? ""}
-            authorFollowers={0}
-            haveAlreadyFollowed={false}
+            authorBio={
+              articleData?.author?.shortSummary ?? "No author summary available"
+            }
+            // authorFollowers={0}
+            // haveAlreadyFollowed={false}
           />
 
           {/* more from  */}

@@ -1,7 +1,7 @@
 "use client";
 
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Course } from "@/types";
+import { Course } from "@/types/course";
 import React from "react";
 import { AiOutlineDollarCircle } from "react-icons/ai";
 import { IoMdTrendingUp } from "react-icons/io";
@@ -96,12 +96,14 @@ export const TotalRevenueCard: React.FC<TotalRevenueCardProps> = ({
               Lifetime earnings
             </p>
           </div>
-          <div className="flex items-center space-x-1">
-            <IoMdTrendingUp className="h-3 w-3 text-green-500" />
-            <span className="text-xs font-medium text-green-600 dark:text-green-400">
-              +{growthRate}%
-            </span>
-          </div>
+          {!Number.isNaN(Number(growthRate)) && (
+            <div className="flex items-center space-x-1">
+              <IoMdTrendingUp className="h-3 w-3 text-green-500" />
+              <span className="text-xs font-medium text-green-600 dark:text-green-400">
+                +{growthRate}%
+              </span>
+            </div>
+          )}
         </div>
       </div>
 

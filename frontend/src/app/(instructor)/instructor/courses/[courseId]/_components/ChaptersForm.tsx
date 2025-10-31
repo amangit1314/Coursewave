@@ -22,7 +22,10 @@ import { Input } from "@/components/ui/input";
 
 import { ChaptersList } from "./ChaptersList";
 import { Course } from "@/types/course";
-import { Chapter, CourseSection } from "@/types/course-details-api-response";
+import { Chapter } from "@/types/course-details-api-response";
+// import { CourseSection } from "@/types/courses.service.types";
+import { CourseSection } from "@/types/course-details-api-response";
+import { dmSans } from "@/lib/config/fonts";
 
 interface ChaptersFormProps {
   course: Course;
@@ -95,7 +98,7 @@ export const ChaptersForm = ({
   };
 
   return (
-    <div className="relative mt-2 rounded-2xl border bg-slate-100 p-4 dark:bg-zinc-700">
+    <div className="relative mt-2 rounded-2xl border border-none bg-slate-100 p-4 dark:bg-zinc-900">
       {isUpdating && (
         <div className="absolute right-0 top-0 flex h-full w-full items-center justify-center rounded-xl bg-slate-500/20">
           <Loader2 className="h-6 w-6 animate-spin text-sky-700" />
@@ -103,16 +106,22 @@ export const ChaptersForm = ({
       )}
 
       <div className="flex items-center justify-between font-medium not-italic">
-        <p className="text-sm dark:text-white"> Section chapters</p>
+        <p
+          className={`${dmSans.className} text-lg font-medium dark:text-white`}
+        >
+          {" "}
+          Section chapters
+        </p>
         <Button
           onClick={() => toggleCreating(section.id)}
-          variant="ghost"
+          variant="outline"
+          className={`${dmSans.className} rounded-full`}
         >
           {isCreating ? (
             <>Cancel</>
           ) : (
             <>
-              <PlusCircle className="mr-2 h-4 w-4" />
+              <PlusCircle className="h-4 w-4" />
               <p className="text-sm dark:text-white">Add a chapter</p>
             </>
           )}
@@ -142,7 +151,7 @@ export const ChaptersForm = ({
               )}
             />
             <Button
-              className="dark:bg-zinc-800"
+              className="dark:bg-zinc-950"
               disabled={!isValid || isSubmitting}
               type="submit"
             >
@@ -155,7 +164,7 @@ export const ChaptersForm = ({
       {!isCreating && (
         <div
           className={cn(
-            "mt-2 text-sm",
+            "mt-4 text-sm",
             !chapters?.length && "italic text-gray-500 dark:text-gray-400"
           )}
         >

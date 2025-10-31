@@ -102,8 +102,8 @@ class AuthService {
     const saltRounds = process.env.ENVIRONMENT === "DEVELOPMENT" ? 4 : 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Wrap create user + role + fetch roles in a single transaction
-    const [, userWithRoles] = await prisma.$transaction(async (tx) => {
+    // Create user + role + fetch roles in transaction
+    const userWithRoles = await prisma.$transaction(async (tx) => {
       const user = await tx.user.create({
         data: {
           id: generateResourceId(`user`),
@@ -134,29 +134,29 @@ class AuthService {
         include: { roles: true },
       });
 
-      return [user, userWithRoles];
+      return userWithRoles;
     });
 
-    // Generate access token immediately (cheap operation)
+    // ✅ FIXED: Generate both tokens immediately and wait for completion
     const accessToken = TokenService.generateAccessToken(userWithRoles!.id);
+    const refreshToken = await TokenService.generateRefreshToken(
+      userWithRoles!.id
+    );
 
-    // Kick off slow operations in background
+    // Background email sending only
     process.nextTick(async () => {
       try {
-        await Promise.all([
-          EmailService.sendWelcomeEmail(
-            userWithRoles!.id,
-            userWithRoles!.email,
-            userWithRoles!.name || ""
-          ), //! taking time and not even sending emails
-          TokenService.generateRefreshToken(userWithRoles!.id),
-        ]);
+        await EmailService.sendWelcomeEmail(
+          userWithRoles!.id,
+          userWithRoles!.email,
+          userWithRoles!.name || ""
+        );
       } catch (err) {
-        console.error("Background task failed:", err);
+        console.error("Background email task failed:", err);
       }
     });
 
-    // Return fast response
+    // Return response with both tokens
     return {
       success: true,
       message:
@@ -169,7 +169,8 @@ class AuthService {
           isEmailVerified: userWithRoles!.isEmailVerified,
           roles: userWithRoles!.roles.map((ur) => ur.role),
         },
-        accessToken, // No refresh token here for speed
+        accessToken,
+        refreshToken, // ✅ Now included in response
       },
     };
   }

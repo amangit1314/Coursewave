@@ -33,6 +33,68 @@ export const BlogsService = {
   },
 
   // Get blog by slug
+  getBlogById: async (id: string) => {
+    return await prisma.blog.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            profileImageUrl: true,
+            about: true,
+          },
+        },
+        Category: true,
+        comments: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                name: true,
+                profileImageUrl: true,
+              },
+            },
+            replies: {
+              include: {
+                author: {
+                  select: {
+                    id: true,
+                    name: true,
+                    profileImageUrl: true,
+                  },
+                },
+                _count: {
+                  select: {
+                    CommentLike: true,
+                  },
+                },
+              },
+            },
+            _count: {
+              select: {
+                CommentLike: true,
+              },
+            },
+          },
+          where: {
+            parentId: null, // Only get top-level comments
+          },
+        },
+        _count: {
+          select: {
+            BlogLike: true,
+            comments: true,
+          },
+        },
+      },
+    });
+  },
+
+  // Get blog by slug
   getBlogBySlug: async (slug: string) => {
     return await prisma.blog.findUnique({
       where: {
@@ -94,16 +156,295 @@ export const BlogsService = {
     });
   },
 
+  // Track blog view and increment view count
+  incrementBlogViewCount: async (
+    blogId: string,
+    userId?: string,
+    ip?: string
+  ) => {
+    // 1. Check if the blog exists:
+    const blog = await prisma.blog.findUnique({
+      where: { id: blogId },
+      select: { id: true },
+    });
+    if (!blog) throw new Error("Blog not found");
+
+    // 2. Create a new BlogView record:
+    await prisma.blogView.create({
+      data: {
+        id: generateResourceId("blogView"),
+        blogId,
+        userId: userId ?? null,
+        ip: ip ?? null,
+      },
+    });
+
+    // 3. Count all BlogViews for this blog:
+    const viewCount = await prisma.blogView.count({
+      where: { blogId },
+    });
+
+    // 4. Return the count (and/or "success" message)
+    return {
+      message: "Blog view tracked successfully",
+      viewCount, // <-- frontends can use this to show updated views
+    };
+  },
+
+  /**
+   * Follow or unfollow a blog author
+   * @param blogId - The ID of the blog to get the author from
+   * @param userId - The ID of the user who wants to follow/unfollow
+   * @returns Object with action and author info
+   */
+  followUnfollowAuthor: async (blogId: string, userId: string) => {
+    // First, get the blog to find the author
+    const blog = await prisma.blog.findUnique({
+      where: { id: blogId },
+      select: {
+        id: true,
+        authorId: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    if (!blog) {
+      throw new Error("Blog not found");
+    }
+
+    const authorId = blog.authorId;
+
+    // Check if user is trying to follow themselves
+    if (authorId === userId) {
+      throw new Error("You cannot follow/unfollow yourself");
+    }
+
+    // Verify author exists
+    const author = await prisma.user.findUnique({
+      where: { id: authorId },
+    });
+
+    if (!author) {
+      throw new Error("Author not found");
+    }
+
+    // Check if follow relationship already exists
+    const existingFollow = await prisma.userFollower.findUnique({
+      where: {
+        userId_followerId: {
+          userId: authorId,
+          followerId: userId,
+        },
+      },
+    });
+
+    let action: "followed" | "unfollowed";
+
+    if (existingFollow) {
+      // Unfollow - remove the follow relationship
+      await prisma.userFollower.delete({
+        where: {
+          userId_followerId: {
+            userId: authorId,
+            followerId: userId,
+          },
+        },
+      });
+      action = "unfollowed";
+    } else {
+      // Follow - create the follow relationship
+      await prisma.userFollower.create({
+        data: {
+          userId: authorId,
+          followerId: userId,
+        },
+      });
+      action = "followed";
+    }
+
+    // Get updated follower count for the author
+    const followerCount = await prisma.userFollower.count({
+      where: { userId: authorId },
+    });
+
+    // Get updated following count for the user
+    const followingCount = await prisma.userFollower.count({
+      where: { followerId: userId },
+    });
+
+    return {
+      action,
+      author: {
+        id: authorId,
+        name: blog.author.name,
+        email: blog.author.email,
+      },
+      followerCount,
+      followingCount,
+      isFollowing: action === "followed",
+    };
+  },
+
+  /**
+   * Check if a user is following an author
+   * @param authorId - The ID of the author
+   * @param userId - The ID of the user to check
+   * @returns Boolean indicating if the user is following the author
+   */
+  isFollowingAuthor: async (
+    authorId: string,
+    userId: string
+  ): Promise<boolean> => {
+    if (authorId === userId) return false;
+
+    const follow = await prisma.userFollower.findUnique({
+      where: {
+        userId_followerId: {
+          userId: authorId,
+          followerId: userId,
+        },
+      },
+    });
+
+    return !!follow;
+  },
+
+  /**
+   * Get author's follower count
+   * @param authorId - The ID of the author
+   * @returns Follower count
+   */
+  getFollowerCount: async (authorId: string): Promise<number> => {
+    return await prisma.userFollower.count({
+      where: { userId: authorId },
+    });
+  },
+
+  /**
+   * Get user's following count (how many authors they follow)
+   * @param userId - The ID of the user
+   * @returns Following count
+   */
+  getFollowingCount: async (userId: string): Promise<number> => {
+    return await prisma.userFollower.count({
+      where: { followerId: userId },
+    });
+  },
+
+  /**
+   * Get author's followers list
+   * @param authorId - The ID of the author
+   * @param page - Page number (optional)
+   * @param limit - Limit per page (optional)
+   * @returns List of followers
+   */
+  getAuthorFollowers: async (
+    authorId: string,
+    page: number = 1,
+    limit: number = 20
+  ) => {
+    const skip = (page - 1) * limit;
+
+    const [followers, total] = await Promise.all([
+      prisma.userFollower.findMany({
+        where: { userId: authorId },
+        include: {
+          follower: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              profileImageUrl: true,
+              about: true,
+              slug: true,
+            },
+          },
+        },
+        skip,
+        take: limit,
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.userFollower.count({
+        where: { userId: authorId },
+      }),
+    ]);
+
+    return {
+      followers: followers.map((f) => f.follower),
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit),
+      },
+    };
+  },
+
+  /**
+   * Get users that a user is following
+   * @param userId - The ID of the user
+   * @param page - Page number (optional)
+   * @param limit - Limit per page (optional)
+   * @returns List of authors the user is following
+   */
+  getUserFollowing: async (
+    userId: string,
+    page: number = 1,
+    limit: number = 20
+  ) => {
+    const skip = (page - 1) * limit;
+
+    const [following, total] = await Promise.all([
+      prisma.userFollower.findMany({
+        where: { followerId: userId },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              profileImageUrl: true,
+              about: true,
+              slug: true,
+            },
+          },
+        },
+        skip,
+        take: limit,
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.userFollower.count({
+        where: { followerId: userId },
+      }),
+    ]);
+
+    return {
+      following: following.map((f) => f.user),
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit),
+      },
+    };
+  },
+
   // Create a new blog
   createBlog: async (
     userId: string,
     data: {
       title: string;
       content: string;
-      excerpt: string;
-      coverImage: string;
-      readTime: number; // Changed from string to number
-      categoryId: string;
+      excerpt?: string;
+      coverImage?: string;
+      readTime?: number;
+      categoryId?: string;
     }
   ) => {
     const slug = data.title
@@ -111,13 +452,13 @@ export const BlogsService = {
       .replace(/[^\w\s-]/g, "")
       .replace(/\s+/g, "-");
 
-    // Prepare the create data with proper typing
+    // Prepare the create data - only include category if categoryId exists
     const createData: Prisma.BlogCreateInput = {
       title: data.title,
       content: data.content,
-      excerpt: data.excerpt,
-      coverImage: data.coverImage,
-      readTime: data.readTime,
+      excerpt: data.excerpt || null,
+      coverImage: data.coverImage || null,
+      readTime: data.readTime || null,
       slug,
       isPublished: false,
       author: {
@@ -125,12 +466,16 @@ export const BlogsService = {
           id: userId,
         },
       },
-      Category: {
+    };
+
+    // Only add category connection if categoryId is provided
+    if (data.categoryId) {
+      createData.Category = {
         connect: {
           id: data.categoryId,
         },
-      },
-    };
+      };
+    }
 
     const blog = await prisma.blog.create({
       data: createData,
@@ -146,8 +491,23 @@ export const BlogsService = {
       },
     });
 
-    // await invalidateCache.blogs();
     return blog;
+  },
+
+  reportBlog: async (blogId: string, userId: string, reason: string) => {
+    const blog = await prisma.blog.findUnique({
+      where: { id: blogId },
+    });
+    if (!blog) throw new Error("Blog not found");
+    await prisma.blogReport.create({
+      data: {
+        id: generateResourceId(`blogReport`),
+        blogId,
+        reporterId: userId,
+        reason,
+      },
+    });
+    return { message: "Blog reported successfully" };
   },
 
   // Update a blog
@@ -266,6 +626,28 @@ export const BlogsService = {
       });
       return { liked: true };
     }
+  },
+
+  checkLikeStatus: async (blogId: string, userId: string): Promise<boolean> => {
+    // Check if the user has liked the blog
+    const existingLike = await prisma.blogLike.findFirst({
+      where: {
+        userId: userId,
+        blogId: blogId,
+      },
+    });
+
+    return !!existingLike;
+  },
+
+  getComments: async (blogId: string) => {
+    const comments = await prisma.blogComment.findMany({
+      where: {
+        blogId,
+      },
+    });
+
+    return comments;
   },
 
   // Add comment to blog

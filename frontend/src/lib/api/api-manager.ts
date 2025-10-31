@@ -4,18 +4,20 @@ import axios, {
   AxiosResponse,
   AxiosError,
 } from "axios";
-
 import { checkRateLimit, getRateLimitStatus } from "./core/rate-limiter";
 import {
   RefreshTokenResponse,
   RefreshTokenResponseData,
 } from "@/types/auth.service.types";
-// import { authService } from "./services";
 
+// const API_BASE_URL =
+//   process.env.ENVIRONMENT === "DEVELOPMENT"
+//     ? process.env.API_LOCAL_URL
+//     : process.env.API_LIVE_URL;
+
+// const API_BASE_URL = "https://male-nathalie-amanic-af4ba0b9.koyeb.app/api";
 const API_BASE_URL = "http://localhost:5002/api";
-// // process.env.ENVIRONMENT === "DEVELOPMENT"
-// //   ? process.env.API_LOCAL_URL
-// //   : process.env.API_LIVE_URL;
+
 const API_TIMEOUT = 30000;
 const STATIC_TOKEN = "coursewave_access_token"; // static token header
 
@@ -29,6 +31,19 @@ export interface ApiResponse<T = any> {
 
 export interface PaginatedResponse<T> extends ApiResponse<T[]> {
   pagination?: {};
+}
+
+export interface ArticlesPaginatedResponse<T> {
+  items: T[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+// For non-paginated responses
+export interface ListResponse<T> {
+  items: T[];
 }
 
 export class ApiError extends Error {
@@ -115,6 +130,23 @@ class ApiManager {
     this.axiosInstance.interceptors.request.use(
       (config) => {
         const token = ApiManager.getAuthToken();
+
+        // ✅ ADD DEBUG LOGGING
+        console.log("🔍 Request Interceptor Debug:", {
+          url: config.url,
+          method: config.method,
+          tokenExists: !!token,
+          token: token ? `${token.substring(0, 20)}...` : "MISSING",
+          storageCheck: {
+            localStorage: localStorage.getItem("coursewave_access_token")
+              ? "EXISTS"
+              : "MISSING",
+            sessionStorage: sessionStorage.getItem("coursewave_access_token")
+              ? "EXISTS"
+              : "MISSING",
+          },
+        });
+
         if (token) {
           if (token && config.headers?.set) {
             config.headers.set("Authorization", `Bearer ${token}`);
@@ -185,27 +217,99 @@ class ApiManager {
     return null;
   }
 
+  private isRefreshing = false;
+  private refreshSubscribers: ((token: string) => void)[] = [];
+
   private async handleError(error: AxiosError): Promise<ApiError | any> {
     if (error.response) {
       const { status, data } = error.response;
       const message = (data as any)?.message || error.message;
       const code = (data as any)?.code;
 
+      // ✅ PREVENT INFINITE LOOP - if refresh endpoint itself fails
+      if (error.config?.url?.includes("/auth/refresh")) {
+        console.log(
+          "🛑 Refresh endpoint failed - stopping loop and redirecting to login"
+        );
+        ApiManager.clearTokens();
+        window.location.href = "/login";
+        return Promise.reject(
+          new ApiError("Refresh token failed", 401, "REFRESH_FAILED")
+        );
+      }
+
       if (status === 401 && typeof window !== "undefined") {
+        // ✅ PREVENT MULTIPLE SIMULTANEOUS REFRESHES
+        if (this.isRefreshing) {
+          console.log("⏳ Refresh already in progress, queuing request");
+          return new Promise((resolve, reject) => {
+            this.refreshSubscribers.push((token: string) => {
+              if (error.config) {
+                if (
+                  error.config.headers &&
+                  typeof (error.config.headers as any).set === "function"
+                ) {
+                  (error.config.headers as any).set(
+                    "Authorization",
+                    `Bearer ${token}`
+                  );
+                } else {
+                  error.config.headers = {
+                    ...error.config.headers,
+                    Authorization: `Bearer ${token}`,
+                  } as any;
+                }
+
+                resolve(this.axiosInstance.request(error.config));
+              } else {
+                reject(new Error("No config available for retry"));
+              }
+            });
+          });
+        }
+
+        this.isRefreshing = true;
+
         try {
           const refreshToken = this.getRefreshToken();
+          const currentAccessToken = ApiManager.getAuthToken();
+
+          console.log("🔄 Attempting token refresh...", {
+            hasRefreshToken: !!refreshToken,
+            hasAccessToken: !!currentAccessToken,
+            currentToken: currentAccessToken?.substring(0, 20) + "...",
+            refreshToken: refreshToken?.substring(0, 20) + "...",
+            endpoint: "/auth/refresh",
+          });
+
           if (!refreshToken) {
             throw new Error("No refresh token available");
           }
 
-          // Call refresh token endpoint
-          const response = await this.axiosInstance.post<
+          // ✅ Use separate axios instance to avoid interceptor loops
+          const refreshAxios = axios.create({
+            baseURL: API_BASE_URL,
+            timeout: API_TIMEOUT,
+            headers: {
+              "Content-Type": "application/json",
+              access_token: STATIC_TOKEN,
+            },
+          });
+
+          // ✅ FIX: Remove Authorization header - refresh endpoint only needs refreshToken in body
+          const response = await refreshAxios.post<
             ApiResponse<RefreshTokenResponseData>
-          >("/auth/refresh-token", { refreshToken });
+          >(
+            "/auth/refresh",
+            { refreshToken }
+            // ❌ No Authorization header needed
+          );
+
+          console.log("✅ Token refresh successful", response.data);
 
           const res: RefreshTokenResponse = response.data;
 
-          if (res.success && res.data?.accessToken && error.config) {
+          if (res.success && res.data?.accessToken) {
             // Store new tokens
             ApiManager.setAuthToken(res.data.accessToken, true);
             if (res.data.refreshToken) {
@@ -214,41 +318,127 @@ class ApiManager {
               }
             }
 
-            // Update header with new token safely
-            if (
-              error.config.headers &&
-              typeof (error.config.headers as any).set === "function"
-            ) {
-              (error.config.headers as any).set(
-                "Authorization",
-                `Bearer ${res.data.accessToken}`
-              );
-            } else {
-              error.config.headers = {
-                ...error.config.headers,
-                Authorization: `Bearer ${res.data.accessToken}`,
-              } as any;
-            }
+            console.log(
+              "🔄 Processing queued requests:",
+              this.refreshSubscribers.length
+            );
 
-            return this.axiosInstance.request(error.config); // retry failed request
+            // Update all queued requests with new token
+            this.refreshSubscribers.forEach((callback) => {
+              try {
+                callback(res.data.accessToken);
+              } catch (err) {
+                console.error("Error in refresh subscriber:", err);
+              }
+            });
+            this.refreshSubscribers = [];
+
+            // Retry original request if config exists
+            if (error.config) {
+              const retryConfig = {
+                ...error.config,
+                headers: {
+                  ...error.config.headers,
+                  Authorization: `Bearer ${res.data.accessToken}`,
+                },
+              };
+
+              console.log("🔄 Retrying original request with new token");
+              return this.axiosInstance.request(retryConfig);
+            }
+          } else {
+            throw new Error("Invalid response from refresh endpoint");
           }
-        } catch (refreshErr) {
+        } catch (refreshErr: any) {
+          console.error("❌ Token refresh failed:", {
+            message: refreshErr.message,
+            status: refreshErr.response?.status,
+            data: refreshErr.response?.data,
+          });
+
+          // Clear all subscribers on failure
+          this.refreshSubscribers.forEach((callback) => {
+            try {
+              callback(""); // Notify subscribers of failure
+            } catch (err) {
+              console.error("Error in failed subscriber:", err);
+            }
+          });
+          this.refreshSubscribers = [];
+
+          // Clear tokens and redirect to login
           ApiManager.clearTokens();
           window.location.href = "/login";
+
+          // return Promise.reject(
+          //   new ApiError(
+          //     "Authentication failed - please login again",
+          //     401,
+          //     "AUTH_REQUIRED"
+          //   )
+          // );
+        } finally {
+          this.isRefreshing = false;
         }
       }
 
-      return Promise.reject(new ApiError(message, status, code, data));
+      // Handle other error statuses
+      switch (status) {
+        case 400:
+          return Promise.reject(
+            new ApiError(message || "Bad request", status, code, data)
+          );
+        case 403:
+          return Promise.reject(
+            new ApiError(message || "Forbidden", status, code, data)
+          );
+        case 404:
+          return Promise.reject(
+            new ApiError(message || "Resource not found", status, code, data)
+          );
+        case 429:
+          return Promise.reject(
+            new ApiError(message || "Too many requests", status, code, data)
+          );
+        case 500:
+          return Promise.reject(
+            new ApiError(message || "Internal server error", status, code, data)
+          );
+        case 502:
+          return Promise.reject(
+            new ApiError(message || "Bad gateway", status, code, data)
+          );
+        case 503:
+          return Promise.reject(
+            new ApiError(message || "Service unavailable", status, code, data)
+          );
+        default:
+          return Promise.reject(
+            new ApiError(message || "Unknown error", status, code, data)
+          );
+      }
     }
 
+    // Network errors (no response received)
     if (error.request) {
+      console.error("🌐 Network error - no response received:", error.message);
       return Promise.reject(
-        new ApiError("Network error - no response", 0, "NETWORK_ERROR")
+        new ApiError(
+          "Network error - please check your connection",
+          0,
+          "NETWORK_ERROR"
+        )
       );
     }
 
+    // Request configuration errors
+    console.error("⚙️ Request configuration error:", error.message);
     return Promise.reject(
-      new ApiError(error.message || "Unknown error", 500, "UNKNOWN_ERROR")
+      new ApiError(
+        error.message || "Request configuration error",
+        500,
+        "REQUEST_ERROR"
+      )
     );
   }
 

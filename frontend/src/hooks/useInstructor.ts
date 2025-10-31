@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Instructor } from "@/types/instructor";
 import { instructorService } from "@/lib/api/services/instructorService";
+import { Course } from "@/types/course-details-api-response";
+import { InstructorAnalytics } from "@/types/instructor.service.types";
 
 // For logged-in user
 export const useMyInstructorProfile = () => {
@@ -8,7 +10,7 @@ export const useMyInstructorProfile = () => {
     queryKey: ["myInstructorProfile"],
     queryFn: async () => {
       const response = await instructorService.getInstructorProfile();
-      return response; // <- already returns Instructor 
+      return response; // <- already returns Instructor
     },
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
@@ -26,6 +28,37 @@ export const useInstructorById = (instructorId?: string) => {
       return response.data; // extract the actual Instructor object
     },
     enabled: !!instructorId,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
+};
+
+// For loggedin instructor user to get created courses
+export const useMyCreatedCourses = (page?: number, limit?: number) => {
+  return useQuery({
+    queryKey: ["myCreatedCourses"],
+    queryFn: async () => {
+      const response = await instructorService.getMyCreatedCourses({
+        page: page,
+        limit: limit,
+      });
+      return response.data; // extract the actual created courses
+    },
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
+};
+
+export const useMyInstructorAnlaytics = () => {
+  return useQuery<InstructorAnalytics>({
+    queryKey: ["myInstructorAnalytics"],
+    queryFn: async () => {
+      const res = await instructorService.getMyAnalytics();
+      return res.data;
+    },
+
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
     refetchOnMount: false,

@@ -47,7 +47,7 @@ export const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
           }}
         />
         <Badge className="absolute bottom-2 right-2 dark:bg-blue-600 dark:text-white">
-          {course.price === "0" ? "Free" : `$${course.price}`}
+          {course.price === 0 ? "Free" : `$${course.price}`}
         </Badge>
       </div>
 
@@ -80,7 +80,7 @@ export const CourseItem: React.FC<CourseItemProps> = ({ course }) => {
       {/* Course Price */}
       <div className="mt-2 flex items-center justify-between">
         <span className="text-lg font-bold text-gray-900 dark:text-white">
-          {course.price === "0" ? "Free" : `$${course.price}`}
+          {course.price === 0 ? "Free" : `$${course.price}`}
         </span>
         <button
           onClick={(e) => {

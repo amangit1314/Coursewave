@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { dmSans } from "@/lib/config/fonts";
 import { Course } from "@/types";
 import React from "react";
 import { FaStar } from "react-icons/fa6";
@@ -69,7 +70,9 @@ export const CourseRatingsSection = ({
               </div>
             </div>
             <div>
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 dark:from-cyan-400 dark:to-blue-400 bg-clip-text text-transparent tracking-tight">
+              <h2
+                className={`${dmSans.className} text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 dark:from-cyan-400 dark:to-blue-400 bg-clip-text text-transparent tracking-tight`}
+              >
                 Student Reviews
               </h2>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -124,8 +127,10 @@ export const CourseRatingsSection = ({
               </div>
 
               {/* Rating Distribution */}
-              <div className="space-y-4">
-                <h3 className="font-bold text-lg text-gray-900 dark:text-white">
+              <div className="space-y-3">
+                <h3
+                  className={`${dmSans.className} font-bold text-lg text-gray-900 dark:text-white`}
+                >
                   Rating Distribution
                 </h3>
                 <div className="space-y-3">
@@ -259,15 +264,19 @@ export const CourseRatingsSection = ({
                     <FaStar className="h-10 w-10 text-blue-400" />
                   </div>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                <h3
+                  className={`${dmSans.className} text-2xl font-bold text-gray-900 dark:text-white mb-2 `}
+                >
                   No Reviews Yet
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto leading-relaxed">
                   Be the first to review this course and help other students
                   make their decision.
                 </p>
-                <div className="mt-6">
-                  <button className="px-6 py-2 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white font-medium rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
+                <div className="mt-4">
+                  <button
+                    className={`${dmSans.className} px-6 py-2 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white font-medium rounded-lg transition-all duration-200 shadow-md hover:shadow-lg  `}
+                  >
                     Write a Review
                   </button>
                 </div>

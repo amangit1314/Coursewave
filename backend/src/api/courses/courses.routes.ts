@@ -5,6 +5,7 @@ import {
   addNote,
   createAttachment,
   createChapter,
+  createCheckout,
   createCourse,
   createSection,
   deleteAttachment,
@@ -28,6 +29,7 @@ import {
   getChapterProgress,
   getCourseProgress,
   getEnrolledCourses,
+  getEnrollmentStatus,
   getInstructorCreatedCourses,
   getLearningDashboard,
   updateAttachment,
@@ -36,16 +38,19 @@ import {
   writeReview,
 } from "./courses.controller";
 import {
+  isInstructor,
   requireInstructor,
   resourceSchema,
   validate,
   validateUUID,
+  validateUUIDOrCourseId,
   verifyToken,
 } from "../../core/middleware";
 import { courseExists } from "../../api/courses/middlewares/courseExists.middleware";
 import { ownsCourse } from "../../api/courses/middlewares/courseOwnership.middleware";
 import { courseSectionExists } from "../../api/courses/middlewares/courseSectionExists.middleware";
 import { chapterExists } from "../../api/courses/middlewares/chapterExists.middleware";
+import { debugMiddleware } from "../../core/middleware/debugMiddleware";
 
 const router: Router = express.Router();
 
@@ -70,10 +75,12 @@ router.get(
 router.get("/:courseId", courseExists, async (req: Request, res: Response) => {
   try {
     const course = (req as any).course;
+    const studentCount = course.studentCount || 0;
 
     return res.status(200).json({
       success: true,
       data: course,
+      studentCount: studentCount,
     });
   } catch (error: any) {
     console.log("ERROR in fetching course: ", error.message);
@@ -105,6 +112,17 @@ router.delete(
   deleteCourse
 );
 
+// ADD CHECKOUT ROUTE RIGHT HERE - Perfect location!
+router.post("/:courseId/checkout", verifyToken, courseExists, createCheckout);
+
+// Also add enrollment status check route
+router.get(
+  "/:courseId/enrollment-status",
+  verifyToken,
+  courseExists,
+  getEnrollmentStatus
+);
+
 ///? --------------------------------- SECTIONS --------------------------------------
 
 // Get all sections of a course
@@ -118,6 +136,7 @@ router.get(
 // Create a section of a course
 router.post(
   "/:courseId/sections/",
+   verifyToken,
   requireInstructor,
   courseExists,
   ownsCourse,
@@ -126,7 +145,9 @@ router.post(
 
 // Edit a section of a course
 router.put(
-  "/:courseId/sections/",
+  "/:courseId/sections/:sectionId",
+  debugMiddleware,
+  verifyToken,
   requireInstructor,
   courseExists,
   ownsCourse,
@@ -136,7 +157,7 @@ router.put(
 
 // Delete a section of a course
 router.delete(
-  "/:courseId/sections/",
+  "/:courseId/sections/:sectionId",
   verifyToken,
   requireInstructor,
   courseExists,
@@ -247,8 +268,8 @@ router.delete(
 
 // Get all attachments for a course
 router.get(
-  "/:courseId/course-attachements",
-  validateUUID("courseId"),
+  "/:courseId/course-attachments",
+  validateUUIDOrCourseId("courseId"),
   getAllCourseAttachments
 );
 

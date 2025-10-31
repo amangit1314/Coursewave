@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import React from "react";
 import Image from "next/image";
 import { CheckCircle, Sparkles } from "lucide-react";
+import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
 
 type Props = {};
 
@@ -24,35 +25,42 @@ const RegisterLeftSection = (props: Props) => {
       className="flex flex-col justify-center space-y-8 p-4 md:p-6"
     >
       <div className="space-y-8">
-        <div className="flex items-center space-x-2 transition-opacity">
-          <Image
-            src="/assets/images/logo/coursewave-favicon-color.png"
-            alt="CourseWave Logo"
-            width={32}
-            height={32}
-            priority
-            className="h-8 w-8 sm:h-9 sm:w-9"
-          />
-          <p
-            className={`${dmSans.className} text-lg font-extrabold capitalize tracking-tight text-blue-500 sm:text-xl`}
-          >
-            Coursewave
-          </p>
+        <div className="flex justify-between items-center">
+          {/* Logo */}
+          <div className="flex items-center space-x-2 transition-opacity">
+            <Image
+              src="/assets/images/logo/coursewave-favicon-color.png"
+              alt="CourseWave Logo"
+              width={32}
+              height={32}
+              priority
+              className="h-8 w-8 sm:h-9 sm:w-9"
+            />
+            <p
+              className={`${dmSans.className} text-lg font-extrabold capitalize tracking-tight text-blue-500 sm:text-xl`}
+            >
+              Coursewave
+            </p>
+          </div>
+
+          <ThemeModeToggle />
         </div>
-        
+
         <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 dark:bg-blue-900/30">
           <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-          <span className={`${poppins.className} text-xs font-medium text-blue-700 dark:text-blue-300`}>
+          <span
+            className={`${poppins.className} text-xs font-medium text-blue-700 dark:text-blue-300`}
+          >
             Modern Learning Platform
           </span>
         </div>
 
         <div className="space-y-4">
           <h1
-            className={`${poppins.className} text-4xl tracking-tight font-bold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl`}
+            className={`${dmSans.className} text-4xl tracking-tighter font-bold text-gray-900 dark:text-white sm:text-5xl lg:text-6xl`}
           >
             Join Coursewave{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r tracking-tighter from-blue-600 to-cyan-600 bg-clip-text text-transparent">
               for Free
             </span>
           </h1>
@@ -77,7 +85,7 @@ const RegisterLeftSection = (props: Props) => {
       {/* Benefits */}
       <div className="space-y-4">
         <h3
-          className={`${poppins.className} text-lg font-semibold text-gray-900 dark:text-white`}
+          className={`${dmSans.className} text-lg font-semibold text-gray-900 dark:text-white`}
         >
           What you'll get:
         </h3>

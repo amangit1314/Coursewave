@@ -23,19 +23,17 @@ import { InstructorNameForm } from "./InstructorNameForm";
 import { ThisCourseIsForForm } from "./ThisCourseIsForForm";
 import { TechnologiesForm } from "./TechnologiesForm";
 import { WhatYouWillLearnForm } from "./WhatYouWillLearnForm";
-import { PrerequisitsForm } from "./PrerequisitsForm";
+import PrerequisitsForm from "./PrerequisitsForm";
 import { SectionsForm } from "./SectionsForm";
 import { IconBadge } from "./IconBadge";
 import PublishCourseForm from "./PublishCourseForm";
 import { Course } from "@/types/course";
 import { Chapter } from "@/types/user-enrollments-api-response";
 import { CourseSection } from "@/types/course-details-api-response";
-// import { Chapter, CourseSection } from "@/lib/api/services";
-// import PublisCourseForm from "./_components/course-publish-form";
+import { dmSans } from "@/lib/config/fonts";
 
 type CourseContentProps = {
   course: Course;
-  courseAttachments: any[]; // todo: look and set proper type
   sections: CourseSection[];
   chapters: Chapter[];
 };
@@ -44,21 +42,24 @@ export default function CourseContent({
   course,
   sections,
   chapters,
-  courseAttachments,
 }: CourseContentProps) {
   // console.log("Course sections in couse content: ", sections);
   // console.log("Course sections in couse content: ", chapters);
 
   return (
-    <div className="space-y-8 px-8 py-20 dark:bg-zinc-900">
-      <div className="flex cursor-pointer items-center justify-start space-x-2 text-sm hover:underline">
+    <div className="space-y-8 px-8 py-8 dark:bg-zinc-900">
+      <div
+        className={`${dmSans.className} flex cursor-pointer items-center justify-start space-x-2 text-sm hover:underline`}
+      >
         <IoMdArrowRoundBack className="text-black dark:text-white" size={16} />
         <p>Back to created courses</p>
       </div>
 
-      <div className="flex items-center justify-between pt-4">
+      <div className="flex items-center justify-between">
         <div className=" ">
-          <p className="text-md text-base font-semibold text-zinc-900 dark:text-white">
+          <p
+            className={`${dmSans.className} text-lg font-semibold text-zinc-900 dark:text-white`}
+          >
             Edit Course
           </p>
           <p className="text-sm">
@@ -69,10 +70,10 @@ export default function CourseContent({
       </div>
 
       {/* forms grid */}
-      <div className="grid grid-cols-1 gap-6 overflow-hidden rounded-3xl p-6 dark:bg-zinc-800 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 overflow-hidden rounded-3xl p-6 bg-gray-50 dark:bg-zinc-800 md:grid-cols-2">
         {/* first col for forms */}
         <div>
-          <div className="flex items-center gap-x-2">
+          <div className={`${dmSans.className} flex items-center gap-x-2`}>
             <IconBadge icon={LayoutDashboard} />
             <h2 className="text-md font-medium text-zinc-800 dark:text-white">
               Customize your course
@@ -93,7 +94,9 @@ export default function CourseContent({
 
           {/*TODO:  category form */}
           <div>
-            <div className="mt-6 flex items-center gap-x-2">
+            <div
+              className={`${dmSans.className} mt-6 flex items-center gap-x-2`}
+            >
               <IconBadge icon={Shapes} />
               <h2 className="text-md font-medium text-zinc-800 dark:text-white">
                 Course Categories
@@ -104,7 +107,7 @@ export default function CourseContent({
 
           {/* price form, DONE ✔️ */}
           <div className="mt-6">
-            <div className="flex items-center gap-x-2">
+            <div className={`${dmSans.className} flex items-center gap-x-2`}>
               <IconBadge icon={CircleDollarSign} />
               <h2 className="text-md font-medium text-zinc-800 dark:text-white">
                 Sell your course
@@ -117,7 +120,7 @@ export default function CourseContent({
 
           {/* Attachments form */}
           <div className="mt-6">
-            <div className="flex items-center gap-x-2">
+            <div className={`${dmSans.className} flex items-center gap-x-2`}>
               <IconBadge icon={File} />
               <h2 className="text-md font-medium text-zinc-800 dark:text-white">
                 Resources & Attachments
@@ -125,16 +128,13 @@ export default function CourseContent({
             </div>
 
             {/* attachments form */}
-            <AttachmentForm
-              course={course}
-              courseAttachmentsPoints={courseAttachments}
-            />
+            <AttachmentForm course={course} />
           </div>
         </div>
 
         {/* second col for forms */}
         <div className="space-y-6">
-          <div className="flex items-center gap-x-2">
+          <div className={`${dmSans.className} flex items-center gap-x-2`}>
             <IconBadge icon={Highlighter} />
             <h2 className="text-md font-medium text-zinc-800 dark:text-white">
               Course Requirements & Perks
@@ -156,10 +156,10 @@ export default function CourseContent({
       </div>
 
       {/* sections ans chapters, DONE ✔️ */}
-      <div className="grid grid-cols-1 gap-6 overflow-hidden rounded-3xl p-6 dark:bg-zinc-800">
+      <div className="grid grid-cols-1 gap-6 overflow-hidden rounded-3xl p-6 bg-gray-50 dark:bg-zinc-800">
         {/*  chapters form */}
         <div>
-          <div className="flex items-center gap-x-2">
+          <div className={`${dmSans.className} flex items-center gap-x-2`}>
             <IconBadge icon={ListChecks} />
             <h2 className="text-md font-medium text-zinc-800 dark:text-white">
               Course Sections & Chapters

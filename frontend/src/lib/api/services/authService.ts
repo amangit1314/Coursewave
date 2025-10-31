@@ -94,7 +94,7 @@ class AuthService {
     return this.apiManager.post<void>("/auth/forgot-password", { email });
   }
 
-  async resetPassword(data: ResetPasswordRequest): Promise<ApiResponse<void>> {
+  async resetPassword(data: { email: string; code: string; newPassword: string }): Promise<ApiResponse<void>> {
     return this.apiManager.post<void>("/auth/reset-password", data);
   }
 

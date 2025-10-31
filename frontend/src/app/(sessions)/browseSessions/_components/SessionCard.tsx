@@ -6,30 +6,48 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Session } from "@/types/session";
-import { Calendar, Clock, Star, Users, Play, CheckCircle, AlertCircle } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  Star,
+  Users,
+  Play,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
 
 interface SessionCardProps {
   session: Session;
   isBooked?: boolean;
+  showActions?: boolean;
+  onEdit: any;
+  onViewAnalytics: any;
 }
 
-export const SessionCard = ({ session, isBooked = false }: SessionCardProps) => {
+export const SessionCard = ({
+  session,
+  isBooked = false,
+  showActions = false,
+  onEdit,
+  onViewAnalytics,
+}: SessionCardProps) => {
   const avatarUrls = [
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_s8bqkElCOr8R2XL0I4LmiLQexffc-LMRjOaTCAj8ml1UxCXAohpoQ1soZ-GzyQx74l4&usqp=CAU",
     "https://i.pinimg.com/originals/c6/9d/d2/c69dd2fd36d5797c9472c738ddce44de.jpg",
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScODbPIbdc7AAY2QzQApgWsCzbJ3saUiN-Nm5unofg_beDzFe350o0vHNApy9e17rjXPE&usqp=CAU",
   ];
 
-  const isLive = session.status === 'LIVE';
-  const isStartingSoon = new Date(session.scheduledAt).getTime() - Date.now() < 30 * 60 * 1000; // 30 minutes
+  const isLive = session.status === "LIVE";
+  const isStartingSoon =
+    new Date(session.scheduledAt).getTime() - Date.now() < 30 * 60 * 1000; // 30 minutes
   const isPast = new Date(session.scheduledAt).getTime() < Date.now();
-  
-  const formattedDate = new Date(session.scheduledAt).toLocaleString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
+
+  const formattedDate = new Date(session.scheduledAt).toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 
   const getStatusBadge = () => {
@@ -120,7 +138,7 @@ export const SessionCard = ({ session, isBooked = false }: SessionCardProps) => 
       <div className="relative w-full aspect-[16/9]">
         <Image
           className="rounded-t-xl group-hover:scale-105 transition-transform duration-300"
-          src={session.imageUrl || '/assets/images/cards/default-session.png'}
+          src={session.imageUrl || "/assets/images/cards/default-session.png"}
           alt={session.title}
           fill
           style={{
@@ -129,7 +147,7 @@ export const SessionCard = ({ session, isBooked = false }: SessionCardProps) => 
           unoptimized
         />
         {getStatusBadge()}
-        
+
         {/* Instructor rating overlay */}
         <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1">
           <div className="flex items-center gap-1">
@@ -166,12 +184,15 @@ export const SessionCard = ({ session, isBooked = false }: SessionCardProps) => 
           {/* Enrolled users */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <AvatarCircles numPeople={session._count.bookings} avatarUrls={avatarUrls} />
+              <AvatarCircles
+                numPeople={session._count.bookings}
+                avatarUrls={avatarUrls}
+              />
               <span className="text-xs text-gray-600 dark:text-gray-400">
                 {session._count.bookings} enrolled
               </span>
             </div>
-            
+
             {/* Session duration */}
             <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400">
               <Clock className="h-3 w-3" />
@@ -181,9 +202,7 @@ export const SessionCard = ({ session, isBooked = false }: SessionCardProps) => 
         </div>
 
         {/* Action button */}
-        <div className="pt-2">
-          {getActionButton()}
-        </div>
+        <div className="pt-2">{getActionButton()}</div>
       </CardContent>
     </Card>
   );

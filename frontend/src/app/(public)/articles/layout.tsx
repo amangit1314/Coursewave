@@ -24,24 +24,26 @@ export default function BrowseArticlesLayout({
   const isArticleDetailPage =
     pathname.startsWith("/articles/") && pathname.split("/").length === 3;
 
+  const isEditPage = pathname.endsWith("/edit");
+
   return (
     <div className="h-full min-h-screen dark:bg-zinc-900">
       {/* Only show Navbar if not on the article detail page */}
-      {!isArticleDetailPage && (
+      {!isArticleDetailPage && !isEditPage && (
         <div className="inset-y-0 z-50 h-[64px] w-full md:pl-56">
           <ArticlesNavbar />
         </div>
       )}
 
       {/* Only show Sidebar if not on the article detail page */}
-      {!isArticleDetailPage && (
+      {!isArticleDetailPage && !isEditPage && (
         <div className="fixed inset-y-0 z-50 hidden h-full md:flex">
           <Sidebar />
         </div>
       )}
 
       {/* Adjust padding based on the route */}
-      <div className={`h-full ${!isArticleDetailPage ? "md:pl-64" : ""}`}>
+      <div className={`h-full ${!isArticleDetailPage && !isEditPage ? "md:pl-64" : ""}`}>
         {children}
       </div>
     </div>

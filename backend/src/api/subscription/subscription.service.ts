@@ -138,12 +138,20 @@ export const getInstructorSubscriptions = async (
   }
 };
 
+/// DONE, TESTED
 export const subscribeUser = async (
   userId: string,
   data: any
 ): Promise<ServiceResponse> => {
   try {
     const { planId, stripeSubscriptionId, stripeCustomerId } = data;
+    if (!planId || !stripeCustomerId) {
+      return {
+        success: false,
+        message: "Missing required planId or stripeCustomerId",
+        status: 400,
+      };
+    }
 
     const plan = await prisma.subscriptionPlan.findUnique({
       where: {
@@ -174,15 +182,27 @@ export const subscribeUser = async (
       };
     }
 
+    const now = new Date();
+    let periodEnd = new Date(now);
+    if (plan.interval === "MONTHLY") {
+      periodEnd.setMonth(now.getMonth() + 1);
+    } else if (plan.interval === "YEARLY") {
+      periodEnd.setFullYear(now.getFullYear() + 1);
+    }
+
     const subscription = await prisma.userSubscription.create({
       data: {
         userId,
         planId,
+        slug: plan.slug,
         stripeCustomerId: stripeCustomerId,
-        stripeSubscriptionId,
+        stripeSubscriptionId: stripeSubscriptionId || null,
         status: "ACTIVE",
-        currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        updatedAt: new Date(),
+        currentPeriodStart: now,
+        currentPeriodEnd: periodEnd,
+        endedAt: null,
+        createdAt: now,
+        updatedAt: now,
       },
       include: {
         plan: true,

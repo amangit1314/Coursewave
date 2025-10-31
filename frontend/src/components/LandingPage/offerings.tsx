@@ -22,6 +22,7 @@ import {
   HammerIcon,
   BrainIcon,
 } from "lucide-react";
+import { dmSans } from "@/lib/config/fonts";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -66,42 +67,42 @@ const Offerings = () => {
       stats: "1000+ Articles",
       badge: "Free",
     },
-    {
-      link: "/browseSessions",
-      title: "1-on-1 Mentorship",
-      description:
-        "Get personalized guidance from industry professionals to accelerate your learning journey.",
-      icon: MessageSquare,
-      gradient: "from-emerald-500 to-teal-500",
-      bgGradient: "from-emerald-50 to-teal-50",
-      darkBgGradient: "from-emerald-950/20 to-teal-950/20",
-      features: [
-        "Personalized Guidance",
-        "Flexible Schedule",
-        "Direct Feedback",
-        "Career Planning",
-      ],
-      stats: "500+ Mentors",
-      badge: "Premium",
-    },
-    {
-      link: "/browseSessions",
-      title: "Live Sessions",
-      description:
-        "Join interactive live sessions on the latest technology trends and industry best practices.",
-      icon: Calendar,
-      gradient: "from-red-500 to-red-500",
-      bgGradient: "from-red-50 to-red-50",
-      darkBgGradient: "from-red-950/20 to-red-950/20",
-      features: [
-        "Live Q&A",
-        "Real-time Learning",
-        "Networking",
-        "Recorded Sessions",
-      ],
-      stats: "100+ Sessions/Month",
-      badge: "Interactive",
-    },
+    // {
+    //   link: "/browseSessions",
+    //   title: "1-on-1 Mentorship",
+    //   description:
+    //     "Get personalized guidance from industry professionals to accelerate your learning journey.",
+    //   icon: MessageSquare,
+    //   gradient: "from-emerald-500 to-teal-500",
+    //   bgGradient: "from-emerald-50 to-teal-50",
+    //   darkBgGradient: "from-emerald-950/20 to-teal-950/20",
+    //   features: [
+    //     "Personalized Guidance",
+    //     "Flexible Schedule",
+    //     "Direct Feedback",
+    //     "Career Planning",
+    //   ],
+    //   stats: "500+ Mentors",
+    //   badge: "Premium",
+    // },
+    // {
+    //   link: "/browseSessions",
+    //   title: "Live Sessions",
+    //   description:
+    //     "Join interactive live sessions on the latest technology trends and industry best practices.",
+    //   icon: Calendar,
+    //   gradient: "from-red-500 to-red-500",
+    //   bgGradient: "from-red-50 to-red-50",
+    //   darkBgGradient: "from-red-950/20 to-red-950/20",
+    //   features: [
+    //     "Live Q&A",
+    //     "Real-time Learning",
+    //     "Networking",
+    //     "Recorded Sessions",
+    //   ],
+    //   stats: "100+ Sessions/Month",
+    //   badge: "Interactive",
+    // },
     {
       link: "/projects",
       title: "Project-Based Learning",
@@ -147,12 +148,12 @@ const Offerings = () => {
       description:
         "Build real-world applications with industry-standard tools and technologies",
     },
-    {
-      icon: Globe,
-      title: "Global Community",
-      description:
-        "Connect with developers worldwide and learn from diverse perspectives",
-    },
+    // {
+    //   icon: Globe,
+    //   title: "Global Community",
+    //   description:
+    //     "Connect with developers worldwide and learn from diverse perspectives",
+    // },
     {
       icon: Award,
       title: "Certified Learning",
@@ -253,9 +254,9 @@ const Offerings = () => {
             </span>
             <Sparkles className="h-6 w-6 text-blue-500" />
           </div>
-          <h2 className="section-title text-3xl font-bold tracking-tight text-zinc-800 dark:text-white sm:text-4xl lg:text-5xl">
+          <h2 className={`${dmSans.className} section-title text-3xl font-bold tracking-tight text-zinc-800 dark:text-white sm:text-4xl lg:text-5xl`}>
             Everything You Need to
-            <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r tracking-tighter from-blue-600 to-cyan-600 bg-clip-text text-transparent">
               {" "}
               Succeed in Tech
             </span>
@@ -278,11 +279,11 @@ const Offerings = () => {
 
         {/* Highlights Section */}
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-3xl dark:from-blue-950/20 dark:to-cyan-950/20" />
+          <div className="absolute inset-0 border border-none dark:border-zinc-200 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-3xl dark:from-zinc-800/20 dark:to-gray-950/20" />
           <div className="relative p-8 sm:p-12">
             <div className="text-center mb-12">
-              <h3 className="text-2xl font-bold text-zinc-800 dark:text-white sm:text-3xl mb-4">
-                Why Choose CourseWave?
+              <h3 className={`${dmSans.className} text-2xl font-bold text-zinc-800 dark:text-white sm:text-3xl mb-4`}>
+                Your Growth Starts Here
               </h3>
               <p className="text-lg text-zinc-600 dark:text-gray-300 max-w-2xl mx-auto">
                 Join thousands of successful developers who transformed their
@@ -290,7 +291,7 @@ const Offerings = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {highlights.map((highlight, index) => (
                 <HighlightCard key={index} {...highlight} />
               ))}
@@ -307,29 +308,29 @@ const Offerings = () => {
           viewport={{ once: true }}
         >
           <div className="mb-8">
-            <h3 className="text-2xl font-bold text-zinc-800 dark:text-white mb-4">
+            <h3 className={`${dmSans.className} text-2xl font-bold text-zinc-800 dark:text-white mb-4`}>
               Ready to Transform Your Career?
             </h3>
             <p className="text-lg text-zinc-600 dark:text-gray-300">
-              Start your journey today and join our community of successful
+              Start your journey today and join vast community of successful
               developers
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link href="/browseCourses">
+            <Link href="/browse">
               <motion.button
-                className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
+                className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-100"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <span>Start Learning Now</span>
+                <span className={`${dmSans.className}`}>Start Learning Now</span>
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                 <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 opacity-0 blur transition-opacity group-hover:opacity-20" />
               </motion.button>
             </Link>
 
-            <Link href="/browseSessions">
+            {/* <Link href="/browseSessions">
               <motion.button
                 className="group inline-flex items-center gap-3 rounded-full border border-gray-300 bg-white px-8 py-4 text-lg font-semibold text-zinc-800 transition-all duration-300 hover:bg-gray-50 hover:scale-105 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
                 whileHover={{ scale: 1.05 }}
@@ -338,7 +339,7 @@ const Offerings = () => {
                 <Play className="h-5 w-5" />
                 <span>Book a Session</span>
               </motion.button>
-            </Link>
+            </Link> */}
           </div>
         </motion.div>
       </div>
@@ -373,7 +374,7 @@ const OfferingCard = ({
           {badge && (
             <div className="absolute top-6 right-6 z-10">
               <span
-                className={`inline-flex items-center px-3 p-1 rounded-full text-xs font-semibold ${
+                className={`${dmSans.className} inline-flex items-center px-3 p-1 rounded-full text-xs font-semibold ${
                   badge === "Most Popular"
                     ? "bg-gradient-to-r from-yellow-400 to-orange-500 text-white"
                     : badge === "Free"
@@ -405,7 +406,7 @@ const OfferingCard = ({
           {/* Content */}
           <div className="relative space-y-4">
             <div>
-              <h3 className="text-xl font-bold text-zinc-800 dark:text-white mb-2">
+              <h3 className={`${dmSans.className} text-xl font-bold text-zinc-800 dark:text-white mb-2`}>
                 {title}
               </h3>
               <p className="text-sm leading-relaxed text-zinc-600 dark:text-gray-300">
@@ -465,7 +466,7 @@ const HighlightCard = ({ icon: Icon, title, description }: any) => {
           <Icon className="h-8 w-8 text-white" />
         </div>
         <div>
-          <h4 className="text-lg font-semibold text-zinc-800 dark:text-white mb-2">
+          <h4 className={`${dmSans.className} text-lg font-semibold text-zinc-800 dark:text-white mb-2`}>
             {title}
           </h4>
           <p className="text-sm text-zinc-600 dark:text-gray-300">

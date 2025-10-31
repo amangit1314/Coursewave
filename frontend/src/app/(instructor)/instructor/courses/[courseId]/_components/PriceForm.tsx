@@ -20,6 +20,8 @@ import { cn } from "@/lib/utils/utils";
 import { Input } from "@/components/ui/input";
 import { formatPrice } from "@/lib/utils/format";
 import { Course } from "@/types/course";
+import { dmSans } from "@/lib/config/fonts";
+import { useUpdateCourse } from "@/hooks/useCourses";
 
 interface PriceFormProps {
   initialData: Course;
@@ -36,6 +38,7 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
   const toggleEdit = () => setIsEditing((current) => !current);
 
   const router = useRouter();
+  const { mutate: updateCourse } = useUpdateCourse();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,41 +51,53 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(
-        `api/instructor/${initialData.instructorId}/dashboard/courses/${initialData.id}`,
-        { newCoursePrice: values.price },
+      updateCourse(
+        {
+          courseId: courseId,
+          updates: values,
+        },
+        {
+          onSuccess: (updatedCourse) => {
+            toast.success("Course price updated successfully ✔️");
+            toggleEdit();
+            router.refresh();
+          },
+          onError: (error) => {
+            toast.error(error.message || "Something went wrong ❌");
+          },
+        }
       );
-      toast.success("Course price updated ...");
-      toggleEdit();
-      router.refresh();
-    } catch (err: any) {
-      console.log("Error in updating price: ", err.message);
-      toast.error("Something went wrong");
+    } catch {
+      toast.error("Something went wrong ❌");
     }
   };
 
   return (
-    <div className="mt-6 rounded-2xl border bg-slate-100 p-4 dark:bg-zinc-700">
+    // border
+    <div className="mt-6 rounded-2xl  bg-slate-100 p-4 dark:bg-zinc-900">
       <Toaster />
-      <div className="flex items-center justify-between font-medium">
+      <div
+        className={`${dmSans.className} flex items-center justify-between font-medium`}
+      >
         Course price
-        <Button onClick={toggleEdit} variant="ghost">
+        <Button onClick={toggleEdit} variant="outline" className="rounded-full">
           {isEditing ? (
             <>Cancel</>
           ) : (
             <>
-              <Pencil className="mr-2 h-4 w-4" />
-              Edit price
+              <Pencil className="h-4 w-4" />
+              Edit
             </>
           )}
         </Button>
       </div>
+
       {!isEditing && (
         <p
           className={cn(
             "mt-2 text-sm",
             !Number(initialData?.price) &&
-              "italic text-gray-500 dark:text-gray-400",
+              "italic text-gray-500 dark:text-gray-400"
           )}
         >
           {Number(initialData?.price)
@@ -103,7 +118,7 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
                 <FormItem>
                   <FormControl>
                     <Input
-                      className="dark:bg-zinc-800"
+                      className="dark:bg-transparent"
                       type="number"
                       step="0.01"
                       disabled={isSubmitting}
@@ -117,7 +132,7 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
             />
             <div className="flex items-center gap-x-2">
               <Button
-                className="dark:bg-zinc-800 dark:text-white"
+                className="dark:bg-zinc-950 dark:text-white"
                 disabled={!isValid || isSubmitting}
                 type="submit"
               >

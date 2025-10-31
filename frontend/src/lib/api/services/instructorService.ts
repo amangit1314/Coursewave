@@ -240,14 +240,14 @@ class InstructorService {
   async getInstructorById(
     instructorId: string
   ): Promise<ApiResponse<Instructor>> {
-    return apiManager.get<Instructor>(`/instructors/${instructorId}`);
+    return apiManager.get<Instructor>(`/instructor/${instructorId}`);
   }
 
   async getInstructorCourses(
     instructorId: string,
     params?: { page?: number; limit?: number }
   ): Promise<PaginatedResponse<Course>> {
-    return apiManager.get<Course[]>(`/instructors/${instructorId}/courses`, {
+    return apiManager.get<Course[]>(`/instructor/${instructorId}/courses`, {
       params,
     });
   }
@@ -256,7 +256,7 @@ class InstructorService {
     instructorId: string
   ): Promise<ApiResponse<InstructorAnalytics>> {
     return apiManager.get<InstructorAnalytics>(
-      `/instructors/${instructorId}/analytics`
+      `/instructor/${instructorId}/analytics`
     );
   }
 
@@ -264,7 +264,7 @@ class InstructorService {
     instructorId: string
   ): Promise<ApiResponse<{ totalEarnings: number; currency: string }>> {
     return apiManager.get<{ totalEarnings: number; currency: string }>(
-      `/instructors/${instructorId}/earnings`
+      `/instructor/${instructorId}/earnings`
     );
   }
 
@@ -272,7 +272,7 @@ class InstructorService {
     instructorId: string,
     params?: { page?: number; limit?: number }
   ): Promise<PaginatedResponse<Review>> {
-    return apiManager.get<Review[]>(`/instructors/${instructorId}/reviews`, {
+    return apiManager.get<Review[]>(`/instructor/${instructorId}/reviews`, {
       params,
     });
   }
@@ -281,7 +281,7 @@ class InstructorService {
     instructorId: string
   ): Promise<ApiResponse<{ averageRating: number }>> {
     return apiManager.get<{ averageRating: number }>(
-      `/instructors/${instructorId}/rating`
+      `/instructor/${instructorId}/rating`
     );
   }
 
@@ -290,7 +290,7 @@ class InstructorService {
   // ------------------------
 
   async getInstructorProfile(): Promise<Instructor> {
-    const response = await apiManager.get<Instructor>(`/instructors/me`);
+    const response = await apiManager.get<Instructor>(`/instructor/me`);
     if (!response.data) {
       throw new Error("OOPS, Instructor data is missing in API response");
     }
@@ -300,25 +300,25 @@ class InstructorService {
   async updateInstructorProfile(
     data: InstructorUpdateData
   ): Promise<ApiResponse<Instructor>> {
-    return apiManager.put<Instructor>(`/instructors/me`, data);
+    return apiManager.put<Instructor>(`/instructor/me`, data);
   }
 
   async getMyCreatedCourses(params?: {
     page?: number;
     limit?: number;
   }): Promise<PaginatedResponse<Course>> {
-    return apiManager.get<Course[]>(`/instructors/me/courses`, { params });
+    return apiManager.get<Course[]>(`/instructor/me/courses`, { params });
   }
 
   async getMyAnalytics(): Promise<ApiResponse<InstructorAnalytics>> {
-    return apiManager.get<InstructorAnalytics>(`/instructors/me/analytics`);
+    return apiManager.get<InstructorAnalytics>(`/instructor/me/analytics`);
   }
 
   async getMyEarnings(): Promise<
     ApiResponse<{ totalEarnings: number; currency: string }>
   > {
     return apiManager.get<{ totalEarnings: number; currency: string }>(
-      `/instructors/me/earnings`
+      `/instructor/me/earnings`
     );
   }
 
@@ -326,16 +326,16 @@ class InstructorService {
     page?: number;
     limit?: number;
   }): Promise<PaginatedResponse<Review>> {
-    return apiManager.get<Review[]>(`/instructors/me/reviews`, { params });
+    return apiManager.get<Review[]>(`/instructor/me/reviews`, { params });
   }
 
   async getMyAverageRating(): Promise<ApiResponse<{ averageRating: number }>> {
-    return apiManager.get<{ averageRating: number }>(`/instructors/me/rating`);
+    return apiManager.get<{ averageRating: number }>(`/instructor/me/rating`);
   }
 
   async getMyStudentsCount(): Promise<ApiResponse<{ totalStudents: number }>> {
     return apiManager.get<{ totalStudents: number }>(
-      `/instructors/me/students`
+      `/instructor/me/students`
     );
   }
 }

@@ -51,6 +51,7 @@ export interface Course {
     updatedAt: string;
   };
   sections: Array<Section>;
+  studentCount: number;
 }
 
 export interface Section {
@@ -75,7 +76,7 @@ export interface Chapter {
   isPublished: boolean;
   isFree: boolean;
   contentType: string;
-  content: string;
+  content: any;
   createdAt: string;
   updatedAt: string;
   duration?: number; // Add duration as optional, since code expects lesson.duration

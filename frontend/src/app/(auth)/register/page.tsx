@@ -27,7 +27,6 @@ const RegisterPage = () => {
           </div>
         </motion.div>
       </div>
-      <Toaster position="top-right" />
     </div>
   );
 };

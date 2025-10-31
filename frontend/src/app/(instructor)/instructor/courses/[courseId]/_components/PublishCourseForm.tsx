@@ -1,76 +1,114 @@
+
+
 "use client";
 
 import React from "react";
-import { Switch } from "@/components/ui/switch";
-import { z } from "zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Course } from "@/types/course";
+import { useUpdateCourse } from "@/hooks/useCourses";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
-type PublishCourseFormProps = {
-  course: Course;
-};
+const PublishCourseForm = ({ course }: { course: Course }) => {
+  const { mutate: updateCourse, isPending: isUpdating } = useUpdateCourse();
+  const router = useRouter();
 
-const formSchema = z.object({
-  isPublished: z.boolean(),
-});
+  const isPublished = course?.isPublished ?? false;
 
-const PublishCourseForm = ({ course }: PublishCourseFormProps) => {
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      isPublished: course?.isPublished ?? true,
-    },
-  });
+  const handleToggle = () => {
+    const newValue = !isPublished;
 
-  const { isSubmitting, isValid } = form.formState;
+    if (!course?.id) return;
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    if (!values) return;
-
-    try {
-      const updatedCourse = { ...course, isPublished: values.isPublished };
-      // await updateCourse(updatedCourse);
-      form.reset();
-    } catch (error) {
-      console.error("Error publishing course:", error);
-    }
+    updateCourse(
+      {
+        courseId: course.id,
+        updates: {
+          isPublished: newValue,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success(
+            newValue
+              ? "Course published successfully!"
+              : "Course unpublished successfully"
+          );
+          router.refresh();
+        },
+        onError: (error: any) => {
+          toast.error(error.message || "Failed to update course status");
+        },
+      }
+    );
   };
 
   return (
-    <div className="flex flex-col items-start justify-start space-x-2 space-y-2 md:flex-row md:items-center md:justify-end md:space-y-0">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <FormField
-            control={form.control}
-            name="isPublished"
-            render={({ field }) => (
-              <div className="">
-                <FormItem className="flex flex-col-reverse items-start justify-start rounded-lg md:flex-row-reverse md:items-center">
-                  <FormControl>
-                    <Switch
-                      checked={field.value ?? true}
-                      disabled={isSubmitting}
-                    />
-                  </FormControl>
-                  <FormLabel htmlFor="course-published">
-                    Publish Course
-                  </FormLabel>
-                </FormItem>
-              </div>
-            )}
-          />
-        </form>
-      </Form>
+    <div className="flex items-center gap-3">
+      {/* Loading Spinner */}
+      {isUpdating && <Loader2 className="h-4 w-4 animate-spin text-blue-600" />}
+
+      {/* Custom Switch */}
+      <button
+        type="button"
+        onClick={handleToggle}
+        disabled={isUpdating}
+        className={`
+    relative inline-flex h-5 w-9 items-center rounded-full 
+    transition-colors duration-200
+    focus:outline-none focus:ring-2 focus:ring-blue-500
+    ${isPublished ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"}
+    ${isUpdating ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+  `}
+      >
+        {/* Switch Knob */}
+        <span
+          className={`
+    absolute inline-block ml-1  h-3 w-3 rounded-full bg-white shadow 
+    transition-all duration-200
+    ${isPublished ? "right-1" : "left-1"}
+  `}
+        />
+      </button>
+
+      {/* Status Label */}
+      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        {isPublished ? "Published" : "Draft"}
+      </span>
     </div>
   );
 };
 
 export default PublishCourseForm;
+
+export const CustomSwitch = ({
+  checked,
+  color,
+  disabled,
+  onCheckedChange,
+}: {
+  checked: boolean;
+  color: string;
+  disabled: boolean;
+  onCheckedChange: any;
+}) => {
+  return (
+    <button
+      type="button"
+      onClick={onCheckedChange}
+      disabled={disabled}
+      className={`
+    relative inline-flex h-5 w-9 items-center rounded-full 
+    transition-colors duration-200
+    focus:outline-none focus:ring-2 focus:ring-blue-500
+    ${checked ? `bg-${color}-500` : "bg-gray-300 dark:bg-gray-600"}
+    ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+    `}
+    >
+      {/* Switch Knob */}
+      <span
+        className={`absolute inline-block ml-1  h-3 w-3 rounded-full bg-white shadow transition-all duration-200 ${checked ? "right-1" : "left-1"}`}
+      />
+    </button>
+  );
+};

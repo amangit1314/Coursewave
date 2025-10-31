@@ -6,6 +6,7 @@ import compression from "compression";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 // ------------------------------------------------------------------------
+import statsRoutes from "./api/stats/stats.routes";
 import authRoutes from "./api/auth/auth.routes";
 import blogRoutes from "./api/blogs/blogs.routes";
 import usersRoutes from "./api/users/users.routes";
@@ -24,7 +25,7 @@ import projectsRoutes from "./api/projects/projects.routes";
 import communitiesRoutes from "./api/communities/communities.routes";
 // ------------------------------------------------------------------------
 // import { courseCacheMiddleware } from "./config/redis";
-import { checkAccessToken } from "./core/middleware";
+// import { checkAccessToken } from "./core/middleware";
 import { initJobs } from "./jobs";
 // Socket.IO
 import { initSocket } from "./config/socket";
@@ -49,15 +50,64 @@ const app = express();
 
 ///? <==================================== Middlewares ======================================>
 app.use(helmet());
+app.use((req, res, next) => {
+  console.log(
+    `[Request] ${req.method} ${req.originalUrl} - Headers:`,
+    req.headers
+  );
+  if (req.user) {
+    console.log(`[Request] Authenticated user:`, req.user);
+  }
+  next();
+});
+
+// app.use(
+//   cors({
+//     origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+//     credentials: true,
+//   })
+// );
+
+// Replace your CORS configuration with this:
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      const allowedOrigins = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:3001",
+        "https://yourproductiondomain.com", // Add your production domain
+      ];
+
+      // Check if the origin is in allowed origins
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        // For development, you might want to allow all origins
+        if (process.env.NODE_ENV === "development") {
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS"));
+        }
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "access_token",
+      "x-access-token",
+    ],
+  })
+);
+
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
-    credentials: true,
-  })
-);
 
 ///? <==================================== CUSTOM Middlewares ================================>
 
@@ -70,20 +120,20 @@ const limiter = rateLimit({
 app.use(limiter);
 
 ///* ------------------------- Apply access token check (but exclude public endpoints) --
-app.use((req, res, next) => {
-  // Skip authentication for public endpoints
-  const publicEndpoints = [
-    "/api/subscriptions/plans",
-    "/health",
-    "/api/cache/status",
-  ];
+// app.use((req, res, next) => {
+//   // Skip authentication for public endpoints
+//   const publicEndpoints = [
+//     "/api/subscriptions/plans",
+//     "/health",
+//     "/api/cache/status",
+//   ];
 
-  if (publicEndpoints.includes(req.path)) {
-    return next();
-  }
+//   if (publicEndpoints.includes(req.path)) {
+//     return next();
+//   }
 
-  return checkAccessToken(req, res, next);
-});
+//   return checkAccessToken(req, res, next);
+// });
 
 ///* ------------------------- Custom Middleware to track slow route --------------------
 app.use((req, res, next) => {
@@ -113,6 +163,7 @@ app.use(
 );
 
 ///? <==================================== API routes ====================================>
+app.use("/api/stats", statsRoutes);
 app.use("/api/auth", authRoutes);
 app.use(
   "/api/courses",

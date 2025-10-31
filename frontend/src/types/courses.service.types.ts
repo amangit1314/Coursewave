@@ -11,23 +11,12 @@ export interface CourseCategory {
   imageUrl?: string;
 }
 
-export interface Instructor {
-  id: string;
-  name: string;
-  bio?: string;
-  profileImageUrl?: string;
-}
-
-export interface CourseSection {
-  id: string;
-  title: string;
-  description?: string;
-  position: number;
-  isPublished: boolean;
-  lessons: Chapter[];
-  createdAt: string;
-  updatedAt: string;
-}
+// export interface Instructor {
+//   id: string;
+//   name: string;
+//   bio?: string;
+//   profileImageUrl?: string;
+// }
 
 export interface Chapter {
   id: string;

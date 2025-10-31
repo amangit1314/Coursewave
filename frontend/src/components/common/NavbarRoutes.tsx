@@ -2,15 +2,13 @@
 
 import UserAvatar from "./UserAvatar";
 import React, { Suspense } from "react";
-import { Toaster } from "react-hot-toast";
 import { usePathname, useRouter } from "next/navigation";
 import { ThemeModeToggle } from "./ThemeModeToggle";
 import { dmSans, poppins } from "@/lib/config/fonts";
-
-import InstructorButton from "../InstructorButton";
 import SearchButton from "../SearchButton";
 import Notifications from "./NotificationButton";
 import { useUserStore } from "@/zustand/userStore";
+// import InstructorButton from "../InstructorButton";
 
 const NavbarRoutes = () => {
   const router = useRouter();
@@ -18,15 +16,13 @@ const NavbarRoutes = () => {
 
   const { user } = useUserStore();
 
-  // if (loadingState.loading) {
-  //   return <Skeleton className="h-12 w-12 rounded-md" />;
-  // }
-
   const gotToSignIn = () => {
     router.push("/login");
   };
 
   const isBrowseCoursesScreen = pathname.match("/browseCourses");
+  const isDashboardScreen = pathname.includes("dashboard"); // Checks for dashboard in pathname
+
 
   return (
     <Suspense>
@@ -38,12 +34,10 @@ const NavbarRoutes = () => {
         </div>
 
         <div className="ml-auto flex justify-end gap-x-2">
-          <Toaster />
-
           {/* instructor button */}
-          <div className={dmSans.className}>
-            {user ? <InstructorButton /> : <div></div>}
-          </div>
+          {/* <div className={dmSans.className}>
+            {user && !isDashboardScreen ? <InstructorButton /> : <div></div>}
+          </div> */}
 
           {/* theme toggle */}
           <ThemeModeToggle />

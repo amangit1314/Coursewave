@@ -3,6 +3,7 @@
 export interface UpdateProfileRequest {
   newUserName?: string;
   newProfileImage?: string;
+  
 }
 
 export interface ChangePasswordRequest {

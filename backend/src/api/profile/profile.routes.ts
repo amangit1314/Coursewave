@@ -9,15 +9,13 @@ import {
   deleteUser,
   changeUserRole,
   getUserStats,
+  contactSupport,
 } from "../profile/profile.controller";
 
 const router: Router = Router();
 
 // Apply authentication to all routes
 router.use(verifyToken);
-
-// Apply admin middleware to sensitive routes
-router.use(requireAdmin);
 
 // Get all users (admin only)
 router.get("/", getAllUsers);
@@ -36,5 +34,7 @@ router.patch("/:userId/role", changeUserRole);
 
 // Delete user (admin only)
 router.delete("/:userId", deleteUser);
+
+router.post("/contact", checkAccessToken, contactSupport);
 
 export default router;

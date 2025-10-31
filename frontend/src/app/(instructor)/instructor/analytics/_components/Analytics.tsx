@@ -4,13 +4,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import AnalyticsStatsSelect from "./AnalyticsStatsSelect";
 import AnalyticsStats from "./AnalyticsStats";
 import { BestSellingCourses } from "./BestSellingCourses";
-import {
-  EarningReportAreaChart,
-  EarningChartData,
-} from "./EarningReportChart";
+import { EarningReportAreaChart, EarningChartData } from "./EarningReportChart";
 import { LineChartForStudents } from "./LineChatForStudents";
 import { TotalRevenueCard } from "./TotalRevenueCard";
-import { Course } from "@/types";
+import { Course } from "@/types/course";
 import { useMemo } from "react";
 import { sampleCourses } from "@/lib/mock/mockData";
 

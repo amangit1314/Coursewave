@@ -27,13 +27,8 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useUserStore } from "@/zustand/userStore";
-import { UserSubscription } from "@/lib/utils/subscription";
-// import { useUserInfo } from "@/hooks/useUserInfo";
-// import {
-//   getUserSubscriptionPlan,
-//   checkSubscriptionAccess,
-// } from "@/lib/subscription";
-// import { UserSubscription } from "@/lib/subscription";
+import { UserSubscription } from "@/types/subscription.types";
+
 
 // Define proper types for the session data
 interface Session {

@@ -6,11 +6,9 @@ import {
   subscribeUser,
   subscribeInstructor,
   cancelUserSubscription,
-  cancelInstructorSubscription
+  cancelInstructorSubscription,
 } from "./subscription.controller";
 import { verifyToken } from "../../core/middleware";
-import { checkAccessToken } from "../../core/middleware";
-
 
 const router: Router = Router();
 

@@ -17,6 +17,7 @@ export interface InstructorAnalytics {
   totalCourses: number;
   averageRating: number;
   enrollmentTrend: { date: string; count: number }[];
+  createdCourses: Course[];
   topCourses: Course[];
 }
 

@@ -2,41 +2,12 @@ import { Category } from "./category";
 import { CourseSection } from "./course-details-api-response";
 import { Instructor } from "./instructor";
 
-// export type Course = {
-//     id: string;
-//     title: string;
-//     description: string;
-//     imageUrl: string;
-//     previewUrl: string;
-//     isFree: boolean;
-//     price: string;
-//     currency: string;
-//     discountPercentage: number | null;
-//     instructorId: string;
-//     isLive: boolean;
-//     isPublished: boolean;
-//     publishedAt: string | null;
-//     language: string;
-//     level: string;
-//     durationMinutes: number;
-//     totalLessons: number;
-//     totalStudents: number;
-//     averageRating: number;
-//     slug: string;
-//     categories: Category[];
-//     instructor: Instructor;
-//     userId: string | null;
-//     createdAt: string;
-//     updatedAt: string;
-//     deletedAt: string | null;
-// }
-
 export type Course = {
   id: string;
   title: string;
   description?: string | null;
   imageUrl: string;
-  price: string;
+  price: number;
   discount: number | null;
   dealPrice?: number | null;
   instructorId: string;
@@ -45,7 +16,7 @@ export type Course = {
   averageRating: number;
   categories: string[];
   duration?: number | null;
-  slug: string;
+  slug?: string;
   learningOutcomes: string[];
   prerequisites: string[];
   targetAudience: string[];
@@ -56,4 +27,6 @@ export type Course = {
   sections: CourseSection[];
   category?: Category;
   instructor?: Instructor;
+
+  totalStudents: number | null; /// todo: to implment 
 };

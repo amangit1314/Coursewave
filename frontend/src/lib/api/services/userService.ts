@@ -73,16 +73,13 @@ export class UserService {
     return response.data;
   }
 
-  // TODO: verify
   async getSavedArticles(userId: string): Promise<any> {
-    const response = await this.apiManager.get(
-      `/profile/${userId}/savedArticles`
-    );
+    const response = await this.apiManager.get(`/users/articles/saved`);
     return response.data;
   }
 
   async getCreatedArticles(): Promise<any> {
-    const response = await this.apiManager.get(`/users/articles`);
+    const response = await this.apiManager.get(`/users/articles/created`);
     return response.data;
   }
 

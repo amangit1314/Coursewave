@@ -75,6 +75,7 @@ export const handleWebhookEvent = async (
   }
 };
 
+
 const handleCheckoutSessionCompleted = async (
   event: Stripe.Event
 ): Promise<void> => {

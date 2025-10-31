@@ -15,13 +15,26 @@ export function RoadmapTimelineView({
         {roadmap.nodes.map((node: any, index: number) => (
           <div key={node.id} className="relative pl-12 pb-8">
             {/* Timeline dot */}
-            <div
-              className={`absolute left-0 top-1 w-3 h-3 rounded-full ${
-                progress[node.id]
-                  ? "bg-green-500 ring-4 ring-green-200 dark:ring-green-900/30"
-                  : "bg-blue-500"
-              }`}
-            ></div>
+            <div className="absolute left-1.5 top-1 w-5 h-5 flex items-center justify-center z-10">
+              <div
+                className={` absolute inset-0 rounded-full bg-gray-300 dark:bg-zinc-900 z-0 animate-pulse border-2
+                     ${
+        progress[node.id]
+          ? "border-green-500 dark:border-green-900/30"
+          : "border-blue-500"
+      }
+                  
+                  `}
+              />
+              <div
+                className={`w-3 h-3 rounded-full z-10
+      ${
+        progress[node.id]
+          ? "bg-green-500 ring-4 ring-green-200 dark:ring-green-900/30"
+          : "bg-blue-500"
+      }`}
+              />
+            </div>
 
             {/* Node content */}
             <div

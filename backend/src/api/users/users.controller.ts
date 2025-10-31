@@ -144,6 +144,21 @@ export const unsaveArticle = async (req: Request, res: Response) => {
   }
 };
 
+
+export const checkArticleSaved = async (req: Request, res: Response) => {
+  try {
+    const result = await userService.checkArticleSaved(req.user.id, req.params.articleId);
+    res.status(result.status).json(result);
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      message: "Internal Server Error"
+    });
+  }
+};
+
+
 export const getUserEnrollments = async (req: Request, res: Response) => {
   try {
     const result = await userService.getUserEnrollments(req.user.id);

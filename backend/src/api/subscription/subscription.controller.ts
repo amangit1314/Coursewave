@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import * as subscriptionService from "./subscription.service";
+import { prisma } from "../../config/prisma";
+import { ensureStripeCustomerForUser } from "../../core/middleware/ensureStripeCustomerForUser";
 
 export const getSubscriptionPlans = async (req: Request, res: Response) => {
   try {
@@ -44,10 +46,21 @@ export const getInstructorSubscriptions = async (
 
 export const subscribeUser = async (req: Request, res: Response) => {
   try {
-    const result = await subscriptionService.subscribeUser(
+    const { planId, stripeSubscriptionId } = req.body;
+
+    // Always ensure StripeCustomer exists for the user (and created on Stripe if missing)
+    const stripeCustomerId = await ensureStripeCustomerForUser(
       req.user.id,
-      req.body
+      req.user.email
     );
+
+    // Now call service with the in-sync stripeCustomerId
+    const result = await subscriptionService.subscribeUser(req.user.id, {
+      planId,
+      stripeSubscriptionId,
+      stripeCustomerId,
+    });
+
     res.status(result.status).json(result);
   } catch (error: any) {
     res.status(500).json({
@@ -59,10 +72,19 @@ export const subscribeUser = async (req: Request, res: Response) => {
 
 export const subscribeInstructor = async (req: Request, res: Response) => {
   try {
-    const result = await subscriptionService.subscribeInstructor(
+    const { planId, stripeSubscriptionId } = req.body;
+
+    // Always ensure StripeCustomer exists for the user (and created on Stripe if missing)
+    const stripeCustomerId = await ensureStripeCustomerForUser(
       req.user.id,
-      req.body
+      req.user.email
     );
+
+    const result = await subscriptionService.subscribeInstructor(req.user.id, {
+      planId,
+      stripeSubscriptionId,
+      stripeCustomerId,
+    });
     res.status(result.status).json(result);
   } catch (error: any) {
     res.status(500).json({

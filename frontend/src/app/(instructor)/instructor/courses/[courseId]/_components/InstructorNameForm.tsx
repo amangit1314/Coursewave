@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/utils";
 import { Course } from "@/types/course";
+import { dmSans } from "@/lib/config/fonts";
 
 interface InstructorNameFormProps {
   course: Course;
@@ -59,16 +60,16 @@ export const InstructorNameForm = ({ course }: InstructorNameFormProps) => {
   };
 
   return (
-    <div className="mt-6 rounded-2xl border bg-slate-100 p-4 dark:bg-zinc-700">
-      <div className="flex items-center justify-between font-medium">
+    <div className="mt-6 rounded-2xl bg-slate-100 p-4 dark:bg-zinc-900">
+      <div className={`${dmSans.className} flex items-center justify-between font-medium`}>
         Instructor Name
-        <Button onClick={toggleEdit} variant="ghost">
+        <Button onClick={toggleEdit} variant="outline" className="rounded-full">
           {isEditing ? (
             <>Cancel</>
           ) : (
             <>
-              <Pencil className="mr-2 h-4 w-4" />
-              Edit instructor name
+              <Pencil className="h-4 w-4" />
+              Edit
             </>
           )}
         </Button>
@@ -100,7 +101,7 @@ export const InstructorNameForm = ({ course }: InstructorNameFormProps) => {
                   <FormControl>
                     <Input
                       disabled={isSubmitting}
-                      className="dark:bg-zinc-800"
+                      className="dark:bg-zinc-900 px-3 py-4"
                       placeholder="e.g. 'Advanced web development'"
                       {...field}
                     />
@@ -111,7 +112,7 @@ export const InstructorNameForm = ({ course }: InstructorNameFormProps) => {
             />
             <div className="flex items-center gap-x-2">
               <Button
-                className="dark:bg-zinc-800 dark:text-white"
+                className="dark:bg-zinc-950 dark:text-white"
                 disabled={!isValid || isSubmitting}
                 type="submit"
               >

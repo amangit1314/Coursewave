@@ -86,3 +86,17 @@ export const getUserStats = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const contactSupport = async (req: Request, res: Response) => {
+  try {
+    const supportData = req.body;
+    const result = await profileService.contactSupport(supportData);
+    res.status(result.status).json(result);
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      message: 'Internal Server Error'
+    });
+  }
+};

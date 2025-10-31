@@ -44,12 +44,13 @@ import axios from "axios";
 import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
 import { motion } from "framer-motion";
 import { useUserStore } from "@/zustand/userStore";
+import { dmSans } from "@/lib/config/fonts";
 
 const HelpAndSupport = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-900">
       {/* Header with Theme Toggle */}
       {/* <div className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md dark:bg-zinc-900/80 dark:border-zinc-700">
         <div className="flex items-center justify-between px-4 py-3 md:px-8">
@@ -64,14 +65,16 @@ const HelpAndSupport = () => {
         </div>
       </div> */}
 
-      <div className="mx-auto max-w-7xl px-4 pt-36 pb-8 md:px-8">
+      <div className="mx-auto max-w-7xl px-4 pt-18 pb-8 md:px-8">
         {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 text-center"
         >
-          <h2 className="mb-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl lg:text-5xl">
+          <h2
+            className={`${dmSans.className} mb-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl lg:text-5xl`}
+          >
             Instructor Support Center
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-gray-600 dark:text-gray-300">
@@ -89,9 +92,11 @@ const HelpAndSupport = () => {
             transition={{ delay: 0.1 }}
             className="lg:col-span-1"
           >
-            <div className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-200 dark:bg-zinc-800 dark:ring-zinc-700">
+            <div className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-200 dark:bg-backdrop-blur dark:bg-zinc-950 dark:ring-zinc-700">
               <div className="mb-6">
-                <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
+                <h3
+                  className={`${dmSans.className} mb-2 text-xl font-semibold text-gray-900 dark:text-white`}
+                >
                   Instructor Support
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-300">
@@ -128,7 +133,9 @@ const HelpAndSupport = () => {
               </div>
 
               <div className="mt-8">
-                <h4 className="mb-4 text-sm font-medium text-gray-900 dark:text-white">
+                <h4
+                  className={`${dmSans.className} mb-4 text-sm font-medium text-gray-900 dark:text-white`}
+                >
                   Join our instructor community
                 </h4>
                 <SocialLinks />
@@ -143,7 +150,7 @@ const HelpAndSupport = () => {
             transition={{ delay: 0.2 }}
             className="lg:col-span-2"
           >
-            <div className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-200 dark:bg-zinc-800 dark:ring-zinc-700">
+            <div className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-200 dark:bg-zinc-950 dark:ring-zinc-700">
               {!isSubmitted ? (
                 <>
                   <div className="mb-6">
@@ -165,7 +172,7 @@ const HelpAndSupport = () => {
         </div>
 
         {/* FAQ Section */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -202,11 +209,40 @@ const HelpAndSupport = () => {
               answer="We provide technical support, course optimization advice, marketing assistance, and 1-on-1 consultations for top instructors."
             />
           </div>
-        </motion.div>
+        </motion.div> */}
       </div>
     </div>
   );
 };
+
+// const ContactItem = ({
+//   icon,
+//   title,
+//   value,
+//   description,
+// }: {
+//   icon: React.ReactNode;
+//   title: string;
+//   value: string;
+//   description: string;
+// }) => (
+//   <div className="flex items-start space-x-3">
+//     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+//       {icon}
+//     </div>
+//     <div className="flex-1 ">
+//       <h4
+//         className={`${dmSans.className} text-sm max-w-[193.55px] overflow-hidden font-medium text-gray-900 dark:text-white`}
+//       >
+//         {title}
+//       </h4>
+//       <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+//         {value}
+//       </p>
+//       <p className="text-xs text-gray-500 dark:text-gray-400">{description}</p>
+//     </div>
+//   </div>
+// );
 
 const ContactItem = ({
   icon,
@@ -219,18 +255,24 @@ const ContactItem = ({
   value: string;
   description: string;
 }) => (
-  <div className="flex items-start space-x-3">
-    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
-      {icon}
+  <div className="group flex items-start space-x-4 rounded-xl bg-white/50 p-4 backdrop-blur-sm ring-1 ring-gray-200/50 transition-all duration-300 hover:bg-white/80 hover:shadow-lg hover:ring-gray-300/50 dark:bg-gray-800/50 dark:ring-gray-700/50 dark:hover:bg-gray-800/80 dark:hover:ring-gray-600/50 dark:hover:shadow-xl dark:hover:shadow-black/10">
+    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg ring-1 ring-blue-500/20 transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-blue-500/25 dark:from-blue-600 dark:to-indigo-700 dark:ring-blue-500/30 dark:group-hover:shadow-blue-500/20">
+      <span className="transition-transform duration-300 group-hover:scale-110">
+        {icon}
+      </span>
     </div>
-    <div className="flex-1">
-      <h4 className="text-sm font-medium text-gray-900 dark:text-white">
+    <div className="min-w-0 flex-1 space-y-1">
+      <h4
+        className={`${dmSans.className} truncate text-sm font-semibold text-gray-900 transition-colors duration-200 group-hover:text-gray-800 dark:text-white dark:group-hover:text-gray-100`}
+      >
         {title}
       </h4>
-      <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+      <p className="text-sm font-bold line-clamp-2 overflow-ellipsis text-blue-600 transition-colors duration-200 group-hover:text-blue-700 dark:text-blue-400 dark:group-hover:text-blue-300">
         {value}
       </p>
-      <p className="text-xs text-gray-500 dark:text-gray-400">{description}</p>
+      <p className="text-xs leading-relaxed text-gray-600 transition-colors duration-200 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300">
+        {description}
+      </p>
     </div>
   </div>
 );
@@ -257,12 +299,23 @@ const SocialLinks = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
         >
-          <Link
+          {/* <Link
             href={link.href}
             className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 text-gray-600 transition-colors hover:bg-blue-100 hover:text-blue-600 dark:bg-zinc-700 dark:text-gray-300 dark:hover:bg-blue-900/30 dark:hover:text-blue-400"
             aria-label={link.label}
           >
             {link.icon}
+          </Link> */}
+
+          <Link
+            href={link.href}
+            className="group relative flex h-10 w-10 items-center justify-center rounded-xl bg-white/80 text-gray-600 shadow-sm ring-1 ring-gray-200/50 backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-gradient-to-br hover:from-blue-50 hover:to-indigo-50 hover:text-blue-600 hover:shadow-lg hover:ring-blue-200/50 active:scale-95 dark:bg-gray-800/80 dark:text-gray-400 dark:ring-gray-700/50 dark:hover:bg-gradient-to-br dark:hover:from-blue-950/50 dark:hover:to-indigo-950/50 dark:hover:text-blue-400 dark:hover:ring-blue-500/30 dark:hover:shadow-blue-500/10"
+            aria-label={link.label}
+          >
+            <span className="relative z-10 transition-transform duration-300 group-hover:scale-110">
+              {link.icon}
+            </span>
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-transparent via-white/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:via-white/5" />
           </Link>
         </motion.div>
       ))}

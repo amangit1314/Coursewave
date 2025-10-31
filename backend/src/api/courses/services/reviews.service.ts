@@ -7,7 +7,7 @@ import { generateResourceId } from "../../../core/utils/idGenerator";
 const prisma = new PrismaClient();
 
 export const getAllReviewsForCourseIdService = async (courseId: string) => {
-  return prisma.review.findMany({
+  const data =  await prisma.review.findMany({
     where: { courseId },
     include: {
       user: {
@@ -23,6 +23,8 @@ export const getAllReviewsForCourseIdService = async (courseId: string) => {
     },
     orderBy: { createdAt: "desc" },
   });
+console.log(`reviews of COURSE ID[${courseId}] : `, data);
+  return data;
 };
 
 export const writeReviewService = async ({

@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { Category } from "@/types/category";
 import { FilteredCoursesSkeleton } from "../../courses/_components/skeleton/FilteredCoursesSekelton";
 import { CourseCard } from "./CourseCard";
@@ -18,10 +17,13 @@ interface FilteredCoursesComponentProps {
 export default function FilteredCoursesComponent({
   activeCategory,
   searchQuery,
-}: FilteredCoursesComponentProps) {
+  categories,
+}: FilteredCoursesComponentProps) { // Added categories prop
+
+  
   const { data: courses, isLoading, isError, error, refetch } = useCourses();
 
-  console.log("Courses in Filtered COurses: ", JSON.stringify(courses));
+  console.log("Courses in Filtered Courses: ", JSON.stringify(courses));
 
   const [currentPage, setCurrentPage] = useState(1);
   const coursesPerPage = 6;
@@ -31,26 +33,29 @@ export default function FilteredCoursesComponent({
     setCurrentPage(1);
   }, [searchQuery, activeCategory]);
 
-  // --- Helper Functions ---
-  const matchesCategory = (course: Course, category: string | null) => {
+  // --- FIXED Helper Functions ---
+  const matchesCategory = useCallback((course: Course, category: string | null) => {
     if (!category || category === "All") return true;
 
-    return (
-      course.title?.includes(category) ||
-      course.categories?.some((cat) => cat?.includes(category))
-    );
-  };
+    // Check if course has a Category object with matching name
+    if (course.Category?.name === category) return true;
+    
+    // Also check if course categories array contains the category
+    return course.categories?.some((cat) => cat?.includes(category));
+  }, []);
 
-  const matchesSearch = (course: Course, query: string | null) => {
+  const matchesSearch = useCallback((course: Course, query: string | null) => {
     if (!query) return true;
 
     const q = query.toLowerCase();
 
     return (
       course.title?.toLowerCase().includes(q) ||
+      course.instructor?.user?.name?.toLowerCase().includes(q) ||
+      course.Category?.name?.toLowerCase().includes(q) ||
       course.categories?.some((cat) => cat?.toLowerCase().includes(q))
     );
-  };
+  }, []);
 
   // --- Filtering + Pagination (memoized) ---
   const filteredCourses = useMemo(() => {
@@ -62,7 +67,7 @@ export default function FilteredCoursesComponent({
         matchesSearch(course, searchQuery)
       );
     });
-  }, [courses, activeCategory, searchQuery]);
+  }, [courses, activeCategory, searchQuery, matchesCategory, matchesSearch]); // Added dependencies
 
   const totalPages = Math.ceil(filteredCourses.length / coursesPerPage) || 1;
 
@@ -72,6 +77,12 @@ export default function FilteredCoursesComponent({
       currentPage * coursesPerPage
     );
   }, [filteredCourses, currentPage]);
+
+  const handlePageChange = useCallback((pageNumber: number) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  }, [totalPages]);
 
   // --- Render Logic ---
   if (isLoading) {
@@ -120,16 +131,10 @@ export default function FilteredCoursesComponent({
     );
   }
 
-  const handlePageChange = (pageNumber: number) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
-    }
-  };
-
   return (
     <div className="mb-6 w-full max-w-7xl space-y-12">
       {/* Courses */}
-      <div className="mx-auto grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch justify-center transition-all">
+      <div className="mx-auto grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch justify-center transition-all">
         {coursesToDisplay.map((course) => (
           <CourseCard key={course.id} course={course} />
         ))}

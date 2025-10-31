@@ -43,6 +43,7 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
 import { useUserStore } from "@/zustand/userStore";
+import { dmSans } from "@/lib/config/fonts";
 
 const HelpAndSupport = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -52,18 +53,18 @@ const HelpAndSupport = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900">
       {/* Header with Theme Toggle */}
-      <div className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md dark:bg-zinc-900/80 dark:border-zinc-700">
+      {/* <div className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md dark:bg-zinc-900/80 dark:border-zinc-700">
         <div className="flex items-center justify-between px-4 py-3 md:px-8">
           <motion.h1
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="text-xl font-bold text-blue-600 dark:text-blue-400"
+            className={`${dmSans.className} text-lg tracking-tight font-bold text-blue-600 dark:text-blue-400`}
           >
             Help & Support
           </motion.h1>
           <ThemeModeToggle />
         </div>
-      </div>
+      </div> */}
 
       <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
         {/* Hero Section */}
@@ -72,7 +73,9 @@ const HelpAndSupport = () => {
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 text-center"
         >
-          <h2 className="mb-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl lg:text-5xl">
+          <h2
+            className={`${dmSans.className} mb-4 mt-24 md:mt-0 text-3xl font-bold tracking-tighter text-gray-900 dark:text-white md:text-4xl lg:text-5xl`}
+          >
             How can we help you?
           </h2>
           <p className="mx-auto max-w-2xl text-lg text-gray-600 dark:text-gray-300">
@@ -92,7 +95,9 @@ const HelpAndSupport = () => {
           >
             <div className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-200 dark:bg-zinc-800 dark:ring-zinc-700">
               <div className="mb-6">
-                <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
+                <h3
+                  className={`${dmSans.className} mb-2 text-xl font-semibold text-gray-900 dark:text-white`}
+                >
                   Contact Information
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-300">
@@ -148,7 +153,9 @@ const HelpAndSupport = () => {
               {!isSubmitted ? (
                 <>
                   <div className="mb-6">
-                    <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
+                    <h3
+                      className={`${dmSans.className} mb-2 text-xl font-semibold text-gray-900 dark:text-white`}
+                    >
                       Send us a message
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-300">
@@ -177,10 +184,12 @@ const HelpAndSupport = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mt-16"
+          className="my-16"
         >
           <div className="text-center">
-            <h3 className="mb-8 text-2xl font-bold text-gray-900 dark:text-white">
+            <h3
+              className={`${dmSans.className} mb-8 text-2xl font-bold text-gray-900 dark:text-white`}
+            >
               Frequently Asked Questions
             </h3>
           </div>
@@ -232,27 +241,27 @@ const ContactItem = ({
       {icon}
     </div>
     <div className="flex-1">
-      <h4 className="text-sm font-medium text-gray-900 dark:text-white">
+      <h4
+        className={`${dmSans.className} text-sm font-semibold text-gray-900 dark:text-white`}
+      >
         {title}
       </h4>
       <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">
         {value}
       </p>
-      <p className="text-xs text-gray-500 dark:text-gray-400">{description}</p>
+      <p className="text-xs text-gray-500 dark:text-gray-300">{description}</p>
     </div>
   </div>
 );
 
 const SocialLinks = () => {
   const socialLinks = [
-    { icon: <FaFacebook className="h-5 w-5" />, href: "#", label: "Facebook" },
-    { icon: <FaXTwitter className="h-5 w-5" />, href: "#", label: "Twitter" },
-    { icon: <FaLinkedin className="h-5 w-5" />, href: "#", label: "LinkedIn" },
-    { icon: <FaYoutube className="h-5 w-5" />, href: "#", label: "YouTube" },
-    { icon: <FaDiscord className="h-5 w-5" />, href: "#", label: "Discord" },
+    { icon: <FaGithub className="h-5 w-5" />, href: "https://github.com/amangit1314", label: "GitHub" },
+    { icon: <FaXTwitter className="h-5 w-5" />, href: "https://twitter.com/Hulk131469", label: "Twitter" },
+    { icon: <FaLinkedin className="h-5 w-5" />, href: "https://www.linkedin.com/in/aman-soni1", label: "LinkedIn" },
     {
       icon: <RiInstagramFill className="h-5 w-5" />,
-      href: "#",
+      href: "https://www.instagram.com/soni.amanic/",
       label: "Instagram",
     },
   ];
@@ -287,12 +296,14 @@ const FAQCard = ({
 }) => (
   <motion.div
     whileHover={{ y: -2 }}
-    className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 transition-shadow hover:shadow-md dark:bg-zinc-800 dark:ring-zinc-700"
+    className="rounded-xl bg-white p-6 shadow-sm ring-1 group ring-gray-200 transition-shadow hover:bg-blue-500 hover:text-white hover:shadow-md dark:bg-zinc-800 dark:hover:bg-blue-500  dark:ring-zinc-700"
   >
-    <h4 className="mb-3 font-semibold text-gray-900 dark:text-white">
+    <h4
+      className={`${dmSans.className} mb-3 font-semibold text-gray-900 dark:text-white group-hover:text-white dark:group-hover:text-white`}
+    >
       {question}
     </h4>
-    <p className="text-sm text-gray-600 dark:text-gray-300">{answer}</p>
+    <p className="text-sm text-gray-600 dark:text-gray-300 group-hover:text-gray-300 dark:group-hover:text-gray-300">{answer}</p>
   </motion.div>
 );
 
@@ -326,214 +337,10 @@ const formSchema = z.object({
 
 export default HelpAndSupport;
 
-// const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
-//   const { user } = useUserStore();
-//   const userId = user!.id;
-
-//   const form = useForm({
-//     resolver: zodResolver(formSchema),
-//     defaultValues: {
-//       firstName: "",
-//       lastName: "",
-//       email: "",
-//       phone: "",
-//       subject: "",
-//       message: "",
-//     },
-//   });
-
-//   const { isSubmitting, isValid } = form.formState;
-
-//   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-//     try {
-//       const response = await axios.post(`/api/profile/${userId}/contact`, {
-//         fromEmail: values.email,
-//         toEmail: "support@coursewave.com",
-//         phone: values.phone,
-//         name: `${values.firstName} ${values.lastName}`,
-//         subject: values.subject,
-//         message: values.message,
-//       });
-
-//       if (response.data.status) {
-//         toast.success("Message sent successfully! We'll get back to you soon.");
-//         form.reset();
-//         onSuccess();
-//       } else {
-//         toast.error("Failed to send message. Please try again.");
-//       }
-//     } catch (error: any) {
-//       console.error("Error sending contact email:", error);
-//       toast.error("Something went wrong. Please try again later.");
-//     }
-//   };
-
-//   return (
-//     <Form {...form}>
-//       <Toaster />
-//       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-//         {/* Name Fields */}
-//         <div className="grid gap-4 md:grid-cols-2">
-//           <FormField
-//             control={form.control}
-//             name="firstName"
-//             render={({ field }) => (
-//               <FormItem>
-//                 <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-//                   First Name
-//                 </FormLabel>
-//                 <FormControl>
-//                   <Input
-//                     disabled={isSubmitting}
-//                     className="h-11 border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
-//                     placeholder="Enter your first name"
-//                     {...field}
-//                   />
-//                 </FormControl>
-//                 <FormMessage />
-//               </FormItem>
-//             )}
-//           />
-
-//           <FormField
-//             control={form.control}
-//             name="lastName"
-//             render={({ field }) => (
-//               <FormItem>
-//                 <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-//                   Last Name
-//                 </FormLabel>
-//                 <FormControl>
-//                   <Input
-//                     disabled={isSubmitting}
-//                     className="h-11 border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
-//                     placeholder="Enter your last name"
-//                     {...field}
-//                   />
-//                 </FormControl>
-//                 <FormMessage />
-//               </FormItem>
-//             )}
-//           />
-//         </div>
-
-//         {/* Contact Fields */}
-//         <div className="grid gap-4 md:grid-cols-2">
-//           <FormField
-//             control={form.control}
-//             name="email"
-//             render={({ field }) => (
-//               <FormItem>
-//                 <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-//                   Email Address
-//                 </FormLabel>
-//                 <FormControl>
-//                   <Input
-//                     disabled={isSubmitting}
-//                     type="email"
-//                     className="h-11 border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
-//                     placeholder="Enter your email address"
-//                     {...field}
-//                   />
-//                 </FormControl>
-//                 <FormMessage />
-//               </FormItem>
-//             )}
-//           />
-
-//           <FormField
-//             control={form.control}
-//             name="phone"
-//             render={({ field }) => (
-//               <FormItem>
-//                 <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-//                   Phone Number
-//                 </FormLabel>
-//                 <FormControl>
-//                   <Input
-//                     disabled={isSubmitting}
-//                     className="h-11 border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
-//                     placeholder="Enter your phone number"
-//                     {...field}
-//                   />
-//                 </FormControl>
-//                 <FormMessage />
-//               </FormItem>
-//             )}
-//           />
-//         </div>
-
-//         {/* Subject Field */}
-//         <FormField
-//           control={form.control}
-//           name="subject"
-//           render={({ field }) => (
-//             <FormItem>
-//               <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-//                 Subject
-//               </FormLabel>
-//               <FormControl>
-//                 <Input
-//                   disabled={isSubmitting}
-//                   className="h-11 border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
-//                   placeholder="What is this about?"
-//                   {...field}
-//                 />
-//               </FormControl>
-//               <FormMessage />
-//             </FormItem>
-//           )}
-//         />
-
-//         {/* Message Field */}
-//         <FormField
-//           control={form.control}
-//           name="message"
-//           render={({ field }) => (
-//             <FormItem>
-//               <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-//                 Message
-//               </FormLabel>
-//               <FormControl>
-//                 <Textarea
-//                   disabled={isSubmitting}
-//                   rows={6}
-//                   className="border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
-//                   placeholder="Tell us how we can help you..."
-//                   {...field}
-//                 />
-//               </FormControl>
-//               <FormMessage />
-//             </FormItem>
-//           )}
-//         />
-
-//         {/* Submit Button */}
-//         <Button
-//           type="submit"
-//           disabled={!isValid || isSubmitting}
-//           className="h-12 w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg transition-all hover:from-blue-700 hover:to-blue-800 hover:shadow-xl disabled:opacity-50 dark:from-blue-500 dark:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-700"
-//         >
-//           {isSubmitting ? (
-//             <>
-//               <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
-//               Sending...
-//             </>
-//           ) : (
-//             <>
-//               <SendIcon className="mr-2 h-4 w-4" />
-//               Send Message
-//             </>
-//           )}
-//         </Button>
-//       </form>
-//     </Form>
-//   );
-// };
 
 const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const { user } = useUserStore();
-  const userId = user?.id; // ✅ safe optional access
+  const userId = user?.id; // safe optional access
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -581,8 +388,162 @@ const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
   return (
     <Form {...form}>
       <Toaster />
+
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* ...form fields... */}
+        {/* Name Fields */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="firstName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  First Name
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={isSubmitting}
+                    className="h-11 border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                    placeholder="Enter your first name"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="lastName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Last Name
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={isSubmitting}
+                    className="h-11 border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                    placeholder="Enter your last name"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* Contact Fields */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Email Address
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={isSubmitting}
+                    type="email"
+                    className="h-11 border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                    placeholder="Enter your email address"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Phone Number
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    disabled={isSubmitting}
+                    className="h-11 border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                    placeholder="Enter your phone number"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* Subject Field */}
+        <FormField
+          control={form.control}
+          name="subject"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Subject
+              </FormLabel>
+              <FormControl>
+                <Input
+                  disabled={isSubmitting}
+                  className="h-11 border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                  placeholder="What is this about?"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Message Field */}
+        <FormField
+          control={form.control}
+          name="message"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Message
+              </FormLabel>
+              <FormControl>
+                <Textarea
+                  disabled={isSubmitting}
+                  rows={6}
+                  className="border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                  placeholder="Tell us how we can help you..."
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Submit Button */}
+        <Button
+          type="submit"
+          disabled={!isValid || isSubmitting}
+          className="h-12 w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg transition-all hover:from-blue-700 hover:to-blue-800 hover:shadow-xl disabled:opacity-50 dark:from-blue-500 dark:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-700"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+              Sending...
+            </>
+          ) : (
+            <>
+              <SendIcon className="mr-2 h-4 w-4" />
+              Send Message
+            </>
+          )}
+        </Button>
       </form>
     </Form>
   );

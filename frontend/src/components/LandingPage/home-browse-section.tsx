@@ -16,9 +16,11 @@ import {
   Shield,
   Zap,
 } from "lucide-react";
+import { dmSans } from "@/lib/config/fonts";
 
 gsap.registerPlugin(ScrollTrigger);
 
+/// =============================================================================
 const HomeBrowseSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
@@ -155,7 +157,9 @@ const HomeBrowseSection = () => {
             </span>
             <Sparkles className="h-6 w-6 text-blue-500" />
           </div>
-          <h2 className="browse-title text-3xl font-bold tracking-tight text-zinc-800 dark:text-white sm:text-4xl lg:text-5xl">
+          <h2
+            className={`${dmSans.className} browse-title text-3xl font-bold tracking-tight text-zinc-800 dark:text-white sm:text-4xl lg:text-5xl`}
+          >
             Discover Your Perfect
             <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
               {" "}
@@ -186,13 +190,13 @@ const HomeBrowseSection = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           viewport={{ once: true }}
         >
-          <Link href="/browseCourses">
+          <Link href="/roadmaps">
             <motion.button
-              className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
-              whileHover={{ scale: 1.05 }}
+              className={`${dmSans.className} group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105`}
+              whileHover={{ scale: 1.0 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span>Browse All Courses</span>
+              <span>Browse All</span>
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 opacity-0 blur transition-opacity group-hover:opacity-20" />
             </motion.button>
@@ -203,88 +207,9 @@ const HomeBrowseSection = () => {
   );
 };
 
-// const CategoryCard = ({
-//   icon: Icon,
-//   title,
-//   description,
-//   courses,
-//   gradient,
-//   bgGradient,
-//   darkBgGradient,
-//   features,
-//   index,
-// }: any) => {
-//   return (
-//     <motion.div
-//       className="browse-card group relative h-full cursor-pointer"
-//       // whileHover={{ y: -8 }}
-//       transition={{ duration: 0.3 }}
-//     >
-//       <Link href="/browseCourses" className="block h-full">
-//         <div
-//           className={`relative h-full overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-br ${bgGradient} p-6 shadow-lg transition-all duration-300 hover:shadow-2xl dark:border-gray-800 dark:bg-gradient-to-br ${darkBgGradient}`}
-//         >
-//           {/* Background Pattern */}
-//           <div className="absolute inset-0 opacity-5">
-//             <div className="h-full w-full bg-gradient-to-br from-current to-transparent" />
-//           </div>
+export default HomeBrowseSection;
 
-//           {/* Icon */}
-//           <div className="relative mb-6">
-//             <div
-//               className={`inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-r ${gradient} p-3 shadow-lg`}
-//             >
-//               <Icon className="floating-browse-icon h-8 w-8 text-white" />
-//             </div>
-//           </div>
-
-//           {/* Content */}
-//           <div className="relative space-y-4">
-//             <div className="flex items-start justify-between">
-//               <h3 className="text-xl font-bold text-zinc-800 dark:text-white">
-//                 {title}
-//               </h3>
-//               <span className="text-sm font-medium text-zinc-600 dark:text-gray-400">
-//                 {courses} courses
-//               </span>
-//             </div>
-
-//             <p className="text-sm leading-relaxed text-zinc-600 dark:text-gray-300">
-//               {description}
-//             </p>
-
-//             {/* Features */}
-//             <div className="space-y-2">
-//               {features.map((feature: string, idx: number) => (
-//                 <div key={idx} className="flex items-center space-x-2">
-//                   <div
-//                     className={`h-1.5 w-1.5 rounded-full bg-gradient-to-r ${gradient}`}
-//                   />
-//                   <span className="text-xs font-medium text-zinc-700 dark:text-gray-300">
-//                     {feature}
-//                   </span>
-//                 </div>
-//               ))}
-//             </div>
-
-//             {/* Arrow */}
-//             <div className="pt-4">
-//               <ArrowRight
-//                 className={`h-5 w-5 text-transparent transition-all duration-300 group-hover:text-current group-hover:translate-x-1 bg-gradient-to-r ${gradient} bg-clip-text`}
-//               />
-//             </div>
-//           </div>
-
-//           {/* Hover Effect */}
-//           <div
-//             className={`absolute inset-0 rounded-2xl bg-gradient-to-r ${gradient} opacity-0 transition-opacity duration-300 group-hover:opacity-5`}
-//           />
-//         </div>
-//       </Link>
-//     </motion.div>
-//   );
-// };
-
+/// =============================================================================
 const CategoryCard = ({
   icon: Icon,
   title,
@@ -314,14 +239,18 @@ const CategoryCard = ({
             </div>
 
             {/* Courses pill */}
-            <span className="inline-flex items-center rounded-full bg-zinc-900/5 px-3 py-1 text-xs font-medium text-zinc-700 backdrop-blur-sm dark:bg-white/10 dark:text-zinc-200">
+            <span
+              className={`${dmSans.className} inline-flex items-center rounded-full bg-zinc-900/5 px-3 py-1 text-xs font-medium text-zinc-700 backdrop-blur-sm dark:bg-white/10 dark:text-zinc-200`}
+            >
               {courses} courses
             </span>
           </div>
 
           {/* Content */}
           <div className="space-y-4">
-            <h3 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            <h3
+              className={`${dmSans.className} text-xl font-bold tracking-tight text-zinc-900 dark:text-white`}
+            >
               {title}
             </h3>
             <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
@@ -333,7 +262,7 @@ const CategoryCard = ({
               {features.map((feature: string, idx: number) => (
                 <span
                   key={idx}
-                  className={`inline-flex items-center rounded-full bg-gradient-to-r ${gradient} px-3 py-1 text-xs font-semibold text-white shadow-sm`}
+                  className={` ${dmSans.className} inline-flex items-center rounded-full bg-gradient-to-r ${gradient} px-3 py-1 text-xs font-semibold text-white shadow-sm`}
                 >
                   {feature}
                 </span>
@@ -357,5 +286,3 @@ const CategoryCard = ({
     </motion.div>
   );
 };
-
-export default HomeBrowseSection;

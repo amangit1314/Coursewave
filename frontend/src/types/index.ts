@@ -26,9 +26,6 @@ export type { SessionResponse, SessionType, Instructor } from './session';
 // Learning Goal Types
 export type { LearningGoal } from './learning-goal';
 
-// Subscription Types
-export type { SubscriptionPlan } from '../lib/config/subscriptionPlans';
-
 // API Response Types
 export interface ApiResponse<T> {
   success: boolean;

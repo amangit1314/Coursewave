@@ -127,6 +127,23 @@ export const validateUUID = (paramName: string) => {
   };
 };
 
+export const validateUUIDOrCourseId = (paramName: string) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params[paramName];
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const courseIdRegex = /^course_[a-z0-9]+$/i;
+    
+    if (!id || (!uuidRegex.test(id) && !courseIdRegex.test(id))) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid ${paramName} format`
+      });
+    }
+    
+    next();
+  };
+};
+
 /**
  * Middleware to validate email format
  * @returns Middleware function

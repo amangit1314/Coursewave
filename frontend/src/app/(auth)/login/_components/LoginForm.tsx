@@ -53,7 +53,7 @@ const LoginForm = () => {
         {/* Heading */}
         <div className="text-center">
           <h2
-            className={`${poppins.className} text-2xl font-bold text-gray-900 dark:text-white`}
+            className={`${dmSans.className} text-2xl tracking-tight font-bold text-gray-900 dark:text-white`}
           >
             Sign in to your account
           </h2>
@@ -66,10 +66,10 @@ const LoginForm = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Google Sign In */}
-          <SignInWithGoogleButton />
+          {/* <SignInWithGoogleButton /> */}
 
           {/* Divider */}
-          <div className="relative">
+          {/* <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
             </div>
@@ -80,12 +80,12 @@ const LoginForm = () => {
                 Or continue with email
               </span>
             </div>
-          </div>
+          </div> */}
 
           {/* Email Input */}
           <div className="space-y-2">
             <label
-              className={`${poppins.className} text-sm font-medium text-gray-700 dark:text-gray-300`}
+              className={`${dmSans.className} text-sm font-medium text-gray-700 dark:text-gray-300`}
             >
               Email address
             </label>
@@ -109,7 +109,7 @@ const LoginForm = () => {
           {/* Password Input */}
           <div className="space-y-2">
             <label
-              className={`${poppins.className} text-sm font-medium text-gray-700 dark:text-gray-300`}
+              className={`${dmSans.className} text-sm font-medium text-gray-700 dark:text-gray-300`}
             >
               Password
             </label>
@@ -145,7 +145,7 @@ const LoginForm = () => {
           <div className="flex items-center justify-between">
             <Link
               href="/forgotPassword"
-              className={`${poppins.className} text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300`}
+              className={`${dmSans.className} text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300`}
             >
               Forgot your password?
             </Link>

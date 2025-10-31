@@ -33,7 +33,7 @@ import { Project } from "@/types/project";
 import { Community } from "@/types/community";
 import { Message } from "@/types/message";
 import { OnlineUser } from "@/types/online-user";
-import { Course } from "@/types";
+import { Course } from "@/types/course";
 
 export const courses = [
   {
@@ -85,11 +85,18 @@ export const courses = [
 
 export const sampleCourses: Course[] = [
   {
-    isFree: false,
+    // isFree: false, // removed – not in Course type
     instructorId: "inst_001",
     isLive: true,
     isPublished: true,
-    categoryId: "cat_001",
+    totalStudents: 4,
+    category: {
+      id: "cat_001",
+      name: "Programming",
+      description: "Courses related to software development",
+      createdAt: new Date("2024-10-01T10:00:00Z"),
+      updatedAt: new Date("2024-10-01T10:00:00Z"),
+    },
     createdAt: "2025-01-10T12:00:00Z",
     updatedAt: "2025-02-01T10:30:00Z",
     averageRating: 4.8,
@@ -112,10 +119,12 @@ export const sampleCourses: Course[] = [
     dealPrice: 149,
     discount: 25,
     instructor: {
+      id: "inst_001",
       userId: "user_101",
       bio: "Full-stack developer with 10 years of experience.",
       expertise: ["JavaScript", "Node.js", "React"],
-      socialLinks: { twitter: "@js_guru", linkedin: "linkedin.com/in/jsguru" },
+      websiteUrl: "https://johndoe.dev",
+      // socialLinks: undefined,
       createdAt: "2024-12-01T08:00:00Z",
       updatedAt: "2025-01-01T08:00:00Z",
       user: {
@@ -124,14 +133,8 @@ export const sampleCourses: Course[] = [
         email: "john@example.com",
         profileImageUrl: "https://placehold.co/200x200/john",
         about: "Loves teaching and building scalable applications.",
+        shortSummary: "Experienced full-stack instructor",
       },
-    },
-    Category: {
-      id: "cat_001",
-      name: "Programming",
-      description: "Courses related to software development",
-      createdAt: "2024-10-01T10:00:00Z",
-      updatedAt: "2024-10-01T10:00:00Z",
     },
     sections: [
       {
@@ -1370,3 +1373,73 @@ export const sampleOnlineUsers: OnlineUser[] = [
     status: "online",
   },
 ];
+
+export const mockCourse = {
+  id: "course-1",
+  title: "Mastering Next.js 15",
+  sections: [
+    {
+      id: "section-1",
+      title: "Introduction",
+      Chapter: [
+        {
+          id: "chapter-1",
+          title: "Welcome",
+          description:
+            "This is the first chapter introducing the course and setup instructions.",
+          content: {
+            videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+          },
+          isCompleted: false,
+        },
+        {
+          id: "chapter-2",
+          title: "Getting Started",
+          description: "Learn how to get started with Next.js 15.",
+          content: {
+            videoUrl: "https://www.w3schools.com/html/movie.mp4",
+          },
+          isCompleted: false,
+        },
+      ],
+    },
+    {
+      id: "section-2",
+      title: "Core Concepts",
+      Chapter: [
+        {
+          id: "chapter-3",
+          title: "Routing in Next.js",
+          description: "Understanding the new App Router in depth.",
+          content: {
+            videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+          },
+          isCompleted: true,
+        },
+      ],
+    },
+  ],
+  attachments: [
+    { id: "att-1", name: "Slides.pdf", url: "/mock/Slides.pdf" },
+    { id: "att-2", name: "Cheatsheet.png", url: "/mock/Cheatsheet.png" },
+  ],
+  instructor: {
+    id: "inst-1",
+    userId: "",
+    name: "Aman Soni",
+    profilePic: "https://github.com/shadcn.png",
+    bio: "Experienced developer and instructor in React & Next.js",
+    expertise: ["Backend Development"],
+    websiteUrl: "https://github.com/amansoni",
+    createdAt: "",
+    updatedAt: "",
+    user: {
+      id: "inst-1",
+      name: "Aman Soni",
+      email: "aman@example.com",
+      profileImageUrl: "https://github.com/shadcn.png",
+      about: "Experienced developer and instructor in React & Next.js",
+      shortSummary: "Backend Developer | React & Next.js Instructor",
+    },
+  },
+};

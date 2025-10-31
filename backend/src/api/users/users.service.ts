@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 import { prisma } from "../../config/prisma";
 import { hashPassword, verifyPassword } from "../../core/utils/password";
 
@@ -17,9 +18,11 @@ export const getAllUsers = async (
       where: { userId: currentUserId },
     });
 
-    const isAdmin = userRoles.some(
-      (role: { role: string }) => role.role === "ADMIN"
-    );
+    // const isAdmin = userRoles.some(
+    //   (role: { role: string }) => role.role.toUpperCase()  === "ADMIN"
+    // );
+
+    const isAdmin = userRoles.some((role) => role.role === Role.ADMIN);
 
     if (!isAdmin) {
       return {
@@ -68,9 +71,11 @@ export const getUserById = async (
       where: { userId: currentUserId },
     });
 
-    const isAdmin = userRoles.some(
-      (role: { role: string }) => role.role === "ADMIN"
-    );
+    // const isAdmin = userRoles.some(
+    //   (role: { role: string }) => role.role.toUpperCase()  === "ADMIN"
+    // );
+
+    const isAdmin = userRoles.some((role) => role.role === Role.ADMIN);
 
     if (!isAdmin && userId !== currentUserId) {
       return {
@@ -201,12 +206,77 @@ export const updateUserProfile = async (
   }
 };
 
+// export const changePassword = async (
+//   userId: string,
+//   data: any
+// ): Promise<ServiceResponse> => {
+//   try {
+//     const { currentPassword, newPassword } = data;
+
+    
+
+//     const user = await prisma.user.findUnique({
+//       where: { id: userId },
+//     });
+
+//     if (!user) {
+//       return {
+//         success: false,
+//         message: "User not found",
+//         status: 404,
+//       };
+//     }
+
+//     const isPasswordValid = await verifyPassword(
+//       currentPassword,
+//       user.password
+//     );
+//     if (!isPasswordValid) {
+//       return {
+//         success: false,
+//         message: "Current password is incorrect",
+//         status: 401,
+//       };
+//     }
+
+//     const hashedPassword = await hashPassword(newPassword);
+
+//     await prisma.user.update({
+//       where: { id: userId },
+//       data: { password: hashedPassword },
+//     });
+
+//     return {
+//       success: true,
+//       message: "Password changed successfully",
+//       status: 200,
+//     };
+//   } catch (error: any) {
+//     console.log(`ERROR in changePassword: ${error.message}`);
+//     return {
+//       success: false,
+//       error: error.message,
+//       message: "Internal Server Error",
+//       status: 500,
+//     };
+//   }
+// };
+
 export const changePassword = async (
   userId: string,
   data: any
 ): Promise<ServiceResponse> => {
   try {
     const { currentPassword, newPassword } = data;
+
+    // Add validation
+    if (!currentPassword || !newPassword) {
+      return {
+        success: false,
+        message: "Current password and new password are required",
+        status: 400,
+      };
+    }
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -220,10 +290,20 @@ export const changePassword = async (
       };
     }
 
+    // Add check for user.password
+    if (!user.password) {
+      return {
+        success: false,
+        message: "User password not found",
+        status: 500,
+      };
+    }
+
     const isPasswordValid = await verifyPassword(
       currentPassword,
       user.password
     );
+    
     if (!isPasswordValid) {
       return {
         success: false,
@@ -507,6 +587,51 @@ export const getUserEnrollments = async (
       error: error.message,
       message: "Internal Server Error",
       status: 500,
+    };
+  }
+};
+
+export const checkArticleSaved = async (userId: string, articleId: string) => {
+  try {
+    // Find user and check if they have saved this article
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        savedArticles: {
+          where: {
+            blogId: articleId
+          },
+          select: {
+            blogId: true
+          }
+        }
+      }
+    });
+
+    if (!user) {
+      return {
+        success: false,
+        message: "User not found",
+        status: 404
+      };
+    }
+
+    const isSaved = user.savedArticles.length > 0;
+
+    return {
+      success: true,
+      data: { isSaved },
+      message: isSaved ? "Article is saved" : "Article is not saved",
+      status: 200
+    };
+
+  } catch (error: any) {
+    console.error("Error checking article saved status:", error);
+    return {
+      success: false,
+      error: error.message,
+      message: "Failed to check article saved status",
+      status: 500
     };
   }
 };

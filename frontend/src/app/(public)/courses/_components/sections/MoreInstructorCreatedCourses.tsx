@@ -100,7 +100,7 @@ export const MoreCreatedCourseNewItem = ({ course }: { course: Course }) => {
           {/* Top badges */}
           <div className="absolute top-3 left-3 right-3 flex justify-between items-start">
             <Badge className="bg-blue-500 text-white border-0">
-              {course.price === "0" ? "Free" : `$${course.price}`}
+              {course.price === 0 ? "Free" : `$${course.price}`}
             </Badge>
             <Badge className="bg-yellow-500 text-white border-0 flex items-center gap-1">
               <FaStar className="w-3 h-3" />
@@ -162,7 +162,7 @@ export const MoreCreatedCourseNewItem = ({ course }: { course: Course }) => {
         {/* Price and Action */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {course.price === "0" ? (
+            {course.price === 0 ? (
               <span className="text-lg font-bold text-green-600">Free</span>
             ) : (
               <span className="text-lg font-bold text-zinc-900 dark:text-white">

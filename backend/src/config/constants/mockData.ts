@@ -7,3 +7,4 @@ export const MOCK_COURSES = [
   { id: "101", title: "React Basics" },
   { id: "102", title: "Node.js Advanced" },
 ];
+

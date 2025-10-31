@@ -13,6 +13,9 @@ import {
   FileText,
   HelpCircle,
   Info,
+  Clock,
+  BookOpen,
+  Sparkles,
 } from "lucide-react";
 import { useCoursesStore } from "@/zustand/coursesStore";
 import { CourseSection } from "@/types/course-details-api-response";
@@ -20,6 +23,9 @@ import { useUserStore } from "@/zustand/userStore";
 import { ErrorMessage } from "./ErrorMessage";
 import { SampleCourseContent } from "./SampleCourseContent";
 import { useCourse } from "@/hooks/useCourses";
+import { cn } from "@/lib/utils/utils";
+import { dmSans } from "@/lib/config/fonts";
+
 
 export const CourseSectionsAndChapters = ({
   courseId,
@@ -50,29 +56,32 @@ export const CourseSectionsAndChapters = ({
   // Handle loading state
   if (isLoading) {
     return (
-      <Card className="border-0 shadow-lg dark:bg-zinc-900/90">
-        <CardHeader>
+      <Card className="border-0 shadow-xl dark:bg-zinc-900/90 rounded-2xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-zinc-800 dark:to-zinc-900 border-b border-gray-200 dark:border-zinc-700">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
             Course Content
           </h2>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <div className="space-y-4">
             {[...Array(3)].map((_, i) => (
               <div
-                key={i}
-                className="border border-gray-200 dark:border-gray-700 rounded-lg p-4"
+                key={`skeleton-${i}`}
+                className="border border-gray-200 dark:border-gray-700 rounded-xl p-4"
               >
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center justify-between mb-3">
                   <Skeleton className="h-6 w-48" />
                   <Skeleton className="h-4 w-16" />
                 </div>
-                <Skeleton className="h-4 w-32" />
-                <div className="mt-3 space-y-2">
+                <Skeleton className="h-4 w-32 mb-4" />
+                <div className="space-y-3">
                   {[...Array(2)].map((_, j) => (
-                    <div key={j} className="flex items-center space-x-3">
-                      <Skeleton className="h-8 w-8 rounded-full" />
-                      <div className="flex-1 space-y-1">
+                    <div
+                      key={`skeleton-${i}-${j}`}
+                      className="flex items-center space-x-3"
+                    >
+                      <Skeleton className="h-10 w-10 rounded-full" />
+                      <div className="flex-1 space-y-2">
                         <Skeleton className="h-4 w-3/4" />
                         <Skeleton className="h-3 w-1/2" />
                       </div>
@@ -90,13 +99,13 @@ export const CourseSectionsAndChapters = ({
   // Handle error state
   if (error) {
     return (
-      <Card className="border-0 shadow-lg dark:bg-zinc-900/90">
-        <CardHeader>
+      <Card className="border-0 shadow-xl dark:bg-zinc-900/90 rounded-2xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-zinc-800 dark:to-zinc-900 border-b border-gray-200 dark:border-zinc-700">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
             Course Content
           </h2>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <ErrorMessage
             title="Failed to load course content"
             message={error.message}
@@ -153,36 +162,50 @@ export const CourseSectionsAndChapters = ({
   }
 
   return (
-    <Card className="border-0 shadow-lg dark:bg-zinc-900/90">
-      <CardHeader>
+    <Card className="border-0 shadow-xl dark:bg-zinc-900/90 rounded-2xl overflow-hidden">
+      <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-zinc-800 dark:to-zinc-900 border-b border-gray-200 dark:border-zinc-700 p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h2 className={`${dmSans.className} text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 `}>
+              <BookOpen className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               Course Content
             </h2>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              {totalLessons} lessons • {freeLessons} free previews
-            </p>
+            <div className="flex items-center gap-4 mt-2">
+              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-700">
+                <BookOpen className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  {totalLessons} lessons
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-zinc-900 rounded-lg border border-emerald-200 dark:border-emerald-800">
+                <Sparkles className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+                <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+                  {freeLessons} free
+                </span>
+              </div>
+            </div>
           </div>
           <div className="text-right">
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              Course Duration
+            <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+              Total Duration
             </div>
-            <div className="text-lg font-semibold text-gray-900 dark:text-white">
-              {hours}h {minutes}m
+            <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl shadow-md">
+              <Clock className="h-4 w-4" />
+              <span className="text-lg font-bold">
+                {hours}h {minutes}m
+              </span>
             </div>
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
+      <CardContent className="p-6">
+        <div className="space-y-3">
           {sections
             .filter((section) => section.courseId === courseId)
             .map((section, sectionIndex) => {
               const lessons = Array.isArray(section.Chapter)
                 ? section.Chapter
                 : [];
-              // Use previous section's duration for display
               const prevDuration = prevSectionDurations[sectionIndex] || 0;
               const prevHours = Math.floor(prevDuration / 60);
               const prevMinutes = prevDuration % 60;
@@ -190,38 +213,62 @@ export const CourseSectionsAndChapters = ({
               return (
                 <div
                   key={section.id}
-                  className="border border-gray-200 dark:border-gray-700 rounded-lg"
+                  className={cn(
+                    "border rounded-xl overflow-hidden transition-all duration-200",
+                    expandedSections.has(section.id)
+                      ? "border-blue-300 dark:border-blue-700 shadow-lg"
+                      : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+                  )}
                 >
                   <button
                     onClick={() => toggleSection(section.id)}
-                    className="w-full px-4 py-3 flex items-center justify-between bg-gray-50 hover:bg-gray-100 dark:bg-zinc-900 dark:hover:bg-gray-800 transition-colors rounded-lg"
+                    className="w-full px-5 py-4 flex items-center justify-between bg-gray-50 hover:bg-gray-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 transition-colors"
                   >
-                    <div className="flex justify-start items-center space-x-3">
-                      {expandedSections.has(section.id) ? (
-                        <ChevronDown className="h-5 w-5 text-gray-500" />
-                      ) : (
-                        <ChevronRight className="h-5 w-5 text-gray-500" />
-                      )}
-
-                      {/* Section title */}
-                      <div className="flex flex-col ">
-                        <h3 className="font-semibold text-gray-900 dark:text-white text-left">
-                          Section {sectionIndex + 1}: {section.title}
-                        </h3>
-
-                        <p className="flex justify-start items-center text-left text-sm text-gray-600 dark:text-gray-400">
-                          {lessons.length} lessons
-                        </p>
+                    <div className="flex items-center space-x-4">
+                      <div
+                        className={cn(
+                          "p-2 rounded-lg transition-all duration-200",
+                          expandedSections.has(section.id)
+                            ? "bg-blue-100 dark:bg-blue-900/30 rotate-0"
+                            : "bg-gray-200 dark:bg-zinc-700"
+                        )}
+                      >
+                        {expandedSections.has(section.id) ? (
+                          <ChevronDown className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                        ) : (
+                          <ChevronRight className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                        )}
                       </div>
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {prevHours > 0 ? `${prevHours}h ` : ""}
-                      {prevMinutes}m
+
+                      <div className="flex flex-col items-start">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="px-2 py-0.5 bg-blue-600 text-white text-xs font-bold rounded">
+                            {sectionIndex + 1}
+                          </span>
+                          <h3 className={`${dmSans.className} font-bold text-gray-900 dark:text-white text-left`}>
+                            {section.title}
+                          </h3>
+                        </div>
+
+                        <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                          <span className="flex items-center gap-1">
+                            <BookOpen className="h-3.5 w-3.5" />
+                            {lessons.length} {lessons.length === 1 ? 'lesson' : 'lessons'}
+                          </span>
+                          {(prevHours > 0 || prevMinutes > 0) && (
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-3.5 w-3.5" />
+                              {prevHours > 0 && `${prevHours}h `}
+                              {prevMinutes}m
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </button>
 
                   {expandedSections.has(section.id) && (
-                    <div className="space-y-2">
+                    <div className="bg-white dark:bg-zinc-900 p-4 space-y-2">
                       {lessons.map((lesson, lessonIndex) => {
                         const isFree = lesson.isFree;
                         const isFirstTwoLessons =
@@ -232,66 +279,66 @@ export const CourseSectionsAndChapters = ({
                         return (
                           <div
                             key={lesson.id}
-                            className={`flex items-center space-x-3 p-3 rounded-lg transition-colors ${
+                            className={cn(
+                              "flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 border",
                               canPlay
-                                ? "hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer"
-                                : "bg-gray-50 dark:bg-gray-800 cursor-not-allowed"
-                            }`}
+                                ? "hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer border-transparent hover:border-blue-200 dark:hover:border-blue-800"
+                                : "bg-gray-50 dark:bg-gray-800/50 cursor-not-allowed border-gray-200 dark:border-gray-700"
+                            )}
                           >
                             <div className="flex-shrink-0">
                               {canPlay ? (
-                                <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                                  <Play className="h-4 w-4 text-blue-600 dark:text-blue-400 ml-0.5" />
+                                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-shadow">
+                                  <Play className="h-4 w-4 text-white ml-0.5" />
                                 </div>
                               ) : (
-                                <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                                <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
                                   <Lock className="h-4 w-4 text-gray-500" />
                                 </div>
                               )}
                             </div>
 
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center space-x-2">
+                              <div className="flex items-center space-x-2 mb-1">
                                 <h4
-                                  className={`font-medium text-sm ${
+                                  className={cn(
+                                    "font-semibold text-sm truncate",
                                     canPlay
                                       ? "text-gray-900 dark:text-white"
                                       : "text-gray-500 dark:text-gray-400"
-                                  }`}
+                                  )}
                                 >
                                   {lesson.title}
                                 </h4>
                                 {isFree && (
-                                  <Badge
-                                    variant="secondary"
-                                    className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                                  >
+                                  <Badge className="text-xs bg-gradient-to-r from-emerald-500 to-emerald-600 text-white border-0 font-bold shadow-sm">
                                     Free
                                   </Badge>
                                 )}
                                 {!canPlay && (
-                                  <Badge variant="outline" className="text-xs">
+                                  <Badge variant="outline" className="text-xs border font-semibold">
                                     Premium
                                   </Badge>
                                 )}
                               </div>
-                              <div className="flex items-center space-x-4 mt-1">
-                                <div className="flex items-center space-x-1 text-xs text-gray-500">
+                              <div className="flex items-center space-x-4 mt-1.5">
+                                <div className="flex items-center gap-1.5 px-2 py-1 bg-gray-100 dark:bg-zinc-800 rounded-md">
                                   {lesson.contentType === "VIDEO" && (
-                                    <Video className="h-3 w-3" />
+                                    <Video className="h-3 w-3 text-blue-600 dark:text-blue-400" />
                                   )}
                                   {lesson.contentType === "TEXT" && (
-                                    <FileText className="h-3 w-3" />
+                                    <FileText className="h-3 w-3 text-purple-600 dark:text-purple-400" />
                                   )}
                                   {lesson.contentType === "QUIZ" && (
-                                    <HelpCircle className="h-3 w-3" />
+                                    <HelpCircle className="h-3 w-3 text-orange-600 dark:text-orange-400" />
                                   )}
-                                  <span className="capitalize">
+                                  <span className="text-xs font-medium text-gray-700 dark:text-gray-300 capitalize">
                                     {lesson.contentType.toLowerCase()}
                                   </span>
                                 </div>
                                 {lesson.duration && (
-                                  <div className="text-xs text-gray-500">
+                                  <div className="flex items-center gap-1 text-xs font-medium text-gray-600 dark:text-gray-400">
+                                    <Clock className="h-3 w-3" />
                                     {Math.floor(lesson.duration / 60)}:
                                     {String(lesson.duration % 60).padStart(
                                       2,
@@ -318,21 +365,21 @@ export const CourseSectionsAndChapters = ({
         </div>
 
         {/* Course Access Notice */}
-        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-          <div className="flex items-start space-x-3">
+        <div className="mt-6 p-5 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800 shadow-sm">
+          <div className="flex items-start space-x-4">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-md">
+                <Info className="h-5 w-5 text-white" />
               </div>
             </div>
-            <div>
-              <h4 className="font-medium text-blue-900 dark:text-blue-100">
-                Course Access
+            <div className="flex-1">
+              <h4 className={`${dmSans.className} font-bold text-blue-900 dark:text-blue-100 mb-1`}>
+                Course Access Information
               </h4>
-              <p className="text-sm text-blue-800 dark:text-blue-200 mt-1">
+              <p className="text-sm text-blue-800 dark:text-blue-200 leading-relaxed">
                 The first 2 lessons are available for free preview. Enroll in
-                the course to access all content, including{" "}
-                {totalLessons - freeLessons} premium lessons.
+                the course to unlock all {totalLessons} lessons, including{" "}
+                <span className="font-semibold">{totalLessons - freeLessons} premium lessons</span> with lifetime access.
               </p>
             </div>
           </div>

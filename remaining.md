@@ -1,169 +1,168 @@
-24-05-2925
+24-05-2025
+15-10-2025
+16-10-2025
+22-10-2025
+23-10-2025
+24-10-2025
+26-10-2025
+27-10-2025
+28-10-2025
 
-[] Website lates too much time to load
-[] Home stats, fetching
-[] Do something about landing page about video and overlapping images of happy customers make it feasible
-[x] Correct what we offer ui and navigation on tap
-[] Make browse different course categories dynamic or remove this section
-[] Correct achieve your coding goals, explore button navigation
-[] Improve the testimonals ui, responsiveness on light mode it looks darker shadowed, 
-[] Make testimonials section actual dynamic
-[] make the Signup for newletter working
-[] Make read our policy working
-[] in bottom footer, make get help links work so that they actually navigate
-[] Similarly make the quick links working
-[] Attach changelog, privacy policy, licence, refund policy
-[] Make those icons of linkedin, discord, etc work [remove extra irrelevant ones]
-[] No hamburger icon is visible
-[] Make begin your journey working
-[x] Fix shadow of empower your future with modern learning items in light mode
-[] arrow Color and border color of the bottom footer in mobile view, 
---------------------------------------------------------------------------------------------------
+---
 
-[] No option for theme switch on login screen
-[x] Sign in with google should be white if the bg is blue
-[x] On hover of the eye icon, the pointer must be cursor.
-[] Show toast for all kind of error states on press of login button [ error]
-[] It doesnt redirect me to the main page after successfull login toast.
-[] Look for responsiveness of the login page
+1. [] Website lates too much time to load
+2. [] It takes time to redirect me to the `/browse` after successfull login toast.
 
---------------------------------------------------------------------------------------------------
+------------------------------------ ABOUT & CONTACT -------------------
 
-[] Register page responsiveness 
-[] No option to toggle theme
-[x] Same make the eye icon cursor pointer
+3. [] handle states (success, error, no internet etc.) and Send Mail is not working on `/helpAndSupport`
+4. [] - handle states (success, error, no internet etc.) and Send Mail is not working on `/forgotPassword` + `/resetPassword`
+5. [] - Fix and make `/verifyEmail` working perfectly.
 
--------------------------------------------------------------------------------------------------
+------------------------------------------ ARTICLE --------------------------------------
 
-[] forgot password the mobile view, card with email field, its padding needs to be same as that of other content [i.e similar to `enter your email` text]
-[] Make send email button cursor pointer,
-[] show toast messages on success and error
-[] Send Mail is not working
+6.  [] - article item in articles (
+        [x] - claps count,
+        [x] - like (clap),
+        [] - like (clapped) status,
+        [] - comments count,
+        [x] - save and unsave,
+        [x] - saved status,
+        [x] - share,
+        [] - follow / unfollow author,
+        [x] - report article
+        [] - article rating
+    )
+7. [] - Article Details (
+        [] - like count (
+                [] If already liked the article, in article details its not  showing filled
+                [] - i am able to like again and again (restrict a user can like only once, and if clicked again it will be disliked) {This is working on article item}
+                [x] - its working locally via cache perfectly
+                [] - no states toast messages and handle loading such that show ... at time of load (DO ONLY IF NECESSARY) 
+            )
+        [] - views count updates <---
+        [] - author profile page with (
+            [] - follow / unfollow author,
+            [] - report author,
+            [] - author articles,
+            [] - author courses
+        )
+        [] - Article rating (
+            [] - on article card
+            [] - on just below the main title of article
+            [] - rating stars
+            [] - rate article form
+            [] - can't rate again if already rated
+            [] - handle all states
+        )
+        [x] - comment management for article (
+            [x] - fix ui issues
+            [x] - handle cases (no articles, error)
+            [x] - write comment
+            [] - edit comment
+            [] - delete comment
+            [] - like comment
+        )
+    )
+
+----------------- COURSE ------------------------------------------
+8. Course Item (
+    [] - Add course to wishlist
+    [] - Status of wishlisted course item
+    [] - on tap again remove from wishlist
+)
+9. Course Details (
+    [] - back button, coursewave logo and course name can conflict in ui handle the scenarios in course details header (mobile view only)
+    [] - mobile view breadcrumn the course name is not showing
+    [] - enrolled students count, from backend
+    [] - Course level 
+    [] - the course right section of big screen one is comming down in the mobile view for mobile view think about something different organization or just (flex-reverse [only in mobile view])
+    [x] - share course url
+    [] - apply `couponCode` from couponCode dialog on course details page.
+    [] - add to cart
+    [] - Course Enrollment
+    [] - Course purchase
+    [] - Course allocation
+    [] - Course purchased email
+    [] - Successfully enrolled in course notification
+    [] - Course content (
+        [] - total duration calculation
+        [] - duration next to every chapter
+        [] - free video playback only (when user is not enrolled or not loggedIn)
+    )
+    [] - Course review (
+        [x] - list reviews
+        [] - write review
+        [] - edit review
+        [] - delete review
+        [] - update the review and rating bifercation in cache at real time (optimistic update)
+    )
+)
+10. [] - Course Content on learning side (
+        [] - text, quiz and video handling (based on content type)
+        [] - Video Ai Summary (only when content type is video)
+        [] - Chapter Notes Management
+        [] - show reviews of course in here at time of learning (NEED DICSUSSOn)
+    )
+
+---------------------- CART -------------------------------------------
+11. [] - Cart (
+        [] - states (empty, error, loading)
+        [] - Cart items
+        [] - Remove from cart
+        [] - Cart total
+        [] - Cart checkout
+        [] - Cart coupon codes
+    )
+
+----------------------- WISHLIST -------------------------------------
+12. [] - Wishlist (
+        [] - states (empty, error, loading)
+        [] - wishlisted items
+        [] - Remove from wishlist
+        [] - Add wishlisted item to cart
+    )
+
+------------------------ SUBSCRIPTION -----------------------------
+13. [] - subscription 
+
+-------------------- FIXES ------------------------------------------    
+14. [x] - back icon is missing on (cart + wishlist) <---
+15. [] - cart and wishlist not found error when user is not authenticated, restrict navigation on them in this case
+16. [] - Edit chapter (edit description, title is working but need to reload to see the change in the chapters list of section)
+17. [] - Delete article didn't refresh articles immediately needs to refresh or reload page to see change.
+
+----------------------- OPTIONAL FIXES -----------------------------------
+
+[] - Publish button should show a cursor pointer on `/write` article button
+[] - Make send email button cursor pointer on `/forgotPassword` 
+[] - Improve loading shimmer of 
+    [] - articles 
+    [] - cart
+    [] - wishlist
+    [] - article details
+[] - on learning goal checkbox it should be cursor pointer on hover. 
+[] - on click on save change, should show a cursor pointer 
+[] - Back to articles should change color on hover to blue 
+[] - In featured image, the edit and delete button should show cursor pointer on hover 
+[] - write button should show the cursor pointer on hover  on `/article` details
+[] - Make apply button hover, and show a cursor pointer on `couponCode` dialog. 
+
+------------------------- CHECKS ------------------------------------------
+[] - Change password the dialog is not closing on success (CHECK)
+[] - pagination for articles (CHECK)
+[] - pagination for courses (CHECK)
+[] - show learning activity for the logged in user, current learning activity chart is wrong in `/dashboard`(CHECK)
+[] - learning activity, colors of course students, sessions students is not correctly in `/dashboard`(CHECK)
+[] - the color reflects when i hover in `/dashboard` on learning activity chart(CHECK)
+[] - on dark mode, the data points are still dark in dark mode where it must be white in `/dashboard` learning activity chart(CHECK)
 
 
--------------------------------------------------------------------------------------------------
-[] On theme toggle when i hover on any light, dark or system a light color bg must follow to indicate user follow and that cursor should be pointer while hovering.
-[] correct the cart bg, its looking like mirror just a lot of text on glass.
-[] Same bg of the cart in notifications too.
-[] Same for the popup of the profile avatar.
-[] I think the sidebar color on mobile view should me same as that of the main screen, also change the color based on that.
-[] ON dark mode the border color or the sidebar and top navbar is too bright make it subtle.
-
-
-Total 38 till now.
-
-
--------------------------------------------------------------------------------------------------
-
-[] No option of theme toggle while on help & support page
-[] The border color of all the fields in here, looks awkward in dark mode, too bright i think remove them, just show an active border on the current field.
-[] The icon account links on the contact information are not correctly navigating.
-[] Handle state toast, message sent, error sending message, no internet etc.
-
-
--------------------------------------------------------------------------------------------------
-
-[] I select settings from sidebar, showing 404 not found page
-
--------------------------------------------------------------------------------------------------
-
-[] I select subscription from sidebar, showing [-- {Application error: a server-side exception has occurred while loading localhost (see the server logs for more information).
-Digest: 3481777393}
-
--------------------------------------------------------------------------------------------------
-
-[] - On sessions page i am seeing, Hello, {Your Username}, logged in user user name must be ther,
-[] - No content is there, other than two dropdowns
--------------------------------------------------------------------------------------------------
-[] - On articles tab, search bar is not working and look for its ui
-[] - IN articles there should be a shimmer in place of the text of loading
-[] - show a placeholder when no articles are available
-[] - pagination for articles
-[] - search is not working for articles
-
-
--------------------------------------------------------------------------------------------------
-
-[] - Article Detail, the follow button next to author name is not working
-[] - Save Article button is relfecting, but the saved item is not shown on user dashboard
-[] - Share article is not working on article detail
-[] - Three dot icons show a transparent container, that container must have a bg, to let user see properly
-[] - Followers count and follow button is not changing and responsive
-[] - lorem ipsum is showing in place of author short bio / tag
-[] - More from (not showing the author name here)
-[] - More from showing [No Articles yet]
-[] - Recommended from Coursewave [No Articles yet] showing
-[] - no option to see instructor profile
-[] - clap count is not reflecting 
-[] - no option to like
-[] - home says 1 comment when i go in details 0 comments showing
-[] - no option to see the comments
-[] - where is rating on the article?
-[] - see the write button on header its not visually appealing less padding from righ side
-[] - there is extra gap between arrow and back text in back button
-[] - write button should show the cursor pointer on hover
-
-
--------------------------------------------------------------------------------------------------
-
-[] - write article form and screen looks unconsistent,
-[] - the bg color and header color,
-[] - border in article title (should only be visible the active blue border),
-[] - the subtext should be of less opacity,
-[] - heading should be bold for [Article Title, Featured Image, Article Conten],
-[] - Featured image border is popping in eyes in dartk and darker in light,
-[] -  In featured image, the edit and delete button should show cursor pointer on hover
-[] - when i go in the article content , click on + icon, and select image, it replaces the featured image in place of adding the image to the article content, as we see in the medium,
-[] - the video button is not responsible on + button
-[] - the link button is not working, should show an option to add link in the article content, and ther should also be an option with bold, italic, underline to hyperlink any text.
-[] - Publish button should show a cursor pointer
-[] - showing error when i press publish button, {Error: Request failed with status code 404}
-[] - Back to articles should change color on hover to blue
-
--------------------------------------------------------------------------------------------------
-
-[] - manage shimmer and placeholders for error, success but no data, etc.
-[] - the price is not showing, if no price show free on course
-[] - the rating tag is black, where the price tag is transparent white in light, make them consistent
-[] - not enough categories to see and manage, the categories
-[] - there is an border on rating capsuel remove that
-
--------------------------------------------------------------------------------------------------
-
-[] - in here before loading, a error red box appeared
-[] - the header is somewhat distorted, the main icon and coursewave text should be in line,
-[] - course name and become instructor, theme, notifications, profile are not in alignment.
-[] - Make become instructor button font same as of home side.
-[] - course breadcrumb click is not navigating right, it goes to /browseCourses, must go to /browse.
-[] - make on demand duration dynamic
-[] - show chapter content in here, just like ss of the pyush garg website.
-[] - Already logged in but still showing, need to login first to buy
-[] - correct the toast on share, and it doesnt copy complete url of the course with complete path.
-[] - Correct ui of enter coupon code dialog.
-[] - i am unable to write anything in coupon code dialog.
-[] - Make apply button hover, and show a cursor pointer.
-[] - Make Enter coupon code ... as hint text, currently it showing as fixed text i cant even able to change it.
-[] - make the apply button working
-[] - Change the color of color image, and buy button bg color to somewhat dark black or according to theme, it seems off theme
-
--------------------------------------------------------------------------------------------------
-
-[] - the time is not reflecting correctly in dashboard
-[] - show learning activity for the logged in user, current learning activity chart is wrong
-[] - learning activity , colors of course students, sessions students is not correctly,
-[] - the color reflects when i hover, 
-[] - on dark mode, the data points are still dark in dark mode must be white
-[] - on dark mode change the color of hover card to match theme
-[] - manage no enrolled courses placeholder
-[] - my content - articles, are not showing properly
-[] - if i create articles, i should be able to see its analytics
-[] - new article button should have an cursor-pointer
-[] - Add learning goal dialog is off color completly.
-[] - in place of time via hand, let user pick time from time picker
-[] - on click on save change, should show a cursor pointer
-[] - and on tap of it should close the dialog after adding it correctly.
-[] - on learning goal checkbox it must show a hover cursor.
-
--------------------------------------------------------------------------------------------------
-
-[] - Profile not working
+-------------------------- LESS PRIORITY FOR CURRENT VERSION --------------
+- show more from author,
+- show less from author,
+- show more articles like this
+- show less articles like this
+- mute author,
+- Have an actual introduction video in landing about section
+- make the Signup for newletter working (OPTIONAL [NOT IMPLEMENTED])

@@ -35,7 +35,7 @@ export class ProfileService {
   }
 
   async updateProfile(updates: UpdateProfileRequest): Promise<any> {
-    const response = await this.apiManager.put(`/profile`, updates);
+    const response = await this.apiManager.put(`/users/profile`, updates);
     return response.data;
   }
 
@@ -101,18 +101,6 @@ export class ProfileService {
     return data;
   }
 
-  // -------------------- CONTACT & SUPPORT --------------------
-  async contactSupport(
-    userId: string,
-    payload: ContactSupportData
-  ): Promise<any> {
-    const { data } = await this.apiManager.post(
-      `/api/profile/${userId}/contact`,
-      payload
-    );
-    return data;
-  }
-
   // -------------------- PREFERENCES --------------------
   // TODO: verify
   async getUserPreferences(userId: string): Promise<any> {
@@ -155,25 +143,19 @@ export class ProfileService {
   }
 
   // -------------------- LEARNING --------------------
-  //todo: use proper types
-  // async getEnrolledCourses(): Promise<any> {
-  //   const response = await this.apiManager.get(`/users/enrollments`);
-  //   console.log("Get enrolled courses response: ", JSON.stringify(response));
-  //   return response.data;
-  // }
-
   async getEnrolledCourses(): Promise<Enrollment[]> {
     try {
-      const { data: response } =
-        await this.apiManager.get<UserEnrollmentsApiResponse<Enrollment[]>>(
-          "/users/enrollments"
-        );
+      const response = await this.apiManager.get("/users/enrollments");
 
-      if (!response.success) {
+      console.log("Raw API response:", response);
+
+      // Check if response is already the data object or the full Axios response
+      if (response.success) {
+        // If apiManager.get() returns the data directly
+        return response.data;
+      } else {
         throw new Error(response.message);
       }
-
-      return response.data;
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message ||
@@ -205,14 +187,15 @@ export class ProfileService {
     return data;
   }
 
-  // -------------------- ACCOUNT --------------------
+  // -------------------- ACCOUNT [DONE] --------------------
   async deleteAccount(password: string): Promise<any> {
-    const response = await this.apiManager.delete(`/profile`, {
+    const response = await this.apiManager.delete(`/users/`, {
       data: { password },
     });
     return response; // special case since no data will be available here
   }
 
+  /// --- TODO ---
   async verifyProfile(userId: string): Promise<any> {
     const { data } = await this.apiManager.post(
       `/api/profile/${userId}/verify`
@@ -238,6 +221,17 @@ export class ProfileService {
       settings
     );
     return data;
+  }
+
+  // Add this method to your ProfileService class
+
+  // -------------------- CONTACT & SUPPORT --------------------
+  async contactSupport(supportData: ContactSupportData): Promise<any> {
+    const response = await this.apiManager.post(
+      "/profile/contact",
+      supportData
+    );
+    return response.data;
   }
 }
 

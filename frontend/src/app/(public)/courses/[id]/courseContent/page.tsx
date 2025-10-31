@@ -160,68 +160,68 @@
 //   return (
 //     <div className="h-auto overflow-auto">
 //       {/* Header */}
-//       <div className="sticky top-0 z-30 flex w-full items-center justify-between bg-white/80 px-2 py-3 shadow-sm backdrop-blur dark:bg-[#18181b]/80">
-//         {/* Back Button */}
-//         <button
-//           className="mr-2 flex cursor-pointer border-stroke items-center rounded-md px-2 py-1 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-zinc-800"
-//           onClick={() => {
-//             if (typeof window !== "undefined") {
-//               window.history.back();
-//             }
-//           }}
-//           aria-label="Go back"
-//         >
-//           <svg
-//             className="h-5 w-5"
-//             fill="none"
-//             stroke="currentColor"
-//             strokeWidth={2}
-//             viewBox="0 0 24 24"
-//           >
-//             <path
-//               strokeLinecap="round"
-//               strokeLinejoin="round"
-//               d="M15 19l-7-7 7-7"
-//             />
-//           </svg>
-//           <span className="ml-1 hidden text-sm md:inline">Back</span>
-//         </button>
+// <div className="sticky top-0 z-30 flex w-full items-center justify-between bg-white/80 px-2 py-3 shadow-sm backdrop-blur dark:bg-[#18181b]/80">
+//   {/* Back Button */}
+//   <button
+//     className="mr-2 flex cursor-pointer border-stroke items-center rounded-md px-2 py-1 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-zinc-800"
+//     onClick={() => {
+//       if (typeof window !== "undefined") {
+//         window.history.back();
+//       }
+//     }}
+//     aria-label="Go back"
+//   >
+//     <svg
+//       className="h-5 w-5"
+//       fill="none"
+//       stroke="currentColor"
+//       strokeWidth={2}
+//       viewBox="0 0 24 24"
+//     >
+//       <path
+//         strokeLinecap="round"
+//         strokeLinejoin="round"
+//         d="M15 19l-7-7 7-7"
+//       />
+//     </svg>
+//     <span className="ml-1 hidden text-sm md:inline">Back</span>
+//   </button>
 
-//         {/* Breadcrumb with course name */}
-//         <div className="flex-1">
-//           <nav className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
-//             {/* <span className="hover:underline cursor-pointer" onClick={() => window.location.href = '/courses'}>
-//               Courses
-//             </span>
-//             <span>/</span> */}
-//             <span
-//               className="font-semibold truncate max-w-xs inline-block align-middle text-blue-600"
-//               title={course?.title}
-//             >
-//               {course?.title || "Course"}
-//             </span>
-//           </nav>
-//         </div>
+//   {/* Breadcrumb with course name */}
+//   <div className="flex-1">
+//     <nav className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+//       {/* <span className="hover:underline cursor-pointer" onClick={() => window.location.href = '/courses'}>
+//         Courses
+//       </span>
+//       <span>/</span> */}
+//       <span
+//         className="font-semibold truncate max-w-xs inline-block align-middle text-blue-600"
+//         title={course?.title}
+//       >
+//         {course?.title || "Course"}
+//       </span>
+//     </nav>
+//   </div>
 
-//         {/* Theme toggle and user avatar */}
-//         <div className="flex items-center space-x-3">
-//           {/* Course Progress */}
-//           <CourseProgress
-//             // course_id={courseId}
-//             // user_id={userId}
-//             value={79}
-//             variant="default"
-//             size="default"
-//             // You may need to pass additional props depending on your CourseProgress component
-//           />
+//   {/* Theme toggle and user avatar */}
+//   <div className="flex items-center space-x-3">
+//     {/* Course Progress */}
+//     <CourseProgress
+//       // course_id={courseId}
+//       // user_id={userId}
+//       value={79}
+//       variant="default"
+//       size="default"
+//       // You may need to pass additional props depending on your CourseProgress component
+//     />
 
-//           {/* Theme Toggle */}
-//           <ThemeModeToggle />
+//     {/* Theme Toggle */}
+//     <ThemeModeToggle />
 
-//           {/* User Avatar */}
-//           <UserAvatar />
-//         </div>
-//       </div>
+//     {/* User Avatar */}
+//     <UserAvatar />
+//   </div>
+// </div>
 
 //       {/* Course details */}
 //       <CourseDetails
@@ -923,7 +923,8 @@ const CourseContentPage = () => {
     isLoading: isCourseLoading,
     error: courseError,
   } = useCourse(courseId);
-  const course = courseData?.data ?? ({} as Course);
+  // const course = courseData?.data ?? ({} as Course);
+  const course = courseData;
 
   // Ensure sections is always an array
   const sections = Array.isArray((course as any)?.sections)

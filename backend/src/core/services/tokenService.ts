@@ -7,8 +7,8 @@ const prisma = new PrismaClient();
 
 // Token configuration
 const TOKEN_CONFIG = {
-  ACCESS_TOKEN_EXPIRY: '15m',
-  REFRESH_TOKEN_EXPIRY: 7 * 24 * 60 * 60 * 1000, // 7 days
+  ACCESS_TOKEN_EXPIRY: '1d', // Keep it as 1d to match your current setup
+  REFRESH_TOKEN_EXPIRY: 14 * 24 * 60 * 60 * 1000, // 14 days
   VERIFY_EMAIL_EXPIRY: 24 * 60 * 60 * 1000, // 1 day
   RESET_PASSWORD_EXPIRY: 60 * 60 * 1000, // 1 hour
   MAX_REFRESH_TOKENS_PER_USER: 5, // Maximum active refresh tokens per user

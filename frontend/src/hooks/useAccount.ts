@@ -27,7 +27,7 @@ export function useBecomeInstructor() {
 export function useChangePassword() {
   return useMutation({
     mutationFn: (data: ChangePasswordData) =>
-      profileService.changePassword(data.oldPassword, data.newPassword),
+      profileService.changePassword(data.currentPassword, data.newPassword),
   });
 }
 
@@ -60,8 +60,8 @@ export function useUpdateProfile() {
 export const useEnrolledCourses = () => {
   const fetchEnrolledCourses = async () => {
     const enrollments = await profileService.getEnrolledCourses();
-    console.log("Enrolled courses response:", enrollments);
-    return enrollments;
+    console.log("Enrolled courses response:", JSON.stringify(enrollments));
+    return enrollments || [];
   };
 
   const { data, isLoading, error } = useQuery({

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../config/prisma";
 
-const prisma = new PrismaClient();
 export async function courseExists(
   req: Request,
   res: Response,
@@ -32,6 +31,9 @@ export async function courseExists(
             Chapter: true,
           },
         },
+        _count: {
+          select: { Enrollment: true }, // Assumes relation: course.enrollments[]
+        },
       },
     });
 
@@ -42,12 +44,24 @@ export async function courseExists(
       });
     }
 
-    // Attach course to request
-    (req as any).course = course;
+    // Will be available as course._count.enrollments
+    const studentCount = course._count.Enrollment;
 
+    (req as any).course = course;
+    (req as any).course.studentCount = studentCount;
     next();
   } catch (error: any) {
-    console.error("Error in courseExists middleware:", error.message);
+    console.error("Error in courseExists middleware:", error);
+
+    // Handle database connection errors specifically
+    if (error.name === "PrismaClientInitializationError") {
+      return res.status(503).json({
+        success: false,
+        message: "Database connection unavailable",
+        error: "Service temporarily unavailable",
+      });
+    }
+
     return res.status(500).json({
       success: false,
       error: "Internal server error",

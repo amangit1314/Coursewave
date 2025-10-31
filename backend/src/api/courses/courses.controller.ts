@@ -28,6 +28,10 @@ import {
 
 import { prisma } from "../../config/prisma";
 import { slugify } from "../../core/utils/slugify";
+// import * as stripeService from "./../webhooks/stripe/stripe.service";
+import { stripe } from "../../config/stripe";
+import { aw } from "@upstash/redis/zmscore-BshEAkn7";
+import { EnrollmentStatus } from "@prisma/client";
 
 // ------------------------------------------ COURSES ----------------------------------------
 export const getAllPublishedCourses = async (req: Request, res: Response) => {
@@ -59,11 +63,21 @@ export const getAllPublishedCourses = async (req: Request, res: Response) => {
           },
         },
         Category: { select: { id: true, name: true } },
+        _count: {
+          select: {
+            Enrollment: true,
+          },
+        },
       },
       orderBy: { createdAt: "desc" },
       take: limit + 1, // fetch one extra to check if there's a next page
       ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}), // skip the current cursor
     });
+
+    const coursesWithStudentCount = courses.map((course) => ({
+      ...course,
+      studentCount: course._count.Enrollment,
+    }));
 
     // Determine next cursor
     let nextCursor: string | null = null;
@@ -74,7 +88,7 @@ export const getAllPublishedCourses = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       success: true,
-      data: courses,
+      data: coursesWithStudentCount,
       pagination: {
         nextCursor,
         hasNext: !!nextCursor,
@@ -324,8 +338,22 @@ export const updateCourse = async (req: Request, res: Response) => {
     const userId = req.user.id;
     const courseId = req.params.courseId;
 
-    const { title, description, price, categories, categoryId, isPublished } =
-      req.body;
+    const {
+      title,
+      description,
+      price,
+      categories,
+      categoryId,
+      isPublished,
+      isLive,
+      imageUrl,
+      learningOutcomes,
+      technologies,
+      targetAudience,
+      prerequisites,
+      discount,
+      dealPrice,
+    } = req.body;
 
     // Only update fields if they are provided in req.body
     const updateData: any = {};
@@ -334,7 +362,17 @@ export const updateCourse = async (req: Request, res: Response) => {
     if (price !== undefined) updateData.price = price;
     if (categoryId !== undefined) updateData.categoryId = categoryId;
     if (isPublished !== undefined) updateData.isPublished = isPublished;
+    if (isLive !== undefined) updateData.isLive = isLive;
     if (categories !== undefined) updateData.categories = categories;
+    if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
+    if (learningOutcomes !== undefined)
+      updateData.learningOutcomes = learningOutcomes;
+    if (technologies !== undefined) updateData.technologies = technologies;
+    if (targetAudience !== undefined)
+      updateData.targetAudience = targetAudience;
+    if (prerequisites !== undefined) updateData.prerequisites = prerequisites;
+    if (discount !== undefined) updateData.discount = discount;
+    if (dealPrice !== undefined) updateData.dealPrice = dealPrice;
 
     const updatedCourse = await prisma.course.update({
       where: {
@@ -392,6 +430,167 @@ export const deleteCourse = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.log("ERROR in deleting course: ", error.message);
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
+// ------------------------------------------- COURSE ENROLLMENT & PAYMENT --------------------
+
+export const createCheckout = async (req: Request, res: Response) => {
+  try {
+    const { courseId } = req.params;
+    const { finalPrice, isCartCheckout } = req.body;
+    const userId = req.user.id;
+
+    // Fetch user
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { stripeCustomer: true },
+    });
+    if (!user)
+      return res.status(404).json({ success: false, error: "User not found" });
+
+    // Fetch course
+    const course = await prisma.course.findUnique({
+      where: { id: courseId },
+    });
+    if (!course)
+      return res
+        .status(404)
+        .json({ success: false, error: "Course not found" });
+
+    // Check if already enrolled
+    const existingEnrollment = await prisma.enrollment.findUnique({
+      where: { userId_courseId: { userId, courseId } },
+    });
+
+    if (existingEnrollment)
+      return res
+        .status(400)
+        .json({ success: false, error: "Already enrolled in this course" });
+
+    // Handle free course
+    if (course.isFree) {
+      const enrollment = await prisma.enrollment.create({
+        data: {
+          id: `enrollment-${userId.slice(0, 6)}-${courseId.slice(0, 6)}`,
+          userId,
+          courseId,
+          status: "ACTIVE",
+          progress: 0,
+        },
+      });
+      return res.status(201).json({
+        success: true,
+        message: "Successfully enrolled in free course",
+        data: enrollment,
+      });
+    }
+
+    // --- Stripe Customer Setup ---
+    let stripeCustomerId = user.stripeCustomer?.id;
+    if (!stripeCustomerId) {
+      const customer = await stripe.customers.create({
+        email: user.email ?? "",
+        name: user.name ?? "",
+      });
+      stripeCustomerId = customer.id;
+      await prisma.stripeCustomer.create({
+        data: { stripeCustomerId: customer.id, userId },
+      });
+    }
+
+    // --- Dynamic Price Creation ---
+    const effectivePrice =
+      course.discount > 0 ? course.dealPrice : course.price; // use discounted if available
+    const price = await stripe.prices.create({
+      unit_amount: Math.round(effectivePrice), // amount in cents
+      currency: "usd",
+      product_data: {
+        name: course.title,
+        metadata: {
+          id: course.id,
+          // description: course.description
+        },
+      },
+    });
+
+    // --- Frontend URLs ---
+    const frontendUrl =
+      process.env.NODE_ENV === "production"
+        ? process.env.FRONTEND_URL_PROD
+        : process.env.FRONTEND_URL;
+
+    if (!frontendUrl || !frontendUrl.startsWith("http")) {
+      throw new Error(
+        `Invalid FRONTEND_URL: ${frontendUrl}. Must include http:// or https://`
+      );
+    }
+
+    // --- Create Stripe Checkout Session ---
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      payment_method_types: ["card"],
+      customer: stripeCustomerId,
+      line_items: [{ price: price.id, quantity: 1 }],
+      metadata: { userId, courseId },
+      success_url: `${frontendUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${frontendUrl}/cancel`,
+    });
+
+    // --- Create Pending Enrollment ---
+    await prisma.enrollment.create({
+      data: {
+        id: `enrollment-${userId.slice(0, 6)}-${courseId.slice(0, 6)}`,
+        userId,
+        courseId,
+        status: EnrollmentStatus.PENDING, // mark as pending until payment confirmed via webhook
+      },
+    });
+
+    // --- Return Checkout URL ---
+    return res.status(200).json({
+      success: true,
+      data: {
+        checkoutUrl: session.url,
+        sessionId: session.id,
+      },
+    });
+  } catch (error: any) {
+    console.error("Error creating checkout:", error);
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
+export const getEnrollmentStatus = async (req: Request, res: Response) => {
+  try {
+    const { courseId } = req.params;
+    const userId = (req as any).user.id;
+
+    const enrollment = await prisma.enrollment.findUnique({
+      where: {
+        userId_courseId: {
+          userId,
+          courseId,
+        },
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        isEnrolled: !!enrollment,
+        enrollment,
+      },
+    });
+  } catch (error: any) {
+    console.log("ERROR checking enrollment: ", error.message);
     return res.status(500).json({
       success: false,
       error: error.message,
@@ -565,11 +764,8 @@ export const createSection = async (req: Request, res: Response) => {
 export const editSection = async (req: Request, res: Response) => {
   try {
     // Update an existing course section
-    const {
-      sectionId,
-      title: newTitle,
-      description: newDescription,
-    } = req.body;
+    const sectionId = req.params.sectionId;
+    const { title: newTitle, description: newDescription } = req.body;
 
     if (!sectionId) {
       return res.status(400).json({
@@ -601,7 +797,7 @@ export const editSection = async (req: Request, res: Response) => {
 
 export const deleteSection = async (req: Request, res: Response) => {
   try {
-    const { sectionId } = req.body;
+    const sectionId = req.params.sectionId;
 
     if (!sectionId) {
       return res.status(400).json({
@@ -749,28 +945,114 @@ export const editChapter = async (req: Request, res: Response) => {
       newSectionId,
     } = req.body;
 
-    const chapterUpdateSchema = z.object({
-      title: z.string().min(10).max(150).optional(),
-      description: z.string().min(50).max(500).optional(),
-      contentType: z.string().optional(),
-      position: z.number().optional(),
-      content: z.json().optional(),
-      newSectionId: z.string().optional(),
+    console.log("📥 Received update data:", {
+      title,
+      description,
+      contentType,
+      content,
+      position,
+      newSectionId,
     });
+
+    // Helper function to normalize content type
+    const normalizeContentType = (contentType: string): string => {
+      const typeMap: Record<string, string> = {
+        video: "VIDEO",
+        text: "TEXT",
+        quiz: "QUIZ",
+        assignment: "ASSIGNMENT",
+        resource: "RESOURCE",
+        live: "LIVE",
+      };
+
+      return typeMap[contentType.toLowerCase()] || contentType.toUpperCase();
+    };
+
+    // Define valid content types based on your Prisma enum
+    const validContentTypes = [
+      "VIDEO",
+      "TEXT",
+      "QUIZ",
+      "ASSIGNMENT",
+      "RESOURCE",
+      "LIVE",
+    ] as const;
+
+    const chapterUpdateSchema = z.object({
+      title: z
+        .string()
+        .min(1, "Title must be at least 1 character")
+        .max(150, "Title cannot exceed 150 characters")
+        .optional()
+        .or(z.null()),
+      description: z
+        .string()
+        .max(500, "Description cannot exceed 500 characters")
+        .optional()
+        .or(z.null()),
+      contentType: z
+        .enum(validContentTypes, {
+          message: `Content type must be one of: ${validContentTypes.join(
+            ", "
+          )}`,
+        })
+        .optional()
+        .or(z.null()),
+      position: z.number().optional().or(z.null()),
+      content: z.any().optional().or(z.null()),
+      newSectionId: z
+        .string()
+        .uuid("Invalid section ID format")
+        .optional()
+        .or(z.null()),
+    });
+
+    // Normalize contentType before validation
+    const normalizedContentType = contentType
+      ? normalizeContentType(contentType)
+      : contentType;
 
     const parseResult = chapterUpdateSchema.safeParse({
       title,
       description,
-      contentType,
+      contentType: normalizedContentType, // Use normalized value
       position,
       content,
       newSectionId,
     });
 
     if (!parseResult.success) {
+      console.log("❌ Validation errors:", parseResult.error.issues);
+
+      // Transform Zod errors into user-friendly messages
+      const errorMessages = parseResult.error.issues.map((issue) => {
+        const rawField = issue.path[0];
+        const field = String(rawField ?? "");
+        const capitalizedField = field
+          ? field.charAt(0).toUpperCase() + field.slice(1)
+          : "Field";
+
+        switch (issue.code) {
+          case "too_small":
+            return `${capitalizedField} ${issue.message}`;
+          case "too_big":
+            return `${capitalizedField} ${issue.message}`;
+          case "invalid_type":
+            return `${capitalizedField} has invalid type`;
+          case "invalid_value":
+            return `${capitalizedField} ${issue.message}`;
+          case "invalid_format":
+            return `${capitalizedField} ${issue.message}`;
+          default:
+            return `${capitalizedField} is invalid`;
+        }
+      });
+
       return res.status(400).json({
         success: false,
-        error: parseResult.error.issues,
+        error: "Validation failed",
+        details: errorMessages,
+        fields: parseResult.error.issues.map((issue) => issue.path[0]),
       });
     }
 
@@ -781,15 +1063,23 @@ export const editChapter = async (req: Request, res: Response) => {
         ...(description !== undefined && { description }),
         ...(position !== undefined && { position }),
         ...(content !== undefined && { content }),
-        ...(contentType !== undefined && { contentType }),
+        ...(normalizedContentType !== undefined && {
+          contentType: normalizedContentType as any, // Use normalized value for Prisma
+        }),
         ...(newSectionId !== undefined && { sectionId: newSectionId }),
       },
     });
 
+    console.log("✅ Chapter updated successfully:", updatedChapter.id);
     return res.status(200).json({ success: true, data: updatedChapter });
   } catch (error: any) {
     console.log("ERROR in updating chapter: ", error.message);
-    return res.status(500).json({ success: false, error: error.message });
+    return res.status(500).json({
+      success: false,
+      error: "Internal server error",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
   }
 };
 
