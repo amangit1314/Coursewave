@@ -38,11 +38,12 @@ import {
   Edit,
 } from "lucide-react";
 import { supabase } from "@/lib/config/supabase";
-import { Chapter } from "@/types/course-details-api-response";
+// import { Chapter } from "@/types/course-details-api-response";
 import { CustomSwitch } from "./PublishCourseForm";
 import { dmSans } from "@/lib/config/fonts";
 import RichTextEditor from "./RichTextEditor";
 import toast from "react-hot-toast";
+import { Chapter } from "@/types/courses.service.types";
 
 interface QuizQuestion {
   id: string;
@@ -128,7 +129,7 @@ export const EditChapterSheet = ({
       });
 
       // Parse quiz questions
-      if (chapter.contentType === "quiz") {
+      if (chapter.contentType.toLocaleLowerCase() === "quiz") {
         try {
           const questions = Array.isArray(content)
             ? content
@@ -283,7 +284,7 @@ export const EditChapterSheet = ({
         id: chapter.id,
         title: formData.title,
         description: formData.description,
-        contentType: formData.contentType,
+        contentType: formData.contentType.toUpperCase() as "VIDEO" | "QUIZ" | "TEXT" | "ASSIGNMENT" | undefined,
         content: finalContent, // ✅ Send as object, NOT stringified
         isPublished: formData.isPublished,
         isFree: formData.isFree,

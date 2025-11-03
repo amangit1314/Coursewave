@@ -12,6 +12,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import toast, { Toaster } from "react-hot-toast";
 import { Title } from "@tremor/react";
@@ -40,6 +41,11 @@ import { Input } from "@/components/ui/input";
 import clsx from "clsx";
 import { dmSans, poppins } from "@/lib/config/fonts";
 import { CustomSwitch } from "../courses/[courseId]/_components/PublishCourseForm";
+import { useUserStore } from "@/zustand/userStore";
+import { useRouter } from "next/navigation";
+import { useChangePassword, useDeleteAccount } from "@/hooks/useAccount";
+import { ChevronRight, Eye, EyeOff, Loader2, Lock } from "lucide-react";
+import { ChangePasswordData } from "@/types/profile.service.types";
 
 // ✅ Form Schema
 const FormSchema = z.object({
@@ -49,234 +55,6 @@ const FormSchema = z.object({
   marketing_emails: z.boolean().default(true).optional(),
   security_emails: z.boolean().default(true).optional(),
 });
-
-// interface CustomSwitchProps {
-//   checked: boolean | undefined;
-//   onCheckedChange: (value: boolean) => void;
-//   disabled?: boolean;
-//   size?: "sm" | "md" | "lg";
-//   variant?: "default" | "success" | "primary" | "warning";
-//   label?: string;
-//   description?: string;
-//   showIcons?: boolean;
-//   id?: string;
-//   "aria-label"?: string;
-//   "aria-labelledby"?: string;
-//   "aria-describedby"?: string;
-// }
-
-// export const CustomSwitch: React.FC<CustomSwitchProps> = ({
-//   checked,
-//   onCheckedChange,
-//   disabled = false,
-//   size = "md",
-//   variant = "default",
-//   label,
-//   description,
-//   showIcons = false,
-//   id,
-//   "aria-label": ariaLabel,
-//   "aria-labelledby": ariaLabelledBy,
-//   "aria-describedby": ariaDescribedBy,
-// }) => {
-//   const [isFocused, setIsFocused] = useState(false);
-//   // Handle undefined/null values properly
-//   const isChecked = Boolean(checked);
-
-//   // Precise size configurations - fixed positioning calculations
-//   const sizeConfig = {
-//     sm: {
-//       container: "h-5 w-9",
-//       thumb: "h-4 w-4",
-//       translateOn: "translate-x-4", // Move to right
-//       translateOff: "translate-x-0.5", // Move to left
-//       icon: "w-2.5 h-2.5",
-//     },
-//     md: {
-//       container: "h-6 w-11",
-//       thumb: "h-5 w-5",
-//       translateOn: "translate-x-5", // Move to right
-//       translateOff: "translate-x-0.5", // Move to left
-//       icon: "w-3 h-3",
-//     },
-//     lg: {
-//       container: "h-7 w-14",
-//       thumb: "h-6 w-6",
-//       translateOn: "translate-x-7", // Move to right
-//       translateOff: "translate-x-0.5", // Move to left
-//       icon: "w-4 h-4",
-//     },
-//   };
-
-//   // Clean color variants
-//   const variantConfig = {
-//     default: {
-//       active: "bg-green-500",
-//       inactive: "bg-gray-300 dark:bg-gray-600",
-//       focus: "focus:ring-green-500/20",
-//     },
-//     success: {
-//       active: "bg-emerald-500",
-//       inactive: "bg-gray-300 dark:bg-gray-600",
-//       focus: "focus:ring-emerald-500/20",
-//     },
-//     primary: {
-//       active: "bg-blue-500",
-//       inactive: "bg-gray-300 dark:bg-gray-600",
-//       focus: "focus:ring-blue-500/20",
-//     },
-//     warning: {
-//       active: "bg-amber-500",
-//       inactive: "bg-gray-300 dark:bg-gray-600",
-//       focus: "focus:ring-amber-500/20",
-//     },
-//   };
-
-//   const config = sizeConfig[size];
-//   const colors = variantConfig[variant];
-
-//   // Optimized icons
-//   const CheckIcon = () => (
-//     <svg
-//       className={clsx("text-green-600", config.icon)}
-//       fill="currentColor"
-//       viewBox="0 0 20 20"
-//     >
-//       <path
-//         fillRule="evenodd"
-//         d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-//         clipRule="evenodd"
-//       />
-//     </svg>
-//   );
-
-//   const XIcon = () => (
-//     <svg
-//       className={clsx("text-gray-500", config.icon)}
-//       fill="currentColor"
-//       viewBox="0 0 20 20"
-//     >
-//       <path
-//         fillRule="evenodd"
-//         d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-//         clipRule="evenodd"
-//       />
-//     </svg>
-//   );
-
-//   const handleKeyDown = (event: React.KeyboardEvent) => {
-//     if (event.key === " " || event.key === "Enter") {
-//       event.preventDefault();
-//       if (!disabled) {
-//         onCheckedChange(!isChecked);
-//       }
-//     }
-//   };
-
-//   const switchElement = (
-//     <button
-//       id={id}
-//       type="button"
-//       role="switch"
-//       aria-checked={isChecked}
-//       aria-label={ariaLabel}
-//       aria-labelledby={ariaLabelledBy}
-//       aria-describedby={ariaDescribedBy}
-//       disabled={disabled}
-//       onClick={() => !disabled && onCheckedChange(!isChecked)}
-//       onFocus={() => setIsFocused(true)}
-//       onBlur={() => setIsFocused(false)}
-//       onKeyDown={handleKeyDown}
-//       className={clsx(
-//         // Base styles
-//         "relative inline-flex items-center rounded-full p-0.5 transition-all duration-200 focus:outline-none",
-//         config.container,
-
-//         // Colors based on state
-//         isChecked ? colors.active : colors.inactive,
-
-//         // Focus and interaction states
-//         !disabled && [
-//           "cursor-pointer hover:shadow-md active:scale-95",
-//           isFocused && `ring-4 ${colors.focus}`,
-//         ],
-
-//         // Disabled state
-//         disabled && "cursor-not-allowed opacity-50"
-//       )}
-//     >
-//       {/* Thumb */}
-//       <div
-//         className={clsx(
-//           "flex items-center justify-center rounded-full bg-white shadow-md transition-all duration-200 transform",
-//           config.thumb,
-
-//           // Position based on checked state - fixed positioning
-//           isChecked ? config.translateOn : config.translateOff,
-
-//           // Hover effects
-//           !disabled && "hover:shadow-lg"
-//         )}
-//       >
-//         {showIcons && (
-//           <>
-//             <div
-//               className={clsx(
-//                 "absolute inset-0 flex items-center justify-center transition-all duration-150",
-//                 isChecked ? "opacity-100 scale-100" : "opacity-0 scale-75"
-//               )}
-//             >
-//               <CheckIcon />
-//             </div>
-//             <div
-//               className={clsx(
-//                 "absolute inset-0 flex items-center justify-center transition-all duration-150",
-//                 !isChecked ? "opacity-100 scale-100" : "opacity-0 scale-75"
-//               )}
-//             >
-//               <XIcon />
-//             </div>
-//           </>
-//         )}
-//       </div>
-//     </button>
-//   );
-
-//   // Return just switch if no label
-//   if (!label && !description) {
-//     return switchElement;
-//   }
-
-//   // Return with label and description
-//   return (
-//     <div className="flex items-start gap-3">
-//       {switchElement}
-//       <div className="flex-1">
-//         {label && (
-//           <label
-//             htmlFor={id}
-//             className={clsx(
-//               "block text-sm font-medium text-gray-900 dark:text-gray-100",
-//               disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"
-//             )}
-//           >
-//             {label}
-//           </label>
-//         )}
-//         {description && (
-//           <p
-//             className={clsx(
-//               "mt-1 text-xs text-gray-500 dark:text-gray-400",
-//               disabled && "opacity-60"
-//             )}
-//           >
-//             {description}
-//           </p>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
 
 // ✅ Main Component
 export default function InstructorSettings() {
@@ -297,7 +75,7 @@ export default function InstructorSettings() {
   };
 
   return (
-    <div className="px-6 py-12 md:px-20 md:py-16 font-sans">
+    <div className="px-6 py-12 md:px-20 md:py-10 font-sans">
       <Toaster />
       <Form {...form}>
         <form
@@ -493,6 +271,36 @@ export default function InstructorSettings() {
 
 // Delete Account Widget
 function DeleteAccountWidget() {
+  const { user } = useUserStore();
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [password, setPassword] = useState(""); // confirmation password
+  const { mutate: deleteAccount, isPending } = useDeleteAccount();
+
+  const handleDeleteAccount = async () => {
+    if (!password) {
+      toast.error("Please enter your password to confirm account deletion");
+      return;
+    }
+    try {
+      deleteAccount(password, {
+        onSuccess: () => {
+          toast.success("Account deleted successfully");
+          setOpen(false);
+          setPassword("");
+          router.push("/login");
+        },
+        onError: (err: any) => {
+          toast.error(
+            err.response?.data?.message || "Failed to delete account"
+          );
+        },
+      });
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to delete account");
+    }
+  };
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -507,31 +315,134 @@ function DeleteAccountWidget() {
           </FormDescription>
         </div>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="sm:max-w-[550px] border-zinc-200 dark:border-zinc-700 top-8 max-h-[90vh] overflow-y-auto">
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will delete your account and all
-            associated data.
+          <AlertDialogTitle className="text-2xl font-bold text-center bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
+            Delete Account
+          </AlertDialogTitle>
+          <AlertDialogDescription className="text-center text-zinc-600 dark:text-zinc-400 text-base">
+            This action cannot be undone.
+            <br />
+            Your account and all data will be{" "}
+            <span className="font-semibold text-red-500">
+              permanently removed
+            </span>
+            . Please confirm by entering your password.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            className={`${dmSans.className} bg-red-600 hover:bg-red-700`}
+
+        <div className="mt-6">
+          <label
+            htmlFor="password"
+            className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2"
           >
-            Continue
-          </AlertDialogAction>
-        </AlertDialogFooter>
+            Enter your password to confirm:
+          </label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            disabled={isPending}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter your password"
+            className="w-full px-4 py-3 border-2 border-zinc-300 dark:border-zinc-600 rounded-xl bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
+          />
+        </div>
+
+        <div className="flex justify-end gap-3 pt-6 border-t border-zinc-200 dark:border-zinc-700 mt-6">
+          <Button
+            variant="outline"
+            type="button"
+            disabled={isPending}
+            className="rounded-xl border-2 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            onClick={() => {
+              setOpen(false);
+              setPassword(""); // clear input when canceling
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleDeleteAccount}
+            disabled={isPending || !password}
+            className="rounded-xl bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isPending ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Deleting...
+              </>
+            ) : (
+              "Delete Account"
+            )}
+          </Button>
+        </div>
       </AlertDialogContent>
     </AlertDialog>
   );
 }
 
-// Change Password Widget
-function ChangePasswordWidget() {
+const changePasswordFormSchema = z.object({
+  oldPassword: z.string().min(6, "Password must be at least 6 characters"),
+  newPassword: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+const ChangePasswordWidget = () => {
+  const { mutate: changePassword, isPending } = useChangePassword();
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const form = useForm({
+    resolver: zodResolver(changePasswordFormSchema),
+    defaultValues: {
+      oldPassword: "",
+      newPassword: "",
+    },
+  });
+
+  const { isSubmitting, isValid } = form.formState;
+
+  const onSubmit = async (values: z.infer<typeof changePasswordFormSchema>) => {
+    try {
+      changePassword(
+        {
+          currentPassword: values.oldPassword,
+          newPassword: values.newPassword,
+        } as ChangePasswordData,
+        {
+          onSuccess: () => {
+            toast.success("Password changed successfully!");
+            form.reset();
+            setShowOldPassword(false);
+            setShowNewPassword(false);
+            setIsDialogOpen(false);
+          },
+          onError: (err: any) => {
+            toast.error(
+              err.response?.data?.message || "Failed to change password"
+            );
+          },
+        }
+      );
+    } catch (err: any) {
+      toast.error(
+        err.response?.data?.message || "Failed to change password in catch"
+      );
+    }
+  };
+
+  const handleDialogOpenChange = (open: boolean) => {
+    setIsDialogOpen(open);
+    if (!open) {
+      form.reset();
+      setShowOldPassword(false);
+      setShowNewPassword(false);
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
       <DialogTrigger asChild>
         <div className="group flex w-full cursor-pointer flex-col gap-1 rounded-xl border border-gray-800 dark:border-zinc-200 p-6 shadow-sm transition-all hover:bg-green-600">
           <Title
@@ -539,50 +450,132 @@ function ChangePasswordWidget() {
           >
             Change Password
           </Title>
+
           <FormDescription className="text-sm text-zinc-500 group-hover:text-gray-200 dark:text-zinc-400 dark:group-hover:text-zinc-200">
             Update your password to keep your account secure.
           </FormDescription>
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+
+      <DialogContent className="sm:max-w-[550px] top-8 max-h-[90vh] overflow-y-auto border-zinc-200 dark:border-zinc-700">
         <DialogHeader>
-          <DialogTitle className={`${dmSans.className}`}>
+          <DialogTitle className="text-2xl font-bold text-zinc-950 dark:text-white text-center bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
             Change Password
           </DialogTitle>
-          <DialogDescription className="text-sm text-zinc-500 dark:text-zinc-400">
-            Enter a new password below and confirm before saving.
+          <DialogDescription className="text-center text-zinc-600 dark:text-zinc-400">
+            Update your account password. Make sure to use a strong password.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="newPassword" className="text-right font-dmsans">
-              New Password
-            </Label>
-            <Input
-              id="newPassword"
-              placeholder="Enter your new password"
-              type="password"
-              className="col-span-3"
+
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6 py-4"
+          >
+            <FormField
+              control={form.control}
+              name="oldPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-base font-semibold text-zinc-800 dark:text-gray-100">
+                    Current Password
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        type={showOldPassword ? "text" : "password"}
+                        disabled={isSubmitting}
+                        placeholder="Enter current password"
+                        className="border-2 border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 focus:border-green-500 dark:focus:border-green-500 transition-colors rounded-xl h-12 px-4 pr-12"
+                        {...field}
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                        onClick={() => setShowOldPassword(!showOldPassword)}
+                      >
+                        {showOldPassword ? (
+                          <EyeOff className="h-4 w-4 text-zinc-500" />
+                        ) : (
+                          <Eye className="h-4 w-4 text-zinc-500" />
+                        )}
+                      </Button>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="confirmPassword" className="text-right font-dmsans">
-              Confirm Password
-            </Label>
-            <Input
-              id="confirmPassword"
-              placeholder="Confirm your password"
-              type="password"
-              className="col-span-3"
+
+            <FormField
+              control={form.control}
+              name="newPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-base font-semibold text-zinc-800 dark:text-gray-100">
+                    New Password
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        type={showNewPassword ? "text" : "password"}
+                        disabled={isSubmitting}
+                        placeholder="Enter new password"
+                        className="border-2 border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 focus:border-green-500 dark:focus:border-green-500 transition-colors rounded-xl h-12 px-4 pr-12"
+                        {...field}
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                      >
+                        {showNewPassword ? (
+                          <EyeOff className="h-4 w-4 text-zinc-500" />
+                        ) : (
+                          <Eye className="h-4 w-4 text-zinc-500" />
+                        )}
+                      </Button>
+                    </div>
+                  </FormControl>
+                  <FormDescription className="text-xs text-zinc-500 dark:text-zinc-400">
+                    Must be at least 6 characters long
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit" className="bg-green-600 hover:bg-green-700">
-            Save changes
-          </Button>
-        </DialogFooter>
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-700">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsDialogOpen(false)}
+                className="rounded-xl border-2 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={!isValid || isSubmitting || isPending}
+                className="rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-md hover:shadow-lg transition-all duration-300"
+              >
+                {isSubmitting || isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  "Update Password"
+                )}
+              </Button>
+            </div>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
-}
+};

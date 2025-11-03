@@ -28,10 +28,8 @@ const InstructorButton = () => {
       return;
     }
 
-    if (isInstructor && instructor?.id) {
+    if (isInstructor) {
       router.push(`/instructor/analytics`);
-    } else if (isInstructor && !instructor?.id) {
-      toast.error("Instructor profile not found. Please contact support.");
     } else {
       setShowForm(true);
     }

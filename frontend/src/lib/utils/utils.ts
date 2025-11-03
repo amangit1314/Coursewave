@@ -23,6 +23,17 @@ export function formatDateToMMDDYYYY(isoDate?: string | null): string {
   return `${month}/${day}/${year}`;
 }
 
+const formatDuration = (seconds = 0) => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  let result = "";
+  if (hours > 0) result += `${hours} h `;
+  if (minutes > 0) result += `${minutes} min`;
+  if (!result) result = "0 min";
+  return result.trim();
+};
+
+
 // "duration" is a numeric value indicating the number of minutes.
 // Format it as "Xh Ym" for display. If it's 0, show "N/A".
 export function formatCourseDuration(duration: number) {

@@ -61,12 +61,12 @@ const CreatedCourses = () => {
   }, [isError, error, createdCourses]);
 
   return (
-    <div className="h-full pt-24 dark:bg-zinc-900">
+    <div className="h-full pt-6 dark:bg-zinc-900">
       <div className="bg-white space-y-4 dark:bg-zinc-800 rounded-3xl shadow-sm border border-zinc-200 dark:border-zinc-700 p-4 sm:p-6">
       
-        <div className="hidden md:block bg-red-500 text-white p-4">
+        {/* <div className="hidden md:block bg-red-500 text-white p-4">
           Visible only on medium screens and up
-        </div>
+        </div> */}
 
         <Flex className="flex-wrap gap-4">
           {/* Header section */}

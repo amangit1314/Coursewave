@@ -82,6 +82,7 @@ interface CardDataStatsProps {
   title: string;
   total: string;
   rate?: string;
+  
   levelUp?: boolean;
   levelDown?: boolean;
   children: ReactNode;
@@ -116,7 +117,7 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
             levelUp ? "text-green-400" : ""
           } ${levelDown ? "text-blue-400" : ""}`}
         >
-          {rate ?? "0"}
+          {rate ?? ""}
           {levelUp && (
             <svg
               className="h-3 w-3 fill-green-400"

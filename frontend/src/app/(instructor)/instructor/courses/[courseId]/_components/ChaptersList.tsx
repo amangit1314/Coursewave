@@ -8,19 +8,22 @@ import {
   DropResult,
 } from "@hello-pangea/dnd";
 import { useRouter } from "next/navigation";
-import { Chapter } from "@/types/course-details-api-response";
+// import { Chapter } from "@/types/course-details-api-response";
 import ChapterItem from "./ChapterItem";
+import { Chapter } from "@/types/courses.service.types";
 
 interface ChaptersListProps {
   items: Chapter[];
   onReorder: (updateData: { id: string; position: number }[]) => void;
-  instructorId: string;
+  courseId: string;
+  sectionId: string;
 }
 
 export const ChaptersList = ({
   items,
   onReorder,
-  instructorId,
+  courseId,
+  sectionId,
 }: ChaptersListProps) => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
@@ -57,12 +60,7 @@ export const ChaptersList = ({
     onReorder(bulkUpdateData);
   };
 
-  const onEdit = (
-    instructorId: string,
-    courseId: string,
-    sectionId: string,
-    id: string
-  ) => {
+  const onEdit = (courseId: string, sectionId: string, id: string) => {
     setIsEditing(true);
     router.push(
       `/instructor/courses/${courseId}/sections/${sectionId}/chapters/${id}`
@@ -88,9 +86,10 @@ export const ChaptersList = ({
                 chapter={chapter}
                 index={index}
                 onEdit={onEdit}
-                instructorId={instructorId}
-                courseId={chapter.courseId}
-                sectionId={chapter.sectionId}
+                // courseId={chapter.courseId}
+                // sectionId={chapter.sectionId}
+                courseId={courseId}
+                sectionId={sectionId}
               />
             ))}
             {provided.placeholder}

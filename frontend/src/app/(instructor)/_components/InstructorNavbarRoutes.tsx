@@ -1,96 +1,80 @@
+
 "use client";
 
-import React from "react";
-import { usePathname, useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-
-import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
+import React, { Suspense } from "react";
 import UserAvatar from "@/components/common/UserAvatar";
-import { useUserStore } from "@/zustand/userStore";
-import { poppins } from "@/lib/config/fonts";
+import { usePathname, useRouter } from "next/navigation";
+import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
+import { dmSans, poppins } from "@/lib/config/fonts";
 import Notifications from "@/components/common/NotificationButton";
-
-// const InstructorNavbarRoutes = () => {
-//   const pathname = usePathname();
-//   const router = useRouter();
-
-//   const switchBack: any = () => {
-//     router.push("/browseCourses");
-//   };
-
-//   const { user } = useUserStore();
-
-//   return (
-//     <div className="flex w-full items-center justify-between ml-64">
-//       <div className={poppins.className}>
-//         <div className="text-md hidden bg-transparent text-base font-semibold tracking-tight text-black dark:text-white md:flex">
-//           Instructor Dashboard
-//         </div>
-//       </div>
-//       <div className="ml-auto flex justify-end gap-x-2">
-//         <Button
-//           onClick={switchBack}
-//           className="mx-auto cursor-pointer h-9 items-center rounded-lg border border-black border-opacity-10 bg-transparent px-4 text-xs text-black hover:border-opacity-100 hover:bg-slate-50 dark:border-white dark:border-opacity-10 dark:text-white dark:hover:border-opacity-100 dark:hover:bg-zinc-700"
-//         >
-//           Go back
-//         </Button>
-
-//         <div className="mx-2">
-//           <ThemeModeToggle />
-//         </div>
-
-//         <Notifications />
-
-//         <div className={poppins.className}>
-//           <UserAvatar />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default InstructorNavbarRoutes;
+import { useUserStore } from "@/zustand/userStore";
+import { Button } from "@/components/ui/button";
 
 const InstructorNavbarRoutes = () => {
   const router = useRouter();
+  const pathname = usePathname();
+
   const { user } = useUserStore();
+
+  const gotToSignIn = () => {
+    router.push("/login");
+  };
 
   const switchBack = () => {
     router.push("/browseCourses");
   };
 
+  const isBrowseCoursesScreen = pathname?.match("/browseCourses");
+  const isDashboardScreen = pathname?.includes("dashboard");
+
   return (
-    <div
-      className={`${poppins.className} flex w-full items-center justify-end`}
-    >
-      {/* Dashboard Title - Hidden on mobile, visible on md+ */}
-      {/* <div className="hidden md:block md:pl-64">
-        <h1 className="text-xl font-semibold text-primary">
-          Instructor Dashboard
-        </h1>
-      </div> */}
+    <Suspense>
+      <div className="flex w-full items-center justify-between">
+        {/* Left area - search button for Browse Courses */}
+        {/* <div className={poppins.className}>
+          <div className="md:pl-64">
+            {isBrowseCoursesScreen ? <SearchButton /> : <div></div>}
+          </div>
+        </div> */}
 
-      <div className="ml-auto flex items-center justify-end gap-4">
-        {/* Back Button */}
-        <Button
-          onClick={switchBack}
-          variant="outline"
-          size="sm"
-          className="h-10 px-4"
-        >
-          Go back
-        </Button>
+        {/* Right area - actions */}
+        <div className="ml-auto flex justify-end gap-x-2">
+          {/* Instructor button visible outside dashboard */}
+          <div className={dmSans.className}>
+            <Button
+              onClick={switchBack}
+              variant="outline"
+              size="sm"
+              className="h-10 px-4 border-gray-200 dark:border-zinc-800"
+            >
+              Go back
+            </Button>
+          </div>
 
-        {/* Theme Toggle */}
-        <ThemeModeToggle />
+          {/* Theme toggle */}
+          <ThemeModeToggle />
 
-        {/* Notifications */}
-        <Notifications />
+          {/* Notifications */}
+          <Notifications />
 
-        {/* User Avatar */}
-        <UserAvatar />
+          {/* User avatar or sign-in button */}
+          <div>
+            {user ? (
+              <UserAvatar />
+            ) : (
+              <span className={dmSans.className}>
+                <button
+                  onClick={gotToSignIn}
+                  className="text-sm cursor-pointer hover:text-white h-10 text-center dark:hover:bg-blue-600 flex justify-center dark:hover:border-transparent items-center w-auto px-4 rounded-md border border-gray-200 dark:border-zinc-800 hover:border-transparent bg-white dark:bg-zinc-800 hover:bg-blue-600 transition-all duration-100"
+                >
+                  Sign In
+                </button>
+              </span>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
+    </Suspense>
   );
 };
 

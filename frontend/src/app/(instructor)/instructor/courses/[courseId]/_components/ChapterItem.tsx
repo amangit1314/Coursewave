@@ -11,17 +11,17 @@ import { Grip, Pencil, FileText, Video, ClipboardList } from "lucide-react";
 import { cn } from "@/lib/utils/utils";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
-import { Chapter } from "@/types/course-details-api-response";
+// import { Chapter } from "@/types/course-details-api-response";
 import { EditChapterSheet } from "./EditChapterSheet";
 
 import { toast } from "sonner";
 import { useUpdateChapter } from "@/hooks/useCourses";
+import { Chapter } from "@/types/courses.service.types";
 
 type Props = {
   chapter: Chapter;
   index: number;
   onEdit: any;
-  instructorId: string;
   courseId: string; // Add courseId prop
   sectionId: string; // Add sectionId prop
 };
@@ -29,41 +29,12 @@ type Props = {
 type ContentType = "text" | "video" | "quiz";
 
 const ChapterItem = (props: Props) => {
-  const { chapter, index, instructorId, courseId, sectionId } = props;
+  const { chapter, index, courseId, sectionId } = props;
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const router = useRouter();
 
   // Use the update chapter hook
   const updateChapterMutation = useUpdateChapter(courseId, sectionId);
-
-  // const handleSaveChapter = async (chapterData: Partial<Chapter>) => {
-  //   try {
-  //     const sanitizedData = Object.fromEntries(
-  //       Object.entries(chapterData).map(([key, value]) => [
-  //         key,
-  //         value === null ? undefined : value,
-  //       ])
-  //     );
-
-  //     console.log("📤 Sending chapter update:", {
-  //       chapterId: chapter.id,
-  //       updates: sanitizedData,
-  //       courseId,
-  //       sectionId,
-  //     });
-
-  //     await updateChapterMutation.mutateAsync({
-  //       chapterId: chapter.id,
-  //       updates: sanitizedData,
-  //     });
-
-  //     toast.success("Chapter updated successfully!");
-  //     setEditDialogOpen(false);
-  //   } catch (error) {
-  //     console.error("Failed to update chapter:", error);
-  //     toast.error("Failed to update chapter. Please try again.");
-  //   }
-  // };
 
   // In ChapterItem.tsx - handleSaveChapter function
   const handleSaveChapter = async (chapterData: Partial<Chapter>) => {
@@ -73,7 +44,9 @@ const ChapterItem = (props: Props) => {
         ...chapterData,
         // Convert explicit null description to undefined to match Chapter type
         description:
-          chapterData.description === null ? undefined : chapterData.description,
+          chapterData.description === null
+            ? undefined
+            : chapterData.description,
       };
 
       console.log("📤 Sending chapter update:", {
@@ -203,7 +176,11 @@ const ChapterItem = (props: Props) => {
         onOpenChange={setEditDialogOpen}
         chapter={{
           ...chapter,
-          contentType: chapter.contentType as "text" | "video" | "quiz",
+          contentType: chapter.contentType.toLowerCase() as
+            | "VIDEO"
+            | "QUIZ"
+            | "TEXT"
+            | "ASSIGNMENT",
         }}
         onSave={handleSaveChapter}
         isLoading={updateChapterMutation.isPending} // Pass loading state

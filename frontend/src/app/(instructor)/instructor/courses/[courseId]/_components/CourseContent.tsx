@@ -34,14 +34,14 @@ import { dmSans } from "@/lib/config/fonts";
 
 type CourseContentProps = {
   course: Course;
-  sections: CourseSection[];
-  chapters: Chapter[];
+  // sections: CourseSection[];
+  // chapters: Chapter[];
 };
 
 export default function CourseContent({
   course,
-  sections,
-  chapters,
+  // sections,
+  // chapters,
 }: CourseContentProps) {
   // console.log("Course sections in couse content: ", sections);
   // console.log("Course sections in couse content: ", chapters);
@@ -92,7 +92,7 @@ export default function CourseContent({
           {/* instructor name form, DONE ✔️ */}
           <InstructorNameForm course={course} />
 
-          {/*TODO:  category form */}
+          {/*category form */}
           <div>
             <div
               className={`${dmSans.className} mt-6 flex items-center gap-x-2`}
@@ -173,8 +173,8 @@ export default function CourseContent({
               }
             }
             course={course}
-            chapters={chapters}
-            sections={sections}
+            // chapters={chapters}
+            // sections={sections}
           />
         </div>
       </div>

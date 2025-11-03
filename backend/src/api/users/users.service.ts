@@ -18,19 +18,15 @@ export const getAllUsers = async (
       where: { userId: currentUserId },
     });
 
-    // const isAdmin = userRoles.some(
-    //   (role: { role: string }) => role.role.toUpperCase()  === "ADMIN"
-    // );
+    // const isAdmin = userRoles.some((role) => role.role === Role.ADMIN);
 
-    const isAdmin = userRoles.some((role) => role.role === Role.ADMIN);
-
-    if (!isAdmin) {
-      return {
-        success: false,
-        message: "You are not authorized to access this resource",
-        status: 403,
-      };
-    }
+    // if (!isAdmin) {
+    //   return {
+    //     success: false,
+    //     message: "You are not authorized to access this resource",
+    //     status: 403,
+    //   };
+    // }
 
     const users = await prisma.user.findMany({
       select: {
@@ -71,19 +67,15 @@ export const getUserById = async (
       where: { userId: currentUserId },
     });
 
-    // const isAdmin = userRoles.some(
-    //   (role: { role: string }) => role.role.toUpperCase()  === "ADMIN"
-    // );
+    // const isAdmin = userRoles.some((role) => role.role === Role.ADMIN);
 
-    const isAdmin = userRoles.some((role) => role.role === Role.ADMIN);
-
-    if (!isAdmin && userId !== currentUserId) {
-      return {
-        success: false,
-        message: "You are not authorized to access this resource",
-        status: 403,
-      };
-    }
+    // if (!isAdmin && userId !== currentUserId) {
+    //   return {
+    //     success: false,
+    //     message: "You are not authorized to access this resource",
+    //     status: 403,
+    //   };
+    // }
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -206,62 +198,6 @@ export const updateUserProfile = async (
   }
 };
 
-// export const changePassword = async (
-//   userId: string,
-//   data: any
-// ): Promise<ServiceResponse> => {
-//   try {
-//     const { currentPassword, newPassword } = data;
-
-    
-
-//     const user = await prisma.user.findUnique({
-//       where: { id: userId },
-//     });
-
-//     if (!user) {
-//       return {
-//         success: false,
-//         message: "User not found",
-//         status: 404,
-//       };
-//     }
-
-//     const isPasswordValid = await verifyPassword(
-//       currentPassword,
-//       user.password
-//     );
-//     if (!isPasswordValid) {
-//       return {
-//         success: false,
-//         message: "Current password is incorrect",
-//         status: 401,
-//       };
-//     }
-
-//     const hashedPassword = await hashPassword(newPassword);
-
-//     await prisma.user.update({
-//       where: { id: userId },
-//       data: { password: hashedPassword },
-//     });
-
-//     return {
-//       success: true,
-//       message: "Password changed successfully",
-//       status: 200,
-//     };
-//   } catch (error: any) {
-//     console.log(`ERROR in changePassword: ${error.message}`);
-//     return {
-//       success: false,
-//       error: error.message,
-//       message: "Internal Server Error",
-//       status: 500,
-//     };
-//   }
-// };
-
 export const changePassword = async (
   userId: string,
   data: any
@@ -303,7 +239,7 @@ export const changePassword = async (
       currentPassword,
       user.password
     );
-    
+
     if (!isPasswordValid) {
       return {
         success: false,
@@ -599,20 +535,20 @@ export const checkArticleSaved = async (userId: string, articleId: string) => {
       select: {
         savedArticles: {
           where: {
-            blogId: articleId
+            blogId: articleId,
           },
           select: {
-            blogId: true
-          }
-        }
-      }
+            blogId: true,
+          },
+        },
+      },
     });
 
     if (!user) {
       return {
         success: false,
         message: "User not found",
-        status: 404
+        status: 404,
       };
     }
 
@@ -622,16 +558,15 @@ export const checkArticleSaved = async (userId: string, articleId: string) => {
       success: true,
       data: { isSaved },
       message: isSaved ? "Article is saved" : "Article is not saved",
-      status: 200
+      status: 200,
     };
-
   } catch (error: any) {
     console.error("Error checking article saved status:", error);
     return {
       success: false,
       error: error.message,
       message: "Failed to check article saved status",
-      status: 500
+      status: 500,
     };
   }
 };

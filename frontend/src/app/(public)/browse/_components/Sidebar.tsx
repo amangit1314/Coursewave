@@ -5,6 +5,7 @@ import Image from "next/image";
 import SideBarRoutes from "./SidebarRoutes";
 import Link from "next/link";
 import { dmSans } from "@/lib/config/fonts";
+import { IMAGES } from "@/constants/images";
 
 const Sidebar = () => {
   return (
@@ -26,16 +27,14 @@ const Logo = () => {
   return (
     <Link href="/browseCourses" className="flex cursor-pointer items-end">
       <Image
-        src="/assets/images/logo/coursewave-favicon-color.png"
+        src={IMAGES.LOGO}
         alt="CourseWave Logo"
         className=""
         width={30}
         height={8}
         priority
       />
-      <p
-        className={`${dmSans.className} pl-2 text-blue-500 font-bold text-lg`}
-      >
+      <p className={`${dmSans.className} pl-2 text-blue-500 font-bold text-lg`}>
         Coursewave
       </p>
     </Link>

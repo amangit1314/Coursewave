@@ -9,7 +9,6 @@ import {
   deleteProject,
 } from "./projects.controller";
 import { verifyToken } from "../../core/middleware";
-import { checkAccessToken } from "../../core/middleware";
 import { requireInstructor } from "../../core/middleware/roleCheck";
 import { ownsProject } from "../../core/middleware/ownsProject";
 

@@ -8,7 +8,7 @@ import { dmSans, poppins } from "@/lib/config/fonts";
 import SearchButton from "../SearchButton";
 import Notifications from "./NotificationButton";
 import { useUserStore } from "@/zustand/userStore";
-// import InstructorButton from "../InstructorButton";
+import InstructorButton from "../InstructorButton";
 
 const NavbarRoutes = () => {
   const router = useRouter();
@@ -23,7 +23,6 @@ const NavbarRoutes = () => {
   const isBrowseCoursesScreen = pathname.match("/browseCourses");
   const isDashboardScreen = pathname.includes("dashboard"); // Checks for dashboard in pathname
 
-
   return (
     <Suspense>
       <div className="flex w-full items-center justify-between">
@@ -35,15 +34,12 @@ const NavbarRoutes = () => {
 
         <div className="ml-auto flex justify-end gap-x-2">
           {/* instructor button */}
-          {/* <div className={dmSans.className}>
+          <div className={dmSans.className}>
             {user && !isDashboardScreen ? <InstructorButton /> : <div></div>}
-          </div> */}
+          </div>
 
           {/* theme toggle */}
           <ThemeModeToggle />
-
-          {/* cart */}
-          {/* <Cart /> */}
 
           {/* notifications */}
           <Notifications />

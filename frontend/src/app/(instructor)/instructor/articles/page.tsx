@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { Flex, Button } from "@tremor/react";
 
 import { columns } from "./_components/CreatedArticlesColumns"; // You'll need to create this
@@ -58,7 +58,7 @@ const CreatedArticles = () => {
   // Transform API response into DataTable props
   const transformedArticles = React.useMemo(() => {
     if (!createdArticles) return [];
-    
+
     const toCreatedArticleProps = (article: Article): CreatedArticleProps => ({
       id: article.id,
       authorId: article.authorId,
@@ -72,7 +72,7 @@ const CreatedArticles = () => {
       views: 0, // Replace with actual data from BlogView if available
       likes: 0, // Replace with actual data from BlogLike if available
     });
-    
+
     return (createdArticles as Article[]).map(toCreatedArticleProps);
   }, [createdArticles, authorId]);
 
@@ -87,10 +87,8 @@ const CreatedArticles = () => {
   }, [createdArticlesError, createdArticles, isCreatedArticlesLoading]);
 
   return (
-    <div className="h-full pt-24 dark:bg-zinc-900">
+    <div className="h-full pt-7 dark:bg-zinc-900">
       <div className="bg-white space-y-4 dark:bg-zinc-800 rounded-3xl shadow-sm border border-zinc-200 dark:border-zinc-700 p-4 sm:p-6">
-        <Toaster />
-        
         <Flex className="flex-wrap gap-4">
           {/* Header section */}
           <div className="flex flex-wrap items-center gap-3">
@@ -126,7 +124,8 @@ const CreatedArticles = () => {
           ) : createdArticlesError ? (
             <div className="text-center py-8">
               <p className="text-red-500 dark:text-red-400">
-                Error loading articles: {createdArticlesError.message ?? "Unknown error"}
+                Error loading articles:{" "}
+                {createdArticlesError.message ?? "Unknown error"}
               </p>
             </div>
           ) : (transformedArticles?.length || 0) > 0 ? (
@@ -140,7 +139,8 @@ const CreatedArticles = () => {
                 No articles created yet
               </h3>
               <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-sm mx-auto mb-6">
-                Share your knowledge and insights by creating your first article.
+                Share your knowledge and insights by creating your first
+                article.
               </p>
               <Button
                 onClick={() => router.push(`/instructor/articles/new`)}

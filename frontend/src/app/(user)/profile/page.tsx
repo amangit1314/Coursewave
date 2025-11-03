@@ -21,6 +21,7 @@ import EditProfileWidget from "./_components/EditProfileWidget";
 import { useUserStore } from "@/zustand/userStore";
 import { useMyInstructorProfile } from "@/hooks/useInstructor";
 import QuickActions from "./_components/QuickActions";
+import { IMAGES } from "@/constants/images";
 
 const Profile = () => {
   const { user } = useUserStore();
@@ -74,9 +75,10 @@ const Profile = () => {
           <div className="relative h-24 md:h-32 w-full">
             <Image
               src={
-                user?.profileImageUrl
-                  ? user?.profileImageUrl
-                  : "https://github.com/shadcn.png"
+                // user?.profileImageUrl
+                //   ? user?.profileImageUrl
+                //   : 
+                  IMAGES.FALLBACK_IMAGE
               }
               alt="Profile cover"
               fill
@@ -105,19 +107,20 @@ const Profile = () => {
               {/* Profile Avatar */}
               <div className="relative flex-shrink-0">
                 <Avatar className="h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32 border-4 border-white dark:border-zinc-800 shadow-lg">
-                  <AvatarImage
-                    src={
-                      user?.profileImageUrl || "https://github.com/shadcn.png"
-                    }
-                    alt={user?.name || "User"}
-                  />
-                  <AvatarFallback className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-white">
-                    {user?.name?.charAt(0) || "U"}
-                  </AvatarFallback>
+                  {user?.profileImageUrl ? (
+                    <AvatarImage
+                      src={user?.profileImageUrl || IMAGES.DEFAULT_AVATAR}
+                      alt={user?.name || "User"}
+                    />
+                  ) : (
+                    <AvatarFallback className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+                      {user?.name?.charAt(0) || "U"}
+                    </AvatarFallback>
+                  )}
                 </Avatar>
                 <Button
                   size="sm"
-                  className="absolute -bottom-1 bg-blue-500 text-white sm:-bottom-2 -right-2 sm:-right-2 h-6 w-6 sm:h-8 sm:w-8 rounded-full p-0"
+                  className="absolute -bottom-1 bg-blue-500 text-white sm:bottom-1 -right-2 sm:right-1.5 h-6 w-6 sm:h-8 sm:w-8 rounded-full p-0"
                   variant="secondary"
                 >
                   <Camera className="h-3 w-3 sm:h-4 sm:w-4" />

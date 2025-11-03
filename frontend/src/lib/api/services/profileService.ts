@@ -147,7 +147,7 @@ export class ProfileService {
     try {
       const response = await this.apiManager.get("/users/enrollments");
 
-      console.log("Raw API response:", response);
+      console.log("Raw API  of enrolled courses:", response);
 
       // Check if response is already the data object or the full Axios response
       if (response.success) {

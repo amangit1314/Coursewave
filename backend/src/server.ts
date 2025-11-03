@@ -19,15 +19,10 @@ import categoriesRoutes from "./api/categories/categories.routes";
 import wishlistRoutes from "./api/wishlist/wishlist.routes";
 import cartRoutes from "./api/cart/cart.routes";
 import stripeWebhookRoutes from "./api/webhooks/stripe/stripe.routes";
-// import tokenManagementRoutes from "./api/token-management/token-management.routes";
-// import secureAuthRoutes from "./api/secure-auth/secure-auth.routes";
 import projectsRoutes from "./api/projects/projects.routes";
 import communitiesRoutes from "./api/communities/communities.routes";
 // ------------------------------------------------------------------------
-// import { courseCacheMiddleware } from "./config/redis";
-// import { checkAccessToken } from "./core/middleware";
 import { initJobs } from "./jobs";
-// Socket.IO
 import { initSocket } from "./config/socket";
 
 ///? <=================================== Load environment variables ==============>
@@ -61,13 +56,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.use(
-//   cors({
-//     origin: process.env.CORS_ORIGIN || "http://localhost:3000",
-//     credentials: true,
-//   })
-// );
-
 // Replace your CORS configuration with this:
 app.use(
   cors({
@@ -79,7 +67,7 @@ app.use(
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:3001",
-        "https://yourproductiondomain.com", // Add your production domain
+        process.env.FRONTEND_URL_PROD,
       ];
 
       // Check if the origin is in allowed origins
@@ -190,8 +178,6 @@ app.use("/api/instructor", instructorRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/projects", projectsRoutes);
 app.use("/api/communities", communitiesRoutes);
-// app.use("/api/tokens", tokenManagementRoutes);
-// app.use("/api/secure-auth", secureAuthRoutes);
 
 ///? <==================================== INITIALIZE CRON JOBS ======================================>
 initJobs();

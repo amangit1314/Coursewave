@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { verifyToken } from "../../core/middleware";
 import { checkAccessToken } from "../../core/middleware";
-import { requireAdmin } from "../../core/middleware/roleCheck";
 import {
   getAllUsers,
   getUserById,

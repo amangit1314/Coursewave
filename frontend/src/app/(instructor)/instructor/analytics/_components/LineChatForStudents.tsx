@@ -39,13 +39,16 @@ export const LineChartForStudents: React.FC<StudentsLineChartProps> = ({
               Total students enrolled per course
             </p>
           </div>
-          <Badge color="orange" className="cursor-pointer">
+          <Badge color="blue" className="cursor-pointer">
+            <Badge className=" w-7 h-7 mr-2 text-black bg-gray-200 dark:text-white dark:bg-zinc-700 rounded-full">
+              {courses.length}
+            </Badge>
             Active Courses
           </Badge>
         </div>
       </div>
 
-      <div className="pr-4 py-4">
+      <div className="px-6 py-6">
         <LineChart
           className={`h-80 ${
             isDark

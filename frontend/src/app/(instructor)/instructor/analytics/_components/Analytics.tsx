@@ -49,9 +49,9 @@ const Analytics = ({
   }, [createdCourses]);
 
   return (
-    <div className="flex h-auto justify-center pb-12 dark:bg-zinc-900">
+    <div className="flex space-x-5 h-auto justify-center dark:bg-zinc-900">
       {/* first column */}
-      <div className="space-y-8 px-[2rem] pt-[90px]">
+      <div className="space-y-8 pl-8 mt-8 ">
         <div className="space-y-3">
           <div className="flex items-center justify-start md:flex-row md:justify-between">
             <div className="text-xl font-semibold tracking-tight text-zinc-800 dark:text-white">
@@ -86,7 +86,7 @@ const Analytics = ({
       </div>
 
       {/* second column */}
-      <div className="mr-[2rem] mt-[3rem] w-[22rem] pt-[50px]">
+      <div className="mr-8 mt-8 w-[22rem] ">
         <TotalRevenueCard
           totalEarning={totalEarning}
           courses={createdCourses ?? []}

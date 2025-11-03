@@ -14,15 +14,26 @@ export default {
         poppins: ["var(--font-poppins)", "sans-serif"],
         "dm-sans": ["var(--font-dm-sans)", "sans-serif"],
       },
-       screens: {
-        'xs': '480px',
-        'sm': '768px', 
-        'md': '820px',  // Your custom medium breakpoint
-        'lg': '1024px',
-        'xl': '1280px',
-        '2xl': '1600px',
-        '3xl': '1920px',
+      //  screens: {
+      //   'xs': '480px',
+      //   'sm': '768px',
+      //   'md': '820px',  // Your custom medium breakpoint
+      //   'lg': '1024px',
+      //   'xl': '1280px',
+      //   '2xl': '1600px',
+      //   '3xl': '1920px',
+
+      // },
+      screens: {
+        xs: "375px",
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px"
+        // "2xl": "1536px",
+        // "3xl": "1920px",
       },
+
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

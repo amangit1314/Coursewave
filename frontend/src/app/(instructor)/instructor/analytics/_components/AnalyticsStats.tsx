@@ -22,8 +22,8 @@ export default function AnalyticsStats({
           <CardDataStats
             title="Total Earnings"
             total={`$ ${totalEarning ? totalEarning : 0}`}
-            rate="4.35%"
-            levelUp
+            // rate="4.35%"
+            // levelUp
           >
             <div className="flex h-[2.5rem] w-[2.5rem] items-center justify-center rounded-full bg-zinc-200 bg-opacity-30 p-1.5 dark:bg-zinc-700">
               <TbMoneybag size={22} />
@@ -35,8 +35,8 @@ export default function AnalyticsStats({
           <CardDataStats
             title="Total Courses"
             total={totalCourses ? totalCourses.toString() : "0"}
-            rate="2.59%"
-            levelUp
+            // rate="2.59%"
+            // levelUp
           >
             <div className="flex h-[2.5rem] w-[2.5rem] items-center justify-center rounded-full bg-zinc-200 bg-opacity-30 p-1.5 dark:bg-zinc-800">
               <BsPersonVideo2 size={22} />
@@ -48,8 +48,8 @@ export default function AnalyticsStats({
           <CardDataStats
             title="Total Students"
             total={totalStudents ? totalStudents.toString() : "0"}
-            rate="0.95%"
-            levelDown
+            // rate="0.95%"
+            // levelDown
           >
             <div className="flex h-[2.5rem] w-[2.5rem] items-center justify-center rounded-full bg-zinc-200 bg-opacity-30 p-1.5 dark:bg-zinc-700">
               <svg

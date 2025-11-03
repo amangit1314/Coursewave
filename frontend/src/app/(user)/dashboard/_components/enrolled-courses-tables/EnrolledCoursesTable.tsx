@@ -28,6 +28,9 @@ import { EnrolledCoursesTableSkeleton } from "../../loading";
 import ErrorMessage from "../ErrorMessage";
 import { useRouter } from "next/navigation";
 import { dmSans } from "@/lib/config/fonts";
+import handleDownloadCertificate from "@/lib/helpers/handle-download-certificate";
+import { useUserStore } from "@/zustand/userStore";
+import { formatDuration } from "@/lib/utils/format";
 
 /**
  * Course interface matching the API response structure
@@ -124,7 +127,7 @@ interface VisibleColumns {
   status: boolean;
   progress: boolean;
   startDate: boolean;
-  endDate: boolean;
+  // endDate: boolean;
   certificate: boolean;
   validity: boolean;
   category: boolean;
@@ -347,6 +350,7 @@ const EnrolledCoursesTable = () => {
     isLoading: areEnrolledCoursesLoading,
     error: enrolledCoursesError,
   } = useEnrolledCourses();
+  const { user } = useUserStore();
 
   const enrolledCourses = enrolledCoursesData ?? [];
 
@@ -390,7 +394,6 @@ const EnrolledCoursesTable = () => {
     status: true,
     progress: true,
     startDate: true,
-    endDate: true,
     certificate: true,
     validity: true,
     category: true,
@@ -427,11 +430,8 @@ const EnrolledCoursesTable = () => {
     let filtered = data.filter((course) => {
       const matchesSearch =
         course.courseTitle?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        course.course?.categories?.some(
-          (cat) => cat.name.toLowerCase().includes(searchTerm.toLowerCase())
-
-          //     ||
-          //    course.course?.instructor?.user?.name.toLowerCase().includes(searchTerm.toLowerCase()
+        course.course?.categories?.some((cat) =>
+          cat.toLowerCase().includes(searchTerm.toLowerCase())
         );
       const matchesStatus =
         statusFilter === "ALL" || course.status === statusFilter;
@@ -504,6 +504,17 @@ const EnrolledCoursesTable = () => {
       >
         {config.icon}
         {status}
+      </div>
+    );
+  };
+
+  const TextBadge = ({ text, color }: { text: string; color: string }) => {
+    return (
+      <div
+        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${color}`}
+      >
+        {/* {config.icon} */}
+        {text}
       </div>
     );
   };
@@ -599,7 +610,9 @@ const EnrolledCoursesTable = () => {
             <GraduationCap className="h-6 w-6 text-green-600 dark:text-green-400" />
           </div>
           <div>
-            <h3 className={`${dmSans.className} text-xl font-semibold text-zinc-900 dark:text-white`}>
+            <h3
+              className={`${dmSans.className} text-xl font-semibold text-zinc-900 dark:text-white`}
+            >
               Enrolled Courses
             </h3>
             <p className="text-sm text-zinc-600 dark:text-zinc-400">
@@ -668,7 +681,9 @@ const EnrolledCoursesTable = () => {
       <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className={`${dmSans.className} bg-zinc-50 text-sm dark:bg-zinc-900/50`}>
+            <thead
+              className={`${dmSans.className} bg-zinc-50 text-sm dark:bg-zinc-900/50`}
+            >
               <tr>
                 {visibleColumns.courseTitle && (
                   <th className="px-6 py-4 text-left">
@@ -714,24 +729,24 @@ const EnrolledCoursesTable = () => {
                     </SortButton>
                   </th>
                 )}
-                {visibleColumns.endDate && (
+                {/* {visibleColumns.endDate && (
                   <th className="px-6 py-4 text-left">
                     <SortButton field="endDate">
-                      {/* <Clock className="w-4 h-4 mr-2" /> */}
+                    
                       <span className="font-semibold text-zinc-700 dark:text-zinc-300">
                         End Date
                       </span>
                     </SortButton>
                   </th>
-                )}
+                )} */}
                 {visibleColumns.certificate && (
                   <th className="px-6 py-4 text-left">
-                    {/* <Award className="w-4 h-4 mr-2 inline" /> */}
                     <span className="font-semibold text-zinc-700 dark:text-zinc-300">
                       Certificate
                     </span>
                   </th>
                 )}
+
                 {visibleColumns.validity && (
                   <th className="px-6 py-4 text-left">
                     <span className="font-semibold text-zinc-700 dark:text-zinc-300">
@@ -741,6 +756,7 @@ const EnrolledCoursesTable = () => {
                 )}
               </tr>
             </thead>
+
             <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
               {paginatedData.length > 0 ? (
                 paginatedData.map((course) => (
@@ -758,7 +774,7 @@ const EnrolledCoursesTable = () => {
                           {/* <div className="text-sm text-zinc-500 dark:text-zinc-400">
                             by{" "}
                             {
-                            // course.instructor. || 
+                            course.course?.instructor?.user?.name || 
                             "Unknown Instructor"}
                           </div> */}
                         </div>
@@ -766,8 +782,20 @@ const EnrolledCoursesTable = () => {
                     )}
                     {visibleColumns.category && (
                       <td className="px-6 py-4">
-                        <span className="inline-flex px-2.5 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-sm font-medium">
-                          {course.course?.Category?.name || "Uncategorized"}
+                        {/* <span className="inline-flex px-2.5 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-sm font-medium">
+                          {course.course?.categories?.length > 0
+                            ? course.course.categories[0]
+                            : "Uncategorized"}
+                        </span> */}
+
+                        <span
+                          className="px-2 py-1 rounded-lg text-sm font-medium
+                        bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400
+                        "
+                        >
+                          {course.course?.categories?.length > 0
+                            ? course.course.categories[0]
+                            : "Uncategorized"}
                         </span>
                       </td>
                     )}
@@ -787,19 +815,19 @@ const EnrolledCoursesTable = () => {
                     )}
                     {visibleColumns.startDate && (
                       <td className="px-6 py-4">
-                        <span className="text-zinc-700 dark:text-zinc-300">
+                        <span className="text-zinc-700 text-sm text-center dark:text-zinc-300">
                           {course.startDate}
                         </span>
                       </td>
                     )}
-                    {visibleColumns.endDate && (
+                    {/* {visibleColumns.endDate && (
                       <td className="px-6 py-4">
-                        <span className="text-zinc-700 dark:text-zinc-300">
-                          {course.endDate}
+                        <span className="text-zinc-700 text-sm text-center dark:text-zinc-300">
+                          {course.endDate || course.endDate !== "Invalid date" ? course.endDate  : "Lifetime Access"}
                         </span>
                       </td>
-                    )}
-                    {visibleColumns.certificate && (
+                    )} */}
+                    {/* {visibleColumns.certificate && (
                       <td className="px-6 py-4">
                         {course.certificate ? (
                           <div className="inline-flex items-center gap-1.5 text-green-600 dark:text-green-400">
@@ -814,7 +842,39 @@ const EnrolledCoursesTable = () => {
                           </span>
                         )}
                       </td>
+                    )} */}
+                    {visibleColumns.certificate && (
+                      <td className="px-6 py-4">
+                        {course.certificate ? (
+                          <button
+                            className="inline-flex items-center gap-1.5 text-green-600 dark:text-green-400 hover:underline hover:cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent parent row's onClick navigation
+                              handleDownloadCertificate({
+                                userName: user?.name || "Unknown User",
+                                courseName: course?.courseTitle,
+                                date: new Date().toLocaleDateString(), // todo: fix the data currently the immediate date will go
+                                certContent:
+                                  "Congratulations on your achievement!",
+                                courseHours: formatDuration(
+                                  course?.course?.duration
+                                ),
+                              });
+                            }}
+                          >
+                            <Award className="w-4 h-4" />
+                            <span className="text-sm font-medium">
+                              Available
+                            </span>
+                          </button>
+                        ) : (
+                          <span className="text-zinc-400 dark:text-zinc-500 text-sm">
+                            Not earned
+                          </span>
+                        )}
+                      </td>
                     )}
+
                     {visibleColumns.validity && (
                       <td className="px-6 py-4">
                         <span

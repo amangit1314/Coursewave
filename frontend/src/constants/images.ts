@@ -1,5 +1,6 @@
 export const IMAGES = {
   LOGO: "/assets/images/logo/coursewave-favicon-color.png",
+  SHADCN_DEFAULT: "https://github.com/shadcn.png",
   DEFAULT_AVATAR:
     "https://www.shutterstock.com/image-vector/young-smiling-man-avatar-brown-600nw-2261401207.jpg",
   SAMPLE_PERSON_1:
