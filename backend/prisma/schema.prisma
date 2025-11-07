@@ -625,6 +625,7 @@ model ModerationLog {
 model SubscriptionPlan {
   id                      String                   @id @default(uuid())
   slug                    String?                  @unique
+  stripePriceId           String?                  @unique
   name                    String
   type                    PlanType
   price                   Float
@@ -649,7 +650,7 @@ model UserSubscription {
   slug                 String?            @unique
   planId               String
   stripeCustomerId     String             @unique
-  stripeSubscriptionId String?
+  stripeSubscriptionId String?            @unique
   stripePriceId        String?
   status               SubscriptionStatus @default(ACTIVE)
   currentPeriodStart   DateTime?
@@ -660,8 +661,10 @@ model UserSubscription {
   createdAt            DateTime           @default(now())
   updatedAt            DateTime
   plan                 SubscriptionPlan   @relation(fields: [planId], references: [id])
-  StripeCustomer       StripeCustomer     @relation(fields: [stripeCustomerId], references: [id])
-  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // StripeCustomer       StripeCustomer     @relation(fields: [stripeCustomerId], references: [id])
+  StripeCustomer       StripeCustomer     @relation(fields: [stripeCustomerId], references: [stripeCustomerId])
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([currentPeriodEnd])
@@ -672,7 +675,7 @@ model UserSubscription {
 model StripeCustomer {
   stripeCustomerId       String            @unique
   userId                 String            @unique
-  stripeSubscriptionId   String?
+  stripeSubscriptionId   String?           @unique
   stripePriceId          String?
   stripeCurrentPeriodEnd DateTime?
   createdAt              DateTime          @default(now())
@@ -780,9 +783,11 @@ model InstructorSubscription {
   id                   String             @id @default(uuid())
   instructorId         String             @unique
   planId               String
-  stripeAccountId      String
-  stripeSubscriptionId String?
+  // stripeAccountId      String?
+  stripeSubscriptionId String?            @unique
+  stripeCustomerId     String?            @unique
   stripePriceId        String?
+  slug                 String?
   status               SubscriptionStatus @default(ACTIVE)
   currentPeriodStart   DateTime?
   currentPeriodEnd     DateTime?

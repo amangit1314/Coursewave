@@ -1,9 +1,13 @@
 import Stripe from "stripe";
-import { createEnrollment } from "../../../core/services/enrollmentService";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-06-30.basil",
-});
+// import { createEnrollment } from "../../../core/services/enrollmentService";
+import { stripe } from "../../../config/stripe";
+import { SubscriptionStatus } from "@prisma/client";
+import {
+  handleSubscriptionCheckoutSessionComplted,
+  handleSubscriptionDeleted,
+  handleSubscriptionUpdated,
+} from "../../subscription/subscription.service";
+import { activateEnrollmentAfterPayment } from "../../../core/services/enrollmentService";
 
 interface ServiceResponse {
   success: boolean;
@@ -13,6 +17,26 @@ interface ServiceResponse {
   error?: string;
 }
 
+export function mapStripeStatus(status: string): SubscriptionStatus {
+  switch (status) {
+    case "active":
+      return "ACTIVE";
+    case "trialing":
+      return "TRIAL";
+    case "past_due":
+      return "PAST_DUE";
+    case "canceled":
+      return "CANCELED";
+    case "incomplete":
+      return "INCOMPLETE";
+    case "unpaid":
+      return "UNPAID";
+    default:
+      throw new Error("Unhandled Stripe status: " + status);
+  }
+}
+
+// Webhook handler (resolves by unique stripeSubscriptionId)
 export const handleWebhookEvent = async (
   rawBody: Buffer,
   signature: string
@@ -40,6 +64,8 @@ export const handleWebhookEvent = async (
     switch (event.type) {
       case "checkout.session.completed":
         await handleCheckoutSessionCompleted(event);
+        await handleSubscriptionCheckoutSessionComplted(event);
+
         break;
 
       case "payment_intent.succeeded":
@@ -52,6 +78,23 @@ export const handleWebhookEvent = async (
 
       case "charge.refunded":
         await handleChargeRefunded(event);
+        break;
+
+      case "customer.subscription.created":
+        break;
+
+      case "customer.subscription.updated": {
+        await handleSubscriptionUpdated(event);
+        break;
+      }
+
+      case "customer.subscription.deleted": {
+        await handleSubscriptionDeleted(event);
+        break;
+      }
+
+      case "invoice.payment_failed":
+        // todo: ...Implement PAST_DUE logic as needed
         break;
 
       default:
@@ -75,6 +118,7 @@ export const handleWebhookEvent = async (
   }
 };
 
+/// -------------------------------------------------------------------------------------------------------------
 
 const handleCheckoutSessionCompleted = async (
   event: Stripe.Event
@@ -85,7 +129,7 @@ const handleCheckoutSessionCompleted = async (
 
   if (userId && courseId) {
     try {
-      await createEnrollment(userId, courseId);
+      await activateEnrollmentAfterPayment(userId, courseId);
       console.log(
         `Enrollment created for user ${userId} and course ${courseId}`
       );
@@ -133,6 +177,8 @@ const handleChargeRefunded = async (event: Stripe.Event): Promise<void> => {
   // You can add additional logic for refunds
   // Example: Remove enrollment, update order status, etc.
 };
+
+/// ====================================================================================================================
 
 // Additional utility functions for Stripe operations
 export const createCheckoutSession = async (
@@ -189,6 +235,18 @@ export const createPaymentIntent = async (
   }
 };
 
+export const getPaymentIntent = async (
+  paymentIntentId: string
+): Promise<Stripe.PaymentIntent> => {
+  try {
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    return paymentIntent;
+  } catch (error: any) {
+    console.error("Error retrieving payment intent:", error);
+    throw new Error(`Failed to retrieve payment intent: ${error.message}`);
+  }
+};
+
 export const refundPayment = async (
   paymentIntentId: string
 ): Promise<Stripe.Refund> => {
@@ -201,17 +259,5 @@ export const refundPayment = async (
   } catch (error: any) {
     console.error("Error creating refund:", error);
     throw new Error(`Failed to create refund: ${error.message}`);
-  }
-};
-
-export const getPaymentIntent = async (
-  paymentIntentId: string
-): Promise<Stripe.PaymentIntent> => {
-  try {
-    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-    return paymentIntent;
-  } catch (error: any) {
-    console.error("Error retrieving payment intent:", error);
-    throw new Error(`Failed to retrieve payment intent: ${error.message}`);
   }
 };

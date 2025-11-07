@@ -26,7 +26,6 @@ export const CourseCard = ({ course }: { course: Course }) => {
     e.preventDefault();
     e.stopPropagation();
     setWishlisted((prev) => !prev);
-    // TODO: Hook this to a wishlist system
     wishlistCourse(course.id);
   };
 

@@ -17,23 +17,14 @@ import {
 export default function InstructorProjects() {
   const { user } = useUserStore();
   const instructorId = user?.id;
-  const { projects, isLoading } = useProjects();
-  // const instructorProjects = projects.filter(
-  //   (project) => project.instructorId === instructorId
-  // );
+  const { data: projectsData, isLoading, isError, error } = useProjects();
+
+  const projects = projectsData?.data || [];
   const instructorProjects = projects;
+  const hasProjects = instructorProjects.length > 0;
 
   const [search, setSearch] = useState("");
   const [view, setView] = useState<"cards" | "table">("cards");
-  const hasProjects = instructorProjects.length > 0;
-
-  // const instructorProjects = (projects.data ?? []).filter(
-  //   (project: any) => project.instructorId === instructorId
-  // );
-
-  // const filtered = instructorProjects.filter((project) =>
-  //   project.toLowerCase().includes(search.toLowerCase())
-  // );
 
   return (
     <div className="p-8">

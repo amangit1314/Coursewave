@@ -23,8 +23,8 @@ export const loginUser = async (req: Request, res: Response) => {
 
 export const verifyUserEmail = async (req: Request, res: Response) => {
   try {
-    const { userId, token, csrfToken } = req.body;
-    const result = await AuthService.verifyEmail(userId, token, csrfToken);
+    const { token, csrfToken } = req.body;
+    const result = await AuthService.verifyEmail( token, csrfToken);
     res.json(result);
   } catch (error: any) {
     res.status(error.status || 500).json({ success: false, message: error.message });
@@ -43,8 +43,8 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
 export const resetPassword = async (req: Request, res: Response) => {
   try {
-    const { userId, token, csrfToken, newPassword } = req.body;
-    const result = await AuthService.resetPassword(userId, token, csrfToken, newPassword);
+    const { token, csrfToken, newPassword } = req.body;
+    const result = await AuthService.resetPassword(token, csrfToken, newPassword);
     res.json(result);
   } catch (error: any) {
     res.status(error.status || 500).json({ success: false, message: error.message });

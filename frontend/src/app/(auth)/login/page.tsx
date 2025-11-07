@@ -1,6 +1,5 @@
 "use client";
 
-import { Toaster } from "react-hot-toast";
 import { motion } from "framer-motion";
 import LoginLeftSection from "./_components/LoginLeftSection";
 import AuthBackgroundPattern from "@/components/auth/AuthBackgroundPattern";
@@ -25,7 +24,7 @@ const Login = () => {
           </div>
         </motion.div>
       </div>
-      <Toaster position="top-right" />
+   
     </div>
   );
 };

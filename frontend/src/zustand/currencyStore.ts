@@ -16,6 +16,11 @@ interface CurrencyState {
     currency?: string,
     showCurrencySign?: boolean
   ) => string;
+  formatPriceFixed: (
+    price: number,
+    currency?: string,
+    showCurrencySign?: boolean
+  ) => string;
   detectUserCurrency: () => Promise<void>;
 }
 
@@ -73,6 +78,24 @@ export const useCurrencyStore = create<CurrencyState>()(
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           }).format(displayPrice);
+        }
+      },
+
+      formatPriceFixed: (price, currency = "INR", showCurrencySign = true) => {
+        const locale = currency === "INR" ? "en-IN" : "en-US";
+        if (showCurrencySign) {
+          return new Intl.NumberFormat(locale, {
+            style: "currency",
+            currency,
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }).format(price);
+        } else {
+          return new Intl.NumberFormat(locale, {
+            style: "decimal",
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }).format(price);
         }
       },
 

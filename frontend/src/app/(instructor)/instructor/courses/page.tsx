@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { Flex, Button } from "@tremor/react";
 import { DataTable } from "./_components/DataTable";
 import { columns } from "./_components/CreatedCoursesColumns";

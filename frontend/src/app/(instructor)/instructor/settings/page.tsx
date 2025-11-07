@@ -14,7 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { Title } from "@tremor/react";
 import {
   AlertDialog,
@@ -76,7 +76,6 @@ export default function InstructorSettings() {
 
   return (
     <div className="px-6 py-12 md:px-20 md:py-10 font-sans">
-      <Toaster />
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

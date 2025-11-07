@@ -496,8 +496,30 @@ const EnrolledCoursesTable = () => {
     }));
   };
 
+  // const StatusBadge = ({ status }: { status: keyof typeof statusConfig }) => {
+  //   const config = statusConfig[status];
+  //   return (
+  //     <div
+  //       className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${config.color}`}
+  //     >
+  //       {config.icon}
+  //       {status}
+  //     </div>
+  //   );
+  // };
+
   const StatusBadge = ({ status }: { status: keyof typeof statusConfig }) => {
     const config = statusConfig[status];
+
+    if (!config) {
+      // Provide fallback UI for unknown status
+      return (
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-400">
+          Unknown
+        </div>
+      );
+    }
+
     return (
       <div
         className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${config.color}`}

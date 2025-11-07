@@ -3,7 +3,6 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,6 +19,7 @@ import { Course } from "@/types/course-details-api-response";
 import { Review } from "@/types/review";
 import { dmSans } from "@/lib/config/fonts";
 import { cn } from "@/lib/utils/utils";
+import { IMAGES } from "@/constants/images";
 
 export const CourseDetailsLeftSection = ({
   course,
@@ -125,9 +125,9 @@ export const CourseDetailsLeftSection = ({
                             <Image
                               src={
                                 course.instructor.user?.profileImageUrl ??
-                                "https://github.com/shadcn.png"
+                                IMAGES.SHADCN_DEFAULT
                               }
-                              alt={course.instructor.user?.name || "Instructor"}
+                              alt={course.instructor.user?.name || "Coursewave Instructor"}
                               fill
                               className="object-cover"
                             />

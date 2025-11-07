@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Pencil } from "lucide-react";
 import { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+
 import { useRouter } from "next/navigation";
 import {
   Form,
@@ -22,6 +22,7 @@ import { formatPrice } from "@/lib/utils/format";
 import { Course } from "@/types/course";
 import { dmSans } from "@/lib/config/fonts";
 import { useUpdateCourse } from "@/hooks/useCourses";
+import toast from "react-hot-toast";
 
 interface PriceFormProps {
   initialData: Course;
@@ -75,7 +76,6 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
   return (
     // border
     <div className="mt-6 rounded-2xl  bg-slate-100 p-4 dark:bg-zinc-900">
-      <Toaster />
       <div
         className={`${dmSans.className} flex items-center justify-between font-medium`}
       >

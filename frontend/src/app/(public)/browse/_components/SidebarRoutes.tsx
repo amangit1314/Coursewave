@@ -60,8 +60,8 @@ const SideBarRoutes = () => {
     // },
     {
     icon: <AiOutlineTransaction size={22} />,
-    label: "Subscription",
-    href: `/subscription`,
+    label: "Subscriptions",
+    href: `/subscriptions`,
       isLocked: user ? false : true,
     },
     {

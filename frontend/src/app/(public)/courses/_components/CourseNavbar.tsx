@@ -1,10 +1,10 @@
 /// ====================================================
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-'use client';
+"use client";
 
 import React from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import Link from "next/link";
 import Image from "next/image";
 import { useUserStore } from "@/zustand/userStore";
@@ -29,13 +29,13 @@ const CourseNavbar = ({ courseName }: { courseName: string }) => {
     router.back();
   };
 
+  console.log("Course name in Course Navbar: ", courseName);
+
   return (
     <>
-      <Toaster position="top-center" />
-      
+
       <nav className="sticky top-0 z-50 w-full border-b border-zinc-200/50 dark:border-zinc-800/50 bg-white dark:bg-zinc-900/80 backdrop-blur-xl shadow-sm">
         <div className="mx-auto flex max-w-screen-2xl items-center justify-between px-4 py-3 md:px-6">
-          
           {/* Left Section - Logo and Breadcrumbs */}
           <div className="flex items-center space-x-3 min-w-0 flex-1">
             {/* Back Button - Mobile Only */}
@@ -63,7 +63,9 @@ const CourseNavbar = ({ courseName }: { courseName: string }) => {
                   priority
                 />
               </div>
-              <span className={`hidden sm:inline text-lg font-bold bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-400 dark:to-blue-300 bg-clip-text text-transparent ${dmSans.className}`}>
+              <span
+                className={`hidden sm:inline text-lg font-bold bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-400 dark:to-blue-300 bg-clip-text text-transparent ${dmSans.className}`}
+              >
                 Coursewave
               </span>
             </Link>
@@ -74,15 +76,18 @@ const CourseNavbar = ({ courseName }: { courseName: string }) => {
             {/* Course Name Breadcrumb - Desktop */}
             <div className="hidden items-center space-x-1.5 text-sm md:flex min-w-0">
               <Link
-                href="/browseCourses"
+                href="/browse"
                 className="flex items-center space-x-1.5 rounded-lg px-2.5 py-1.5 transition-all hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 shrink-0"
               >
                 <Home className="h-4 w-4" />
                 <span className="font-medium">Courses</span>
               </Link>
               <ChevronRight className="h-4 w-4 text-zinc-400 dark:text-zinc-600 shrink-0" />
-              <div className="flex items-center min-w-0 max-w-md">
-                <span className="truncate font-semibold text-zinc-900 dark:text-white" title={courseName}>
+              <div className="flex items-center max-w-md">
+                <span
+                  className="truncate font-semibold text-zinc-900 dark:text-white"
+                  title={courseName}
+                >
                   {courseName}
                 </span>
               </div>
@@ -90,7 +95,10 @@ const CourseNavbar = ({ courseName }: { courseName: string }) => {
 
             {/* Course Name - Mobile (Truncated) */}
             <div className="flex md:hidden min-w-0 flex-1">
-              <span className="truncate text-sm font-semibold text-zinc-900 dark:text-white" title={courseName}>
+              <span
+                className="truncate text-sm font-semibold text-zinc-900 dark:text-white"
+                title={courseName}
+              >
                 {courseName}
               </span>
             </div>
@@ -144,6 +152,9 @@ const CourseNavbar = ({ courseName }: { courseName: string }) => {
             <span>Courses</span>
             <ChevronRight className="h-3.5 w-3.5" />
           </Link>
+          <span className="flex items-center space-x-1 text-xs text-blue-500">
+            {courseName}
+          </span>
         </div>
       </nav>
     </>

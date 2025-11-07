@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import RegisterLeftSection from "./_components/RegisterLeftSection";
 import RegisterForm from "./_components/RegisterForm";
 import AuthBackgroundPattern from "@/components/auth/AuthBackgroundPattern";
-import { Toaster } from "react-hot-toast";
 
 const RegisterPage = () => {
   return (

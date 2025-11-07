@@ -144,7 +144,7 @@ const LoginForm = () => {
           {/* Forgot Password */}
           <div className="flex items-center justify-between">
             <Link
-              href="/forgotPassword"
+              href="/forgot-password"
               className={`${dmSans.className} text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300`}
             >
               Forgot your password?

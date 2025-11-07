@@ -35,6 +35,20 @@ export function useRegister() {
   });
 }
 
+// hooks/useAuth.ts
+
+type VerifyEmailPayload = {
+  token: string;
+  csrfToken: string;
+};
+
+export function useVerifyEmail() {
+  return useMutation({
+    mutationFn: ({ token, csrfToken }: VerifyEmailPayload) =>
+      authService.verifyEmail(token, csrfToken),
+  });
+}
+
 export function useLogout() {
   const logoutStore = useUserStore((s) => s.logout);
   const queryClient = useQueryClient();
@@ -50,13 +64,28 @@ export function useLogout() {
 
 export function useForgotPassword() {
   return useMutation({
-    mutationFn: authService.forgotPassword,
+    // mutationFn: authService.forgotPassword,
+    mutationFn: (email: string) => authService.forgotPassword(email),
   });
 }
 
+// Type for the mutation payload
+type ResetPasswordPayload = {
+  token: string;
+  csrfToken: string;
+  // email: string;
+  newPassword: string;
+};
+
 export function useResetPassword() {
   return useMutation({
-    mutationFn: authService.resetPassword,
+    mutationFn: (payload: ResetPasswordPayload) =>
+      authService.resetPassword({
+        token: payload.token,
+        csrfToken: payload.csrfToken,
+
+        newPassword: payload.newPassword,
+      }),
   });
 }
 

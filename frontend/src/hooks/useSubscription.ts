@@ -8,6 +8,7 @@ import {
   requestCancelSubscription,
 } from "@/lib/api/services/subscriptionService";
 import { UserSubscription, SubscriptionPlan } from "@/types/subscription.types";
+import toast from "react-hot-toast";
 
 type UseSubscriptionArgs = {
   userId?: string;
@@ -54,26 +55,21 @@ export function useSubscription({
   }, [userId, instructorId, userType]);
 
   // SUBSCRIBE or UPGRADE to a plan
-  async function subscribeToPlan({
-    planId,
-    stripeSubscriptionId,
-  }: {
-    planId: string;
-    stripeSubscriptionId: string;
-  }) {
+  async function subscribeToPlan({ planId }: { planId: string }) {
     setLoading(true);
     setError(null);
     try {
-      await requestSubscribeToPlan(planId, stripeSubscriptionId, userType);
-      // Refresh the current subscription info after subscribing
+      await requestSubscribeToPlan(planId, userType);
+
       if (userType === "USER" && userId) {
         setSubscription(await fetchUserSubscription(userId));
       }
       if (userType === "INSTRUCTOR" && instructorId) {
         setSubscription(await fetchInstructorSubscription(instructorId));
       }
-    } catch (err) {
+    } catch (err: any) {
       setError("Subscription/upgrade failed");
+      toast.error(err.message);
       throw err;
     } finally {
       setLoading(false);
@@ -93,8 +89,9 @@ export function useSubscription({
       if (userType === "INSTRUCTOR" && instructorId) {
         setSubscription(await fetchInstructorSubscription(instructorId));
       }
-    } catch (err) {
+    } catch (err: any) {
       setError("Cancellation failed");
+      toast.error(err.message);
       throw err;
     } finally {
       setLoading(false);

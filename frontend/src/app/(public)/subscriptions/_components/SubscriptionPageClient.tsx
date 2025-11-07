@@ -4,21 +4,28 @@ import React from "react";
 import SubscriptionContent from "./SubscriptionContent";
 import { useUserStore } from "@/zustand/userStore";
 import { useSubscription } from "@/hooks/useSubscription";
+import { usePathname } from "next/navigation";
+import ShimmerSubscriptionItem from "./ShimmerSubscriptionItem";
 
 export default function SubscriptionPageClient() {
   const { user } = useUserStore();
   const userId = user?.id;
 
+  const pathname = usePathname();
+  const userType = pathname.includes("/instructor") ? "INSTRUCTOR" : "USER";
+
   // useSubscription provides { subscription, plans, loading }
   const { subscription, plans, loading } = useSubscription({
     userId,
-    userType: "USER",
+    userType: userType,
   });
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-3 gap-6">
+        <ShimmerSubscriptionItem />
+        <ShimmerSubscriptionItem />
+        <ShimmerSubscriptionItem />
       </div>
     );
   }

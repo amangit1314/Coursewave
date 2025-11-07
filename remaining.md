@@ -4,9 +4,8 @@
 
 ------------------------------------ ABOUT & CONTACT -------------------
 
-3. [] handle states (success, error, no internet etc.) and Send Mail is not working on `/helpAndSupport`
-4. [] - handle states (success, error, no internet etc.) and Send Mail is not working on `/forgotPassword` + `/resetPassword`
-5. [] - Fix and make `/verifyEmail` working perfectly.
+4. [] - `/resetPassword` (invalid reset token) [CHECK]
+5. [] - `/verifyEmail` (invalid verification token) [CHECK]
 
 ------------------------------------------ ARTICLE --------------------------------------
 
@@ -57,22 +56,21 @@
 
 ----------------- COURSE ------------------------------------------
 8. Course Item (
-    [] - Add course to wishlist
-    [] - Status of wishlisted course item
-    [] - on tap again remove from wishlist
+    [x] - Add course to wishlist
+    [x] - Status of wishlisted course item
+    [x] - on tap again remove from wishlist
 )
 9. Course Details (
     [] - back button, coursewave logo and course name can conflict in ui handle the scenarios in course details header (mobile view only)
-    [] - mobile view breadcrumn the course name is not showing
-    [] - enrolled students count, from backend
+    [x] - mobile view breadcrumn the course name is not showing
+    [x] - enrolled students count, from backend
     [] - Course level 
-    [] - the course right section of big screen one is comming down in the mobile view for mobile view think about something different organization or just (flex-reverse [only in mobile view])
+    [x] - the course right section of big screen one is comming down in the mobile view for mobile view think about something different organization or just (flex-reverse [only in mobile view])
     [x] - share course url
     [] - apply `couponCode` from couponCode dialog on course details page.
-    [] - add to cart
+    [x] - add to cart
     [] - Course Enrollment
     [] - Course purchase
-    [] - Course allocation
     [] - Course purchased email
     [] - Successfully enrolled in course notification
     [] - Course content (
@@ -88,31 +86,31 @@
         [] - update the review and rating bifercation in cache at real time (optimistic update)
     )
 )
-10. [] - Course Content on learning side (
-        [] - text, quiz and video handling (based on content type)
+10. [] - Course Content on learning side  (
+        [x] - text, quiz and video handling (based on content type) [TO CHECK]
         [] - Video Ai Summary (only when content type is video)
         [] - Chapter Notes Management
         [] - show reviews of course in here at time of learning (NEED DICSUSSOn)
     )
 
 ---------------------- CART -------------------------------------------
-11. [] - Cart (
-        [] - states (empty, error, loading)
-        [] - Cart items
-        [] - Remove from cart
-        [] - Cart total
+11. [x] - Cart (
+        [x] - states (empty, error, loading)
+        [x] - Cart items
+        [x] - Remove from cart
+        [x] - Cart total
         [] - Cart checkout
         [] - Cart coupon codes
-        [] - cart not found error when user is not authenticated, restrict navigation on them in this case
+        [x] - cart not found error when user is not authenticated, restrict navigation on them in this case
     )
 
 ----------------------- WISHLIST -------------------------------------
-12. [] - Wishlist (
-        [] - states (empty, error, loading)
-        [] - wishlisted items
-        [] - Remove from wishlist
+12. [x] - Wishlist (
+        [x] - states (empty, error, loading)
+        [x] - wishlisted items
+        [x] - Remove from wishlist
         [] - Add wishlisted item to cart
-        [] - wishlist not found error when user is not authenticated, restrict navigation on them in this case
+        [x] - wishlist not found error when user is not authenticated, restrict navigation on them in this case
     )
 
 ------------------------ SUBSCRIPTION -----------------------------

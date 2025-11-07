@@ -24,6 +24,8 @@ import communitiesRoutes from "./api/communities/communities.routes";
 // ------------------------------------------------------------------------
 import { initJobs } from "./jobs";
 import { initSocket } from "./config/socket";
+import contactRoutes from "./api/contact/contact.routes";
+import bodyParser from "body-parser";
 
 ///? <=================================== Load environment variables ==============>
 dotenv.config();
@@ -42,6 +44,9 @@ if (missingEnvVars.length > 0) {
 
 /// ? <=================================== CREATING EXPRESS APP ============================>
 const app = express();
+
+// Stripe webhook: must be before any other body parser
+app.use("/api/webhooks/stripe", bodyParser.raw({ type: "application/json" }), stripeWebhookRoutes);
 
 ///? <==================================== Middlewares ======================================>
 app.use(helmet());
@@ -97,6 +102,9 @@ app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+import multer from "multer";
+const upload = multer();
+
 ///? <==================================== CUSTOM Middlewares ================================>
 
 ///* ------------------------- Custom rate limitor -------------------------------------
@@ -151,14 +159,21 @@ app.use(
 );
 
 ///? <==================================== API routes ====================================>
+app.post("/api/your-form-route", upload.none(), (req, res) => {
+  // Now works with "form-data" in Postman
+  res.json({ received: true, form: req.body });
+});
+
+///? <==================================== API routes ====================================>
 app.use("/api/stats", statsRoutes);
+app.use("/api/contact", contactRoutes);
 app.use("/api/auth", authRoutes);
 app.use(
   "/api/courses",
   // courseCacheMiddleware,
   courseRoutes
 );
-app.use("/api/webhooks/stripe", stripeWebhookRoutes);
+// app.use("/api/webhooks/stripe", stripeWebhookRoutes);
 app.use("/api/users", usersRoutes);
 app.use(
   "/api/blogs",

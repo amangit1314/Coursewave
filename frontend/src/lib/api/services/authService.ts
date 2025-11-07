@@ -86,15 +86,15 @@ class AuthService {
     }
   }
 
-  async verifyEmail(token: string): Promise<ApiResponse<User>> {
-    return this.apiManager.post<User>("/auth/verify-email", { token });
+  async verifyEmail(token: string, csrfToken: string): Promise<ApiResponse<User>> {
+    return this.apiManager.post<User>("/auth/verify-email", { token, csrfToken });
   }
 
   async forgotPassword(email: string): Promise<ApiResponse<void>> {
     return this.apiManager.post<void>("/auth/forgot-password", { email });
   }
 
-  async resetPassword(data: { email: string; code: string; newPassword: string }): Promise<ApiResponse<void>> {
+  async resetPassword(data: { token: string; csrfToken: string; newPassword: string }): Promise<ApiResponse<void>> {
     return this.apiManager.post<void>("/auth/reset-password", data);
   }
 
@@ -150,114 +150,3 @@ class AuthService {
 }
 
 export const authService = AuthService.getInstance();
-
-/**
- * export const authService = {
-  async register(email: string, password: string) {
-    const response = await ApiManager.getInstance().post("/api/auth/register", {
-      email,
-      password,
-    });
-    console.log("register URL:", "/api/auth/register");
-    console.log("register request data:", { email, password });
-
-    console.log("register response:", response.data);
-
-    // Set the tokens after successful login
-    return response.data;
-  },
-
-  async login(email: string, password: string) {
-    const response = await ApiManager.getInstance().post("/api/auth/login", {
-      email,
-      password,
-    });
-    console.log("Login URL:", "/api/auth/login");
-    console.log("Login request data:", { email, password });
-
-    console.log("Login response:", response.data);
-
-    // Set the tokens after successful login
-    if (response.data.accessToken) {
-      // Store the access token as authToken in localStorage/sessionStorage
-      if (typeof window !== "undefined") {
-        localStorage.setItem("coursewave_access_token", response.data.accessToken);
-        console.log("Auth token stored in localStorage");
-      }
-      ApiManager.setAuthToken(response.data.accessToken);
-      console.log("Access token set successfully");
-    }
-    if (response.data.refreshToken) {
-      // Store refresh token separately
-      if (typeof window !== "undefined") {
-        localStorage.setItem("refreshToken", response.data.refreshToken);
-      }
-      console.log("Refresh token stored successfully");
-    }
-
-    return response.data;
-  },
-
-  async logout() {
-    try {
-      await ApiManager.getInstance().post("/api/auth/logout");
-    } catch (error) {
-      console.error("Logout failed:", error);
-      throw error;
-    } finally {
-      // Clear tokens on logout
-      ApiManager.clearTokens();
-      // Also clear authToken from localStorage/sessionStorage
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("coursewave_access_token");
-        localStorage.removeItem("refreshToken");
-        sessionStorage.removeItem("coursewave_access_token");
-        sessionStorage.removeItem("refreshToken");
-      }
-    }
-  },
-
-  async verifyEmail(token: string) {
-    const response = await ApiManager.getInstance().post("/api/auth/verify-email", {
-      token,
-    });
-    return response.data;
-  },
-
-  async refreshToken() {
-    console.log("=== authService.refreshToken called ===");
-    const refreshToken = typeof window !== "undefined" 
-      ? localStorage.getItem("refreshToken") || sessionStorage.getItem("refreshToken")
-      : null;
-    
-    console.log("Refresh token found:", !!refreshToken);
-    console.log("Refresh token value:", refreshToken ? `${refreshToken.substring(0, 20)}...` : "null");
-    
-    if (!refreshToken) {
-      console.error("No refresh token available");
-      throw new Error("No refresh token available");
-    }
-
-    console.log("Making refresh token request to /api/auth/refresh-token");
-    const response = await ApiManager.getInstance().post("/api/auth/refresh-token", {
-      refreshToken,
-    });
-
-    console.log("Refresh token response:", response);
-
-    if (response.data?.accessToken) {
-      // Store the new access token
-      if (typeof window !== "undefined") {
-        localStorage.setItem("coursewave_access_token", response.data.accessToken);
-        console.log("New auth token stored after refresh");
-      }
-      ApiManager.setAuthToken(response.data.accessToken);
-      console.log("New access token set via ApiManager");
-    } else {
-      console.warn("No access token in refresh response");
-    }
-
-    return response.data;
-  },
-};
- */

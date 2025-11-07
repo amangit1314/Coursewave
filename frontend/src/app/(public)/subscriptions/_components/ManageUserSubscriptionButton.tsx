@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import React from "react";
 import { Loader2 } from "lucide-react";
 
-// --- Add extra props you might need for richer decisions
 type ManageUserSubscriptionButtonProps = {
   isCurrentPlan: boolean;
   isSubscribed: boolean;
@@ -11,6 +10,7 @@ type ManageUserSubscriptionButtonProps = {
   canUpgrade: boolean;
   canCancel: boolean;
   isOnlyFreePlan: boolean;
+  isLastSubscribedPlan: boolean; // New prop to indicate last subscribed plan
   onSubscribe: () => void;
   onUpgrade: () => void;
   onCancel: () => void;
@@ -24,19 +24,22 @@ export default function ManageUserSubscriptionButton({
   canUpgrade,
   canCancel,
   isOnlyFreePlan,
+  isLastSubscribedPlan,
   onSubscribe,
   onUpgrade,
   onCancel,
   isPending = false,
 }: ManageUserSubscriptionButtonProps) {
-  // You can use React.useTransition() here if you want to manage local pending
-  // const [isPending, startTransition] = React.useTransition();
+  // Hide button if user is subscribed and this is their last subscription (yearly plan)
+  if (isSubscribed && isLastSubscribedPlan) {
+    return null;
+  }
 
   let buttonLabel = "";
   let buttonAction: () => void = onSubscribe;
   let buttonDisabled = false;
 
-  // LOGIC FOR BUTTON LABELS & ACTIONS
+  // Existing label/action logic
   if (isCurrentPlan) {
     if (isDummyFreePlan && isOnlyFreePlan) {
       buttonLabel = "Active Plan";
@@ -45,7 +48,7 @@ export default function ManageUserSubscriptionButton({
       buttonLabel = "Upgrade";
       buttonAction = onUpgrade;
     } else if (canUpgrade) {
-      buttonLabel = "Manage Subscription"; // Could split to "Upgrade" if plan is higher
+      buttonLabel = "Manage Subscription";
       buttonAction = onUpgrade;
     } else if (canCancel) {
       buttonLabel = "Cancel Subscription";
@@ -65,10 +68,14 @@ export default function ManageUserSubscriptionButton({
     buttonAction = onSubscribe;
   }
 
-  // Only one button―could expand to offer separate "Cancel" for current plan
+  // Hide for subscribed + dummy free plan is already handled below by returning null
+  if (isSubscribed && isDummyFreePlan) {
+    return null;
+  }
+
   return (
     <form
-      onSubmit={e => {
+      onSubmit={(e) => {
         e.preventDefault();
         if (!buttonDisabled) buttonAction();
       }}
@@ -84,12 +91,12 @@ export default function ManageUserSubscriptionButton({
         {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         {buttonLabel}
       </Button>
-      {/* Optionally, for current paid plan, show a separate inline Cancel below */}
+
       {isCurrentPlan && canCancel && buttonLabel !== "Cancel Subscription" && (
         <Button
           type="button"
-          className="mt-2 w-full rounded-lg border border-red-500 text-red-500 bg-transparent hover:bg-red-50"
-          onClick={e => {
+          className="mt-4 w-full rounded-lg border border-red-500 text-red-500 bg-transparent hover:bg-red-600 hover:text-white"
+          onClick={(e) => {
             e.preventDefault();
             onCancel();
           }}

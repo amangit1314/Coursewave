@@ -7,6 +7,7 @@ import {
   subscribeInstructor,
   cancelUserSubscription,
   cancelInstructorSubscription,
+  createCheckoutSession,
 } from "./subscription.controller";
 import { verifyToken } from "../../core/middleware";
 
@@ -17,7 +18,8 @@ router.get("/plans", getSubscriptionPlans);
 
 // User routes (authenticated)
 router.get("/user", verifyToken, getUserSubscriptions);
-router.post("/user/subscribe", verifyToken, subscribeUser);
+// router.post("/user/subscribe", verifyToken, subscribeUser);
+router.post("/user/subscribe", verifyToken, createCheckoutSession);
 router.post("/user/cancel", verifyToken, cancelUserSubscription);
 
 // Instructor routes (authenticated)

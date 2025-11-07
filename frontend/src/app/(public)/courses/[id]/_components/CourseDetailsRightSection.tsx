@@ -29,6 +29,7 @@ import { dmSans } from "@/lib/config/fonts";
 import { cn } from "@/lib/utils/utils";
 import { useCurrencyStore } from "@/zustand/currencyStore";
 import { IMAGES } from "@/constants/images";
+import { AddToCartButton } from "./AddToCartButton";
 
 export const CourseDetailsRightSection = ({ course }: { course: Course }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -69,9 +70,31 @@ export const CourseDetailsRightSection = ({ course }: { course: Course }) => {
       <Card className="sticky top-24 border-0 shadow-2xl hover:shadow-3xl transition-shadow duration-300 dark:bg-zinc-900/95 backdrop-blur-sm overflow-hidden rounded-2xl">
         {/* Course Image with Play Button */}
         <div className="relative h-52 overflow-hidden bg-zinc-100 dark:bg-zinc-800 group">
-          {/* Loading skeleton */}
+          {/* Loading shimmer */}
           {!imageLoaded && (
-            <div className="absolute inset-0 animate-pulse bg-zinc-200 dark:bg-zinc-700" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              {/* Outer shimmer container */}
+              <div className="w-full h-full rounded-lg overflow-hidden bg-zinc-200 dark:bg-zinc-700 relative">
+                {/* Shimmer animation */}
+                <div className="absolute inset-0 bg-gradient-to-r from-zinc-300 via-zinc-100 to-zinc-300 dark:from-zinc-800 dark:via-zinc-700 dark:to-zinc-800 animate-shimmer" />
+              </div>
+              <style jsx>{`
+                @keyframes shimmer {
+                  0% {
+                    transform: translateX(-100%);
+                  }
+                  100% {
+                    transform: translateX(100%);
+                  }
+                }
+                .animate-shimmer {
+                  animation: shimmer 1.6s linear infinite;
+                  background-size: 200% 100%;
+                  background-repeat: no-repeat;
+                  opacity: 0.7;
+                }
+              `}</style>
+            </div>
           )}
 
           <Image
@@ -163,6 +186,9 @@ export const CourseDetailsRightSection = ({ course }: { course: Course }) => {
               </span>
             </div>
           </div>
+
+          {/* AddToCart Button */}
+          <AddToCartButton course={course!} />
 
           {/* Enroll Button */}
           <CourseEnrollButton course={course!} courseId={course?.id} />

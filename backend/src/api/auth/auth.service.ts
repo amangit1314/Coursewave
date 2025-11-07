@@ -13,77 +13,6 @@ const JWT_REFRESH_SECRET =
   process.env.JWT_REFRESH_SECRET || "your-refresh-secret-key";
 
 class AuthService {
-  // static async registerUser(
-  //   email: string,
-  //   password: string,
-  //   firstName?: string,
-  //   lastName?: string,
-  //   role = "USER"
-  // ) {
-  //   if (!email || !password)
-  //     throw { status: 400, message: "Email and password are required" };
-
-  //   const existingUser = await prisma.user.findUnique({ where: { email } });
-  //   if (existingUser) throw { status: 400, message: "User already exists" };
-
-  //   const hashedPassword = await bcrypt.hash(password, process.env.ENVIRONMENT === "DEVELOPMENT" ? 4 : 10);
-
-  //   const user = await prisma.user.create({
-  //     data: {
-  //       email,
-  //       password: hashedPassword,
-  //       name: `${firstName ?? email.split("@")[0]}`,
-  //       isEmailVerified: false,
-  //       createdAt: new Date(),
-  //       updatedAt: new Date(),
-  //     },
-  //   });
-
-  //   if (!role || !Object.values(Role).includes(role as Role)) {
-  //     throw new Error("Invalid role provided");
-  //   }
-
-  //   await prisma.userRole.create({
-  //     data: {
-  //       userId: user.id,
-  //       role: role as Role,
-  //       createdAt: new Date(),
-  //       updatedAt: new Date(),
-  //     },
-  //   });
-
-  //   // await EmailService.sendWelcomeEmail(user.id, user.email, user.name || "");
-
-  //   EmailService.sendWelcomeEmail(user.id, user.email, user.name || "")
-  //     .then(() => console.log(`Welcome email queued for ${email}`))
-  //     .catch((err) => console.error("Error sending welcome email:", err));
-
-  //   const accessToken = TokenService.generateAccessToken(user.id);
-  //   const refreshToken = await TokenService.generateRefreshToken(user.id);
-
-  //   const userWithRoles = await prisma.user.findUnique({
-  //     where: { id: user.id },
-  //     include: { roles: true },
-  //   });
-
-  //   return {
-  //     success: true,
-  //     message:
-  //       "User registered successfully. Please check your email to verify your account.",
-  //     data: {
-  //       user: {
-  //         id: userWithRoles!.id,
-  //         email: userWithRoles!.email,
-  //         name: userWithRoles!.name,
-  //         isEmailVerified: userWithRoles!.isEmailVerified,
-  //         roles: userWithRoles!.roles.map((ur) => ur.role),
-  //       },
-  //       accessToken,
-  //       refreshToken,
-  //     },
-  //   };
-  // }
-
   static async registerUser(
     email: string,
     password: string,
@@ -98,7 +27,6 @@ class AuthService {
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) throw { status: 400, message: "User already exists" };
 
-    // Hash password (dynamic salt rounds)
     const saltRounds = process.env.ENVIRONMENT === "DEVELOPMENT" ? 4 : 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
@@ -137,26 +65,30 @@ class AuthService {
       return userWithRoles;
     });
 
-    // ✅ FIXED: Generate both tokens immediately and wait for completion
+    // Generate tokens immediately
     const accessToken = TokenService.generateAccessToken(userWithRoles!.id);
     const refreshToken = await TokenService.generateRefreshToken(
       userWithRoles!.id
     );
 
-    // Background email sending only
+    // Send email verification in background without blocking or breaking registration
     process.nextTick(async () => {
       try {
-        await EmailService.sendWelcomeEmail(
+        const emailSent = await EmailService.sendEmailVerification(
           userWithRoles!.id,
           userWithRoles!.email,
           userWithRoles!.name || ""
         );
+        if (!emailSent) {
+          console.warn(
+            `Failed to send verification email to ${userWithRoles!.email}`
+          );
+        }
       } catch (err) {
-        console.error("Background email task failed:", err);
+        console.error("Background verification email task failed:", err);
       }
     });
 
-    // Return response with both tokens
     return {
       success: true,
       message:
@@ -170,7 +102,7 @@ class AuthService {
           roles: userWithRoles!.roles.map((ur) => ur.role),
         },
         accessToken,
-        refreshToken, // ✅ Now included in response
+        refreshToken,
       },
     };
   }
@@ -208,23 +140,16 @@ class AuthService {
     };
   }
 
-  static async verifyEmail(userId: string, token: string, csrfToken: string) {
-    if (!token || !csrfToken || !userId)
+  static async verifyEmail(token: string, csrfToken: string) {
+    if (!token || !csrfToken)
       throw {
         status: 400,
-        message: "Token, CSRF token, and user ID are required",
+        message: "Token and CSRF token are required",
       };
 
-    const csrfValid = await CSRFService.validateCSRFToken(
-      userId,
-      csrfToken,
-      "EMAIL_VERIFICATION"
-    );
-    if (!csrfValid) throw { status: 400, message: "Invalid CSRF token" };
-
+    // Find token record first
     const tokenRecord = await prisma.token.findFirst({
       where: {
-        userId,
         value: token,
         type: "VERIFY_EMAIL",
         status: "ACTIVE",
@@ -235,10 +160,20 @@ class AuthService {
     if (!tokenRecord)
       throw { status: 400, message: "Invalid or expired verification token" };
 
+    // Validate CSRF token based on userId found in the token
+    const csrfValid = await CSRFService.validateCSRFToken(
+      tokenRecord.userId,
+      csrfToken,
+      "EMAIL_VERIFICATION"
+    );
+    if (!csrfValid) throw { status: 400, message: "Invalid CSRF token" };
+
+    // Mark email as verified
     await prisma.user.update({
-      where: { id: userId },
+      where: { id: tokenRecord.userId },
       data: { isEmailVerified: true, updatedAt: new Date() },
     });
+
     await TokenService.revokeToken(tokenRecord.id, "EMAIL_VERIFIED");
 
     return { success: true, message: "Email verified successfully" };
@@ -266,27 +201,19 @@ class AuthService {
   }
 
   static async resetPassword(
-    userId: string,
     token: string,
     csrfToken: string,
     newPassword: string
   ) {
-    if (!token || !csrfToken || !newPassword || !userId)
+    if (!token || !csrfToken || !newPassword)
       throw {
         status: 400,
-        message: "Token, CSRF token, new password, and user ID are required",
+        message: "Token, CSRF token and new password are required",
       };
 
-    const csrfValid = await CSRFService.validateCSRFToken(
-      userId,
-      csrfToken,
-      "PASSWORD_RESET"
-    );
-    if (!csrfValid) throw { status: 400, message: "Invalid CSRF token" };
-
+    // Fetch token record — contains userId
     const tokenRecord = await prisma.token.findFirst({
       where: {
-        userId,
         value: token,
         type: "RESET_PASSWORD",
         status: "ACTIVE",
@@ -297,13 +224,25 @@ class AuthService {
     if (!tokenRecord)
       throw { status: 400, message: "Invalid or expired reset token" };
 
-    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    // CSRF validation with tokenRecord.userId
+    const csrfValid = await CSRFService.validateCSRFToken(
+      tokenRecord.userId,
+      csrfToken,
+      "PASSWORD_RESET"
+    );
+    if (!csrfValid) throw { status: 400, message: "Invalid CSRF token" };
 
+    // Update the user's password
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
     await prisma.user.update({
-      where: { id: userId },
+      where: { id: tokenRecord.userId },
       data: { password: hashedPassword, updatedAt: new Date() },
     });
-    await TokenService.revokeAllUserTokens(userId, "PASSWORD_RESET");
+
+    await TokenService.revokeAllUserTokens(
+      tokenRecord.userId,
+      "PASSWORD_RESET"
+    );
     await TokenService.revokeToken(tokenRecord.id, "PASSWORD_RESET_COMPLETED");
 
     return { success: true, message: "Password reset successfully" };

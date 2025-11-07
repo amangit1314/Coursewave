@@ -18,7 +18,7 @@ import {
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { Toaster } from "@/components/ui/toaster";
+
 import {
   PhoneCallIcon,
   MailIcon,
@@ -414,7 +414,6 @@ const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
   return (
     <Form {...form}>
-      <Toaster />
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         {/* Name Fields */}
         <div className="grid gap-4 md:grid-cols-2">

@@ -28,7 +28,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { useCreateArticle } from "@/hooks/useArticles";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useUserStore } from "@/zustand/userStore";
 import { supabase } from "@/lib/config/supabase";
 
@@ -348,7 +348,7 @@ const PremiumArticleEditor = () => {
     <div
       className={`min-h-screen bg-gradient-to-br from-slate-50 to-white dark:from-zinc-900 dark:to-zinc-800 ${isFullscreen ? "fixed inset-0 z-50" : ""}`}
     >
-      <Toaster position="top-right" />
+  
 
       {/* Header */}
       <div className="border-b border-zinc-200 dark:border-zinc-700 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm sticky top-0 z-40">

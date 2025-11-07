@@ -12,6 +12,9 @@ import {
   instructorSubscriptionPlans,
   userSubscriptionPlans,
 } from "@/lib/config/subscriptionPlans";
+import { useCurrencyStore } from "@/zustand/currencyStore";
+import SubscriptionItem from "./SubscriptionItem";
+import ShimmerSubscriptionItem from "./ShimmerSubscriptionItem";
 
 type SubscriptionContentProps = {
   subscriptionPlan: UserSubscription | null;
@@ -23,6 +26,7 @@ const SubscriptionContent = ({
   userType = "USER",
 }: SubscriptionContentProps) => {
   const { user } = useUserStore();
+
   const userId = user?.id;
   const userEmail = user?.email;
 
@@ -79,14 +83,16 @@ const SubscriptionContent = ({
 
   if (loading) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-b border-blue-600"></div>
+      <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-3 gap-6">
+        <ShimmerSubscriptionItem />
+        <ShimmerSubscriptionItem />
+        <ShimmerSubscriptionItem />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       {/* Billing subscription header */}
       <div className="mb-8">
         <h1
@@ -99,6 +105,7 @@ const SubscriptionContent = ({
           information, and control your account's payment
         </p>
       </div>
+
       {/* Main content area */}
       <div className="w-full">
         {/* Available Plans Section */}
@@ -108,17 +115,10 @@ const SubscriptionContent = ({
           >
             Available Plans
           </h2>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {
-              // plans
-              //   .filter(
-              //     (plan) =>
-              //       plan.stripePriceId !==
-              //       (subscription?.stripePriceId ||
-              //         subscriptionPlan?.stripePriceId)
-              //   )
-
-              actualPlans.map((plan: SubscriptionPlan) => {
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            {actualPlans
+              .filter((plan) => plan.type === "USER")
+              .map((plan: SubscriptionPlan) => {
                 const isSelected = plan.id === selectedPlanId;
                 const isDummyFreePlan =
                   plan.stripePriceId === dummyFreePlan.stripePriceId;
@@ -133,69 +133,21 @@ const SubscriptionContent = ({
                   subscription.isSubscribed &&
                   !isDummyFreePlan;
 
-                // Supply a valid Stripe Subscription ID as needed (from backend/user state)
-                const stripeSubscriptionId =
-                  subscription?.stripeSubscriptionId || "";
-
                 return (
-                  <div
+                  <SubscriptionItem
                     key={plan.id}
-                    className={cn(
-                      "rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-950",
-                      isSelected && "ring ring-blue-500"
-                    )}
-                    onClick={() => {}}
-                  >
-                    <h3
-                      className={`${dmSans.className} mb-2 text-lg font-medium text-zinc-900 dark:text-white`}
-                    >
-                      {plan.name}
-                    </h3>
-                    <p className="mb-4 text-2xl font-bold text-zinc-900 dark:text-white">
-                      ${plan.price}{" "}
-                      <span
-                        className={`${dmSans.className} text-zinc-500 text-xl dark:text-zinc-400 font-normal`}
-                      >
-                        /{plan.interval?.toLowerCase() || "month"}
-                      </span>
-                    </p>
-                    <ul className="space-y-3">
-                      {(plan.whatIncludes || []).map((feature: any) => (
-                        <li key={feature} className="flex items-start">
-                          <TiTick className="mt-1 h-5 w-5 flex-shrink-0 text-green-500 dark:text-green-400" />
-                          <span className="ml-2 text-zinc-700 dark:text-zinc-300">
-                            {feature}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="mt-6">
-                      <ManageUserSubscriptionButton
-                        isCurrentPlan={isSelected}
-                        isSubscribed={isSubscribed}
-                        isDummyFreePlan={isDummyFreePlan}
-                        isOnlyFreePlan={isOnlyFreePlan}
-                        canUpgrade={canUpgrade}
-                        canCancel={canCancel}
-                        onSubscribe={() =>
-                          subscribeToPlan({
-                            planId: plan.id,
-                            stripeSubscriptionId,
-                          })
-                        }
-                        onUpgrade={() =>
-                          subscribeToPlan({
-                            planId: plan.id,
-                            stripeSubscriptionId,
-                          })
-                        }
-                        onCancel={cancelSubscription}
-                      />
-                    </div>
-                  </div>
+                    plan={plan}
+                    isSelected={isSelected}
+                    canUpgrade={canUpgrade}
+                    isSubscribed={isSubscribed}
+                    isDummyFreePlan={isDummyFreePlan}
+                    isOnlyFreePlan={isOnlyFreePlan}
+                    canCancel={canCancel}
+                    subscribeToPlan={subscribeToPlan}
+                    cancelSubscription={cancelSubscription}
+                  />
                 );
-              })
-            }
+              })}
           </div>
         </div>
       </div>

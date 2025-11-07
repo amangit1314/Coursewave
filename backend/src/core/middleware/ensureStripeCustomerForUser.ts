@@ -15,7 +15,7 @@ export async function ensureStripeCustomerForUser(
 
   if (stripeCustomerRecord) {
     // Already exists, return stripeCustomerId
-    return stripeCustomerRecord.id;
+    return stripeCustomerRecord.stripeCustomerId;
   }
 
   // 2. Otherwise, create on Stripe

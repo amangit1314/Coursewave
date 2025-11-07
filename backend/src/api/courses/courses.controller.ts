@@ -491,7 +491,7 @@ export const createCheckout = async (req: Request, res: Response) => {
     }
 
     // --- Stripe Customer Setup ---
-    let stripeCustomerId = user.stripeCustomer?.id;
+    let stripeCustomerId = user.stripeCustomer?.stripeCustomerId;
     if (!stripeCustomerId) {
       const customer = await stripe.customers.create({
         email: user.email ?? "",
@@ -1575,7 +1575,6 @@ export const deleteAttachment = async (req: Request, res: Response) => {
 };
 
 // -------------------------------------------- LEARNING DASHBORAD ------------------------------
-
 export const getLearningDashboard = async (req: Request, res: Response) => {
   try {
     const userId = req.user.id;

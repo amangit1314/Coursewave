@@ -1,12 +1,11 @@
 "use client";
 
 import * as z from "zod";
-import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Pencil, Tag } from "lucide-react";
 import { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast  from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import {
   Form,
@@ -97,7 +96,7 @@ export const DealPriceForm = ({ initialData, courseId }: DealPriceFormProps) => 
 
   return (
     <div className="mt-6 rounded-2xl bg-slate-100 p-4 dark:bg-zinc-900">
-      <Toaster />
+  
       <div
         className={`${dmSans.className} flex items-center justify-between font-medium`}
       >

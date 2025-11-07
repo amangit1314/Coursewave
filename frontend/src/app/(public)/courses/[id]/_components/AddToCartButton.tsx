@@ -1,73 +1,151 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { useCartStore } from "@/zustand/cartStore";
+// import React from "react";
+// import { Button } from "@tremor/react"; // Use the same button component for consistency
+// import { HiOutlineShoppingCart, HiShoppingCart } from "react-icons/hi";
+// import toast from "react-hot-toast";
+// import { useUserStore } from "@/zustand/userStore";
+// import { useCartStore } from "@/zustand/cartStore";
+// import { Course } from "@/types/course-details-api-response";
 
-import { generateUid } from "@/lib/helpers/id-helper";
+// export const AddToCartButton = ({ course }: { course: Course }) => {
+//   const { user } = useUserStore();
+//   const [isInCart, setIsInCart] = React.useState(false);
+//   const { addToCart: handleAddToCart, removeFromCart: handleRemoveFromCart } =
+//     useCartStore();
+
+//   // Check for cart state on mount (optional: adapt this to your store)
+//   React.useEffect(() => {
+//     // Replace this with your cart-check logic if needed
+//     setIsInCart(false);
+//   }, [course?.id]);
+
+//   // Handles Add/Remove with feedback
+//   const toggleIsInCart = () => {
+//     if (!user?.id) {
+//       toast.error("Please login to add courses to cart.");
+//       return;
+//     }
+//     if (isInCart) {
+//       handleRemoveFromCart(course?.id);
+//       toast.success(`Removed "${course?.title}" from cart`);
+//       setIsInCart(false);
+//     } else {
+//       handleAddToCart(course, user?.id);
+//       toast.success(`Added "${course?.title}" to cart`);
+//       setIsInCart(true);
+//     }
+//   };
+
+//   return (
+//     <Button
+//       onClick={toggleIsInCart}
+//       disabled={!user?.id}
+//       size="sm"
+//       className={`
+//         w-full
+//         bg-gradient-to-r ${isInCart ? "from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700" : "from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"}
+//         text-white font-semibold py-2 px-6
+//         rounded-xl border-2 ${isInCart ? "border-green-500/30" : "border-blue-500/30"}
+//         shadow-xl hover:shadow-2xl
+//         transition-all duration-200
+//         focus:outline-none focus:ring-2 ${isInCart ? "focus:ring-green-400" : "focus:ring-blue-400"} focus:ring-offset-2
+//         relative overflow-hidden
+//       `}
+//     >
+//       <span className="relative z-10 flex items-center gap-2">
+//         <span className="inline-flex items-center justify-center rounded-full bg-white/20 p-2 shadow-inner">
+//           {isInCart ? (
+//             <HiShoppingCart className="h-5 w-5 text-green-100" />
+//           ) : (
+//             <HiOutlineShoppingCart className="h-5 w-5 text-blue-100" />
+//           )}
+//         </span>
+//         <span className="tracking-wide text-sm font-bold drop-shadow-sm">
+//           {isInCart ? "Remove from Cart" : "Add to Cart"}
+//         </span>
+//       </span>
+//     </Button>
+//   );
+// };
+
+import React from "react";
+import { Button } from "@tremor/react";
 import { HiOutlineShoppingCart, HiShoppingCart } from "react-icons/hi";
-import { CourseWithOtherFields } from "@/types/course-with-other-fields";
-import { Course } from "@/types/course-details-api-response";
-import { CartItem } from "@/types/cart-item";
+import toast from "react-hot-toast";
 import { useUserStore } from "@/zustand/userStore";
+import { useCartStore } from "@/zustand/cartStore";
+import { Course } from "@/types/course-details-api-response";
+import { useAlreadyPurchased } from "@/hooks/useCheckout";
 
 export const AddToCartButton = ({ course }: { course: Course }) => {
   const { user } = useUserStore();
-  const cartItemId = generateUid();
-
   const [isInCart, setIsInCart] = React.useState(false);
   const { addToCart: handleAddToCart, removeFromCart: handleRemoveFromCart } =
     useCartStore();
 
-  const cartItemToAdd: CartItem = {
-    id: `cart_${cartItemId}`,
-    userId: user?.id ?? "",
-    courseId: course?.id,
-    courseName: course?.title,
-    courseInstructorName: course?.instructor?.user?.name ?? "",
-    courseImageUrl: course?.imageUrl ?? "./assets/images/images1.jpg",
-    coursePrice: course?.price!.toString(),
-    quantity: 1,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
+  const { data: enrollmentData, isLoading: checking } = useAlreadyPurchased(
+    course.id,
+    user?.id || ""
+  );
+
+  const alreadyEnrolled = enrollmentData?.isEnrolled;
+
+  // Check for cart state on mount if needed
+  React.useEffect(() => {
+    setIsInCart(false); // Update with real cart logic if needed
+  }, [course?.id]);
 
   const toggleIsInCart = () => {
+    if (!user?.id) {
+      toast.error("Please login to add courses to cart.");
+      return;
+    }
     if (isInCart) {
-      handleRemoveFromCart(course?.id!);
+      handleRemoveFromCart(course?.id);
+      toast.success(`Removed "${course?.title}" from cart`);
+      setIsInCart(false);
     } else {
-      // const adaptedCourse = {
-      //   ...course,
-      //   categories: course.categories.map((category) => ({
-      //     id: category.id,
-      //     name: category.name,
-      //   })),
-      // };
-      const adaptedCourse = {
-        ...course,
-        categories: course.categories.map((category) =>
-          typeof category === "string" ? category : category
-        ),
-      };
-      handleAddToCart(adaptedCourse, user?.id!);
-      setIsInCart(!isInCart);
+      handleAddToCart(course, user?.id);
+      toast.success(`Added "${course?.title}" to cart`);
+      setIsInCart(true);
     }
   };
+
+  if (alreadyEnrolled) {
+    return <div></div>;
+  }
 
   return (
     <Button
       onClick={toggleIsInCart}
-      size="sm"
-      color="blue"
-      className={`m-2 mt-2 w-[26rem] rounded-md bg-blue-500 text-center text-sm font-semibold text-white hover:bg-blue-700 ${isInCart ? "bg-blue-600" : "bg-blue-500"}`}
+      disabled={!user?.id}
+      size="lg"
+      className={`
+        w-full
+        ${
+          isInCart
+            ? "bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 border-green-500/30 focus:ring-green-400"
+            : "bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 border-blue-500/30 focus:ring-blue-400"
+        }
+        text-white font-semibold py-2 px-6
+        rounded-xl
+        shadow-xl hover:shadow-2xl
+        transition-all duration-200
+        focus:outline-none focus:ring-2 focus:ring-offset-2
+        relative overflow-hidden
+      `}
     >
-      {isInCart ? (
-        <div className="flex items-center justify-center">
-          <HiShoppingCart size={22} /> Remove from cart
-        </div>
-      ) : (
-        <div className="flex items-center justify-center">
-          <HiOutlineShoppingCart size={22} /> Add to cart
-        </div>
-      )}
+      <span className="relative z-10 flex items-center gap-2">
+        <span className="inline-flex items-center justify-center rounded-full bg-white/20 p-2 shadow-inner">
+          {isInCart ? (
+            <HiShoppingCart className="h-3 w-3 text-green-100" />
+          ) : (
+            <HiOutlineShoppingCart className="h-3 w-3 text-blue-100" />
+          )}
+        </span>
+        <span className="tracking-wide text-sm font-bold drop-shadow-sm">
+          {isInCart ? "Remove from Cart" : "Add to Cart"}
+        </span>
+      </span>
     </Button>
   );
 };

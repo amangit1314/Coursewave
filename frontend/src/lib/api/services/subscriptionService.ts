@@ -22,14 +22,16 @@ export async function fetchUserSubscription(
       price: subscription.plan?.price,
       stripeSubscriptionId: subscription.stripeSubscriptionId,
       stripeCurrentPeriodEnd: subscription.currentPeriodEnd
-        ? new Date(subscription.currentPeriodEnd).getTime() : undefined,
+        ? new Date(subscription.currentPeriodEnd).getTime()
+        : undefined,
       stripeCustomerId: subscription.stripeCustomerId,
       isSubscribed: subscription.status === "ACTIVE",
       isCanceled: subscription.status === "CANCELED",
       type: "USER",
       status: subscription.status,
       currentPeriodStart: subscription.currentPeriodStart
-        ? new Date(subscription.currentPeriodStart).getTime() : undefined,
+        ? new Date(subscription.currentPeriodStart).getTime()
+        : undefined,
       cancelAtPeriodEnd: subscription.cancelAtPeriodEnd || false,
     };
   } catch (error: any) {
@@ -47,7 +49,9 @@ export async function fetchInstructorSubscription(
   instructorId: string
 ): Promise<UserSubscription | null> {
   try {
-    const res: ApiResponse<any> = await apiManager.get("/subscriptions/instructor");
+    const res: ApiResponse<any> = await apiManager.get(
+      "/subscriptions/instructor"
+    );
     if (!res.success || !res.data) return null;
     const subscription = res.data[0];
     if (!subscription) return null;
@@ -59,14 +63,16 @@ export async function fetchInstructorSubscription(
       price: subscription.plan?.price,
       stripeSubscriptionId: subscription.stripeSubscriptionId,
       stripeCurrentPeriodEnd: subscription.currentPeriodEnd
-        ? new Date(subscription.currentPeriodEnd).getTime() : undefined,
+        ? new Date(subscription.currentPeriodEnd).getTime()
+        : undefined,
       stripeCustomerId: subscription.stripeCustomerId,
       isSubscribed: subscription.status === "ACTIVE",
       isCanceled: subscription.status === "CANCELED",
       type: "INSTRUCTOR",
       status: subscription.status,
       currentPeriodStart: subscription.currentPeriodStart
-        ? new Date(subscription.currentPeriodStart).getTime() : undefined,
+        ? new Date(subscription.currentPeriodStart).getTime()
+        : undefined,
       cancelAtPeriodEnd: subscription.cancelAtPeriodEnd || false,
     };
   } catch (error: any) {
@@ -82,7 +88,9 @@ export async function fetchInstructorSubscription(
 // Fetch Subscription Plans
 export async function fetchSubscriptionPlans(): Promise<SubscriptionPlan[]> {
   try {
-    const res: ApiResponse<any[]> = await apiManager.get("/subscriptions/plans");
+    const res: ApiResponse<any[]> = await apiManager.get(
+      "/subscriptions/plans"
+    );
     if (!res.success || !res.data) return [];
     return res.data;
   } catch (error: any) {
@@ -96,23 +104,59 @@ export async function fetchSubscriptionPlans(): Promise<SubscriptionPlan[]> {
 }
 
 // Subscribe to a plan
+// export async function requestSubscribeToPlan(
+//   planId: string,
+//   stripeSubscriptionId: string,
+//   userType: "USER" | "INSTRUCTOR" = "USER"
+// ): Promise<any> {
+//   try {
+//     console.log("stripeSubscriptionId in frontend subscription service: ", stripeSubscriptionId);
+//     const endpoint =
+//       userType === "USER" ? "/subscriptions/user/subscribe" : "/subscriptions/instructor/subscribe";
+//     const res: ApiResponse<any> = await apiManager.post(endpoint, {
+//       planId,
+//       stripeSubscriptionId,
+//       ...(userType === "INSTRUCTOR" && {
+//         stripeAccountId: stripeSubscriptionId,
+//       }),
+//     });
+//     if (!res.success) throw new ApiError(res.message || "Subscription failed", 400);
+//     return res.data;
+//   } catch (error: any) {
+//     if (error instanceof ApiError) {
+//       console.error(`API error: ${error.status} - ${error.message}`);
+//     } else {
+//       console.error("Error subscribing to plan:", error);
+//     }
+//     throw error;
+//   }
+// }
+
+// Only send planId; no stripeSubscriptionId needed for checkout creation!
 export async function requestSubscribeToPlan(
   planId: string,
-  stripeSubscriptionId: string,
   userType: "USER" | "INSTRUCTOR" = "USER"
-): Promise<any> {
+): Promise<void> {
   try {
     const endpoint =
-      userType === "USER" ? "/subscriptions/user/subscribe" : "/subscriptions/instructor/subscribe";
-    const res: ApiResponse<any> = await apiManager.post(endpoint, {
-      planId,
-      stripeSubscriptionId,
-      ...(userType === "INSTRUCTOR" && {
-        stripeAccountId: stripeSubscriptionId,
-      }),
-    });
-    if (!res.success) throw new ApiError(res.message || "Subscription failed", 400);
-    return res.data;
+      userType === "USER"
+        ? "/subscriptions/user/subscribe"
+        : "/subscriptions/instructor/subscribe";
+
+    // Make POST request for checkout session
+    const res: ApiResponse<any> = await apiManager.post(endpoint, { planId });
+
+    // Unwrap url: expects backend returns { success: true, data: { url: ... } }
+    const url = res?.data?.url;
+
+    if (!res.success || !url)
+      throw new ApiError(
+        res.message || "Failed to create Stripe checkout session",
+        400
+      );
+
+    // Redirect user to Stripe checkout
+    window.location.href = url;
   } catch (error: any) {
     if (error instanceof ApiError) {
       console.error(`API error: ${error.status} - ${error.message}`);
@@ -129,9 +173,12 @@ export async function requestCancelSubscription(
 ): Promise<any> {
   try {
     const endpoint =
-      userType === "USER" ? "/subscriptions/user/cancel" : "/subscriptions/instructor/cancel";
+      userType === "USER"
+        ? "/subscriptions/user/cancel"
+        : "/subscriptions/instructor/cancel";
     const res: ApiResponse<any> = await apiManager.post(endpoint);
-    if (!res.success) throw new ApiError(res.message || "Cancellation failed", 400);
+    if (!res.success)
+      throw new ApiError(res.message || "Cancellation failed", 400);
     return res;
   } catch (error: any) {
     if (error instanceof ApiError) {

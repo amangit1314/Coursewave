@@ -1,300 +1,3 @@
-// "use client";
-
-// import React from "react";
-// import Image from "next/image";
-// import { Card, CardContent } from "@/components/ui/card";
-// import { Button } from "@/components/ui/button";
-// import { Badge } from "@/components/ui/badge";
-// import { dmSans } from "@/lib/config/fonts";
-// import { cn } from "@/lib/utils/utils";
-// import {
-//   Heart,
-//   Clock,
-//   Users,
-//   Star,
-//   ShoppingCart,
-//   Trash2,
-//   BookOpen,
-//   Zap,
-// } from "lucide-react";
-
-// // Hooks
-// import {
-//   useWishlist,
-//   useRemoveFromWishlist,
-//   useClearWishlist,
-//   useWishlistCount,
-// } from "@/hooks/useWishlist";
-// import { useCart, useAddToCart } from "@/hooks/useCart";
-
-// const WishlistPage: React.FC = () => {
-//   // Wishlist hooks
-//   const { data: wishlist = [], isLoading, isError } = useWishlist();
-//   const { mutate: removeFromWishlist, isPending: removing } =
-//     useRemoveFromWishlist();
-//   const { mutate: clearWishlist } = useClearWishlist();
-//   const { data: wishlistCount } = useWishlistCount();
-
-//   // Cart hooks for in-cart status & add to cart
-//   const { data: cart } = useCart();
-//   const { mutate: addToCart, isPending: addingToCart } = useAddToCart();
-
-//   // Utility to check if course is in cart
-//   const isInCart = (courseId: string) =>
-//     cart?.CartItem?.some((item: any) => item.courseId === courseId);
-
-//   // "Move All to Cart" logic
-//   const moveAllToCart = () => {
-//     wishlist.forEach((course) => {
-//       if (!isInCart(course.id)) addToCart(course.id);
-//     });
-//   };
-
-//   if (isLoading) {
-//     return (
-//       <div className="min-h-[300px] flex items-center justify-center">
-//         Loading wishlist…
-//       </div>
-//     );
-//   }
-//   if (isError) {
-//     return (
-//       <div className="min-h-[300px] flex items-center justify-center text-red-500">
-//         Failed to load wishlist.
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="min-h-screen bg-gray-50 dark:bg-zinc-900 py-8">
-//       <div className="container mx-auto px-4 max-w-7xl">
-//         {/* Header */}
-//         <div className="mb-8">
-//           <div className="flex justify-between items-center">
-//             <Button
-//               onClick={() => window.history.back()}
-//               variant="ghost"
-//               className="absolute left-4 top-4"
-//             >
-//               ← Back
-//             </Button>
-//             <div>
-//               <h1
-//                 className={cn(
-//                   "text-4xl font-bold text-gray-900 dark:text-white mb-2",
-//                   dmSans.className
-//                 )}
-//               >
-//                 My Wishlist
-//               </h1>
-//               <p className="text-gray-600 dark:text-gray-400">
-//                 {wishlistCount ?? wishlist.length}{" "}
-//                 {wishlist.length === 1 ? "course" : "courses"} saved for later
-//               </p>
-//             </div>
-//             {wishlist.length > 0 && (
-//               <Button
-//                 onClick={moveAllToCart}
-//                 className="bg-blue-600 hover:bg-blue-700 text-white"
-//               >
-//                 Add All to Cart
-//               </Button>
-//             )}
-//           </div>
-//         </div>
-
-//         {/* Wishlist Items */}
-//         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-//           {wishlist.map((item) => (
-//             <Card
-//               key={item.id}
-//               className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 dark:bg-zinc-800 overflow-hidden group"
-//             >
-//               <CardContent className="p-0">
-//                 {/* Course Image */}
-//                 <div className="relative h-48 overflow-hidden">
-//                   <Image
-//                     src={item.imageUrl || "/placeholder_course.jpg"}
-//                     alt={item.title}
-//                     fill
-//                     className="object-cover group-hover:scale-105 transition-transform duration-300"
-//                   />
-//                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-//                   {/* Discount Badge (optional, if your backend sends it) */}
-//                   {/* {item.discount && (
-//                     <Badge className="absolute top-3 left-3 bg-red-500 text-white border-0">
-//                       {item.discount}% OFF
-//                     </Badge>
-//                   )} */}
-
-//                   {/* Action Buttons */}
-//                   <div className="absolute top-3 right-3 flex gap-2">
-//                     <Button
-//                       variant="ghost"
-//                       size="icon"
-//                       onClick={() => removeFromWishlist(item.id)}
-//                       className="h-8 w-8 bg-white/90 hover:bg-white text-red-500 backdrop-blur-sm"
-//                       disabled={removing}
-//                     >
-//                       <Trash2 className="h-4 w-4" />
-//                     </Button>
-//                     <Button
-//                       variant="ghost"
-//                       size="icon"
-//                       onClick={() => addToCart(item.id)}
-//                       className={cn(
-//                         "h-8 w-8 backdrop-blur-sm",
-//                         isInCart(item.id)
-//                           ? "bg-green-500 hover:bg-green-600 text-white"
-//                           : "bg-white/90 hover:bg-white text-gray-700"
-//                       )}
-//                       disabled={isInCart(item.id) || addingToCart}
-//                       aria-label="Add to Cart"
-//                     >
-//                       <Heart
-//                         className={cn(
-//                           "h-4 w-4",
-//                           isInCart(item.id) && "fill-white"
-//                         )}
-//                       />
-//                     </Button>
-//                   </div>
-//                 </div>
-
-//                 {/* Course Content */}
-//                 <div className="p-6">
-//                   <div className="mb-3">
-//                     <h3
-//                       className={cn(
-//                         "font-bold text-lg text-gray-900 dark:text-white line-clamp-2 mb-2",
-//                         dmSans.className
-//                       )}
-//                     >
-//                       {item.title}
-//                     </h3>
-//                     <p className="text-gray-600 dark:text-gray-400 text-sm">
-//                       By {item.instructor?.user.name || "Unknown Instructor"}
-//                     </p>
-//                   </div>
-
-//                   {/* Course Stats */}
-//                   {/* Customize these below to your API/DB */}
-//                   <div className="flex flex-wrap gap-3 mb-4 text-sm text-gray-600 dark:text-gray-400">
-//                     <div className="flex items-center gap-1">
-//                       <Clock className="h-4 w-4" />
-//                       <span>{item.duration}</span>
-//                     </div>
-//                     {/* <div className="flex items-center gap-1">
-//                       <Users className="h-4 w-4" />
-//                       <span>{item.students?.toLocaleString()}</span>
-//                     </div> */}
-//                     <div className="flex items-center gap-1">
-//                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-//                       <span>{item.averageRating}</span>
-//                     </div>
-//                   </div>
-
-//                   {/* {item.level && (
-//                     <Badge
-//                       variant="secondary"
-//                       className={cn(
-//                         "mb-4",
-//                         item.level === "Beginner" && "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
-//                         item.level === "Intermediate" && "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-//                         item.level === "Advanced" && "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300"
-//                       )}
-//                     >
-//                       {item.level}
-//                     </Badge>
-//                   )} */}
-
-//                   {/* Price and Action */}
-//                   <div className="flex items-center justify-between">
-//                     <div className="flex items-center gap-2">
-//                       <span
-//                         className={cn(
-//                           "text-xl font-bold text-gray-900 dark:text-white",
-//                           dmSans.className
-//                         )}
-//                       >
-//                         ${item.dealPrice || item.price}
-//                       </span>
-//                       {item.price && (
-//                         <span className="text-sm text-gray-400 dark:text-gray-500 line-through">
-//                           ${item.price}
-//                         </span>
-//                       )}
-//                     </div>
-
-//                     <Button
-//                       onClick={() => addToCart(item.id)}
-//                       className={cn(
-//                         "whitespace-nowrap",
-//                         isInCart(item.id)
-//                           ? "bg-green-600 hover:bg-green-700 text-white"
-//                           : "bg-blue-600 hover:bg-blue-700 text-white"
-//                       )}
-//                       disabled={isInCart(item.id) || addingToCart}
-//                     >
-//                       {isInCart(item.id) ? (
-//                         <>
-//                           <ShoppingCart className="h-4 w-4 mr-2" />
-//                           In Cart
-//                         </>
-//                       ) : (
-//                         <>
-//                           <Zap className="h-4 w-4 mr-2" />
-//                           Add to Cart
-//                         </>
-//                       )}
-//                     </Button>
-//                   </div>
-//                 </div>
-//               </CardContent>
-//             </Card>
-//           ))}
-//         </div>
-
-//         {/* Empty State */}
-//         {wishlist.length === 0 && (
-//           <Card className="border-0 shadow-lg dark:bg-zinc-800 text-center py-16 max-w-2xl mx-auto mt-12">
-//             <CardContent>
-//               <div className="w-24 h-24 bg-red-50 dark:bg-red-950/30 rounded-full flex items-center justify-center mx-auto mb-6">
-//                 <Heart className="h-12 w-12 text-red-400" fill="currentColor" />
-//               </div>
-//               <h3
-//                 className={cn(
-//                   "text-2xl font-bold text-gray-900 dark:text-white mb-3",
-//                   dmSans.className
-//                 )}
-//               >
-//                 Your wishlist is empty
-//               </h3>
-//               <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
-//                 Start building your learning journey! Save courses you're
-//                 interested in and come back to them later.
-//               </p>
-//               <div className="flex gap-4 justify-center">
-//                 <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-//                   Browse Courses
-//                 </Button>
-//                 <Button variant="outline">View Recommendations</Button>
-//               </div>
-//             </CardContent>
-//           </Card>
-//         )}
-
-//         {/* Recommendations Section */}
-//         {/* !TODO: ...add recommendation logic here as desired... */}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default WishlistPage;
-
-/// =====================================================================================
-
 "use client";
 
 import React from "react";
@@ -326,12 +29,18 @@ import {
   useWishlistCount,
 } from "@/hooks/useWishlist";
 import { useCart, useAddToCart } from "@/hooks/useCart";
+import { useUserStore } from "@/zustand/userStore";
+import toast from "react-hot-toast";
+import { UseMutateFunction } from "@tanstack/react-query";
+import { CartItem } from "@/lib/api/services/cartService";
+import WishlistItem from "./_components/WihslistItem";
 
 const WishlistPage: React.FC = () => {
+  const { user } = useUserStore();
+
   // Wishlist hooks
   const { data: wishlist = [], isLoading, isError } = useWishlist();
-  const { mutate: removeFromWishlist, isPending: removing } =
-    useRemoveFromWishlist();
+
   const { mutate: clearWishlist } = useClearWishlist();
   const { data: wishlistCount } = useWishlistCount();
 
@@ -350,6 +59,11 @@ const WishlistPage: React.FC = () => {
     });
   };
 
+  if (!user || !user.id) {
+    toast.error("Please login to access wishlist");
+    window.location.href = "/login";
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-zinc-950 dark:via-blue-950/20 dark:to-indigo-950/20 flex items-center justify-center">
@@ -365,6 +79,7 @@ const WishlistPage: React.FC = () => {
       </div>
     );
   }
+
   if (isError) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-zinc-950 dark:via-blue-950/20 dark:to-indigo-950/20 flex items-center justify-center">
@@ -430,9 +145,7 @@ const WishlistPage: React.FC = () => {
                   <span className="font-semibold text-gray-900 dark:text-white">
                     {wishlistCount ?? wishlist.length}
                   </span>
-                  <span>
-                    {wishlist.length === 1 ? "course" : "courses"}
-                  </span>
+                  <span>{wishlist.length === 1 ? "course" : "courses"}</span>
                 </span>
               </p>
             </div>
@@ -453,140 +166,14 @@ const WishlistPage: React.FC = () => {
         {/* Wishlist Items Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {wishlist.map((item, index) => (
-            <Card
-              key={item.id}
-              className="border-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden group hover:scale-[1.02]"
-              style={{ animationDelay: `${index * 50}ms` }}
-            >
-              <CardContent className="p-0">
-                {/* Course Image */}
-                <div className="relative h-48 overflow-hidden">
-                  <Image
-                    src={item.imageUrl || "/placeholder_course.jpg"}
-                    alt={item.title}
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  
-                  {(item.discount ?? 0) > 0 && (
-                    <Badge className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-pink-600 text-white border-0 shadow-lg px-3 py-1 text-xs font-bold">
-                      <Zap className="w-3 h-3 mr-1" />
-                      {item.discount ?? 0}% OFF
-                    </Badge>
-                  )}
-
-                  <div className="absolute bottom-3 left-3 flex items-center gap-1 bg-black/70 backdrop-blur-sm rounded-full px-2 py-1">
-                    <Award className="w-3 h-3 text-yellow-400" />
-                    <span className="text-white text-xs font-semibold">
-                      Bestseller
-                    </span>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="absolute top-3 right-3 flex gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeFromWishlist(item.id)}
-                      className="h-9 w-9 rounded-full bg-white/90 hover:bg-white text-red-500 backdrop-blur-sm hover:scale-110 transition-all"
-                      disabled={removing}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Course Content */}
-                <div className="p-6">
-                  <div className="mb-3">
-                    <h3
-                      className={cn(
-                        "font-bold text-lg text-gray-900 dark:text-white line-clamp-2 mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors",
-                        dmSans.className
-                      )}
-                    >
-                      {item.title}
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-400 text-sm flex items-center gap-1.5">
-                      <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-xs font-bold">
-                        {item.instructor?.user.name?.charAt(0) || "?"}
-                      </div>
-                      By {item.instructor?.user.name || "Unknown Instructor"}
-                    </p>
-                  </div>
-
-                  {/* Course Stats */}
-                  <div className="flex flex-wrap gap-3 mb-4">
-                    {item.duration && (
-                      <div className="flex items-center gap-1.5 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 px-3 py-1.5 rounded-full border border-blue-100 dark:border-blue-900">
-                        <Clock className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
-                        <span className="text-xs font-semibold text-blue-700 dark:text-blue-300">
-                          {item.duration} min
-                        </span>
-                      </div>
-                    )}
-                    {item.averageRating && (
-                      <div className="flex items-center gap-1.5 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/30 dark:to-orange-950/30 px-3 py-1.5 rounded-full border border-yellow-100 dark:border-yellow-900">
-                        <Star className="h-3.5 w-3.5 fill-yellow-500 text-yellow-500" />
-                        <span className="text-xs font-semibold text-yellow-700 dark:text-yellow-300">
-                          {item.averageRating}
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-1.5 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 px-3 py-1.5 rounded-full border border-green-100 dark:border-green-900">
-                      <TrendingUp className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
-                      <span className="text-xs font-semibold text-green-700 dark:text-green-300">
-                        Trending
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Price and Action */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={cn(
-                          "text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent",
-                          dmSans.className
-                        )}
-                      >
-                        ${item.dealPrice || item.price}
-                      </span>
-                      {item.price && item.dealPrice && (
-                        <span className="text-sm text-gray-400 dark:text-gray-500 line-through">
-                          ${item.price}
-                        </span>
-                      )}
-                    </div>
-
-                    <Button
-                      onClick={() => addToCart(item.id)}
-                      className={cn(
-                        "whitespace-nowrap rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105 relative overflow-hidden group/btn",
-                        isInCart(item.id)
-                          ? "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white"
-                          : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
-                      )}
-                      disabled={isInCart(item.id) || addingToCart}
-                    >
-                      {isInCart(item.id) ? (
-                        <>
-                          <ShoppingCart className="h-4 w-4 mr-2" />
-                          In Cart
-                        </>
-                      ) : (
-                        <>
-                          <Zap className="h-4 w-4 mr-2" />
-                          Add to Cart
-                        </>
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-1000"></div>
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <WishlistItem
+              key={index}
+              item={item}
+              index={index}
+              isInCart={isInCart}
+              addingToCart={addingToCart}
+              addToCart={addToCart}
+            />
           ))}
         </div>
 

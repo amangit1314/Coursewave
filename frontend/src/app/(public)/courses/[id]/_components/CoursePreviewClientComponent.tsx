@@ -147,10 +147,6 @@ const CoursePreviewClient = ({ courseId }: { courseId: string }) => {
         <div className="space-y-8 lg:space-y-12">
           {/* Hero Section - Course Details */}
           <div className="grid gap-6 lg:grid-cols-3 lg:gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            {/* <div
-            className="grid gap-6 lg:grid-cols-3 lg:gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700
-  flex-col-reverse md:grid"
-          > */}
             {/* Left Section - Main Course Info */}
             <div className="lg:col-span-2 space-y-6">
               {/* Show right section ONLY on mobile (below md) */}
