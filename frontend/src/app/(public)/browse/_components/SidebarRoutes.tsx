@@ -46,12 +46,12 @@ const SideBarRoutes = () => {
       href: `/roadmaps`,
       isLocked: false,
     },
-    // {
-    //   icon: <GoProjectTemplate size={22} />,
-    //   label: "Projects",
-    //   href: `/projects`,
-    //   isLocked: false,
-    // },
+    {
+      icon: <GoProjectTemplate size={22} />,
+      label: "Projects",
+      href: `/projects`,
+      isLocked: false,
+    },
     // {
     //   icon: <PiChatsTeardropFill size={22} />,
     //   label: "Community Chat",

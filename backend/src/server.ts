@@ -46,7 +46,11 @@ if (missingEnvVars.length > 0) {
 const app = express();
 
 // Stripe webhook: must be before any other body parser
-app.use("/api/webhooks/stripe", bodyParser.raw({ type: "application/json" }), stripeWebhookRoutes);
+app.use(
+  "/api/webhooks/stripe",
+  bodyParser.raw({ type: "application/json" }),
+  stripeWebhookRoutes
+);
 
 ///? <==================================== Middlewares ======================================>
 app.use(helmet());
@@ -103,6 +107,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 import multer from "multer";
+import { connectRabbitMQ } from "./config/rabbitmq";
 const upload = multer();
 
 ///? <==================================== CUSTOM Middlewares ================================>
@@ -199,6 +204,16 @@ initJobs();
 
 /// ? <=================================== CREATING HTTP SERVER APP ============================>
 const server = http.createServer(app);
+
+// (async () => {
+//   try {
+//     await connectRabbitMQ();
+
+//   } catch (e) {
+//     console.error("Failed to initialize RabbitMQ:", e);
+//     process.exit(1);
+//   }
+// })();
 
 /// ? <=================================== Initialize Socket.IO ============================>
 initSocket(server);

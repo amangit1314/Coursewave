@@ -202,14 +202,6 @@ export const useDeleteArticle = () => {
 
 // ====================== ARTICLES LIKE HOOKS ======================
 
-// export const useArticleLikeStatus = (articleId: string) => {
-//   return useQuery({
-//     queryKey: ["article-like-status", articleId],
-//     queryFn: () => articleService.checkArticleLikeStatus(articleId),
-//     enabled: !!articleId,
-//   });
-// };
-
 export const useArticleLikeStatus = (articleId: string) => {
   return useQuery({
     queryKey: ["article-like-status", articleId],

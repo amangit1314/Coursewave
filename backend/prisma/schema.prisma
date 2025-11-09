@@ -4,62 +4,57 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("DIRECT_URL")
 }
 
 /// --------------------------- USER & AUTH -------------------------------
 model User {
-  id              String        @id @default(uuid())
+  id              String   @id @default(uuid())
   name            String?
-  email           String        @unique
+  email           String   @unique
   password        String
   profileImageUrl String?
   about           String?
   shortSummary    String?
-  slug            String?       @unique
-  isEmailVerified Boolean       @default(false)
-  preferences     Json          @default("{}")
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  authoredBlogs   Blog[]
-  blogComments    BlogComment[]
+  slug            String?  @unique
+  isEmailVerified Boolean  @default(false)
+  preferences     Json     @default("{}")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  csrfTokens CSRFToken[]
-
-  courseProgress    CourseProgress[]
-  enrollments       Enrollment[]
-  instructorProfile Instructor?
-  payments          Payment[]
-  reviews           Review[]
-  stripeCustomer    StripeCustomer?
-  tokens            Token[]
-  roles             UserRole[]
-  subscription      UserSubscription?
-
-  followers UserFollower[] @relation("UserFollowers")
-  following UserFollower[] @relation("UserFollowing")
-
-  savedArticles   SavedArticle[]
-  blogLikes       BlogLike[]
-  blogViews       BlogView[]
-  coursePurchases CoursePurchase[]
-
-  chapterNotes      ChapterNote[]
-  chapterProgresses ChapterProgress[]
-  commentLikes      CommentLike[]
-  communityMembers  CommunityMember[]
-  messages          Message[]
-  moderationLogs    ModerationLog[]
-  pinnedMessages    PinnedMessage[]
-  reactions         Reaction[]
-
+  authoredBlogs      Blog[]
+  blogComments       BlogComment[]
+  csrfTokens         CSRFToken[]
+  courseProgress     CourseProgress[]
+  enrollments        Enrollment[]
+  payments           Payment[]
+  reviews            Review[]
+  tokens             Token[]
+  roles              UserRole[]
+  followers          UserFollower[]      @relation("UserFollowers")
+  following          UserFollower[]      @relation("UserFollowing")
+  savedArticles      SavedArticle[]
+  blogLikes          BlogLike[]
+  blogViews          BlogView[]
+  coursePurchases    CoursePurchase[]
+  chapterNotes       ChapterNote[]
+  chapterProgresses  ChapterProgress[]
+  commentLikes       CommentLike[]
+  communityMembers   CommunityMember[]
+  messages           Message[]
+  moderationLogs     ModerationLog[]
+  pinnedMessages     PinnedMessage[]
+  reactions          Reaction[]
   projectSubmissions ProjectSubmission[]
+  sessionBookings    SessionBooking[]
+  blogReports        BlogReport[]
+  notifications      Notification[]
 
-  sessionBookings SessionBooking[]
-
-  Cart       Cart?
-  Wishlist   Wishlist?
-  BlogReport BlogReport[]
+  cart              Cart?
+  wishlist          Wishlist?
+  subscription      UserSubscription?
+  stripeCustomer    StripeCustomer?
+  instructorProfile Instructor?
 
   @@index([email])
   @@index([createdAt])
@@ -872,6 +867,30 @@ model SessionBooking {
   @@index([sessionId])
   @@index([userId])
   @@index([paymentStatus])
+}
+
+model Notification {
+  id        String    @id @default(uuid())
+  userId    String // Always present - the user this notification belongs to
+  role      String // e.g., "user" or "instructor" - distinguishes the context of notification
+  type      String
+  title     String
+  message   String
+  link      String?
+  data      Json?
+  channel   String // 'email' | 'in-app' | 'sms' | 'push'
+  read      Boolean   @default(false)
+  sentAt    DateTime  @default(now())
+  viewedAt  DateTime?
+  status    String    @default("pending")
+  error     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([role])
 }
 
 enum Role {

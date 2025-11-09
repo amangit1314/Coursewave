@@ -1,0 +1,12 @@
+import { NextFunction, Request, Response } from "express";
+
+// Health check for Redis
+export const checkRedisHealth = async () => {
+  try {
+    const stats = await cacheManager.getStats();
+    return stats.connected;
+  } catch (error) {
+    console.error("Redis health check failed:", error);
+    return false;
+  }
+};

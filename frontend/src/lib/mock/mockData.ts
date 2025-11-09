@@ -1022,95 +1022,95 @@ export const categories = [
   { name: "Security", icon: Shield },
 ];
 
-export const sampleProjects: Project[] = [
-  {
-    id: "1",
-    title: "E-Commerce Platform",
-    description:
-      "A full-stack e-commerce platform built with Next.js, TypeScript, and Stripe integration.",
-    tags: ["Next.js", "TypeScript", "Stripe", "Tailwind CSS"],
-    status: "in-progress",
-    difficulty: "advanced",
-    category: "Web Development",
-    members: [
-      {
-        id: "1",
-        name: "John Doe",
-        avatar: "/assets/images/user/user-01.jpg",
-        role: "Lead Developer",
-      },
-      {
-        id: "2",
-        name: "Jane Smith",
-        avatar: "/assets/images/user/user-02.jpg",
-        role: "UI/UX Designer",
-      },
-    ],
-    progress: 75,
-    startDate: "2024-01-15",
-    technologies: ["Next.js", "TypeScript", "Stripe", "Tailwind CSS", "Prisma"],
-    likes: 42,
-    views: 156,
-    isBookmarked: true,
-    isPublic: true,
-  },
-  {
-    id: "2",
-    title: "AI Chat Assistant",
-    description:
-      "An intelligent chatbot powered by OpenAI GPT-4 with natural language processing.",
-    tags: ["Python", "OpenAI", "FastAPI", "React"],
-    status: "completed",
-    difficulty: "expert",
-    category: "AI/ML",
-    members: [
-      {
-        id: "3",
-        name: "Alex Johnson",
-        avatar: "/assets/images/user/user-03.jpg",
-        role: "AI Engineer",
-      },
-    ],
-    progress: 100,
-    startDate: "2023-11-01",
-    technologies: ["Python", "OpenAI", "FastAPI", "React", "PostgreSQL"],
-    likes: 89,
-    views: 342,
-    isBookmarked: false,
-    isPublic: true,
-  },
-  {
-    id: "3",
-    title: "Mobile Fitness App",
-    description:
-      "A cross-platform fitness tracking app with workout plans and progress tracking.",
-    tags: ["React Native", "Firebase", "Redux", "Node.js"],
-    status: "planning",
-    difficulty: "intermediate",
-    category: "Mobile Development",
-    members: [
-      {
-        id: "4",
-        name: "Sarah Wilson",
-        avatar: "/assets/images/user/user-04.jpg",
-        role: "Mobile Developer",
-      },
-      {
-        id: "5",
-        name: "Mike Brown",
-        avatar: "/assets/images/user/user-05.jpg",
-        role: "Backend Developer",
-      },
-    ],
-    progress: 15,
-    startDate: "2024-03-01",
-    technologies: ["React Native", "Firebase", "Redux", "Node.js", "MongoDB"],
-    likes: 23,
-    views: 67,
-    isBookmarked: true,
-    isPublic: false,
-  },
-];
+// export const sampleProjects: Project[] = [
+//   {
+//     id: "1",
+//     title: "E-Commerce Platform",
+//     description:
+//       "A full-stack e-commerce platform built with Next.js, TypeScript, and Stripe integration.",
+//     tags: ["Next.js", "TypeScript", "Stripe", "Tailwind CSS"],
+//     status: "in-progress",
+//     difficulty: "advanced",
+//     category: "Web Development",
+//     members: [
+//       {
+//         id: "1",
+//         name: "John Doe",
+//         avatar: "/assets/images/user/user-01.jpg",
+//         role: "Lead Developer",
+//       },
+//       {
+//         id: "2",
+//         name: "Jane Smith",
+//         avatar: "/assets/images/user/user-02.jpg",
+//         role: "UI/UX Designer",
+//       },
+//     ],
+//     progress: 75,
+//     startDate: "2024-01-15",
+//     technologies: ["Next.js", "TypeScript", "Stripe", "Tailwind CSS", "Prisma"],
+//     likes: 42,
+//     views: 156,
+//     isBookmarked: true,
+//     isPublic: true,
+//   },
+//   {
+//     id: "2",
+//     title: "AI Chat Assistant",
+//     description:
+//       "An intelligent chatbot powered by OpenAI GPT-4 with natural language processing.",
+//     tags: ["Python", "OpenAI", "FastAPI", "React"],
+//     status: "completed",
+//     difficulty: "expert",
+//     category: "AI/ML",
+//     members: [
+//       {
+//         id: "3",
+//         name: "Alex Johnson",
+//         avatar: "/assets/images/user/user-03.jpg",
+//         role: "AI Engineer",
+//       },
+//     ],
+//     progress: 100,
+//     startDate: "2023-11-01",
+//     technologies: ["Python", "OpenAI", "FastAPI", "React", "PostgreSQL"],
+//     likes: 89,
+//     views: 342,
+//     isBookmarked: false,
+//     isPublic: true,
+//   },
+//   {
+//     id: "3",
+//     title: "Mobile Fitness App",
+//     description:
+//       "A cross-platform fitness tracking app with workout plans and progress tracking.",
+//     tags: ["React Native", "Firebase", "Redux", "Node.js"],
+//     status: "planning",
+//     difficulty: "intermediate",
+//     category: "Mobile Development",
+//     members: [
+//       {
+//         id: "4",
+//         name: "Sarah Wilson",
+//         avatar: "/assets/images/user/user-04.jpg",
+//         role: "Mobile Developer",
+//       },
+//       {
+//         id: "5",
+//         name: "Mike Brown",
+//         avatar: "/assets/images/user/user-05.jpg",
+//         role: "Backend Developer",
+//       },
+//     ],
+//     progress: 15,
+//     startDate: "2024-03-01",
+//     technologies: ["React Native", "Firebase", "Redux", "Node.js", "MongoDB"],
+//     likes: 23,
+//     views: 67,
+//     isBookmarked: true,
+//     isPublic: false,
+//   },
+// ];
 
 export const avatarUrls = [
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_s8bqkElCOr8R2XL0I4LmiLQexffc-LMRjOaTCAj8ml1UxCXAohpoQ1soZ-GzyQx74l4&usqp=CAU",

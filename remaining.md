@@ -69,8 +69,8 @@
     [x] - share course url
     [] - apply `couponCode` from couponCode dialog on course details page.
     [x] - add to cart
-    [] - Course Enrollment
-    [] - Course purchase
+    [x] - Course Enrollment
+    [x] - Course purchase
     [] - Course purchased email
     [] - Successfully enrolled in course notification
     [] - Course content (
@@ -114,7 +114,12 @@
     )
 
 ------------------------ SUBSCRIPTION -----------------------------
-13. [] - subscription 
+13. [] - subscription  (
+    [x] - list user specific subscriptions
+    [x] - user subscription
+    [] - instructor specific subscription
+    [] - subscribe instructor
+)
 
 ------------------------ DASHBOARD -----------------------------
 14. [x] - Learning Stats
@@ -133,19 +138,62 @@
         [x] - Created Articles
     )
 
+    ----------------------------- PROJECTS --------------------------------
+ [] - USER PROJECTS FEATURE (
+        [] - Search projects from search bar
+        [] - Show proper categories from backend in dropdowns
+        [] - Filter projects based on dropdowns
+        [x] - Listing of projects on user side
+        [x] - project details on user side
+        [] - show submission form only when user is enrolled in the course where the project is created
+        [] - submit project
+        [] - see project submision feedback
+        [] - reattempt submission
+        [] - restriction of max attempts
+ )
+
+
 ------------------------ INSTRUCTOR -----------------------------
 [] - INSTRUCTOR DASHBOARD
     [] - ANALYTICS DATA 
     [] - CHARTS SETUP
-[] - ARTICLES MANAGEMENT
-[] - COURSE -> REVIEWS (TAB)
-[] - COURSE -> PROJECTS (TAB)
-    [] - PROJECTS MANAGEMENT
+    [] - STUDENTS
+    [] - EARNINGS
+[] - ARTICLES MANAGEMENT (
+    [] - Listing of articles
+    [] - create article -> takes to /writeArticle page
+    [] - edit article -> takes to /editArticle page
+    [] - Delete article -> show dialog -> on confirm delete
+)
+[] - COURSES (
+        [x] - Listing of courses
+        [] - COURSE DETAILS (
+                [x] - Edit / Course Details
+                [x] - Publish Unpublish
+                [x] - Delete course
+                [x] - Course Attachments
+                [x] - Course Sections and Chapters management
+                [] - Reviews (TAB) [ Listing of reviews on that course from the students (table or list)]
+                [] - Projects (TAB) (
+                    [] - Listing of projects in the course
+                    [] - create project
+                    [] - edit project + project details
+                    [] - delete project
+                )
+        )
+    )
+[] - Projects (TAB) (
+                    [x] - Listing of projects
+                    [] - create project
+                    [] - edit project + project details
+                    [] - delete project
+                )
+[] - Instructor Subscription
+[] - Settings
+[] - Help And Support
 
------------------------------ PROJECTS --------------------------------
- [] - IN BETWEEN ONLY LISTING IS DONE THAT TOO FROM USER SIDE ONLY
 
--------------------- FIXES ------------------------------------------    
+=========================================================================================================================================
 
 ------------------------- CHECKS ------------------------------------------
 [] - Change password the dialog is not closing on success (CHECK)
@@ -173,6 +221,7 @@
 [] - In featured image, the edit and delete button should show cursor pointer on hover 
 [] - write button should show the cursor pointer on hover  on `/article` details
 [] - Make apply button hover, and show a cursor pointer on `couponCode` dialog. 
+
 -------------------------- LESS PRIORITY FOR CURRENT VERSION --------------
 - show more from author,
 - show less from author,

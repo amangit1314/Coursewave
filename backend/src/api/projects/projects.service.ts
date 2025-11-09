@@ -55,7 +55,7 @@ export const getAllProjects = async (): Promise<ServiceResponse> => {
       success: true,
       data: projects,
       message: "Projects fetched successfully",
-      status: 200
+      status: 200,
     };
   } catch (error: any) {
     console.log("ERROR in getAllProjects:", error.message);
@@ -63,7 +63,112 @@ export const getAllProjects = async (): Promise<ServiceResponse> => {
       success: false,
       error: error.message,
       message: "Failed to fetch projects",
-      status: 500
+      status: 500,
+    };
+  }
+};
+
+export const submitProject = async (
+  projectId: string,
+  userId: string,
+  submissionUrl: string
+): Promise<ServiceResponse> => {
+  try {
+    // 1. Fetch the project and its course id
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      select: { courseId: true, maxSubmissions: true },
+    });
+
+    if (!project) {
+      return {
+        success: false,
+        message: "Project not found",
+        status: 404,
+      };
+    }
+
+    // 2. Check if user is enrolled in the course
+    const enrollment = await prisma.enrollment.findFirst({
+      where: {
+        userId,
+        courseId: project.courseId,
+        status: "ACTIVE",
+      },
+    });
+
+    if (!enrollment) {
+      return {
+        success: false,
+        message: "You are not enrolled in the course for this project",
+        status: 403,
+      };
+    }
+
+    // 3. Check number of previous submissions (if maxSubmissions set)
+    if (project.maxSubmissions) {
+      const submissionCount = await prisma.projectSubmission.count({
+        where: {
+          projectId,
+          studentId: userId,
+        },
+      });
+
+      if (submissionCount >= project.maxSubmissions) {
+        return {
+          success: false,
+          message: `Maximum submissions (${project.maxSubmissions}) reached for this project`,
+          status: 400,
+        };
+      }
+    }
+
+    // 4. Create or update submission (upsert)
+    const existingSubmission = await prisma.projectSubmission.findUnique({
+      where: {
+        projectId_studentId: {
+          projectId,
+          studentId: userId,
+        },
+      },
+    });
+
+    let submission;
+    if (existingSubmission) {
+      // Update existing submission's URL and updatedAt
+      submission = await prisma.projectSubmission.update({
+        where: {
+          id: existingSubmission.id,
+        },
+        data: {
+          submissionUrl,
+          submittedAt: new Date(),
+        },
+      });
+    } else {
+      // Create new submission
+      submission = await prisma.projectSubmission.create({
+        data: {
+          projectId,
+          studentId: userId,
+          submissionUrl,
+        },
+      });
+    }
+
+    return {
+      success: true,
+      data: submission,
+      message: "Project submitted successfully",
+      status: 201,
+    };
+  } catch (error: any) {
+    console.error("ERROR in submitProject:", error.message);
+    return {
+      success: false,
+      error: error.message,
+      message: "Failed to submit project",
+      status: 500,
     };
   }
 };
@@ -81,7 +186,7 @@ export const getProjectSubmissions = async (
       return {
         success: false,
         message: "Project not found",
-        status: 404
+        status: 404,
       };
     }
 
@@ -97,7 +202,7 @@ export const getProjectSubmissions = async (
       return {
         success: false,
         message: "You are not enrolled in the course for this project",
-        status: 403
+        status: 403,
       };
     }
 
@@ -125,7 +230,7 @@ export const getProjectSubmissions = async (
       success: true,
       data: submissions,
       message: "Project submissions fetched successfully",
-      status: 200
+      status: 200,
     };
   } catch (error: any) {
     console.log("ERROR in getProjectSubmissions:", error.message);
@@ -133,7 +238,7 @@ export const getProjectSubmissions = async (
       success: false,
       error: error.message,
       message: "Failed to fetch project submissions",
-      status: 500
+      status: 500,
     };
   }
 };
@@ -152,7 +257,7 @@ export const getSubmissionFeedback = async (
       return {
         success: false,
         message: "Project not found",
-        status: 404
+        status: 404,
       };
     }
 
@@ -168,7 +273,7 @@ export const getSubmissionFeedback = async (
       return {
         success: false,
         message: "You are not enrolled in the course for this project",
-        status: 403
+        status: 403,
       };
     }
 
@@ -195,7 +300,7 @@ export const getSubmissionFeedback = async (
       return {
         success: false,
         message: "Feedback not found for this submission",
-        status: 404
+        status: 404,
       };
     }
 
@@ -203,7 +308,7 @@ export const getSubmissionFeedback = async (
       success: true,
       data: feedback,
       message: "Submission feedback fetched successfully",
-      status: 200
+      status: 200,
     };
   } catch (error: any) {
     console.log("ERROR in getSubmissionFeedback:", error.message);
@@ -211,12 +316,109 @@ export const getSubmissionFeedback = async (
       success: false,
       error: error.message,
       message: "Failed to fetch submission feedback",
-      status: 500
+      status: 500,
     };
   }
 };
 
-export const getProjectById = async (projectId: string): Promise<ServiceResponse> => {
+export const giveSubmissionFeedback = async (
+  instructorId: string,
+  submissionId: string,
+  feedbackText: string
+): Promise<ServiceResponse> => {
+  try {
+    // 1. Fetch the submission along with project and instructor info
+    const submission = await prisma.projectSubmission.findUnique({
+      where: { id: submissionId },
+      include: {
+        project: true,
+        feedback: true,
+      },
+    });
+
+    if (!submission) {
+      return {
+        success: false,
+        message: "Submission not found",
+        status: 404,
+      };
+    }
+
+    // 2. Verify that the instructor owns the project
+    if (submission.project.instructorId !== instructorId) {
+      return {
+        success: false,
+        message: "You are not authorized to give feedback on this submission",
+        status: 403,
+      };
+    }
+
+    // 3. If feedback already exists, update it; otherwise create new feedback
+    let feedback;
+    if (submission.feedback) {
+      feedback = await prisma.projectFeedback.update({
+        where: { id: submission.feedback.id },
+        data: {
+          feedbackText,
+          updatedAt: new Date(),
+        },
+        include: {
+          instructor: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    } else {
+      feedback = await prisma.projectFeedback.create({
+        data: {
+          submissionId,
+          instructorId,
+          feedbackText,
+        },
+        include: {
+          instructor: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    }
+
+    return {
+      success: true,
+      data: feedback,
+      message: "Feedback submitted successfully",
+      status: 201,
+    };
+  } catch (error: any) {
+    console.error("ERROR in giveSubmissionFeedback:", error.message);
+    return {
+      success: false,
+      error: error.message,
+      message: "Failed to submit feedback",
+      status: 500,
+    };
+  }
+};
+
+export const getProjectById = async (
+  projectId: string
+): Promise<ServiceResponse> => {
   try {
     const project = await prisma.project.findUnique({
       where: { id: projectId },
@@ -231,7 +433,7 @@ export const getProjectById = async (projectId: string): Promise<ServiceResponse
       return {
         success: false,
         message: "Project not found",
-        status: 404
+        status: 404,
       };
     }
 
@@ -239,7 +441,7 @@ export const getProjectById = async (projectId: string): Promise<ServiceResponse
       success: true,
       data: project,
       message: "Project fetched successfully",
-      status: 200
+      status: 200,
     };
   } catch (error: any) {
     console.log("ERROR in getProjectById:", error.message);
@@ -247,7 +449,7 @@ export const getProjectById = async (projectId: string): Promise<ServiceResponse
       success: false,
       error: error.message,
       message: "Failed to fetch project",
-      status: 500
+      status: 500,
     };
   }
 };
@@ -287,7 +489,12 @@ export const createProject = async (
         deadline,
         maxSubmissions,
         status: status as "DRAFT" | "PUBLISHED" | "ARCHIVED" | undefined,
-        difficulty: difficulty as "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | null | undefined,
+        difficulty: difficulty as
+          | "BEGINNER"
+          | "INTERMEDIATE"
+          | "ADVANCED"
+          | null
+          | undefined,
         isPublic,
         startDate,
         endDate,
@@ -318,7 +525,7 @@ export const createProject = async (
       success: true,
       data: newProject,
       message: "Project created successfully",
-      status: 201
+      status: 201,
     };
   } catch (error: any) {
     console.log("ERROR in createProject:", error.message);
@@ -326,7 +533,7 @@ export const createProject = async (
       success: false,
       error: error.message,
       message: "Failed to create project",
-      status: 500
+      status: 500,
     };
   }
 };
@@ -346,7 +553,7 @@ export const updateProject = async (
       return {
         success: false,
         message: "Project not found",
-        status: 404
+        status: 404,
       };
     }
 
@@ -354,18 +561,31 @@ export const updateProject = async (
       return {
         success: false,
         message: "You do not own this project",
-        status: 403
+        status: 403,
       };
     }
 
     const updateData: any = {};
     const fields = [
-      'title', 'description', 'thumbnailUrl', 'deadline', 'maxSubmissions',
-      'status', 'difficulty', 'isPublic', 'startDate', 'endDate', 'categories',
-      'tags', 'prerequisites', 'technologies', 'learningOutcomes', 'resources'
+      "title",
+      "description",
+      "thumbnailUrl",
+      "deadline",
+      "maxSubmissions",
+      "status",
+      "difficulty",
+      "isPublic",
+      "startDate",
+      "endDate",
+      "categories",
+      "tags",
+      "prerequisites",
+      "technologies",
+      "learningOutcomes",
+      "resources",
     ];
 
-    fields.forEach(field => {
+    fields.forEach((field) => {
       if (projectData[field as keyof ProjectData] !== undefined) {
         updateData[field] = projectData[field as keyof ProjectData];
       }
@@ -384,7 +604,7 @@ export const updateProject = async (
       success: true,
       data: updatedProject,
       message: "Project updated successfully",
-      status: 200
+      status: 200,
     };
   } catch (error: any) {
     console.log("ERROR in updateProject:", error.message);
@@ -392,7 +612,7 @@ export const updateProject = async (
       success: false,
       error: error.message,
       message: "Failed to update project",
-      status: 500
+      status: 500,
     };
   }
 };
@@ -411,7 +631,7 @@ export const deleteProject = async (
       return {
         success: false,
         message: "Project not found",
-        status: 404
+        status: 404,
       };
     }
 
@@ -419,7 +639,7 @@ export const deleteProject = async (
       return {
         success: false,
         message: "You do not own this project",
-        status: 403
+        status: 403,
       };
     }
 
@@ -430,7 +650,7 @@ export const deleteProject = async (
     return {
       success: true,
       message: "Project deleted successfully",
-      status: 200
+      status: 200,
     };
   } catch (error: any) {
     console.log("ERROR in deleteProject:", error.message);
@@ -438,7 +658,7 @@ export const deleteProject = async (
       success: false,
       error: error.message,
       message: "Failed to delete project",
-      status: 500
+      status: 500,
     };
   }
 };

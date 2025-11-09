@@ -1,240 +1,246 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, PlusCircle, Search, Eye, Edit, Trash2 } from "lucide-react";
-import Link from "next/link";
-import { useProjects } from "@/hooks/useProjects"; // You’ll need a useProjects hook for instructor
-import { useUserStore } from "@/zustand/userStore";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  Loader2,
+  PlusCircle,
+  Search,
+  Grid,
+  List,
+  Calendar,
+  Tag,
+  Award,
+} from "lucide-react";
+import Link from "next/link";
+import { useProjects } from "@/hooks/useProjects";
+import { useUserStore } from "@/zustand/userStore";
+import { Project } from "@/types/project";
+import ProjectCardItem from "./_components/ProjectCardItem";
+import ProjectTableItem from "./_components/ProjectTableItem";
 
 export default function InstructorProjects() {
   const { user } = useUserStore();
-  const instructorId = user?.id;
-  const { data: projectsData, isLoading, isError, error } = useProjects();
+  const { projects: projectsData, isLoading, isError, error } = useProjects();
 
-  const projects = projectsData?.data || [];
+  const projects = projectsData || [];
   const instructorProjects = projects;
-  const hasProjects = instructorProjects.length > 0;
 
   const [search, setSearch] = useState("");
   const [view, setView] = useState<"cards" | "table">("cards");
 
-  return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">
-          Your Projects
-        </h1>
-        {/* <Link href="/instructor/projects/create">
-          <Button className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold shadow">
-            <PlusCircle className="h-5 w-5" />
-            <span className="hidden md:inline">New Project</span>
-          </Button>
-        </Link> */}
-        <div className="flex items-center gap-4">
-          <Button
-            variant={view === "cards" ? "default" : "outline"}
-            onClick={() => setView("cards")}
-            className={`cursor-pointer rounded-lg px-3 ${view === "cards" ? "bg-blue-600 text-white" : ""}`}
-          >
-            Cards View
-          </Button>
-          <Button
-            variant={view === "table" ? "default" : "outline"}
-            onClick={() => setView("table")}
-            className={`cursor-pointer rounded-lg px-3 ${view === "table" ? "bg-blue-600 text-white" : ""}`}
-          >
-            Table View
-          </Button>
-          <Link href="/instructor/projects/create">
-            <Button className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold shadow">
-              <PlusCircle className="h-5 w-5" />
-              <span className="hidden md:inline">New Project</span>
-            </Button>
-          </Link>
+  // Filter projects based on search
+  const filteredProjects = instructorProjects.filter(
+    (project) =>
+      project.title.toLowerCase().includes(search.toLowerCase()) ||
+      project.categories?.some((cat) =>
+        cat.toLowerCase().includes(search.toLowerCase())
+      ) ||
+      project.tags?.some((tag) =>
+        tag.toLowerCase().includes(search.toLowerCase())
+      )
+  );
+
+  const hasProjects = filteredProjects.length > 0;
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-blue-600 dark:text-blue-400" />
+          <p className="text-lg font-medium text-zinc-700 dark:text-zinc-300">
+            Loading projects...
+          </p>
         </div>
       </div>
+    );
+  }
 
-      <div className="mb-6 flex justify-between">
-        <div className="w-full max-w-md flex items-center gap-2 bg-white dark:bg-zinc-900 rounded-xl border px-3 py-2 focus-within:ring-2 focus-within:ring-blue-600">
-          <Search className="text-zinc-400 w-5 h-5" />
+  if (isError) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <div className="text-center p-8 rounded-2xl bg-white dark:bg-zinc-800 shadow-xl max-w-md">
+          <div className="w-16 h-16 rounded-full bg-red-100 dark:bg-red-500/20 flex items-center justify-center mx-auto mb-4">
+            <span className="text-3xl">⚠️</span>
+          </div>
+          <h2 className="text-2xl font-bold mb-2 text-zinc-900 dark:text-white">
+            Error Loading Projects
+          </h2>
+          <p className="text-zinc-600 dark:text-zinc-300">
+            {(error as Error)?.message || "Something went wrong"}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="grid grid-cols-6 gap-4">
+          <div className="col-span-4">
+            <h1 className="text-3xl font-bold text-zinc-900 dark:text-white">
+              Your Projects
+            </h1>
+            <p className="text-zinc-600 dark:text-zinc-400 mt-1">
+              Manage and organize your projects
+            </p>
+          </div>
+
+          <div className="col-span-2 flex justify-end items-center gap-3">
+            {/* View Toggle */}
+            <div className="flex items-center gap-1 bg-white dark:bg-zinc-800 rounded-lg p-1 border border-zinc-200 dark:border-zinc-700 shadow-sm">
+              <button
+                onClick={() => setView("cards")}
+                className={`p-2 rounded-md transition-all ${
+                  view === "cards"
+                    ? "bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400"
+                    : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700"
+                }`}
+              >
+                <Grid className="h-5 w-5" />
+              </button>
+              <button
+                onClick={() => setView("table")}
+                className={`p-2 rounded-md transition-all ${
+                  view === "table"
+                    ? "bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400"
+                    : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700"
+                }`}
+              >
+                <List className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Create New Project Button */}
+            <Link href="/instructor/projects/create">
+              <Button className="flex items-center gap-2 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all">
+                <PlusCircle className="h-5 w-5" />
+                <span className="hidden sm:inline">New Project</span>
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Search Bar */}
+        {/* <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
           <input
+            type="text"
+            placeholder="Search projects by title, category, or tag..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 bg-transparent outline-none text-zinc-900 dark:text-zinc-100 placeholder-zinc-500"
-            placeholder="Search projects..."
+            className="w-full pl-10 pr-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all shadow-sm"
+          />
+        </div> */}
+        <div className="relative flex items-center">
+          <Search className="absolute left-3 h-5 w-5 text-zinc-400" />
+          <input
+            type="text"
+            placeholder="Search projects by title, category, or tag..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all shadow-sm"
           />
         </div>
-      </div>
 
-      {!isLoading && !hasProjects && (
-        <div className="flex flex-col items-center justify-center min-h-[300px] py-12 px-4 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 shadow my-10">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-10 w-10 mb-4 text-blue-400 opacity-80"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
-          <p className="text-lg font-semibold text-zinc-700 dark:text-zinc-200 mb-2">
-            No projects found
-          </p>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-2 text-center">
-            You haven’t created any projects yet.
-            <br /> Click “New Project” to get started.
-          </p>
-        </div>
-      )}
-
-      {hasProjects && view === "cards" && (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mt-6">
-          {instructorProjects.map((project) => (
-            <div
-              key={project.id}
-              className="bg-white dark:bg-zinc-800 rounded-2xl p-5 shadow border border-zinc-200 dark:border-zinc-700 flex flex-col"
-            >
-              {instructorProjects.map((project) => (
-                <div
-                  key={project.id}
-                  className="bg-white dark:bg-zinc-800 rounded-2xl p-5 shadow border border-zinc-200 dark:border-zinc-700 flex flex-col"
-                >
-                  <div className="flex items-center gap-4 mb-2">
-                    {project.thumbnailUrl && (
-                      <img
-                        src={project.thumbnailUrl}
-                        alt="Thumbnail"
-                        className="w-14 h-14 rounded-lg object-cover border"
-                      />
-                    )}
-                    <div>
-                      <h2 className="font-bold text-lg text-zinc-900 dark:text-white">
-                        {project.title}
-                      </h2>
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                        {project.slug}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="line-clamp-3 text-sm text-zinc-700 dark:text-zinc-200 mb-2">
-                    {project.description}
-                  </p>
-
-                  <div className="flex gap-2 flex-wrap mb-3">
-                    <Badge color="green">{project.status}</Badge>
-                    {project.difficulty && (
-                      <Badge color="yellow">{project.difficulty}</Badge>
-                    )}
-                    <Badge color="blue">{project.categories.join(", ")}</Badge>
-                  </div>
-
-                  <div className="flex gap-3 mt-auto">
-                    <Link href={`/instructor/projects/${project.id}`}>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="rounded-lg font-medium"
-                      >
-                        <Eye className="mr-1 h-4 w-4" />
-                        View
-                      </Button>
-                    </Link>
-                    <Link href={`/instructor/projects/${project.id}/edit`}>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="rounded-lg font-medium"
-                      >
-                        <Edit className="mr-1 h-4 w-4" />
-                        Edit
-                      </Button>
-                    </Link>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="rounded-lg font-medium"
-                      // onClick={() => handleDelete(project.id)}
-                    >
-                      <Trash2 className="mr-1 h-4 w-4" />
-                      Delete
-                    </Button>
-                  </div>
-                </div>
-              ))}
+        {/* No Projects State */}
+        {!isLoading && instructorProjects.length === 0 && (
+          <div className="flex flex-col items-center justify-center min-h-[400px] py-12 px-4 rounded-2xl bg-white dark:bg-zinc-800 border-2 border-dashed border-zinc-300 dark:border-zinc-700 shadow-sm">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center mb-6 shadow-lg">
+              <PlusCircle className="h-10 w-10 text-white" />
             </div>
-          ))}
-        </div>
-      )}
+            <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">
+              No Projects Yet
+            </h3>
+            <p className="text-zinc-600 dark:text-zinc-400 mb-6 text-center max-w-md">
+              You haven't created any projects yet. Get started by creating your
+              first project!
+            </p>
+            <Link href="/instructor/projects/create">
+              <Button className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all">
+                <PlusCircle className="h-5 w-5" />
+                Create Your First Project
+              </Button>
+            </Link>
+          </div>
+        )}
 
-      {hasProjects && view === "table" && (
-        <div className="overflow-x-auto mt-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableCell>Title</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Difficulty</TableCell>
-                <TableCell>Category</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {instructorProjects.map((project) => (
-                <TableRow key={project.id}>
-                  <TableCell>{project.title}</TableCell>
-                  <TableCell>{project.status}</TableCell>
-                  <TableCell>{project.difficulty}</TableCell>
-                  <TableCell>{project.categories?.join(", ")}</TableCell>
-                  <TableCell>
-                    <Link href={`/instructor/projects/${project.id}`}>
-                      <Button size="sm" className="rounded-lg font-medium mr-2">
-                        <Eye className="mr-1 h-4 w-4" />
-                        View
-                      </Button>
-                    </Link>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      )}
+        {/* No Search Results */}
+        {!isLoading && instructorProjects.length > 0 && !hasProjects && (
+          <div className="flex flex-col items-center justify-center min-h-[300px] py-12 px-4 rounded-2xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm">
+            <div className="w-16 h-16 rounded-full bg-zinc-100 dark:bg-zinc-700 flex items-center justify-center">
+              <Search className="h-8 w-8 text-zinc-400" />
+            </div>
+            <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">
+              No Results Found
+            </h3>
+            <p className="text-zinc-600 dark:text-zinc-400 text-center max-w-md">
+              No projects match your search for "{search}"
+            </p>
+            <Button
+              onClick={() => setSearch("")}
+              variant="outline"
+              className="mt-4"
+            >
+              Clear Search
+            </Button>
+          </div>
+        )}
+
+        {/* Cards View */}
+        {hasProjects && view === "cards" && (
+          <div className="grid gap-6 md:grid-cols-2">
+            {filteredProjects.map((project) => (
+              <ProjectCardItem
+                key={project.id}
+                project={project}
+                instructorProjects={instructorProjects}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Table View */}
+        {hasProjects && view === "table" && (
+          // <div>
+            <table className="w-full rounded-xl ">
+              <thead className="bg-zinc-50 dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800">
+                <tr>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-white">
+                    Project
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-white">
+                    Status
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-white">
+                    Difficulty
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-white">
+                    Categories
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-900 dark:text-white hidden xl:table-cell">
+                    Details
+                  </th>
+                  <th className="px-6 py-4 text-right text-sm font-semibold text-zinc-900 dark:text-white">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredProjects.map((project) => (
+                  <ProjectTableItem
+                    key={project.id}
+                    project={project}
+                    // instructorProjects={instructorProjects}
+                  />
+                ))}
+              </tbody>
+            </table>
+          // </div>
+        )}
+      </div>
     </div>
-  );
-}
-
-// Reusable Badge component:
-function Badge({
-  color = "blue",
-  children,
-}: {
-  color: "green" | "yellow" | "blue" | "gray";
-  children: ReactNode;
-}) {
-  const colors = {
-    green: "bg-green-100 text-green-700 border-green-400",
-    yellow: "bg-yellow-100 text-yellow-800 border-yellow-400",
-    blue: "bg-blue-100 text-blue-700 border-blue-400",
-    gray: "bg-gray-100 text-gray-600 border-gray-300",
-  };
-  return (
-    <span
-      className={`px-2 py-0.5 rounded-full border shadow-sm text-xs font-semibold ${colors[color]}`}
-    >
-      {children}
-    </span>
   );
 }

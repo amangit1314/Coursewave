@@ -2,36 +2,13 @@
 
 import React from "react";
 import { AreaChart, Title } from "@tremor/react";
-import { LineChart } from "@tremor/react";
 import { useTheme } from "next-themes";
-import { AiOutlineDollarCircle } from "react-icons/ai";
-import { RiRadioButtonLine } from "react-icons/ri";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import {
-  Badge,
-  Card,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeaderCell,
-  TableRow,
-} from "@tremor/react";
-import { IoMdTrendingUp } from "react-icons/io";
+import { BsCircleFill } from "react-icons/bs";
 
 // Types
 export interface EarningChartData {
   date: string;
   Courses: number;
-}
-
-interface Course {
-  id: string;
-  title: string;
-  price: number;
-  createdAt: string;
-  isPublished: boolean;
-  totalStudents?: number;
 }
 
 // Enhanced Earning Report Area Chart
@@ -69,84 +46,6 @@ export const EarningReportAreaChart: React.FC<EarningReportAreaChartProps> = ({
       </div>
 
       <div className="py-6 px-6">
-        {/* <AreaChart
-          className={`h-80 ${
-            isDark
-              ? `  dark:border-zinc-700
-        [&_.recharts-cartesian-axis-tick-value]:!fill-zinc-400 
-        [&_.recharts-cartesian-axis-tick-value]:!text-xs
-        [&_.recharts-cartesian-axis-tick-value]:!font-semibold
-        [&_.recharts-cartesian-grid-horizontal]:!stroke-zinc-700
-        [&_.recharts-cartesian-grid-horizontal]:!stroke-opacity-30
-        [&_.recharts-cartesian-grid-vertical]:!stroke-zinc-700
-        [&_.recharts-cartesian-grid-vertical]:!stroke-opacity-30
-        [&_.recharts-cartesian-grid-horizontal]:!stroke-dasharray-3,3
-        [&_.recharts-cartesian-grid-vertical]:!stroke-dasharray-3,3
-        [&_.recharts-cartesian-axis-line]:!stroke-zinc-600
-        [&_.recharts-cartesian-axis-tick-line]:!stroke-zinc-600
-        [&_.recharts-area]:!fill-gradient-to-t
-        [&_.recharts-area]:!from-blue-500/30
-        [&_.recharts-area]:!to-blue-400/10
-        [&_.recharts-area]:!stroke-blue-400
-        [&_.recharts-area]:!stroke-width-3
-        [&_.recharts-tooltip-content]:!bg-zinc-900/95
-        [&_.recharts-tooltip-content]:!border-zinc-700
-        [&_.recharts-tooltip-content]:!rounded-xl
-        [&_.recharts-tooltip-content]:!shadow-2xl
-        [&_.recharts-tooltip-content]:!backdrop-blur-sm
-        [&_.recharts-active-dot]:!fill-blue-400
-        [&_.recharts-active-dot]:!stroke-white
-        [&_.recharts-active-dot]:!stroke-width-3
-        [&_.recharts-active-dot]:!r-5
-        [&_.recharts-active-dot]:!drop-shadow-lg
-      `.replace(/\s+/g, " ")
-              : `
-        [&_.recharts-cartesian-axis-tick-value]:!fill-zinc-600
-        [&_.recharts-cartesian-axis-tick-value]:!text-xs
-        [&_.recharts-cartesian-axis-tick-value]:!font-semibold
-        [&_.recharts-cartesian-grid-horizontal]:!stroke-zinc-200
-        [&_.recharts-cartesian-grid-horizontal]:!stroke-opacity-50
-        [&_.recharts-cartesian-grid-vertical]:!stroke-zinc-200
-        [&_.recharts-cartesian-grid-vertical]:!stroke-opacity-50
-        [&_.recharts-cartesian-grid-horizontal]:!stroke-dasharray-3,3
-        [&_.recharts-cartesian-grid-vertical]:!stroke-dasharray-3,3
-        [&_.recharts-cartesian-axis-line]:!stroke-zinc-300
-        [&_.recharts-cartesian-axis-tick-line]:!stroke-zinc-300
-        [&_.recharts-area]:!fill-gradient-to-t
-        [&_.recharts-area]:!from-blue-500/20
-        [&_.recharts-area]:!to-blue-400/5
-        [&_.recharts-area]:!stroke-blue-500
-        [&_.recharts-area]:!stroke-width-3
-        [&_.recharts-tooltip-content]:!bg-white/95
-        [&_.recharts-tooltip-content]:!border-zinc-200
-        [&_.recharts-tooltip-content]:!rounded-xl
-        [&_.recharts-tooltip-content]:!shadow-2xl
-        [&_.recharts-tooltip-content]:!backdrop-blur-sm
-        [&_.recharts-active-dot]:!fill-blue-500
-        [&_.recharts-active-dot]:!stroke-white
-        [&_.recharts-active-dot]:!stroke-width-3
-        [&_.recharts-active-dot]:!r-5
-        [&_.recharts-active-dot]:!drop-shadow-lg
-      `.replace(/\s+/g, " ")
-          }`}
-          data={data}
-          index="date"
-          categories={["Courses"]}
-          colors={["blue"]}
-          allowDecimals={false}
-          yAxisWidth={60}
-          noDataText="No revenue data available"
-          showAnimation={true}
-          curveType="monotone"
-          showTooltip={true}
-          showLegend={false}
-          showGridLines={true}
-          showXAxis={true}
-          showYAxis={true}
-          animationDuration={1500}
-          connectNulls={true}
-        /> */}
-
         <AreaChart
           className="
     h-80
@@ -216,6 +115,32 @@ export const EarningReportAreaChart: React.FC<EarningReportAreaChartProps> = ({
           showYAxis={true}
           animationDuration={1500}
           connectNulls={true}
+          customTooltip={({ payload, label }) =>
+            payload && payload.length > 0 ? (
+              <div className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg p-4 text-zinc-900 dark:text-white min-w-[200px]">
+                <div className="font-semibold mb-1">{label}</div>
+                <div className="space-y-1">
+                  {payload.map((item) => (
+                    <div
+                      key={item.dataKey}
+                      className="flex justify-between items-center text-sm"
+                    >
+                      <span className="flex items-center gap-2">
+                        <BsCircleFill
+                          className="w-3 h-3"
+                          style={{ color: item.color }}
+                        />
+                        {item.name}
+                      </span>
+                      <span>
+                        {item.value?.toLocaleString?.() ?? item.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null
+          }
         />
       </div>
     </div>

@@ -52,19 +52,6 @@ const HelpAndSupport = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-900">
       {/* Header with Theme Toggle */}
-      {/* <div className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md dark:bg-zinc-900/80 dark:border-zinc-700">
-        <div className="flex items-center justify-between px-4 py-3 md:px-8">
-          <motion.h1
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="text-xl font-bold text-blue-600 dark:text-blue-400"
-          >
-            Instructor Support
-          </motion.h1>
-          <ThemeModeToggle />
-        </div>
-      </div> */}
-
       <div className="mx-auto max-w-7xl px-4 pt-18 pb-8 md:px-8">
         {/* Hero Section */}
         <motion.div
@@ -73,7 +60,7 @@ const HelpAndSupport = () => {
           className="mb-12 text-center"
         >
           <h2
-            className={`${dmSans.className} mb-4 text-3xl font-bold tracking-tight text-gray-900 dark:text-white md:text-4xl lg:text-5xl`}
+            className={`${dmSans.className} mb-4 text-3xl font-bold tracking-tighter text-gray-900 dark:text-white md:text-4xl lg:text-5xl`}
           >
             Instructor Support Center
           </h2>
@@ -84,7 +71,7 @@ const HelpAndSupport = () => {
         </motion.div>
 
         {/* Main Content Grid */}
-        <div className="grid gap-8 lg:grid-cols-3">
+        <div className="grid gap-4 lg:grid-cols-3">
           {/* Contact Information Card */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -154,7 +141,7 @@ const HelpAndSupport = () => {
               {!isSubmitted ? (
                 <>
                   <div className="mb-6">
-                    <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
+                    <h3 className={`${dmSans.className} mb-2 text-xl font-semibold text-gray-900 dark:text-white`}>
                       Contact Instructor Support
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-300">
@@ -170,79 +157,10 @@ const HelpAndSupport = () => {
             </div>
           </motion.div>
         </div>
-
-        {/* FAQ Section */}
-        {/* <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mt-16"
-        >
-          <div className="text-center">
-            <h3 className="mb-8 text-2xl font-bold text-gray-900 dark:text-white">
-              Instructor FAQ
-            </h3>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <FAQCard
-              question="How do I create my first course?"
-              answer="Go to your instructor dashboard and click 'Create Course'. Follow the step-by-step wizard to set up your course content, pricing, and requirements."
-            />
-            <FAQCard
-              question="When do I receive payments?"
-              answer="Payments are processed monthly. You'll receive your earnings on the 15th of each month for sales made in the previous month."
-            />
-            <FAQCard
-              question="What are the platform fees?"
-              answer="CourseWave takes a 15% commission on course sales. This covers platform hosting, payment processing, and marketing support."
-            />
-            <FAQCard
-              question="How do I promote my courses?"
-              answer="Use our built-in marketing tools, social media integration, and email campaigns. We also feature top instructors on our homepage."
-            />
-            <FAQCard
-              question="Can I update my course content?"
-              answer="Yes! You can update your course content anytime. Students will be notified of new content and updates."
-            />
-            <FAQCard
-              question="What support do you provide?"
-              answer="We provide technical support, course optimization advice, marketing assistance, and 1-on-1 consultations for top instructors."
-            />
-          </div>
-        </motion.div> */}
       </div>
     </div>
   );
 };
-
-// const ContactItem = ({
-//   icon,
-//   title,
-//   value,
-//   description,
-// }: {
-//   icon: React.ReactNode;
-//   title: string;
-//   value: string;
-//   description: string;
-// }) => (
-//   <div className="flex items-start space-x-3">
-//     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
-//       {icon}
-//     </div>
-//     <div className="flex-1 ">
-//       <h4
-//         className={`${dmSans.className} text-sm max-w-[193.55px] overflow-hidden font-medium text-gray-900 dark:text-white`}
-//       >
-//         {title}
-//       </h4>
-//       <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-//         {value}
-//       </p>
-//       <p className="text-xs text-gray-500 dark:text-gray-400">{description}</p>
-//     </div>
-//   </div>
-// );
 
 const ContactItem = ({
   icon,
@@ -279,16 +197,14 @@ const ContactItem = ({
 
 const SocialLinks = () => {
   const socialLinks = [
-    { icon: <FaFacebook className="h-5 w-5" />, href: "#", label: "Facebook" },
-    { icon: <FaXTwitter className="h-5 w-5" />, href: "#", label: "Twitter" },
-    { icon: <FaLinkedin className="h-5 w-5" />, href: "#", label: "LinkedIn" },
-    { icon: <FaYoutube className="h-5 w-5" />, href: "#", label: "YouTube" },
-    { icon: <FaDiscord className="h-5 w-5" />, href: "#", label: "Discord" },
-    {
-      icon: <RiInstagramFill className="h-5 w-5" />,
-      href: "#",
-      label: "Instagram",
-    },
+    { icon: <FaGithub className="h-5 w-5" />, href: "https://github.com/amangit1314", label: "GitHub" },
+    { icon: <FaXTwitter className="h-5 w-5" />, href: "https://x.com/soni07_aman", label: "Twitter" },
+    { icon: <FaLinkedin className="h-5 w-5" />, href: "https://www.linkedin.com/in/aman-soni1", label: "LinkedIn" },
+    // {
+    //   icon: <RiInstagramFill className="h-5 w-5" />,
+    //   href: "",
+    //   label: "Instagram",
+    // },
   ];
 
   return (
@@ -422,7 +338,7 @@ const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
             name="firstName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <FormLabel className={`${dmSans.className} text-sm font-medium text-gray-700 dark:text-gray-300`}>
                   First Name
                 </FormLabel>
                 <FormControl>
@@ -443,7 +359,7 @@ const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
             name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <FormLabel className={`${dmSans.className} text-sm font-medium text-gray-700 dark:text-gray-300`}>
                   Last Name
                 </FormLabel>
                 <FormControl>
@@ -467,7 +383,7 @@ const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <FormLabel className={`${dmSans.className} text-sm font-medium text-gray-700 dark:text-gray-300`}>
                   Email Address
                 </FormLabel>
                 <FormControl>
@@ -489,7 +405,7 @@ const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <FormLabel className={`${dmSans.className} text-sm font-medium text-gray-700 dark:text-gray-300`}>
                   Phone Number
                 </FormLabel>
                 <FormControl>
@@ -512,7 +428,7 @@ const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
           name="subject"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <FormLabel className={`${dmSans.className} text-sm font-medium text-gray-700 dark:text-gray-300`}>
                 Subject
               </FormLabel>
               <FormControl>
@@ -534,7 +450,7 @@ const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
           name="message"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <FormLabel className={`${dmSans.className} text-sm font-medium text-gray-700 dark:text-gray-300`}>
                 Message
               </FormLabel>
               <FormControl>
@@ -555,7 +471,7 @@ const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
         <Button
           type="submit"
           disabled={!isValid || isSubmitting}
-          className="h-12 w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg transition-all hover:from-blue-700 hover:to-blue-800 hover:shadow-xl disabled:opacity-50 dark:from-blue-500 dark:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-700"
+          className={`${dmSans.className} h-12 w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg transition-all hover:from-blue-700 hover:to-blue-800 hover:shadow-xl disabled:opacity-50 dark:from-blue-500 dark:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-700`}
         >
           {isSubmitting ? (
             <>

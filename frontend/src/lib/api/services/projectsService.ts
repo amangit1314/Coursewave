@@ -1,37 +1,44 @@
-// import ApiManager from "../api-manager";
-
-// export const projectsService = {
-//   async getProjects() {
-//     const response = await ApiManager.getInstance().get(`/projects`);
-//     console.log("Get Projects response:", response.data);
-//     return response.data;
-//   },
-// };
-
-
 import { ApiResponse, PaginatedResponse } from "../api-manager";
 import ApiManager from "../api-manager";
-import { Project } from "@/types/project";
-
-// Example types — adjust to your schema
-// export interface Project {
-//   id: string;
-//   name: string;
-//   description?: string;
-//   status: "active" | "archived" | "pending";
-//   createdAt: string;
-//   updatedAt: string;
-// }
+import { Project, ProjectDetails } from "@/types/project";
 
 export interface CreateProjectRequest {
-  name: string;
+  title: string;
   description?: string;
+  courseId: string;
+  thumbnailUrl?: string;
+  deadline?: Date;
+  maxSubmissions?: number;
+  status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+  difficulty?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+  isPublic?: boolean;
+  startDate?: Date;
+  endDate?: Date;
+  categories?: string[];
+  tags?: string[];
+  prerequisites?: string[];
+  technologies?: string[];
+  learningOutcomes?: string[];
+  resources?: string[];
 }
 
 export interface UpdateProjectRequest {
-  name?: string;
+  title?: string;
   description?: string;
-  status?: "active" | "archived" | "pending";
+  thumbnailUrl?: string;
+  deadline?: Date;
+  maxSubmissions?: number;
+  status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+  difficulty?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+  isPublic?: boolean;
+  startDate?: Date;
+  endDate?: Date;
+  categories?: string[];
+  tags?: string[];
+  prerequisites?: string[];
+  technologies?: string[];
+  learningOutcomes?: string[];
+  resources?: string[];
 }
 
 class ProjectsService {
@@ -47,16 +54,14 @@ class ProjectsService {
     return ProjectsService.instance;
   }
 
-  // -----------------------
-  // CRUD Methods
-  // -----------------------
-
-  async getProjects(params?: Record<string, any>): Promise<PaginatedResponse<Project>> {
+  async getProjects(params?: Record<string, any>): Promise<PaginatedResponse<Project> | Project[]> {
     return this.api.get<Project[]>(`/projects`, { params });
   }
 
-  async getProjectById(id: string): Promise<ApiResponse<Project>> {
-    return this.api.get<Project>(`/projects/${id}`);
+  async getProjectById(id: string): Promise<ApiResponse<ProjectDetails>> {
+    const response = this.api.get<ProjectDetails>(`/projects/${id}`);
+    console.log("Response of project by id: ", JSON.stringify(response));
+    return response;
   }
 
   async createProject(data: CreateProjectRequest): Promise<ApiResponse<Project>> {
@@ -69,6 +74,26 @@ class ProjectsService {
 
   async deleteProject(id: string): Promise<ApiResponse<void>> {
     return this.api.delete<void>(`/projects/${id}`);
+  }
+
+  async submitProject(projectId: string, submissionUrl: string): Promise<ApiResponse<any>> {
+    return this.api.post(`/projects/${projectId}/submissions`, { submissionUrl });
+  }
+
+  async getProjectSubmissions(projectId: string): Promise<ApiResponse<any>> {
+    return this.api.get(`/projects/${projectId}/submissions`);
+  }
+
+  async getSubmissionFeedback(projectId: string, submissionId: string): Promise<ApiResponse<any>> {
+    return this.api.get(`/projects/${projectId}/submissions/${submissionId}/feedbacks`);
+  }
+
+  async giveSubmissionFeedback(
+    projectId: string,
+    submissionId: string,
+    feedbackText: string
+  ): Promise<ApiResponse<any>> {
+    return this.api.post(`/projects/submissions/feedback`, { projectId, submissionId, feedbackText });
   }
 }
 
