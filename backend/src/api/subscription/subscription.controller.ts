@@ -20,7 +20,9 @@ export const getSubscriptionPlans = async (req: Request, res: Response) => {
 
 export const getUserSubscriptions = async (req: Request, res: Response) => {
   try {
-    const result = await subscriptionService.getUserSubscriptions(req.user.id);
+    const result = await subscriptionService.getUserSubscriptions(
+      req.user?.id || ""
+    );
     res.status(result.status).json(result);
   } catch (error: any) {
     console.log("SERVER ERROR ON USER SUBSCRIPTION: ", error.message);
@@ -37,7 +39,7 @@ export const getInstructorSubscriptions = async (
 ) => {
   try {
     const result = await subscriptionService.getInstructorSubscriptions(
-      req.user.id
+      req.user?.id || ""
     );
     res.status(result.status).json(result);
   } catch (error: any) {
@@ -83,8 +85,8 @@ export const createSubscriptionCheckoutLink = async (
 
     // Ensure StripeCustomer for the user (recommended, OR pass customer_email below)
     const stripeCustomerId = await ensureStripeCustomerForUser(
-      req.user.id,
-      req.user.email
+      req.user?.id || "",
+      req.user?.email
     );
 
     const APP_URL = process.env.APP_URL || "http://localhost:3000";
@@ -114,16 +116,20 @@ export const createSubscriptionCheckoutLink = async (
 export const createCheckoutSession = async (req: Request, res: Response) => {
   try {
     const { planId } = req.body;
-    const url = await subscriptionService.getSubscriptionCheckoutUrl(req.user.id, planId);
+    const url = await subscriptionService.getSubscriptionCheckoutUrl(
+      req.user?.id || "",
+      planId
+    );
     // res.json({ success: true, url });
     res.json({ success: true, data: { url } });
-
   } catch (error: any) {
-     console.log("SERVER ERROR ON CREATE CHECKOUT SESSION: ", JSON.stringify(error));
+    console.log(
+      "SERVER ERROR ON CREATE CHECKOUT SESSION: ",
+      JSON.stringify(error)
+    );
     res.status(500).json({ success: false, error: error.message });
   }
 };
-
 
 // In your controller:
 export const subscribeUser = async (req: Request, res: Response) => {
@@ -131,7 +137,10 @@ export const subscribeUser = async (req: Request, res: Response) => {
     const { planId, stripeSubscriptionId } = req.body;
 
     if (!stripeSubscriptionId || typeof stripeSubscriptionId !== "string") {
-      console.log("stripeSubscriptionId is NOT ACCEPTABLE, [VALUE]: ", stripeSubscriptionId);
+      console.log(
+        "stripeSubscriptionId is NOT ACCEPTABLE, [VALUE]: ",
+        stripeSubscriptionId
+      );
       return res.status(400).json({
         success: false,
         error: "Missing or invalid Stripe subscription ID.",
@@ -147,7 +156,10 @@ export const subscribeUser = async (req: Request, res: Response) => {
     const input: SubscribeUserInput = getInputFromStripe(stripeSub, planId);
 
     // Call service method
-    const result = await subscriptionService.subscribeUserCheckoutLink(req.user.id, input);
+    const result = await subscriptionService.subscribeUserCheckoutLink(
+      req.user?.id || "",
+      input
+    );
 
     res.status(201).json({
       success: true,
@@ -169,15 +181,18 @@ export const subscribeInstructor = async (req: Request, res: Response) => {
 
     // Always ensure StripeCustomer exists for the user (and created on Stripe if missing)
     const stripeCustomerId = await ensureStripeCustomerForUser(
-      req.user.id,
-      req.user.email
+      req.user?.id || "",
+      req.user?.email
     );
 
-    const result = await subscriptionService.subscribeInstructor(req.user.id, {
-      planId,
-      stripeSubscriptionId,
-      stripeCustomerId,
-    });
+    const result = await subscriptionService.subscribeInstructor(
+      req.user?.id || "",
+      {
+        planId,
+        stripeSubscriptionId,
+        stripeCustomerId,
+      }
+    );
     res.status(result.status).json(result);
   } catch (error: any) {
     res.status(500).json({
@@ -190,7 +205,7 @@ export const subscribeInstructor = async (req: Request, res: Response) => {
 export const cancelUserSubscription = async (req: Request, res: Response) => {
   try {
     const result = await subscriptionService.cancelUserSubscription(
-      req.user.id
+      req.user?.id || ""
     );
     res.status(result.status).json(result);
   } catch (error: any) {
@@ -207,7 +222,7 @@ export const cancelInstructorSubscription = async (
 ) => {
   try {
     const result = await subscriptionService.cancelInstructorSubscription(
-      req.user.id
+      req.user?.id || ""
     );
     res.status(result.status).json(result);
   } catch (error: any) {

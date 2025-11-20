@@ -7,11 +7,11 @@ export const poppins = Poppins({
   preload: true,
 });
 
-export const orbitronFont = Orbitron({
-  weight: ["400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-  display: "swap",
-});
+// export const orbitron = Orbitron({
+//   weight: ["400", "500", "600", "700", "800", "900"],
+//   subsets: ["latin"],
+//   display: "swap",
+// });
 
 export const orbitron = DM_Sans({
   weight: ["400", "500", "600", "700", "800", "900"],

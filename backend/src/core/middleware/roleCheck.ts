@@ -121,12 +121,12 @@ export const requireInstructor = async (req: Request, res: Response, next: NextF
 export async function isInstructor(req: Request, res: Response, next: NextFunction) {
   try {
     console.log('🛡️ [isInstructor] Checking if user is instructor:', {
-      userId: req.user.id,
-      userEmail: req.user.email
+      userId: req.user?.id,
+      userEmail: req.user?.email
     });
 
     const instructor = await prisma.instructor.findUnique({
-      where: { userId: req.user.id }
+      where: { userId: req.user?.id }
     });
 
     console.log('🛡️ [isInstructor] Instructor lookup result:', instructor);

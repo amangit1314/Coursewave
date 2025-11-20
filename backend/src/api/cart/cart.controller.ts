@@ -4,7 +4,7 @@ import { sendSuccess, sendNotFound, sendError } from "../../core/middleware";
 
 export const getCart = async (req: Request, res: Response) => {
   try {
-    const result = await cartService.getCart(req.user.id);
+    const result = await cartService.getCart(req.user?.id  || "");
 
     if (result.success) {
       sendSuccess(res, result.data, "Cart fetched successfully");
@@ -19,7 +19,7 @@ export const getCart = async (req: Request, res: Response) => {
 
 export const addToCart = async (req: Request, res: Response) => {
   try {
-    const result = await cartService.addToCart(req.user.id, req.body.courseId);
+    const result = await cartService.addToCart(req.user?.id  || "", req.body.courseId);
 
     if (result.success) {
       sendSuccess(res, result.data, "Course added to cart", 201);
@@ -39,7 +39,7 @@ export const addToCart = async (req: Request, res: Response) => {
 export const removeFromCart = async (req: Request, res: Response) => {
   try {
     const result = await cartService.removeFromCart(
-      req.user.id,
+      req.user?.id  || "",
       req.params.courseId
     );
 
@@ -60,7 +60,7 @@ export const removeFromCart = async (req: Request, res: Response) => {
 
 export const clearCart = async (req: Request, res: Response) => {
   try {
-    const result = await cartService.clearCart(req.user.id);
+    const result = await cartService.clearCart(req.user?.id  || "");
 
     if (result.success) {
       sendSuccess(res, null, "Cart cleared successfully");

@@ -109,7 +109,7 @@ export const getInstructorCreatedCourses = async (
   res: Response
 ) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id;
 
     // Get instructor profile
     const instructor = await prisma.instructor.findUnique({
@@ -157,7 +157,7 @@ export const getInstructorCreatedCourses = async (
 
 export const getEnrolledCourses = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id;
 
     const enrollments = await prisma.enrollment.findMany({
       where: {
@@ -268,7 +268,7 @@ export const getCourseById = async (req: Request, res: Response) => {
 
 export const createCourse = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id;
 
     const {
       title,
@@ -335,7 +335,7 @@ export const createCourse = async (req: Request, res: Response) => {
 
 export const updateCourse = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id;
     const courseId = req.params.courseId;
 
     const {
@@ -443,7 +443,7 @@ export const createCheckout = async (req: Request, res: Response) => {
   try {
     const { courseId } = req.params;
     const { finalPrice, isCartCheckout } = req.body;
-    const userId = req.user.id;
+    const userId = req.user?.id || "";
 
     // Fetch user
     const user = await prisma.user.findUnique({
@@ -602,7 +602,7 @@ export const getEnrollmentStatus = async (req: Request, res: Response) => {
 
 export const getCourseProgress = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || "";
     const courseId = req.params.courseId;
 
     // Check enrollment and get progress with proper typing
@@ -1106,7 +1106,7 @@ export const deleteChapter = async (req: Request, res: Response) => {
 
 export const getChapterProgress = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || "";
     const chapterId = req.params.chapterId;
 
     const chapterProgress = await prisma.chapterProgress.findUnique({
@@ -1151,7 +1151,7 @@ export const getChapterProgress = async (req: Request, res: Response) => {
 
 export const updateChapterProgress = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || "";
     const chapterId = req.params.chapterId;
     const { isCompleted, progress: chapterProgress } = req.body;
 
@@ -1324,7 +1324,7 @@ export const writeReview = async (req: Request, res: Response) => {
     const { rating, comment } = req.body;
     const review = await writeReviewService({
       courseId: req.params.courseId,
-      userId: req.user.id,
+      userId: req.user?.id || "",
       rating,
       comment,
     });
@@ -1342,7 +1342,7 @@ export const editReview = async (req: Request, res: Response) => {
     const updatedReview = await editReviewService({
       courseId: req.params.courseId,
       reviewId: req.params.reviewId,
-      userId: req.user.id,
+      userId: req.user?.id || "",
       rating,
       comment,
     });
@@ -1359,7 +1359,7 @@ export const deleteReview = async (req: Request, res: Response) => {
     await deleteReviewService({
       courseId: req.params.courseId,
       reviewId: req.params.reviewId,
-      userId: req.user.id,
+      userId: req.user?.id || "",
     });
     return res.status(200).json({
       success: true,
@@ -1378,7 +1378,7 @@ export const deleteReview = async (req: Request, res: Response) => {
 export const getAllCourseNotes = async (req: Request, res: Response) => {
   try {
     const { chapterId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user?.id || "";
 
     const notes = await getNotesByChapter({ chapterId, userId });
 
@@ -1399,7 +1399,7 @@ export const getAllCourseNotes = async (req: Request, res: Response) => {
 export const addNote = async (req: Request, res: Response) => {
   try {
     const { chapterId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user?.id || "";
     const { content } = req.body;
 
     if (!content || typeof content !== "string") {
@@ -1428,7 +1428,7 @@ export const addNote = async (req: Request, res: Response) => {
 export const editNote = async (req: Request, res: Response) => {
   try {
     const { noteId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user?.id;
     const { content } = req.body;
 
     if (!content || typeof content !== "string") {
@@ -1472,7 +1472,7 @@ export const editNote = async (req: Request, res: Response) => {
 export const deleteNote = async (req: Request, res: Response) => {
   try {
     const { noteId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user?.id;
 
     const note = await getNoteById(noteId);
     if (!note) {
@@ -1577,7 +1577,7 @@ export const deleteAttachment = async (req: Request, res: Response) => {
 // -------------------------------------------- LEARNING DASHBORAD ------------------------------
 export const getLearningDashboard = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id;
 
     const enrollments = await prisma.enrollment.findMany({
       where: { userId },

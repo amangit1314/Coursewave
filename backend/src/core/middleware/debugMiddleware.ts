@@ -12,9 +12,9 @@ export async function debugMiddleware(
     params: req.params,
     user: req.user
       ? {
-          id: req.user.id,
-          email: req.user.email,
-          roles: req.user.roles,
+          id: req.user?.id,
+          email: req.user?.email,
+          roles: req.user?.roles,
         }
       : "No user",
     headers: {

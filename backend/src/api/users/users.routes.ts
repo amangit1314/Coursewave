@@ -16,6 +16,8 @@ import {
   checkArticleSaved,
 } from "./users.controller";
 import { verifyToken } from "../../core/middleware/verifyToken";
+import { validate } from "../../core/middleware/validate";
+import { userIdParams, updateProfileSchema, changePasswordSchema } from "./users.schemas";
 
 const router: Router = Router();
 
@@ -26,7 +28,7 @@ router.get("/enrollments/:courseId", verifyToken, checkEnrollment); // check if 
 
 /// ===================== User routes =====================
 router.get("/", verifyToken, getAllUsers); // (admin only)
-router.get("/:userId", verifyToken, getUserById); // (admin or self)
+router.get("/:userId", verifyToken, validate(userIdParams, "params"), getUserById); // (admin or self)
 router.delete("/:userId", verifyToken, deleteUser); // (admin only)
 
 /// ========================  Articles ============================
@@ -38,8 +40,8 @@ router.get("/articles/saved/:articleId/check", verifyToken, checkArticleSaved); 
 
 /// ======================= FOR LOGED IN USER ============
 router.get("/me", verifyToken, getUserProfile); // (self only)
-router.put("/profile", verifyToken, updateUserProfile); // (self only)
-router.put("/change-password", verifyToken, changePassword); // (self only)
+router.put("/profile", verifyToken, validate(updateProfileSchema), updateUserProfile); // (self only)
+router.put("/change-password", verifyToken, validate(changePasswordSchema), changePassword); // (self only)
 router.delete("/", verifyToken, deleteSelf); // (self only)
 
 export default router;

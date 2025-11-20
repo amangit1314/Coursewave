@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { PrismaClientKnownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
+import { logger } from '../utils/logger';
 
 /**
  * Custom error class for application errors
@@ -29,8 +30,8 @@ export const errorHandler = (
 ) => {
   let { statusCode = 500, message } = error;
 
-  // Log error for debugging
-  console.error('Error:', {
+  logger.error('error', {
+    requestId: req.requestId,
     message: error.message,
     stack: error.stack,
     url: req.url,
@@ -38,7 +39,7 @@ export const errorHandler = (
     body: req.body,
     params: req.params,
     query: req.query,
-    user: req.user?.id
+    userId: req.user?.id
   });
 
   if (error instanceof PrismaClientKnownRequestError) {
@@ -100,6 +101,7 @@ export const errorHandler = (
   res.status(statusCode).json({
     success: false,
     message,
+    requestId: req.requestId,
     ...(process.env.NODE_ENV === 'development' && {
       stack: error.stack,
       error: error.message
@@ -195,4 +197,4 @@ export const sendConflict = (res: Response, message: string = 'Resource conflict
     success: false,
     message
   });
-}; 
+};

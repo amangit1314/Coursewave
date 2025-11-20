@@ -3,7 +3,7 @@ import * as instructorsService from "./instructor.service";
 
 export const getMyInstructorProfile = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || ""
     const result = await instructorsService.getInstructorProfile(userId);
     res.status(result.status).json(result);
   } catch (error: any) {
@@ -17,7 +17,7 @@ export const getMyInstructorProfile = async (req: Request, res: Response) => {
 
 export const getMyInstructorAnalytics = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || ""
     const result = await instructorsService.getInstructorAnalytics(userId);
     res.status(result.status).json(result);
   } catch (error: any) {
@@ -31,7 +31,7 @@ export const getMyInstructorAnalytics = async (req: Request, res: Response) => {
 
 export const getMyInstructorCourses = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || ""
     const result = await instructorsService.getInstructorCourses(userId);
     res.status(result.status).json(result);
   } catch (error: any) {
@@ -45,7 +45,7 @@ export const getMyInstructorCourses = async (req: Request, res: Response) => {
 
 export const getMyInstructorStudents = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || ""
     const result = await instructorsService.getInstructorStudents(userId);
     res.status(result.status).json(result);
   } catch (error: any) {
@@ -62,7 +62,7 @@ export const getPublicInstructorProfile = async (
   res: Response
 ) => {
   try {
-    const instructorId = req.params.instructorId;
+    const instructorId = req.params.instructorid || ""
     const result = await instructorsService.getInstructorProfile(instructorId);
     res.status(result.status).json(result);
   } catch (error: any) {
@@ -79,7 +79,7 @@ export const getPublicInstructorCourses = async (
   res: Response
 ) => {
   try {
-    const instructorId = req.params.instructorId;
+    const instructorId = req.params.instructorid || ""
     const result = await instructorsService.getPublicInstructorCourses(
       instructorId
     );
@@ -98,7 +98,7 @@ export const getPublicInstructorAnalytics = async (
   res: Response
 ) => {
   try {
-    const instructorId = req.params.instructorId;
+    const instructorId = req.params.instructorid || ""
     const result = await instructorsService.getPublicInstructorAnalytics(
       instructorId
     );

@@ -6,7 +6,7 @@ import { prisma } from "../../config/prisma";
  * Middleware to check if the logged-in user is enrolled in
  * the course where the specified project was created.
  * Assumes projectId (or projectSlug) is passed via req.params or req.body,
- * and req.user.id contains the logged-in user's id.
+ * and req.user?.id contains the logged-in user's id.
  */
 export const isEnrolledInProjectCourse = async function (
   req: Request,

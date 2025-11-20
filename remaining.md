@@ -23,7 +23,7 @@
     )
 7. [] - Article Details (
         [] - like count (
-                [] If already liked the article, in article details its not showing filled
+                [] - If already liked the article, in article details its not showing filled
                 [] - I am able to like again and again (restrict a user can like only once, and if clicked again it will be disliked) {This is working on article item}
                 [x] - its working locally via cache perfectly
                 [] - no states toast messages and handle loading such that show ... at time of load (DO ONLY IF NECESSARY) 

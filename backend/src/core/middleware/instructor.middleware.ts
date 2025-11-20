@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 export async function isInstructor(req: Request, res: Response, next: NextFunction) {
   try {
     const instructor = await prisma.instructor.findUnique({
-      where: { userId: req.user.id }
+      where: { userId: req.user?.id }
     });
 
     if (!instructor) {

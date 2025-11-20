@@ -12,33 +12,26 @@ import {
   getCurrentUser,
 } from "./auth.controller";
 
+import { validate } from "../../core/middleware/validate";
+import {
+  registerSchema,
+  loginSchema,
+  tokenSchema,
+  emailSchema,
+  refreshSchema,
+  resetPasswordSchema,
+} from "./auth.schemas";
+
 const router = express.Router();
 
-// Register user
-router.post("/register", registerUser);
-
-// Login user
-router.post("/login", loginUser);
-
-// Verify email
-router.post("/verify-email", verifyUserEmail);
-
-// Forgot password
-router.post("/forgot-password", forgotPassword);
-
-// Reset password
-router.post("/reset-password", resetPassword);
-
-// Resend verification email
-router.post("/resend-verification", resendVerification);
-
-// Refresh token
-router.post("/refresh", refreshToken);
-
-// Logout
-router.post("/logout", logoutUser);
-
-// Get current user
+router.post("/register", validate(registerSchema), registerUser);
+router.post("/login", validate(loginSchema), loginUser);
+router.post("/verify-email", validate(tokenSchema), verifyUserEmail);
+router.post("/forgot-password", validate(emailSchema), forgotPassword);
+router.post("/reset-password", validate(resetPasswordSchema), resetPassword);
+router.post("/resend-verification", validate(emailSchema), resendVerification);
+router.post("/refresh", validate(refreshSchema), refreshToken);
+router.post("/logout", validate(refreshSchema), logoutUser);
 router.get("/me", getCurrentUser);
 
 export default router;

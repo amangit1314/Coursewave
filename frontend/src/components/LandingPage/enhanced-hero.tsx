@@ -172,28 +172,26 @@ const EnhancedHero = () => {
           ))}
         </div>
 
-        {/* Decorative shapes - fixed positions */}
+        {/* Floating elements */}
         <div className="absolute inset-0 pointer-events-none">
-          {[
-            { size: 20, left: "5%", top: "10%", color: "bg-blue-500", delay: 0 },
-            { size: 15, left: "8%", top: "15%", color: "bg-purple-500", delay: 0.2 },
-            { size: 25, left: "3%", top: "20%", color: "bg-cyan-500", delay: 0.4 },
-          ].map((shape, i) => (
+          {[...Array(5)].map((_, i) => (
             <motion.div
               key={i}
-              className={`absolute rounded-full ${shape.color} opacity-20`}
+              className="absolute rounded-full bg-blue-500 opacity-20"
               style={{
-                width: shape.size,
-                height: shape.size,
-                left: shape.left,
-                top: shape.top,
+                width: 10 + Math.random() * 20,
+                height: 10 + Math.random() * 20,
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
               }}
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 0.2, scale: 1 }}
+              animate={{
+                y: [0, -30, 0],
+                x: [0, Math.random() * 20 - 10, 0],
+              }}
               transition={{
-                duration: 0.8,
-                delay: shape.delay,
-                ease: "easeOut"
+                duration: 3 + Math.random() * 2,
+                repeat: Infinity,
+                ease: "easeInOut",
               }}
             />
           ))}

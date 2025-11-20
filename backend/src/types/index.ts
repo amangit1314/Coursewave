@@ -21,4 +21,12 @@ export interface User {
   roles?: UserRole[];
   createdAt: Date | null;
   updatedAt: Date | null;
-} 
+}
+
+// Narrow payload for authenticated request context
+export interface UserPayload {
+  id: string;
+  email: string;
+  name: string | null;
+  roles: Array<UserRole['role']>;
+}

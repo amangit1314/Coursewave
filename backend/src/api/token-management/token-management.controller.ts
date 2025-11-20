@@ -6,7 +6,7 @@ import TokenService from "../../core/services/tokenService";
 // Get user's active sessions
 export const getUserSessions = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || "";
     const sessions = await TokenService.getUserSessions(userId);
 
     return res.status(200).json({
@@ -32,7 +32,7 @@ export const getUserSessions = async (req: Request, res: Response) => {
 //  Revoke specific session
 export const revokeSession = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id;
     const sessionId = req.params.sessionId;
 
     const session = await prisma.token.findFirst({
@@ -63,7 +63,7 @@ export const revokeSession = async (req: Request, res: Response) => {
 //  Revoke all sessions
 export const revokeAllSessions = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || "";
     await TokenService.revokeAllUserTokens(userId, "LOGOUT_ALL_DEVICES");
 
     return res.status(200).json({
@@ -83,7 +83,7 @@ export const revokeAllSessions = async (req: Request, res: Response) => {
 //  Rollback token
 export const rollbackToken = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || "";
     const { currentTokenId } = req.body;
 
     if (!currentTokenId) {
@@ -183,7 +183,7 @@ export const validateSecurity = async (req: Request, res: Response) => {
 export const cleanupExpiredTokens = async (req: Request, res: Response) => {
   try {
     const userRoles = await prisma.userRole.findMany({
-      where: { userId: req.user.id },
+      where: { userId: req.user?.id },
     });
     const isAdmin = userRoles.some((role) => role.role === "ADMIN");
 
@@ -216,7 +216,7 @@ export const cleanupExpiredTokens = async (req: Request, res: Response) => {
 export const getTokenStats = async (req: Request, res: Response) => {
   try {
     const userRoles = await prisma.userRole.findMany({
-      where: { userId: req.user.id },
+      where: { userId: req.user?.id },
     });
     const isAdmin = userRoles.some((role) => role.role === "ADMIN");
 

@@ -72,7 +72,7 @@ export const createBlog = async (req: Request, res: Response) => {
   try {
     const { title, content, excerpt, coverImage, readTime, categoryId } =
       req.body;
-    const userId = req.user.id;
+    const userId = req.user?.id || "";
 
     const blog = await BlogsService.createBlog(userId, {
       title,
@@ -99,7 +99,7 @@ export const createBlog = async (req: Request, res: Response) => {
 export const reportBlog = async (req: Request, res: Response) => {
   try {
     const { blogId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user?.id  || "";
     const { reason } = req.body;
 
     console.log("req.user:", JSON.stringify(req.user));
@@ -154,7 +154,7 @@ export const incrementBlogViewCount = async (req: Request, res: Response) => {
 export const followUnfollowAuthor = async (req: Request, res: Response) => {
   try {
     const { blogId } = req.params; // Changed from id to blogId
-    const userId = req.user.id;
+    const userId = req.user?.id  || "";
 
     const result = await BlogsService.followUnfollowAuthor(blogId, userId);
 
@@ -191,7 +191,7 @@ export const followUnfollowAuthor = async (req: Request, res: Response) => {
 export const checkFollowingStatus = async (req: Request, res: Response) => {
   try {
     const { blogId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user?.id || ""
 
     const blog = await BlogsService.getBlogById(blogId);
 
@@ -260,7 +260,7 @@ export const getAuthorFollowers = async (req: Request, res: Response) => {
 // New controller to get user's following list
 export const getUserFollowing = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || ""
     const { page = 1, limit = 20 } = req.query;
 
     const result = await BlogsService.getUserFollowing(
@@ -317,7 +317,7 @@ export const getAuthorFollowerCount = async (req: Request, res: Response) => {
 // New controller to get user following count
 export const getUserFollowingCount = async (req: Request, res: Response) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || ""
 
     const followingCount = await BlogsService.getFollowingCount(userId);
 
@@ -346,7 +346,7 @@ export const updateBlog = async (req: Request, res: Response) => {
       categoryId,
       isPublished,
     } = req.body;
-    const userId = req.user.id;
+    const userId = req.user?.id || ""
 
     const updatedBlog = await BlogsService.updateBlog(id, userId, {
       title,
@@ -386,7 +386,7 @@ export const updateBlog = async (req: Request, res: Response) => {
 export const deleteBlog = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id;
+    const userId = req.user?.id || ""
 
     await BlogsService.deleteBlog(id, userId);
 
@@ -418,7 +418,7 @@ export const deleteBlog = async (req: Request, res: Response) => {
 export const likeUnlikeBlog = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id;
+    const userId = req.user?.id || ""
 
     const { liked } = await BlogsService.likeUnlikeBlog(id, userId);
 
@@ -439,7 +439,7 @@ export const likeUnlikeBlog = async (req: Request, res: Response) => {
 export const checkLikeStatus = async (req: Request, res: Response) => {
   try {
     const { blogId } = req.params;
-    const userId = req.user.id;
+    const userId = req.user?.id || ""
 
     // Assuming you have a service method to check like status
     const isLiked = await BlogsService.checkLikeStatus(blogId, userId);
@@ -478,7 +478,7 @@ export const addComment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { content, parentId } = req.body;
-    const userId = req.user.id;
+    const userId = req.user?.id || ""
 
     const comment = await BlogsService.addComment(
       id,
@@ -512,7 +512,7 @@ export const addComment = async (req: Request, res: Response) => {
 export const likeUnlikeComment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id;
+    const userId = req.user?.id || ""
 
     const { liked } = await BlogsService.likeUnlikeComment(id, userId);
 
@@ -541,7 +541,7 @@ export const likeUnlikeComment = async (req: Request, res: Response) => {
 export const deleteComment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id;
+    const userId = req.user?.id || ""
 
     await BlogsService.deleteComment(id, userId);
 

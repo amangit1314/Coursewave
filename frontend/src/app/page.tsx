@@ -21,7 +21,7 @@ const Home = () => {
   };
 
   return (
-    <main className="relative flex min-h-screen w-full flex-col items-center justify-start overflow-x-hidden bg-white dark:bg-black dark:bg-opacity-80">
+    <main className="relative flex min-h-screen w-full flex-col items-center justify-start overflow-x-hidden bg-white dark:bg-black">
       {/* Header */}
       <LandingPageHeader handleLoginClick={handleLoginClick} />
 

@@ -1,10 +1,11 @@
 import { Redis } from "@upstash/redis";
 import { CACHE_TTL } from "../../config/constants/cacheTtl";
 import redis from "../../config/redis";
+import { logger } from "../utils/logger";
 
 export class CacheManager {
   private static instance: CacheManager;
-  private redis: Redis;
+  private redis: Redis | null;
 
   private constructor() {
     this.redis = redis;
@@ -19,6 +20,7 @@ export class CacheManager {
 
   // Set cache with TTL
   async set(key: string, value: any, ttl: number = CACHE_TTL.MEDIUM): Promise<void> {
+    if (!this.redis) return;
     try {
       const serializedValue = JSON.stringify(value);
       if (ttl > 0) {
@@ -27,69 +29,72 @@ export class CacheManager {
         await this.redis.set(key, serializedValue);
       }
     } catch (error) {
-      console.error('Cache set error:', error);
+      logger.warn("Cache set error", { key, error: (error as Error)?.message });
     }
   }
 
   // Get cache value
   async get<T>(key: string): Promise<T | null> {
+    if (!this.redis) return null;
     try {
       const value = await this.redis.get(key);
       if (!value) return null;
-      
-      // Handle different value types
-      if (typeof value === 'string') {
+
+      if (typeof value === "string") {
         try {
           return JSON.parse(value);
         } catch (parseError) {
-          console.warn(`Failed to parse cached value for key ${key}:`, parseError);
+          logger.warn("Cache parse error", { key, error: (parseError as Error)?.message });
           return null;
         }
       }
-      
-      // If value is already an object, return it directly
+
       return value as T;
     } catch (error) {
-      console.error('Cache get error:', error);
+      logger.warn("Cache get error", { key, error: (error as Error)?.message });
       return null;
     }
   }
 
   // Delete cache key
   async del(key: string): Promise<void> {
+    if (!this.redis) return;
     try {
       await this.redis.del(key);
     } catch (error) {
-      console.error('Cache delete error:', error);
+      logger.warn("Cache delete error", { key, error: (error as Error)?.message });
     }
   }
 
   // Delete multiple keys by pattern
   async delPattern(pattern: string): Promise<void> {
+    if (!this.redis) return;
     try {
       const keys = await this.redis.keys(pattern);
       if (keys.length > 0) {
         await this.redis.del(...keys);
-        console.log(`Cleared ${keys.length} cache entries for pattern: ${pattern}`);
+        logger.info("Cache pattern cleared", { pattern, count: keys.length });
       }
     } catch (error) {
-      console.error('Cache pattern delete error:', error);
+      logger.warn("Cache pattern delete error", { pattern, error: (error as Error)?.message });
     }
   }
 
   // Check if key exists
   async exists(key: string): Promise<boolean> {
+    if (!this.redis) return false;
     try {
       const result = await this.redis.exists(key);
       return result === 1;
     } catch (error) {
-      console.error('Cache exists error:', error);
+      logger.warn("Cache exists error", { key, error: (error as Error)?.message });
       return false;
     }
   }
 
   // Set cache with hash (for complex objects)
   async hset(key: string, field: string, value: any, ttl: number = CACHE_TTL.MEDIUM): Promise<void> {
+    if (!this.redis) return;
     try {
       const serializedValue = JSON.stringify(value);
       await this.redis.hset(key, { [field]: serializedValue });
@@ -97,23 +102,25 @@ export class CacheManager {
         await this.redis.expire(key, ttl);
       }
     } catch (error) {
-      console.error('Cache hset error:', error);
+      logger.warn("Cache hset error", { key, field, error: (error as Error)?.message });
     }
   }
 
   // Get cache with hash
   async hget<T>(key: string, field: string): Promise<T | null> {
+    if (!this.redis) return null;
     try {
       const value = await this.redis.hget(key, field);
       return value ? JSON.parse(value as string) : null;
     } catch (error) {
-      console.error('Cache hget error:', error);
+      logger.warn("Cache hget error", { key, field, error: (error as Error)?.message });
       return null;
     }
   }
 
   // Increment counter
   async incr(key: string, ttl: number = CACHE_TTL.MEDIUM): Promise<number> {
+    if (!this.redis) return 0;
     try {
       const result = await this.redis.incr(key);
       if (ttl > 0) {
@@ -121,23 +128,16 @@ export class CacheManager {
       }
       return result;
     } catch (error) {
-      console.error('Cache incr error:', error);
+      logger.warn("Cache incr error", { key, error: (error as Error)?.message });
       return 0;
     }
   }
 
   // Get cache statistics
   async getStats(): Promise<any> {
-    try {
-      return {
-        connected: true,
-        timestamp: new Date().toISOString()
-      };
-    } catch (error) {
-      return {
-        connected: false,
-        error: error
-      };
-    }
+    return {
+      connected: !!this.redis,
+      timestamp: new Date().toISOString(),
+    };
   }
 }

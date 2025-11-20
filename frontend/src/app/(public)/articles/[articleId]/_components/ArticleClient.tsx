@@ -207,7 +207,7 @@ const ArticleClient = ({ articleId }: { articleId: string }) => {
           {/* meta/interactions */}
           <div className="flex items-center justify-between">
             <div className="flex space-x-4 px-1">
-              <div
+            {/* <div
                 className="flex cursor-pointer items-center justify-start space-x-2 transition-all duration-300 group"
                 title="Views"
               >
@@ -215,7 +215,7 @@ const ArticleClient = ({ articleId }: { articleId: string }) => {
                 <div className="mt-1 text-xs">
                   {articleData?._count?.views?.toString() ?? 0}
                 </div>
-              </div>
+              </div> */}
               <div
                 className="flex cursor-pointer items-center justify-start space-x-2 transition-all duration-300 group"
                 title="Claps"

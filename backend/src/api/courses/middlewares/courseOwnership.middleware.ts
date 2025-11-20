@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
 
 //     console.log("📚 [ownsCourse] Starting ownership check:", {
 //       courseId,
-//       userId: req.user.id,
+//       userId: req.user?.id,
 //       method: req.method,
 //       url: req.url,
 //     });
@@ -23,7 +23,7 @@ const prisma = new PrismaClient();
 //       where: {
 //         id: courseId,
 //         instructor: {
-//           userId: req.user.id,
+//           userId: req.user?.id,
 //         },
 //       },
 //       include: {
@@ -37,7 +37,7 @@ const prisma = new PrismaClient();
 //       courseFound: !!course,
 //       courseId: course?.id,
 //       instructorUserId: course?.instructor?.userId,
-//       requestingUserId: req.user.id,
+//       requestingUserId: req.user?.id,
 //     });
 
 //     if (!course) {
@@ -71,7 +71,7 @@ export async function ownsCourse(
     console.log("📚 [ownsCourse] Starting ownership check:", {
       courseId,
       sectionId,
-      userId: req.user.id,
+      userId: req.user?.id,
       method: req.method,
     });
 
@@ -82,7 +82,7 @@ export async function ownsCourse(
           id: sectionId,
           course: {
             instructor: {
-              userId: req.user.id,
+              userId: req.user?.id,
             },
           },
         },
@@ -100,7 +100,7 @@ export async function ownsCourse(
       console.log("📚 [ownsCourse] Section ownership check:", {
         sectionFound: !!section,
         courseInstructorId: section?.course?.instructor?.userId,
-        requestingUserId: req.user.id,
+        requestingUserId: req.user?.id,
       });
 
       if (!section) {
@@ -116,7 +116,7 @@ export async function ownsCourse(
         where: {
           id: courseId,
           instructor: {
-            userId: req.user.id,
+            userId: req.user?.id,
           },
         },
         include: {

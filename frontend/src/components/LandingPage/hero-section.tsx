@@ -953,7 +953,7 @@ const HeroSection = () => {
   return (
     <div
       ref={containerRef}
-      className="relative w-full overflow-hidden bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950"
+      className="relative w-full overflow-hidden bg-gradient-to-br from-zinc-950 to-black"
     >
       <canvas ref={canvasRef} className="absolute inset-0 z-0 opacity-30" />
 

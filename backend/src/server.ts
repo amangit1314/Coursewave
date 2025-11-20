@@ -21,11 +21,18 @@ import cartRoutes from "./api/cart/cart.routes";
 import stripeWebhookRoutes from "./api/webhooks/stripe/stripe.routes";
 import projectsRoutes from "./api/projects/projects.routes";
 import communitiesRoutes from "./api/communities/communities.routes";
+import healthRoutes from "./api/health/health.routes";
 // ------------------------------------------------------------------------
 import { initJobs } from "./jobs";
 import { initSocket } from "./config/socket";
 import contactRoutes from "./api/contact/contact.routes";
 import bodyParser from "body-parser";
+import { requestId } from "./core/middleware/requestId";
+import { requestLogger } from "./core/middleware/requestLogger";
+import { errorHandler, notFound } from "./core/middleware/errorHandler";
+import { logger } from "./core/utils/logger";
+// Ensure Express Request augmentation is loaded
+import "./types/express";
 
 ///? <=================================== Load environment variables ==============>
 dotenv.config();
@@ -54,14 +61,29 @@ app.use(
 
 ///? <==================================== Middlewares ======================================>
 app.use(helmet());
+app.use(requestId);
+app.use(requestLogger);
 app.use((req, res, next) => {
   console.log(
     `[Request] ${req.method} ${req.originalUrl} - Headers:`,
     req.headers
   );
-  if (req.user) {
-    console.log(`[Request] Authenticated user:`, req.user);
+  const user = (req as any).user;
+  if (user) {
+    console.log(`[Request] Authenticated user:`, JSON.stringify(user));
   }
+  next();
+});
+
+// Replace ad-hoc header logging with Winston and safe requestId
+app.use((req, res, next) => {
+  logger.info("request:headers", {
+    requestId: (req as any).requestId,
+    method: req.method,
+    url: req.originalUrl,
+    headers: req.headers,
+    userId: (req as any).user?.id,
+  });
   next();
 });
 
@@ -141,7 +163,12 @@ app.use((req, res, next) => {
   const start = Date.now();
   res.on("finish", () => {
     const duration = Date.now() - start;
-    console.log(`[${req.method}] ${req.originalUrl} - ${duration}ms`);
+    logger.info("route:timing", {
+      requestId: (req as any).requestId,
+      method: req.method,
+      url: req.originalUrl,
+      durationMs: duration
+    });
   });
   next();
 });
@@ -162,6 +189,27 @@ app.use(
     });
   }
 );
+
+// Slow route tracking using logger
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    logger.info("route:timing", {
+      requestId: req.requestId,
+      method: req.method,
+      url: req.originalUrl,
+      durationMs: duration,
+    });
+  });
+  next();
+});
+
+// Centralized error handling should be last before routes end
+app.use(notFound);
+
+// Error handler (final)
+app.use(errorHandler);
 
 ///? <==================================== API routes ====================================>
 app.post("/api/your-form-route", upload.none(), (req, res) => {
@@ -198,12 +246,13 @@ app.use("/api/instructor", instructorRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/projects", projectsRoutes);
 app.use("/api/communities", communitiesRoutes);
+app.use("/api/health", healthRoutes);
 
 ///? <==================================== INITIALIZE CRON JOBS ======================================>
 initJobs();
 
 /// ? <=================================== CREATING HTTP SERVER APP ============================>
-const server = http.createServer(app);
+// const server = http.createServer(app);
 
 // (async () => {
 //   try {
@@ -215,10 +264,13 @@ const server = http.createServer(app);
 //   }
 // })();
 
+///? <==================================== LISTEN TO HTTP SERVER ON PORT ======================================>
+
+
+
+const PORT = process.env.PORT || 5001;
+const server = http.createServer(app);
+server.listen(PORT, () => logger.info("server:start", { port: PORT }));
+
 /// ? <=================================== Initialize Socket.IO ============================>
 initSocket(server);
-
-///? <==================================== LISTEN TO HTTP SERVER ON PORT ======================================>
-const PORT = process.env.PORT || 5001;
-
-server.listen(PORT, () => console.log(`Server running on port ${PORT} ✅`));
