@@ -271,7 +271,7 @@
 //           className="mb-16 flex flex-col items-center space-y-1 sm:flex-row sm:justify-center sm:space-x-6 sm:space-y-0"
 //         >
 //           <motion.button
-//             onClick={() => (window.location.href = "/browse")}
+//             onClick={() => (router.push( = "/browse")}
 //             className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 px-8 py-4 text-lg font-semibold text-white shadow-2xl transition-all duration-300 hover:shadow-blue-500/25"
 //             // whileHover={{ scale: 1.05 }}
 //             whileTap={{ scale: 0.95 }}

@@ -71,7 +71,7 @@ const WishlistPage: React.FC = () => {
 
   if (!user || !user.id) {
     // toast.error("Please login to access wishlist");
-    // window.location.href = "/login";
+    // router.push( = "/login";
 
     // Optional: simple loading state while redirecting
     return (

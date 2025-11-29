@@ -31,7 +31,7 @@ export default function QuickActions() {
             .share({
               title: "Coursewave",
               text: "Check out Coursewave - Learn and Teach Online!",
-              url: window.location.href,
+              url: router.push(,
             })
             .catch((error) => console.log("Error sharing", error));
         } else {

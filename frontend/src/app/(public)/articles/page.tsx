@@ -24,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -123,6 +124,7 @@ const FilterSkeleton = () => {
 };
 
 const ArticlesPage = () => {
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -262,7 +264,7 @@ const ArticlesPage = () => {
               </Button>
               <Button
                 variant="outline"
-                onClick={() => window.location.reload()}
+                onClick={() => router.push("/articles")}
                 className="rounded-xl border-white/10 hover:bg-white/5"
               >
                 Reload Page

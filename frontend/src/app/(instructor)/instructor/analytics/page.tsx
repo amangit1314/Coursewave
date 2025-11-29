@@ -6,8 +6,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "react-hot-toast";
 import { useUserStore } from "@/zustand/userStore";
 import { useMyInstructorAnlaytics } from "@/hooks/useInstructor";
+import { useRouter } from "next/navigation";
 
 const AnalyticsPage = () => {
+  const router = useRouter();
   const { user } = useUserStore();
 
   console.log("User in the analytics page: ", JSON.stringify(user));
@@ -48,7 +50,7 @@ const AnalyticsPage = () => {
             You need to be an instructor to access this dashboard.
           </p>
           <button
-            onClick={() => (window.location.href = `/profile/${user?.id}`)}
+            onClick={() => router.push(`/profile/${user?.id}`)}
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             Become an Instructor
@@ -85,7 +87,7 @@ const AnalyticsPage = () => {
           </p>
           <button
             onClick={() =>
-              (window.location.href = `/instructor/courses/createCourse`)
+              (router.push(`/instructor/courses/createCourse`))
             }
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >

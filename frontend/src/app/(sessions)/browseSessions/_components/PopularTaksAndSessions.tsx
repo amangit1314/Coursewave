@@ -28,7 +28,7 @@ import {
 import Image from "next/image";
 import { useUserStore } from "@/zustand/userStore";
 import { UserSubscription } from "@/types/subscription.types";
-
+import { useRouter } from "next/navigation";
 
 // Define proper types for the session data
 interface Session {
@@ -278,6 +278,8 @@ const SessionCard = ({
   index,
   userSubscription,
 }: SessionCardProps) => {
+  const router = useRouter();
+
   const canAccessSession = (sessionData: Session) => {
     if (!sessionData.requiresSubscription) return true;
     return false;
@@ -287,7 +289,7 @@ const SessionCard = ({
   const handleSessionClick = (sessionData: Session) => {
     if (!canAccessSession(sessionData)) {
       // Redirect to subscription page or show upgrade modal
-      window.location.href = "/subscription";
+      router.push("/subscription");
       return;
     }
 

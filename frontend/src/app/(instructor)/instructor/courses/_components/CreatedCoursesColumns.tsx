@@ -26,6 +26,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useDeleteCourse } from "@/hooks/useCourses"; // Import the hook
 import toast from "react-hot-toast"; // Import toast for notifications
+import { useRouter } from "next/navigation";
 
 type CreatedCourseProps = {
   id: string;
@@ -35,6 +36,8 @@ type CreatedCourseProps = {
   price: string;
   status: "published" | "draft";
 };
+
+const router = useRouter();
 
 export const columns: ColumnDef<CreatedCourseProps>[] = [
   // {
@@ -240,7 +243,7 @@ export const columns: ColumnDef<CreatedCourseProps>[] = [
   //     };
 
   //     const handleEditRedirection = () => {
-  //       window.location.href = `/instructor/courses/${course.id}`;
+  //       router.push( = `/instructor/courses/${course.id}`;
   //     };
 
   //     return (
@@ -376,7 +379,7 @@ export const columns: ColumnDef<CreatedCourseProps>[] = [
       };
 
       const handleEditRedirection = () => {
-        window.location.href = `/instructor/courses/${course.id}`;
+        router.push(`/instructor/courses/${course.id}`);
       };
 
       return (

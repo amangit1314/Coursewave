@@ -31,19 +31,21 @@ import Notifications from "@/components/common/NotificationButton";
 import toast from "react-hot-toast";
 import { ReportArticleDialog } from "./ReportArticleDialog";
 import SaveArticleButton from "./SaveArticleButton";
+import { useRouter } from "next/navigation";
 
 interface ArticleHeaderProps {
   article: BlogArticle;
 }
 
 export function ArticleHeader({ article }: ArticleHeaderProps) {
+   const router = useRouter();
   const [isShareOpen, setIsShareOpen] = useState(false);
 
   // Get complete article URL
   const articleUrl =
     typeof window !== "undefined"
-      ? window.location.href
-      : `${process.env.NEXT_PUBLIC_APP_URL}/articles/${article.slug || article.id}`;
+      ? `${process.env.NEXT_PUBLIC_APP_URL}/articles/${article.slug || article.id}`
+      : '';
 
   // Handle sharing
   const handleShare = async (

@@ -321,7 +321,7 @@
 //           onSuccess: () => {
 //             toast.success("Article Published Successfully!");
 //             setTimeout(() => {
-//               window.location.href = "/articles";
+//               router.push( = "/articles";
 //             }, 1500);
 //           },
 //           onError: (error: any) => {
@@ -912,7 +912,7 @@ const PremiumArticleEditor = () => {
       // send {title, content: JSON.stringify(data), thumbnailUrl:featuredImage, userId:user.id, ...}
       toast.success("Article Published Successfully!");
       setTimeout(() => {
-        window.location.href = "/articles";
+        router.push( = "/articles";
       }, 1200);
     } catch (err: any) {
       toast.error("Publish failed" + (err.message ? `: ${err.message}` : ""));

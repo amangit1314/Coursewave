@@ -11,10 +11,12 @@ import {
   Users,
   Zap,
   Star,
-  Vote
+  Vote,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function FeatureRequestPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -22,7 +24,7 @@ export default function FeatureRequestPage() {
     priority: "medium",
     benefit: "",
     email: "",
-    allowContact: false
+    allowContact: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -32,33 +34,33 @@ export default function FeatureRequestPage() {
       id: "platform",
       label: "Platform Improvement",
       icon: TrendingUp,
-      description: "General platform features and enhancements"
+      description: "General platform features and enhancements",
     },
     {
       id: "learning",
       label: "Learning Experience",
       icon: Users,
-      description: "Course features, progress tracking, assessments"
+      description: "Course features, progress tracking, assessments",
     },
     {
       id: "mobile",
       label: "Mobile App",
       icon: Zap,
-      description: "Mobile-specific features and improvements"
+      description: "Mobile-specific features and improvements",
     },
     {
       id: "community",
       label: "Community Features",
       icon: Users,
-      description: "Student interactions, discussions, groups"
-    }
+      description: "Student interactions, discussions, groups",
+    },
   ];
 
   const priorities = [
     { id: "low", label: "Nice to Have", color: "text-gray-500" },
     { id: "medium", label: "Important", color: "text-blue-500" },
     { id: "high", label: "Critical", color: "text-orange-500" },
-    { id: "urgent", label: "Game Changer", color: "text-red-500" }
+    { id: "urgent", label: "Game Changer", color: "text-red-500" },
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -67,7 +69,7 @@ export default function FeatureRequestPage() {
 
     // Simulate API call
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       console.log("Feature request submitted:", formData);
       setIsSubmitted(true);
     } catch (error) {
@@ -78,9 +80,9 @@ export default function FeatureRequestPage() {
   };
 
   const handleInputChange = (field: string, value: any) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -100,7 +102,8 @@ export default function FeatureRequestPage() {
               Feature Request Submitted!
             </h2>
             <p className="text-gray-600 dark:text-gray-300 mb-6">
-              Thank you for your suggestion! Our team will review it and consider it for future updates.
+              Thank you for your suggestion! Our team will review it and
+              consider it for future updates.
             </p>
             <div className="space-y-3">
               <button
@@ -110,7 +113,7 @@ export default function FeatureRequestPage() {
                 Suggest Another Feature
               </button>
               <button
-                onClick={() => window.location.href = '/'}
+                onClick={() => router.push("/")}
                 className="w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-3 px-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
                 Back to Home
@@ -152,7 +155,10 @@ export default function FeatureRequestPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Feature Title */}
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Feature Title *
               </label>
               <input
@@ -179,15 +185,19 @@ export default function FeatureRequestPage() {
                       key={category.id}
                       type="button"
                       onClick={() => handleInputChange("category", category.id)}
-                      className={`p-4 rounded-xl border-2 text-left transition-all ${formData.category === category.id
+                      className={`p-4 rounded-xl border-2 text-left transition-all ${
+                        formData.category === category.id
                           ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20"
                           : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
-                        }`}
+                      }`}
                     >
-                      <Icon className={`h-6 w-6 mb-2 ${formData.category === category.id
-                          ? "text-purple-600 dark:text-purple-400"
-                          : "text-gray-400"
-                        }`} />
+                      <Icon
+                        className={`h-6 w-6 mb-2 ${
+                          formData.category === category.id
+                            ? "text-purple-600 dark:text-purple-400"
+                            : "text-gray-400"
+                        }`}
+                      />
                       <div className="font-medium text-gray-900 dark:text-white">
                         {category.label}
                       </div>
@@ -211,12 +221,15 @@ export default function FeatureRequestPage() {
                     key={priority.id}
                     type="button"
                     onClick={() => handleInputChange("priority", priority.id)}
-                    className={`p-3 rounded-lg border-2 text-center transition-all ${formData.priority === priority.id
+                    className={`p-3 rounded-lg border-2 text-center transition-all ${
+                      formData.priority === priority.id
                         ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 font-medium"
                         : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
-                      }`}
+                    }`}
                   >
-                    <div className={`text-sm ${formData.priority === priority.id ? priority.color : "text-gray-500"}`}>
+                    <div
+                      className={`text-sm ${formData.priority === priority.id ? priority.color : "text-gray-500"}`}
+                    >
                       {priority.label}
                     </div>
                   </button>
@@ -226,7 +239,10 @@ export default function FeatureRequestPage() {
 
             {/* Description */}
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Detailed Description *
               </label>
               <textarea
@@ -234,7 +250,9 @@ export default function FeatureRequestPage() {
                 required
                 rows={6}
                 value={formData.description}
-                onChange={(e) => handleInputChange("description", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("description", e.target.value)
+                }
                 placeholder="Please describe your feature in detail. How would it work? What problem does it solve? How would students benefit?"
                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-colors resize-none"
               />
@@ -242,7 +260,10 @@ export default function FeatureRequestPage() {
 
             {/* Benefit */}
             <div>
-              <label htmlFor="benefit" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="benefit"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Expected Benefit
               </label>
               <textarea
@@ -257,7 +278,10 @@ export default function FeatureRequestPage() {
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 Email Address (Optional)
               </label>
               <input
@@ -276,18 +300,26 @@ export default function FeatureRequestPage() {
                 type="checkbox"
                 id="allowContact"
                 checked={formData.allowContact}
-                onChange={(e) => handleInputChange("allowContact", e.target.checked)}
+                onChange={(e) =>
+                  handleInputChange("allowContact", e.target.checked)
+                }
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label htmlFor="allowContact" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                Allow us to contact you for more details about your feature request
+              <label
+                htmlFor="allowContact"
+                className="ml-2 block text-sm text-gray-700 dark:text-gray-300"
+              >
+                Allow us to contact you for more details about your feature
+                request
               </label>
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isSubmitting || !formData.title || !formData.description}
+              disabled={
+                isSubmitting || !formData.title || !formData.description
+              }
               className="w-full bg-purple-600 text-white py-4 px-6 rounded-lg hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium flex items-center justify-center space-x-2"
             >
               {isSubmitting ? (

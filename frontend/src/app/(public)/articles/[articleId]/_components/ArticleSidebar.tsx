@@ -6,13 +6,8 @@ import {
   Calendar,
   Clock,
   Eye,
-  Heart,
-  MessageCircle,
-  Share2,
-  Bookmark,
   Tag,
   Pencil,
-  Trash,
   Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,17 +15,18 @@ import { BlogArticle } from "@/types/blog-api-response";
 import { ArticleComments } from "./ArticleComments";
 import LikeButton from "./LikeButton";
 import { useUserStore } from "@/zustand/userStore";
-import { apiManager } from "@/lib/api/api-manager";
 import { useState } from "react";
 import { useDeleteArticle } from "@/hooks/useArticles";
 import { DeleteConfirmationDialog } from "@/app/(user)/dashboard/_components/created-articles-table/created-articles-columns";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface ArticleSidebarProps {
   article: BlogArticle;
 }
 
 export function ArticleSidebar({ article }: ArticleSidebarProps) {
+  const router = useRouter();
   const { user } = useUserStore();
   const isAuthor = article.author.id === user?.id;
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -39,7 +35,7 @@ export function ArticleSidebar({ article }: ArticleSidebarProps) {
   const { mutate: deleteArticle, isPending: isDeleting } = useDeleteArticle();
 
   const handleEdit = () => {
-    window.location.href = `/articles/${article.id}/edit`;
+    router.push(`/articles/${article.id}/edit`);
   };
 
   const handleDelete = () => {
@@ -50,7 +46,7 @@ export function ArticleSidebar({ article }: ArticleSidebarProps) {
     deleteArticle(article.id, {
       onSuccess: () => {
         toast.success("Article deleted successfully!");
-        window.location.href = "/articles";
+        router.push("/articles");
         setDeleteDialogOpen(false);
       },
       onError: (error) => {

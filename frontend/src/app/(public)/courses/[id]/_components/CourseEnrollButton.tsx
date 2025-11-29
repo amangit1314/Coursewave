@@ -1,3 +1,5 @@
+"use client";
+
 import { Course } from "@/types/course-details-api-response";
 import { useNotificationsStore } from "@/zustand/notificationsStore";
 import { Button } from "@tremor/react";
@@ -7,9 +9,11 @@ import toast from "react-hot-toast";
 import { useUserStore } from "@/zustand/userStore";
 import { courseService } from "@/lib/api/services";
 import { useAlreadyPurchased, useCheckoutCourse } from "@/hooks/useCheckout";
+import { useRouter } from "next/navigation";
 
 export const CourseEnrollButton = React.memo(
   ({ course, courseId }: { course: Course; courseId: string }) => {
+    const router = useRouter();
     const [isLoading, setIsLoading] = React.useState(false);
     const { user } = useUserStore();
     const setNotification = useNotificationsStore(
@@ -28,7 +32,7 @@ export const CourseEnrollButton = React.memo(
     // Enroll handler
     const enrollInCourse = async () => {
       if (!user?.id) {
-        window.location.assign(`/login`);
+        router.push(`/login`);
         return;
       }
 

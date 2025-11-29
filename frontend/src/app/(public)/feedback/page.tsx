@@ -14,8 +14,10 @@ import {
   Lightbulb,
   Heart
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function FeedbackPage() {
+   const router = useRouter();
   const [formData, setFormData] = useState({
     type: "general",
     rating: 0,
@@ -103,7 +105,7 @@ export default function FeedbackPage() {
                 Submit More Feedback
               </button>
               <button
-                onClick={() => window.location.href = '/'}
+                onClick={() => router.push('/')}
                 className="w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-3 px-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
                 Back to Home
