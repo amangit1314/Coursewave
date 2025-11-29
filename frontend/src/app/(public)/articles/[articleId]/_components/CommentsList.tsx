@@ -29,7 +29,7 @@ export function CommentList({ articleId }: CommentListProps) {
     );
   }
 
-  if (!comments?.length) {
+  if (!(comments as unknown as CommentType[]) || (comments as unknown as CommentType[]).length === 0) {
     return (
       <div className="text-center py-8 text-zinc-500 dark:text-zinc-400">
         <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />

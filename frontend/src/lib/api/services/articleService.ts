@@ -100,9 +100,9 @@ class ArticleService {
   async checkArticleLikeStatus(
     articleId: string
   ): Promise<{ isLiked: boolean }> {
-    const response = await apiManager.get(`/blogs/${articleId}/like-status`);
-    // ✅ Defensive return for missing/malformed payloads
-    return response?.data ?? { isLiked: false };
+    const response = await apiManager.get<{ isLiked: boolean }>(`/blogs/${articleId}/like-status`);
+    // Defensive return for missing/malformed payloads
+    return response?.data?.isLiked !== undefined ? response.data : { isLiked: false };
   }
 
   async followUnfollowAuthor(blogId: string): Promise<

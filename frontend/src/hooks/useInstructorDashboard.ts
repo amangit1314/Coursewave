@@ -37,7 +37,6 @@ export const useInstructorDashboard = (instructorId: string) => {
         fetchAll();
         const interval = setInterval(fetchAll, 30_000); // poll every 30s
         return () => clearInterval(interval);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [instructorId]);
 
     return { analytics, earnings, studentsCount, loading, error };

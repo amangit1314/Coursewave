@@ -19,7 +19,8 @@ const InstructorEarningsPage = () => {
         <div className="p-6">
             <h1 className="text-2xl font-bold mb-4">Earnings</h1>
             <div className="text-xl">
-                Total: {earnings?.totalEarnings ?? '0'} {earnings?.currency ?? ''}
+                Total: {earnings ?? '0'} USD
+                {/* {earnings?.currency ?? ''} */}
             </div>
         </div>
     );
