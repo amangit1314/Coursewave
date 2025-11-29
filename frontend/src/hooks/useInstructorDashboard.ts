@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from 'react';
 import { instructorService } from '@/lib/api/services/instructorService';
 import { InstructorAnalytics } from '@/types/instructor.service.types';
