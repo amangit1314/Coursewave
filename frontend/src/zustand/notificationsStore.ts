@@ -22,7 +22,7 @@ type Actions = {
   setNotification: (title: string, message?: string) => void;
   readNotification: (notificationId: string) => void;
   removeNotification: (notificationId: string) => void;
-  clearNotifications: () => Promise<void>;
+  clearNotifications: () => void;
 };
 
 export const useNotificationsStore = create<State & Actions>()(
@@ -59,7 +59,7 @@ export const useNotificationsStore = create<State & Actions>()(
               : notification
           ),
         })),
-      clearNotifications: async () => set((state) => ({ notifications: [] })),
+      clearNotifications: () => set(() => ({ notifications: [] })),
     }),
 
     {
