@@ -1,4 +1,3 @@
-
 // "use client";
 
 // import React, { useState, useRef, useEffect } from "react";
@@ -348,7 +347,6 @@
 //     <div
 //       className={`min-h-screen overflow-y-auto bg-gradient-to-br from-slate-50 to-white dark:from-zinc-900 dark:to-zinc-800 ${isFullscreen ? "fixed inset-0 z-50" : ""}`}
 //     >
-
 
 //       {/* Header */}
 // <div className="border-b border-zinc-200 dark:border-zinc-700 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm sticky top-0 z-40">
@@ -730,7 +728,6 @@
 
 // export default PremiumArticleEditor;
 
-
 /// =====================================================================================================================
 
 "use client";
@@ -746,8 +743,21 @@ import toast from "react-hot-toast";
 import { useUserStore } from "@/zustand/userStore";
 import { supabase } from "@/lib/config/supabase";
 import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
-import { ArrowLeft, Clock, Edit3, Eye, FileText, Loader2, Save, Send, Trash2, Type, Upload } from "lucide-react";
+import {
+  ArrowLeft,
+  Clock,
+  Edit3,
+  Eye,
+  FileText,
+  Loader2,
+  Save,
+  Send,
+  Trash2,
+  Type,
+  Upload,
+} from "lucide-react";
 import { dmSans } from "@/lib/config/fonts";
+import { useRouter } from "next/navigation";
 
 // Keep EditorJS instance to avoid duplicate instances on re-render
 let ejInstance: EditorJS | null = null;
@@ -774,17 +784,14 @@ const PremiumArticleEditor = () => {
   const [isPublishing, setIsPublishing] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
-
   // --
-
+  const router = useRouter();
   const { user } = useUserStore();
 
   // Ref for EditorJS holder
   const editorRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-
 
   // ----- EditorJS Init -----
   useEffect(() => {
@@ -819,12 +826,17 @@ const PremiumArticleEditor = () => {
                   const filePath = `content/${fileName}`;
                   const { data, error } = await supabase.storage
                     .from("articles")
-                    .upload(filePath, file, { cacheControl: "3600", upsert: false });
+                    .upload(filePath, file, {
+                      cacheControl: "3600",
+                      upsert: false,
+                    });
                   if (error || !data) {
                     toast.error("Image upload failed");
                     return { success: 0 };
                   }
-                  const { data: urlData } = supabase.storage.from("articles").getPublicUrl(filePath);
+                  const { data: urlData } = supabase.storage
+                    .from("articles")
+                    .getPublicUrl(filePath);
                   return { success: 1, file: { url: urlData.publicUrl } };
                 } catch (err: any) {
                   toast.error("Image upload failed");
@@ -851,7 +863,9 @@ const PremiumArticleEditor = () => {
   }, []);
 
   // ----- Featured Image Upload -----
-  const handleFeaturedImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFeaturedImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setIsUploadingFeat(true);
@@ -864,7 +878,9 @@ const PremiumArticleEditor = () => {
         .upload(filePath, file, { cacheControl: "3600", upsert: false });
       setIsUploadingFeat(false);
       if (error || !data) throw error || new Error("Upload failed");
-      const { data: urlData } = supabase.storage.from("articles").getPublicUrl(filePath);
+      const { data: urlData } = supabase.storage
+        .from("articles")
+        .getPublicUrl(filePath);
       setFeaturedImage(urlData.publicUrl);
       toast.success("Featured image uploaded!");
     } catch (err: any) {
@@ -912,7 +928,7 @@ const PremiumArticleEditor = () => {
       // send {title, content: JSON.stringify(data), thumbnailUrl:featuredImage, userId:user.id, ...}
       toast.success("Article Published Successfully!");
       setTimeout(() => {
-        router.push( = "/articles";
+        router.push("/articles");
       }, 1200);
     } catch (err: any) {
       toast.error("Publish failed" + (err.message ? `: ${err.message}` : ""));
@@ -933,16 +949,20 @@ const PremiumArticleEditor = () => {
             >
               <ArrowLeft className="h-5 w-5" />
             </button>
-            <h2 className={`${dmSans.className} font-semibold text-zinc-900 dark:text-white text-xl flex items-center gap-2`}>
+            <h2
+              className={`${dmSans.className} font-semibold text-zinc-900 dark:text-white text-xl flex items-center gap-2`}
+            >
               New Article
             </h2>
           </div>
 
           <div className="flex gap-2">
             <ThemeModeToggle />
-            <button onClick={handleSave}
+            <button
+              onClick={handleSave}
               disabled={isSaving}
-              className={`${dmSans.className} px-4 py-1.5 rounded-lg border cursor-pointer border-gray-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors flex items-center space-x-1`}>
+              className={`${dmSans.className} px-4 py-1.5 rounded-lg border cursor-pointer border-gray-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors flex items-center space-x-1`}
+            >
               {isSaving ? "Saving..." : "Save Draft"}
             </button>
             <button
@@ -1064,7 +1084,9 @@ const PremiumArticleEditor = () => {
             </div> */}
 
             <div className="p-6 border-b border-zinc-100 dark:border-zinc-700">
-              <label className={`${dmSans.className} block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-3`}>
+              <label
+                className={`${dmSans.className} block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-3`}
+              >
                 Featured Image
               </label>
 
@@ -1156,7 +1178,9 @@ const PremiumArticleEditor = () => {
         {/* Sidebar section - Article Stats */}
         <div className="lg:col-span-2">
           <div className="bg-white dark:bg-zinc-800 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-700 p-6 sticky top-24">
-            <h3 className={`${dmSans.className} font-semibold text-zinc-900 dark:text-white mb-4`}>
+            <h3
+              className={`${dmSans.className} font-semibold text-zinc-900 dark:text-white mb-4`}
+            >
               Article Stats
             </h3>
             <div className="space-y-4">
@@ -1170,7 +1194,9 @@ const PremiumArticleEditor = () => {
                 <span className="text-zinc-600 dark:text-zinc-400">
                   Featured image
                 </span>
-                <span className="font-semibold">{featuredImage ? "Yes" : "No"}</span>
+                <span className="font-semibold">
+                  {featuredImage ? "Yes" : "No"}
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-zinc-600 dark:text-zinc-400">
