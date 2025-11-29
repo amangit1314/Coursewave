@@ -57,16 +57,28 @@ class AuthService {
 
     if (response.success && response.data) {
       const { accessToken, refreshToken } = response.data;
+
       this.setTokens(accessToken, refreshToken, data.rememberMe);
+
+      // Verify token was stored
+      const storedToken = this.getAuthToken();
+      console.log("✅ [authService.login] Token stored successfully:", storedToken?.substring(0, 20) + "...");
+    } else {
+      console.error("❌ [authService.login] Login failed or no data in response");
     }
 
-    return response as LoginResponse;
+    return response;
   }
 
   async register(data: RegisterRequest): Promise<RegisterResponse> {
     const response = await this.apiManager.post<RegisterResponseData>(
       "/auth/register",
-      data
+      {
+        // firstName: data.email.split("@")[0],
+        // lastName: "",
+        email: data.email,
+        password: data.password,
+      }
     );
 
     if (response.success && response.data) {

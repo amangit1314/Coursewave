@@ -202,6 +202,24 @@ export const checkEnrollment = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       error: error.message,
+    });
+  }
+};
+
+export const reportUser = async (req: Request, res: Response) => {
+  try {
+    const { reason, details } = req.body;
+    const result = await userService.reportUser(
+      req.user?.id || "",
+      req.params.userId,
+      reason,
+      details
+    );
+    res.status(result.status).json(result);
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
       message: "Internal Server Error",
     });
   }

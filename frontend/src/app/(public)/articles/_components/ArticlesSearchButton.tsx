@@ -26,9 +26,8 @@ const ArticlesSearchButton = () => {
 
   const form = (
     <form
-      className={`hidden text-gray-800 dark:text-white lg:ml-4 lg:flex lg:items-center lg:justify-start lg:rounded-md lg:border lg:border-gray-200 lg:dark:border-zinc-800 lg:py-3 lg:pl-2 lg:pr-3 ${
-        isFormOpen ? "" : "hidden"
-      }`}
+      className={`hidden text-gray-800 dark:text-white lg:ml-4 lg:flex lg:items-center lg:justify-start lg:rounded-md lg:border lg:border-gray-200 lg:dark:border-zinc-800 lg:py-3 lg:pl-2 lg:pr-3 ${isFormOpen ? "" : "hidden"
+        }`}
       onSubmit={onSearch}
     >
       <BiSearchAlt className="ml-1 mr-2" size={16} />

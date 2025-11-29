@@ -60,7 +60,7 @@ export const useNotificationPreferencesStore =
           }
         },
       }),
-   
+
       {
         name: "Coursewave-Notification-Preferences-Store",
       },

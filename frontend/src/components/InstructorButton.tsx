@@ -7,17 +7,14 @@ import { Button } from "@/components/ui/button";
 import { InstructorRegistrationForm } from "./InstructorRegisterationForm";
 
 import { useUserStore } from "@/zustand/userStore";
-import { useMyInstructorProfile } from "@/hooks/useInstructor";
 import { useBecomeInstructor } from "@/hooks/useAccount";
 
 const InstructorButton = () => {
   const router = useRouter();
+  const [showForm, setShowForm] = useState(false);
+
   const { user } = useUserStore();
   const { mutate: becomeInstructor, isPending } = useBecomeInstructor();
-  const { data: instructor, isLoading: instructorLoading } =
-    useMyInstructorProfile();
-
-  const [showForm, setShowForm] = useState(false);
 
   const isInstructor = user?.roles?.includes("INSTRUCTOR") ?? false;
 
@@ -57,28 +54,19 @@ const InstructorButton = () => {
       },
       onError: (error: any) => {
         console.error("Error becoming instructor:", error);
-        toast.error(
-          error.response?.data?.message ||
-            "Failed to become an instructor. Please try again."
-        );
+        const errorMessage = error.response?.data?.message ||
+          "Failed to become an instructor. Please try again.";
+        toast.error(errorMessage);
       },
     });
   };
-
-  if (instructorLoading) {
-    return (
-      <Button disabled className="text-sm cursor-not-allowed h-10 px-4">
-        Loading...
-      </Button>
-    );
-  }
 
   return (
     <>
       <Button
         onClick={handleNavigation}
         disabled={isPending}
-        className="text-sm cursor-pointer hover:text-white h-10 text-center flex justify-center items-center w-auto px-4 rounded-md border border-zinc-200 dark:border-zinc-800 hover:border-transparent bg-white dark:bg-transparent dark:hover:bg-blue-600 hover:bg-blue-600 transition-all duration-100"
+        className="text-sm cursor-pointer hover:text-white h-10 shadow-none text-center flex justify-center items-center w-auto px-4 rounded-md border border-zinc-200 dark:border-zinc-800 hover:border-transparent bg-white dark:bg-transparent dark:hover:bg-blue-600 hover:bg-blue-600 transition-all duration-100"
       >
         {isPending
           ? "Processing..."

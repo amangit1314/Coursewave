@@ -81,7 +81,7 @@ export const sendEmail = async (
         console.error(error);
         console.log(error);
       });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export const sendContactEmail = (

@@ -34,11 +34,9 @@ export const CourseCard = ({ course }: { course: Course }) => {
     course?.dealPrice && course?.price && course.dealPrice < course.price;
   const discountPercentage = hasDiscount
     ? Math.round(
-        ((course.price - (course.dealPrice ?? 0)) / course.price) * 100
-      )
+      ((course.price - (course.dealPrice ?? 0)) / course.price) * 100
+    )
     : 0;
-
-  console.log("Courses: ", JSON.stringify(course));
 
   return (
     <div

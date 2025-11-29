@@ -186,6 +186,7 @@ const PrerequisitesForm = ({ course }: { course: Course }) => {
   const [prerequisites, setPrerequisites] = useState<string[]>(
     course?.prerequisites || []
   );
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [newPrerequisite, setNewPrerequisite] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -204,8 +205,10 @@ const PrerequisitesForm = ({ course }: { course: Course }) => {
   };
 
   const removePrerequisite = (index: number) => {
+    setDeletingId(index.toString());
     const updatedPrerequisites = prerequisites.filter((_, i) => i !== index);
     setPrerequisites(updatedPrerequisites);
+    setDeletingId(null);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -292,7 +295,15 @@ const PrerequisitesForm = ({ course }: { course: Course }) => {
                   <div className="flex items-start space-x-2">
                     {/* <Check className="h-4 w-4 mt-1 flex-shrink-0 text-green-600 dark:text-green-400" /> */}
                     <Pencil className="mr-2 h-4 w-4 flex-shrink-0" />
-                    <p className="text-sm">{prerequisite}</p>
+                    <p className="text-sm line-clamp-2 mr-2 ml-1">{prerequisite}</p>
+                    {deletingId !== index.toString() && (
+                      <button
+                        onClick={() => removePrerequisite(index)}
+                        className="ml-auto transition hover:opacity-75"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -319,7 +330,7 @@ const PrerequisitesForm = ({ course }: { course: Course }) => {
                       <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-medium text-white">
                         {index + 1}
                       </div>
-                      <span className="text-sm">{prerequisite}</span>
+                      <span className="text-sm ">{prerequisite}</span>
                     </div>
                     <Button
                       type="button"

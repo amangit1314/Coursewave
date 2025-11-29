@@ -5,7 +5,8 @@ import authorsService, {
   Article,
   Course,
 } from "@/lib/api/services/authorsService";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { userService } from "@/lib/api/services/userService";
 // import authorsService, { Author, Article, Course } from "@/services/authorsService";
 
 // KEY HELPERS for unique query keys
@@ -72,3 +73,17 @@ export function useAuthorCourses(authorId: string | undefined) {
     staleTime: 5 * 60 * 1000,
   });
 }
+
+export const useReportUser = () => {
+  return useMutation({
+    mutationFn: ({
+      userId,
+      reason,
+      details,
+    }: {
+      userId: string;
+      reason: string;
+      details?: string;
+    }) => userService.reportUser(userId, reason, details),
+  });
+};

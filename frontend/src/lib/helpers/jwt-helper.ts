@@ -108,7 +108,7 @@ export const updateToken = async (req: NextRequest) => {
   try {
     const cookies = getCookies();
     if (!cookies) return;
-    
+
     const token = (cookies as { token?: string }).token;
     if (!token) return;
 

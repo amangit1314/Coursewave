@@ -21,6 +21,7 @@ export type Course = {
   prerequisites: string[];
   targetAudience: string[];
   technologies: string[];
+  level?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED" | "ALL_LEVELS";
   createdAt: string;
   updatedAt: string;
 

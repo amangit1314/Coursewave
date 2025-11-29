@@ -23,12 +23,12 @@ export const fetchInstructorInfo = async (instructorId: string) => {
 
   if (!response.ok) {
     console.log(
-      "Error in fetching instructor info in use-instructor-info.ts ...",
+    "Error in fetching instructor info in use-instructor-info.ts ...",
     );
   }
 
-  const data = await response.json();
-  return data;
+const data = await response.json();
+return data;
 };
 
 export const fetchArticles = async () => {

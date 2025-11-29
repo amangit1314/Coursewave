@@ -1,0 +1,45 @@
+{
+    "name": "Coursewave - Learning Platform",
+    "short_name": "Coursewave",
+    "description": "Unlock your infinite learning potential with Coursewave. Access courses, articles, and interactive learning experiences.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#2563eb",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/courseWaveFaviconColored.ico",
+            "sizes": "48x48 72x72 96x96 128x128 256x256",
+            "type": "image/x-icon"
+        }
+    ],
+    "categories": [
+        "education",
+        "productivity"
+    ],
+    "screenshots": [],
+    "shortcuts": [
+        {
+            "name": "Browse Courses",
+            "short_name": "Browse",
+            "description": "Explore available courses",
+            "url": "/browse",
+            "icons": []
+        },
+        {
+            "name": "My Learning",
+            "short_name": "Learning",
+            "description": "Access your enrolled courses",
+            "url": "/dashboard",
+            "icons": []
+        },
+        {
+            "name": "Articles",
+            "short_name": "Articles",
+            "description": "Read educational articles",
+            "url": "/articles",
+            "icons": []
+        }
+    ]
+}

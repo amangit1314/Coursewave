@@ -45,8 +45,11 @@ import { useArticlesStore } from "@/zustand/articlesStore";
 import ArticleContentLoadingSkeleton from "./skeletons/ArticleContentLoadingSkeleton";
 import ArticleNotFoundWidget from "./ArticleNotFoundWidget";
 import ArticleErrorWidget from "./ArticleErrorWidget";
-import { useArticleBySlug } from "@/hooks/useArticles";
+import { useArticleBySlug, useIncrementArticleViewCount } from "@/hooks/useArticles";
 import { IMAGES } from "@/constants/images";
+import RatingStars from "@/components/RatingStars";
+import RatingDisplay from "@/components/RatingDisplay";
+import LikeButton from "./LikeButton";
 
 const ArticleClient = ({ articleId }: { articleId: string }) => {
   const [isBookmarked, setIsBookmarked] = React.useState<boolean>(false);
@@ -207,7 +210,7 @@ const ArticleClient = ({ articleId }: { articleId: string }) => {
           {/* meta/interactions */}
           <div className="flex items-center justify-between">
             <div className="flex space-x-4 px-1">
-            {/* <div
+              {/* <div
                 className="flex cursor-pointer items-center justify-start space-x-2 transition-all duration-300 group"
                 title="Views"
               >
@@ -378,6 +381,26 @@ const ArticleClient = ({ articleId }: { articleId: string }) => {
 
           <Divider />
 
+          {/* Article Rating Section */}
+          <div className="py-6 px-4 bg-gray-50 dark:bg-gray-800/30 rounded-lg">
+            <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
+              Rate This Article
+            </h3>
+            <div className="flex flex-col md:flex-row gap-6">
+              <div className="flex-1">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                  Share your thoughts by rating this article:
+                </p>
+                <RatingStars articleId={article?.id ?? ""} size="lg" showLabel />
+              </div>
+              <div className="flex-1">
+                <RatingDisplay articleId={article?.id ?? ""} showDistribution />
+              </div>
+            </div>
+          </div>
+
+          <Divider />
+
           {/* author Card */}
           <ArticleAuthorCard
             blogId={articleData?.id}
@@ -389,8 +412,8 @@ const ArticleClient = ({ articleId }: { articleId: string }) => {
             authorBio={
               articleData?.author?.shortSummary ?? "No author summary available"
             }
-            // authorFollowers={0}
-            // haveAlreadyFollowed={false}
+          // authorFollowers={0}
+          // haveAlreadyFollowed={false}
           />
 
           {/* more from  */}

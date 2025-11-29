@@ -30,7 +30,7 @@ class StatsService {
   private static instance: StatsService;
   private api = apiManager;
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): StatsService {
     if (!StatsService.instance) {
@@ -43,27 +43,38 @@ class StatsService {
    * Get platform landing statistics
    */
   // statsService.ts
+  // async getPlatformStats(): Promise<PlatformStats> {
+  //   try {
+  //     console.log("🔍 Fetching platform stats from /stats");
+
+  //     const response = await this.api.get<any>("/stats"); // Use any for debugging
+
+  //     console.log("📦 Full API response:", response);
+  //     console.log("📦 Response data:", response.data);
+  //     console.log("📦 Response data type:", typeof response.data);
+  //     console.log("📦 Response data keys:", Object.keys(response.data));
+
+  //     // Based on the logs, adjust this logic
+  //     if (response.data.success && response.data.data) {
+  //       return response.data.data;
+  //     } else if ("totalCourses" in response.data) {
+  //       return response.data;
+  //     }
+
+  //     throw new Error(
+  //       "Failed to fetch platform statistics - unexpected response format"
+  //     );
+  //   } catch (error) {
+  //     console.error("🚨 Error fetching platform stats:", error);
+  //     throw error;
+  //   }
+  // }
+
   async getPlatformStats(): Promise<PlatformStats> {
     try {
-      console.log("🔍 Fetching platform stats from /stats");
-
-      const response = await this.api.get<any>("/stats"); // Use any for debugging
-
-      console.log("📦 Full API response:", response);
-      console.log("📦 Response data:", response.data);
-      console.log("📦 Response data type:", typeof response.data);
-      console.log("📦 Response data keys:", Object.keys(response.data));
-
-      // Based on the logs, adjust this logic
-      if (response.data.success && response.data.data) {
-        return response.data.data;
-      } else if ("totalCourses" in response.data) {
-        return response.data;
-      }
-
-      throw new Error(
-        "Failed to fetch platform statistics - unexpected response format"
-      );
+      const response = await this.api.get<PlatformStats>('/stats');
+      console.log("📦 Platform stats response:", JSON.stringify(response.data));
+      return response.data;
     } catch (error) {
       console.error("🚨 Error fetching platform stats:", error);
       throw error;

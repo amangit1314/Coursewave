@@ -52,11 +52,10 @@ const SaveArticleButton = ({ articleId }: Props) => {
       disabled={isActionPending}
       variant="ghost"
       size="sm"
-      className={`group relative h-10 px-4 rounded-xl transition-all duration-300 ${
-        isSaved
+      className={`group relative h-10 px-4 rounded-xl transition-all duration-300 ${isSaved
           ? "bg-cyan-500/20 text-cyan-500 hover:bg-cyan-500/30"
           : "hover:bg-gradient-to-r hover:from-cyan-500/10 hover:to-red-500/10"
-      }`}
+        }`}
     >
       {isSaved ? (
         <Check className="h-4 w-4 mr-2" />
@@ -65,17 +64,16 @@ const SaveArticleButton = ({ articleId }: Props) => {
       )}
 
       <span
-        className={`hidden sm:inline text-sm font-medium transition-colors ${
-          isSaved
+        className={`hidden sm:inline text-sm font-medium transition-colors ${isSaved
             ? "text-cyan-500"
             : "text-muted-foreground group-hover:text-cyan-500"
-        }`}
+          }`}
       >
         {isActionPending
           ? "..."
           : isSaved
-          ? "Saved"
-          : "Save"}
+            ? "Saved"
+            : "Save"}
       </span>
     </Button>
   );

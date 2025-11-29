@@ -36,7 +36,7 @@ const MobileSidebar = () => {
         {/* Header with logo and close button */}
         <div className="flex items-center justify-between mb-6 pr-2">
           <Link
-            href="/browseCourses"
+            href="/browse"
             className="flex cursor-pointer items-center"
             onClick={() => setOpen(false)}
           >

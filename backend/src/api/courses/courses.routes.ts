@@ -136,7 +136,7 @@ router.get(
 // Create a section of a course
 router.post(
   "/:courseId/sections/",
-   verifyToken,
+  verifyToken,
   requireInstructor,
   courseExists,
   ownsCourse,

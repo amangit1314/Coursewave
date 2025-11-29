@@ -43,9 +43,9 @@ export const CourseDetailsLeftSection = ({
   const avgRating =
     reviewList.length > 0
       ? reviewList.reduce(
-          (sum, review) => sum + (Number(review.rating) || 0),
-          0
-        ) / reviewList.length
+        (sum, review) => sum + (Number(review.rating) || 0),
+        0
+      ) / reviewList.length
       : course?.averageRating || 0.0;
 
   const totalReviews = reviewList.length;
@@ -278,13 +278,13 @@ export const CourseDetailsLeftSection = ({
             {(learningOutcomes.length > 0
               ? learningOutcomes
               : [
-                  "Master modern web development techniques",
-                  "Build real-world projects from scratch",
-                  "Learn industry best practices",
-                  "Get hands-on coding experience",
-                  "Understand advanced concepts",
-                  "Deploy applications to production",
-                ]
+                "Master modern web development techniques",
+                "Build real-world projects from scratch",
+                "Learn industry best practices",
+                "Get hands-on coding experience",
+                "Understand advanced concepts",
+                "Deploy applications to production",
+              ]
             ).map((item, index) => (
               <div
                 key={index}
@@ -344,11 +344,11 @@ export const CourseDetailsLeftSection = ({
             {(prerequisites.length > 0
               ? prerequisites
               : [
-                  "Basic programming knowledge",
-                  "A computer with internet connection",
-                  "Willingness to learn and practice",
-                  "No prior experience required",
-                ]
+                "Basic programming knowledge",
+                "A computer with internet connection",
+                "Willingness to learn and practice",
+                "No prior experience required",
+              ]
             ).map((item, index) => (
               <div
                 key={index}

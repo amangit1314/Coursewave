@@ -19,11 +19,7 @@ export default function FilteredCoursesComponent({
   searchQuery,
   categories,
 }: FilteredCoursesComponentProps) { // Added categories prop
-
-  
   const { data: courses, isLoading, isError, error, refetch } = useCourses();
-
-  console.log("Courses in Filtered Courses: ", JSON.stringify(courses));
 
   const [currentPage, setCurrentPage] = useState(1);
   const coursesPerPage = 6;
@@ -39,7 +35,7 @@ export default function FilteredCoursesComponent({
 
     // Check if course has a Category object with matching name
     if (course.Category?.name === category) return true;
-    
+
     // Also check if course categories array contains the category
     return course.categories?.some((cat) => cat?.includes(category));
   }, []);

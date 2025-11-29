@@ -7,7 +7,8 @@ import { Eye, EyeOff, LucideLoader2, Mail, Lock } from "lucide-react";
 import React, { useEffect } from "react";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
-import { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 type Props = {};
 
@@ -22,6 +23,8 @@ const RegisterForm = (props: Props) => {
   const [isButtonDisabled, setButtonDisabled] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
 
+  const router = useRouter();
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -35,8 +38,15 @@ const RegisterForm = (props: Props) => {
   }, [user]);
 
   const onRegister = async () => {
-    console.log("Register clicked");
-    register(user);
+    register(user, {
+      onSuccess: (data) => {
+        toast.success(data.message ?? "Registeration successful");
+        // Use immediate navigation for instant redirect
+        setTimeout(() => {
+          router.push("/login");
+        }, 100);
+      },
+    });
   };
 
   return (

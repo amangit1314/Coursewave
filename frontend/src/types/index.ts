@@ -2,15 +2,15 @@
 export type { User, UserResponse, UserProfile, UserPreferences } from './user';
 
 // Auth Types
-export type { 
-  LoginRequest, 
-  RegisterRequest, 
-  ForgotPasswordRequest, 
-  ResetPasswordRequest, 
-  VerifyEmailRequest, 
-  AuthResponse, 
-  RefreshTokenRequest, 
-  RefreshTokenResponse 
+export type {
+  LoginRequest,
+  RegisterRequest,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
+  VerifyEmailRequest,
+  AuthResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse
 } from './auth';
 
 // Course Types
@@ -21,7 +21,7 @@ export type { EnrolledCourse } from './enrollments-api-response';
 export type { BlogArticle } from './blog-api-response';
 
 // Session Types
-export type { SessionResponse, SessionType, Instructor } from './session';
+// export type { SessionResponse, SessionType, Instructor } from './session';
 
 // Learning Goal Types
 export type { LearningGoal } from './learning-goal';

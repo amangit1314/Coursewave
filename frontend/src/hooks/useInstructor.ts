@@ -4,13 +4,27 @@ import { instructorService } from "@/lib/api/services/instructorService";
 import { Course } from "@/types/course-details-api-response";
 import { InstructorAnalytics } from "@/types/instructor.service.types";
 
+
+// For logged-in user
+export const useIsInstructor = () => {
+  return useQuery<boolean, Error>({
+    queryKey: ["isInstructor"],
+    queryFn: async () => {
+      const response = await instructorService.getIsInstructor();
+      return response.data; // extract the boolean status
+    },
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
+};
+
 // For logged-in user
 export const useMyInstructorProfile = () => {
   return useQuery<Instructor, Error>({
     queryKey: ["myInstructorProfile"],
     queryFn: async () => {
-      const response = await instructorService.getInstructorProfile();
-      return response; // <- already returns Instructor
+      return await instructorService.getInstructorProfile(); // already returns unwrapped Instructor
     },
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,

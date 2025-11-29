@@ -3,57 +3,65 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  User, BookOpen, FileText, Flag, MoreVertical, Plus, Check, Users, Calendar, MapPin,
-  Github, Linkedin, Twitter, Globe
+  User, BookOpen, FileText, MoreVertical, Plus, Check
 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { dmSans } from "@/lib/config/fonts";
 import { cn } from "@/lib/utils/utils";
-
-// Import hooks
 import {
   useAuthorById,
   useAuthorArticles,
   useAuthorCourses,
 } from "@/hooks/useAuthors";
-import { BlogArticle } from "@/types";
+import { useFollowUnfollowAuthor, useCheckFollowingStatus } from "@/hooks/useArticles";
+import { useUserStore } from "@/zustand/userStore";
+import { ReportAuthorDialog } from "./_components/ReportAuthorDialog";
+import toast from "react-hot-toast";
 
 const AuthorPage = () => {
   const params = useParams<{ id: string }>();
   const authorId = params?.id;
+  const { user } = useUserStore();
 
   // Fetch author info
   const { data: author, isLoading: isAuthorLoading, error: authorError } = useAuthorById(authorId);
   const { data: articles = [], isLoading: isArticlesLoading } = useAuthorArticles(authorId);
   const { data: courses = [], isLoading: isCoursesLoading } = useAuthorCourses(authorId);
 
-  // Mock follow state (must be reworked depending on your backend/follow endpoint)
-  const [isFollowing, setIsFollowing] = useState(false);
-  // const [followerCount, setFollowerCount] = useState<number | undefined>(author?.followers);
+  // Follow logic
+  const { data: followingStatus } = useCheckFollowingStatus(authorId || "");
+  const { mutate: followUnfollow, isPending: isFollowPending } = useFollowUnfollowAuthor();
+
+  const isFollowing = followingStatus?.isFollowing ?? false;
 
   // Pagination for articles
   const [showAllArticles, setShowAllArticles] = useState(false);
   const displayedArticles = showAllArticles ? articles : articles.slice(0, 3);
 
   const handleFollowToggle = () => {
-    setIsFollowing((prev) => !prev);
-    // setFollowerCount((prev) =>
-    //   prev !== undefined
-    //     ? prev + (isFollowing ? -1 : 1)
-    //     : undefined
-    // );
-    // TODO: Call follow/unfollow API here
+    if (!user) {
+      toast.error("Please login to follow authors");
+      return;
+    }
+    if (!authorId) return;
+
+    followUnfollow(authorId, {
+      onSuccess: (data) => {
+        toast.success(data.message ?? "");
+      },
+      onError: () => {
+        toast.error("Failed to update follow status");
+      }
+    });
   };
 
   if (isAuthorLoading) {
@@ -68,7 +76,6 @@ const AuthorPage = () => {
       {/* Header Section */}
       <div className="relative">
         <div className="h-48 md:h-64 bg-gradient-to-r from-blue-600 to-purple-600 relative overflow-hidden">
-          {/* Optionally add a cover image if you store one */}
           <div className="absolute inset-0 bg-black/20" />
         </div>
 
@@ -114,61 +121,15 @@ const AuthorPage = () => {
 
                     {/* Stats */}
                     <div className="flex flex-wrap gap-6 text-sm text-zinc-600 dark:text-zinc-400 mb-4">
-                      {/* {(typeof followerCount === "number" || author.followers) && (
-                        <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4" />
-                          <span className="font-semibold text-zinc-900 dark:text-white">
-                            {followerCount ?? author.followers ?? "—"}
-                          </span>
-                          Followers
-                        </div>
-                      )} */}
-                      {/* {author?.createdAt && (
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
-                          Joined{" "}
-                          {new Date(author.createdAt).toLocaleDateString("en-US", {
-                            month: "long",
-                            year: "numeric"
-                          })}
-                        </div>
-                      )} */}
-                      {/* Location or other stats can be added here */}
+                      {/* Add stats if available */}
                     </div>
-
-                    {/* Social Links */}
-                    {/* <div className="flex gap-3">
-                      {author.website && (
-                        <a href={author.website} target="_blank" rel="noopener noreferrer"
-                          className="p-2 bg-zinc-100 dark:bg-zinc-700 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-600 transition-colors">
-                          <Globe className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
-                        </a>
-                      )}
-                      {author.twitter && (
-                        <a href={`https://twitter.com/${author.twitter}`} target="_blank" rel="noopener noreferrer"
-                          className="p-2 bg-zinc-100 dark:bg-zinc-700 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-600 transition-colors">
-                          <Twitter className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
-                        </a>
-                      )}
-                      {author.github && (
-                        <a href={`https://github.com/${author.github}`} target="_blank" rel="noopener noreferrer"
-                          className="p-2 bg-zinc-100 dark:bg-zinc-700 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-600 transition-colors">
-                          <Github className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
-                        </a>
-                      )}
-                      {author.linkedin && (
-                        <a href={`https://linkedin.com/in/${author.linkedin}`} target="_blank" rel="noopener noreferrer"
-                          className="p-2 bg-zinc-100 dark:bg-zinc-700 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-600 transition-colors">
-                          <Linkedin className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
-                        </a>
-                      )}
-                    </div> */}
                   </div>
 
                   {/* Action Buttons */}
                   <div className="flex gap-3">
                     <Button
                       onClick={handleFollowToggle}
+                      disabled={isFollowPending}
                       className={cn(
                         "px-6 rounded-xl transition-all duration-200",
                         isFollowing
@@ -196,13 +157,7 @@ const AuthorPage = () => {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
-                        <DropdownMenuItem
-                          onClick={() => alert("Report coming soon")}
-                          className="text-red-600 focus:text-red-600"
-                        >
-                          <Flag className="w-4 h-4 mr-2" />
-                          Report Author
-                        </DropdownMenuItem>
+                        <ReportAuthorDialog authorId={authorId || ""} />
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -257,8 +212,6 @@ const AuthorPage = () => {
                       <div className="flex flex-col sm:flex-row gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
-                            {/* If you have article.category field: */}
-                            {/* <Badge variant="outline" className="text-xs">{article.category}</Badge> */}
                             <span className="text-sm text-zinc-500 dark:text-zinc-400">
                               {(article.publishedAt && new Date(article.publishedAt).toLocaleDateString()) || ""}
                             </span>
@@ -271,7 +224,6 @@ const AuthorPage = () => {
                           <p className="text-zinc-600 dark:text-zinc-400 text-sm mb-3 line-clamp-2">
                             {article.excerpt}
                           </p>
-                          {/* Add likes, comments here if you have them */}
                         </div>
                       </div>
                     </CardContent>
@@ -318,15 +270,11 @@ const AuthorPage = () => {
                           </div>
                         )}
                         <CardContent className="p-4 flex-1">
-                          {/* <Badge variant="outline" className="text-xs mb-2">{course.category}</Badge> */}
                           <h4
                             className={`${dmSans.className} font-semibold text-zinc-900 dark:text-white mb-1 line-clamp-2`}
                           >
                             {course.title}
                           </h4>
-                          {/* <p className="text-zinc-600 dark:text-zinc-400 text-xs mb-2 line-clamp-2">
-                            {course.description}
-                          </p> */}
                         </CardContent>
                       </div>
                     </Card>

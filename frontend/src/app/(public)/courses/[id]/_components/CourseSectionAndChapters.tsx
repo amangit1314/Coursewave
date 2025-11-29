@@ -17,7 +17,6 @@ import {
   BookOpen,
   Sparkles,
 } from "lucide-react";
-import { useCoursesStore } from "@/zustand/coursesStore";
 import { CourseSection } from "@/types/course-details-api-response";
 import { useUserStore } from "@/zustand/userStore";
 import { ErrorMessage } from "./ErrorMessage";
@@ -25,7 +24,6 @@ import { SampleCourseContent } from "./SampleCourseContent";
 import { useCourse } from "@/hooks/useCourses";
 import { cn } from "@/lib/utils/utils";
 import { dmSans } from "@/lib/config/fonts";
-
 
 export const CourseSectionsAndChapters = ({
   courseId,
@@ -156,6 +154,7 @@ export const CourseSectionsAndChapters = ({
   // Precompute previous section durations for each section
   const prevSectionDurations: number[] = [];
   let runningTotal = 0;
+
   for (let i = 0; i < sectionDurations.length; i++) {
     prevSectionDurations.push(runningTotal);
     runningTotal += sectionDurations[i];
@@ -163,6 +162,7 @@ export const CourseSectionsAndChapters = ({
 
   return (
     <Card className="border-0 shadow-xl dark:bg-zinc-900/90 rounded-2xl overflow-hidden">
+      {/* Header */}
       <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-zinc-800 dark:to-zinc-900 border-b border-gray-200 dark:border-zinc-700 p-6">
         <div className="flex items-center justify-between">
           <div>
@@ -185,6 +185,8 @@ export const CourseSectionsAndChapters = ({
               </div>
             </div>
           </div>
+
+
           <div className="text-right">
             <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
               Total Duration
@@ -198,6 +200,8 @@ export const CourseSectionsAndChapters = ({
           </div>
         </div>
       </CardHeader>
+
+      {/* Content */}
       <CardContent className="p-6">
         <div className="space-y-3">
           {sections
@@ -250,8 +254,8 @@ export const CourseSectionsAndChapters = ({
                           </h3>
                         </div>
 
-                        <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
-                          <span className="flex items-center gap-1">
+                        <div className="flex justify-start items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                          <span className="flex justify-start items-center gap-1">
                             <BookOpen className="h-3.5 w-3.5" />
                             {lessons.length} {lessons.length === 1 ? 'lesson' : 'lessons'}
                           </span>

@@ -16,7 +16,6 @@ import { TitleForm } from "./TitleForm";
 import { DescriptionForm } from "./DescriptionForm";
 import { ImageForm } from "./ImageForm";
 import { CategoryForm } from "./CategoryForm";
-import { ChaptersForm } from "./ChaptersForm";
 import { PriceForm } from "./PriceForm";
 import { AttachmentForm } from "./AttachmentForm";
 import { InstructorNameForm } from "./InstructorNameForm";
@@ -31,24 +30,20 @@ import { Course } from "@/types/course";
 import { Chapter } from "@/types/user-enrollments-api-response";
 import { CourseSection } from "@/types/course-details-api-response";
 import { dmSans } from "@/lib/config/fonts";
+import { useRouter } from "next/navigation";
 
 type CourseContentProps = {
   course: Course;
-  // sections: CourseSection[];
-  // chapters: Chapter[];
 };
 
 export default function CourseContent({
-  course,
-  // sections,
-  // chapters,
-}: CourseContentProps) {
-  // console.log("Course sections in couse content: ", sections);
-  // console.log("Course sections in couse content: ", chapters);
+  course }: CourseContentProps) {
+  const router = useRouter();
 
   return (
     <div className="space-y-8 px-8 py-8 dark:bg-zinc-900">
       <div
+        onClick={() => router.back()}
         className={`${dmSans.className} flex cursor-pointer items-center justify-start space-x-2 text-sm hover:underline`}
       >
         <IoMdArrowRoundBack className="text-black dark:text-white" size={16} />
@@ -173,8 +168,6 @@ export default function CourseContent({
               }
             }
             course={course}
-            // chapters={chapters}
-            // sections={sections}
           />
         </div>
       </div>

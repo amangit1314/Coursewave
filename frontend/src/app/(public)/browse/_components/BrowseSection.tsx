@@ -7,13 +7,15 @@ import FilteredCoursesComponent from "./FilteredCourses";
 import { dmSans } from "@/lib/config/fonts";
 import { useCategories } from "@/hooks/useCategories";
 import { Category } from "@/types/category";
+import { Search } from "lucide-react";
 
 const BrowseSection = () => {
   const [activeCategoryIndex, setActiveCategoryIndex] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false);
-  
+
   const { data: categories, isLoading, error } = useCategories();
+  console.log("Categories from hook in ui: ", JSON.stringify(categories));
 
   const categoriesWithData = useMemo(() => {
     return [
@@ -55,13 +57,13 @@ const BrowseSection = () => {
             Explore Our Catalog
           </span>
         </div>
-        
+
         <h1
           className={`${dmSans.className} text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-zinc-900 dark:text-white text-center leading-tight`}
         >
           Browse Courses
         </h1>
-        
+
         <p className="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto text-center leading-relaxed px-4">
           Discover your next skill. Filter by category or search for something
           specific. All courses are hand-picked and updated regularly.
@@ -72,12 +74,14 @@ const BrowseSection = () => {
       <div className="flex justify-center mb-8">
         <div className="relative w-full max-w-2xl group">
           {/* Search icon */}
-          <span className={`absolute inset-y-0 left-0 flex items-center pl-5 transition-colors duration-200 ${
-            isSearchFocused ? 'text-blue-500' : 'text-zinc-400 dark:text-zinc-500'
-          }`}>
+          {/* <span className={`absolute inset-y-0 left-0 flex items-center pl-5 transition-colors duration-200 ${isSearchFocused ? 'text-blue-500' : 'text-zinc-400 dark:text-zinc-500'
+            }`}>
             <FiSearch size={20} className="transition-transform duration-200 group-focus-within:scale-110" />
-          </span>
-          
+          </span> */}
+
+          <Search className="absolute z-50 left-4 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5 group-focus-within:text-black dark:group-focus-within:text-white transition-colors" />
+
+
           {/* Input field */}
           <input
             type="text"
@@ -86,10 +90,10 @@ const BrowseSection = () => {
             onFocus={() => setIsSearchFocused(true)}
             onBlur={() => setIsSearchFocused(false)}
             placeholder="Search for courses, topics, or instructors..."
-            className="w-full rounded-2xl border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900/50 py-4 pl-14 pr-12 text-base text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 shadow-sm hover:shadow-md focus:shadow-lg focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-all duration-200 outline-none backdrop-blur-sm"
+            className="w-full rounded-2xl border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900/50 py-4 px-12 text-base text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 shadow-sm hover:shadow-md focus:shadow-lg focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-all duration-200 outline-none backdrop-blur-sm"
             autoComplete="off"
           />
-          
+
           {/* Clear button */}
           {searchQuery && (
             <button
@@ -100,7 +104,7 @@ const BrowseSection = () => {
               <FiX size={20} />
             </button>
           )}
-          
+
           {/* Decorative gradient border (visible on focus) */}
           <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-0 group-focus-within:opacity-20 dark:group-focus-within:opacity-10 blur-xl transition-opacity duration-300 -z-10`}></div>
         </div>

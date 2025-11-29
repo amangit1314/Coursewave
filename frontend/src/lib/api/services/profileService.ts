@@ -145,7 +145,8 @@ export class ProfileService {
   // -------------------- LEARNING --------------------
   async getEnrolledCourses(): Promise<Enrollment[]> {
     try {
-      const response = await this.apiManager.get("/users/enrollments");
+      // ✅ Specify the return type explicitly
+      const response = await this.apiManager.get<Enrollment[]>("/users/enrollments");
 
       console.log("Raw API  of enrolled courses:", response);
 
@@ -156,11 +157,11 @@ export class ProfileService {
       } else {
         throw new Error(response.message);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        "Failed to fetch enrolled courses";
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch enrolled courses";
       console.error("Error fetching enrolled courses:", errorMessage);
       throw new Error(errorMessage);
     }

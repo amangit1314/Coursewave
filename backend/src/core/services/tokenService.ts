@@ -193,7 +193,7 @@ class TokenService {
     // Rate limiting check
     const rateLimitKey = `refresh:${ipAddress}`;
     const attempts = await this.checkRateLimit(rateLimitKey, RATE_LIMIT.REFRESH_ATTEMPTS, RATE_LIMIT.REFRESH_WINDOW);
-    
+
     if (attempts > RATE_LIMIT.REFRESH_ATTEMPTS) {
       throw new Error('Rate limit exceeded for token refresh');
     }
@@ -241,7 +241,7 @@ class TokenService {
   static async revokeToken(tokenId: string, reason: string): Promise<void> {
     await prisma.token.update({
       where: { id: tokenId },
-      data: { 
+      data: {
         status: TokenStatus.REVOKED,
         updatedAt: new Date(),
       },
@@ -265,7 +265,7 @@ class TokenService {
         type: TokenType.REFRESH,
         status: TokenStatus.ACTIVE,
       },
-      data: { 
+      data: {
         status: TokenStatus.REVOKED,
         updatedAt: new Date(),
       },
@@ -305,7 +305,7 @@ class TokenService {
     // Reactivate previous token
     await prisma.token.update({
       where: { id: previousToken.id },
-      data: { 
+      data: {
         status: TokenStatus.ACTIVE,
         updatedAt: new Date(),
       },
@@ -330,7 +330,7 @@ class TokenService {
         expiresAt: { lt: new Date() },
         status: TokenStatus.ACTIVE,
       },
-      data: { 
+      data: {
         status: TokenStatus.EXPIRED,
         updatedAt: new Date(),
       },
@@ -361,7 +361,7 @@ class TokenService {
     // In production, you'd use Redis or a similar service
     const now = Date.now();
     const windowStart = now - windowMs;
-    
+
     // For now, we'll use a simple in-memory approach
     // In production, implement proper rate limiting with Redis
     return 0; // Simplified for now

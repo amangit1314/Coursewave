@@ -353,24 +353,23 @@ export const contactSupport = async (
                     <div class="field">
                         <span class="label">Email:</span> ${email}
                     </div>
-                    ${
-                      phone
-                        ? `
+                    ${phone
+          ? `
                     <div class="field">
                         <span class="label">Phone:</span> ${phone}
                     </div>
                     `
-                        : ""
-                    }
+          : ""
+        }
                     <div class="field">
                         <span class="label">Subject:</span> ${subject}
                     </div>
                     <div class="field">
                         <span class="label">Message:</span>
                         <div class="message-box">${message.replace(
-                          /\n/g,
-                          "<br>"
-                        )}</div>
+          /\n/g,
+          "<br>"
+        )}</div>
                     </div>
                     <div class="footer">
                         <p>This email was sent from the CourseWave contact support form.</p>
@@ -412,9 +411,8 @@ export const contactSupport = async (
                     <div style="background: white; padding: 15px; margin: 15px 0; border-left: 4px solid #667eea;">
                         <strong>Subject:</strong> ${subject}<br>
                         <strong>Message:</strong><br>
-                        ${message.substring(0, 200)}${
-        message.length > 200 ? "..." : ""
-      }
+                        ${message.substring(0, 200)}${message.length > 200 ? "..." : ""
+        }
                     </div>
 
                     <p><strong>What happens next?</strong></p>
@@ -460,3 +458,125 @@ export const contactSupport = async (
     };
   }
 };
+
+export interface BecomeInstructorData {
+  bio: string;
+  expertise: string[];
+  socialLinks?: {
+    website?: string;
+    linkedin?: string;
+    github?: string;
+    twitter?: string;
+    youtube?: string;
+  };
+}
+
+// export const becomeInstructor = async (
+//   userId: string,
+//   data: BecomeInstructorData
+// ): Promise<ServiceResponse> => {
+//   try {
+//     const { bio, expertise, socialLinks } = data;
+
+
+export const becomeInstructor = async (
+  userId: string,
+  data: BecomeInstructorData
+): Promise<ServiceResponse> => {
+  try {
+    if (!userId) {
+      return {
+        success: false,
+        message: "User ID is required",
+        status: 400,
+      };
+    }
+
+    const { bio, expertise, socialLinks } = data;
+
+    // Validate required fields
+    if (!bio || !expertise || expertise.length === 0) {
+      return {
+        success: false,
+        message: "Bio and at least one area of expertise are required",
+        status: 400,
+      };
+    }
+
+    // Check if user exists
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return {
+        success: false,
+        message: "User not found",
+        status: 404,
+      };
+    }
+
+    // Check if user is already an instructor
+    const existingInstructor = await prisma.instructor.findUnique({
+      where: { userId },
+    });
+
+    if (existingInstructor) {
+      return {
+        success: false,
+        message: "User is already an instructor",
+        status: 400,
+      };
+    }
+
+    // Create instructor profile and assign role in a transaction
+    const result = await prisma.$transaction(async (tx) => {
+      // Create instructor profile with social links as JSON
+      const instructor = await tx.instructor.create({
+        data: {
+          userId,
+          bio,
+          expertise,
+          socialLinks: socialLinks || {},
+        },
+      });
+
+      // Check if user already has INSTRUCTOR role
+      const existingRole = await tx.userRole.findFirst({
+        where: {
+          userId,
+          role: "INSTRUCTOR",
+        },
+      });
+
+      // Add INSTRUCTOR role if not already present
+      if (!existingRole) {
+        await tx.userRole.create({
+          data: {
+            userId,
+            role: Role.INSTRUCTOR,
+          },
+        });
+      }
+
+      return instructor;
+    });
+
+    return {
+      success: true,
+      data: result,
+      message: "Successfully registered as an instructor",
+      status: 201,
+    };
+  } catch (error: any) {
+    console.error("Error in becomeInstructor service:", error);
+
+    return {
+      success: false,
+      error: error.message,
+      message: "Failed to register as instructor. Please try again later.",
+      status: 500,
+    };
+  }
+};
+

@@ -52,7 +52,7 @@ export default function BrowseArticlesLayout({
 
 const ArticlesNavbar = () => {
   return (
-    <div className="flex h-full w-full items-center justify-start border-b bg-white px-6 shadow-sm dark:bg-transparent md:px-0">
+    <div className="flex h-full w-full items-center justify-start border-b border-gray-200 bg-white px-6 shadow-sm dark:bg-transparent md:px-0">
       <ArticlesNavbarRoutes />
     </div>
   );

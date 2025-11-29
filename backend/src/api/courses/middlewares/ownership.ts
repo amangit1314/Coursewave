@@ -106,28 +106,28 @@ export const requireResourceOwnership = (resourceType: string, idParam: string =
           });
           ownerId = resource?.instructor?.userId;
           break;
-        
+
         case 'blog':
           resource = await prisma.blog.findUnique({
             where: { id: resourceId }
           });
           ownerId = resource?.authorId;
           break;
-        
+
         case 'review':
           resource = await prisma.review.findUnique({
             where: { id: resourceId }
           });
           ownerId = resource?.userId;
           break;
-        
+
         case 'comment':
           resource = await prisma.blogComment.findUnique({
             where: { id: resourceId }
           });
           ownerId = resource?.authorId;
           break;
-        
+
         default:
           return res.status(400).json({
             success: false,

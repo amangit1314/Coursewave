@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,7 @@ import {
   Sparkles,
   Award,
   TrendingUp,
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -36,6 +38,7 @@ import { CartItem } from "@/lib/api/services/cartService";
 import WishlistItem from "./_components/WihslistItem";
 
 const WishlistPage: React.FC = () => {
+  const router = useRouter();
   const { user } = useUserStore();
 
   // Wishlist hooks
@@ -59,9 +62,24 @@ const WishlistPage: React.FC = () => {
     });
   };
 
+  React.useEffect(() => {
+    if (!user || !user.id) {
+      toast.error("Please login to access wishlist");
+      router.replace("/login");
+    }
+  }, [user, router]);
+
   if (!user || !user.id) {
-    toast.error("Please login to access wishlist");
-    window.location.href = "/login";
+    // toast.error("Please login to access wishlist");
+    // window.location.href = "/login";
+
+    // Optional: simple loading state while redirecting
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin" />
+        <p>Redirecting to login...</p>
+      </div>
+    );
   }
 
   if (isLoading) {

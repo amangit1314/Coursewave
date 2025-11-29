@@ -9,10 +9,10 @@ import "swiper/css";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { 
-  FaStar, 
-  FaUsers, 
-  FaBookOpen, 
+import {
+  FaStar,
+  FaUsers,
+  FaBookOpen,
   FaGraduationCap,
   FaLinkedin,
   FaGlobe,
@@ -255,7 +255,7 @@ const InstructorCard = ({
     <div className="relative overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900 rounded-2xl" />
-      
+
       <div className="relative p-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Instructor Profile Section */}
@@ -375,7 +375,7 @@ export const InstructorCardLoadingSkeleton = () => {
   return (
     <div className="relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900 rounded-2xl" />
-      
+
       <div className="relative p-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Profile Section Skeleton */}

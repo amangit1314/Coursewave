@@ -24,22 +24,22 @@
 //     // Step 2: Poll for results
 //     let transcriptData;
 //     let attempts = 0;
-    
+
 //     while (attempts < 30) { // 30 attempts, ~3 minutes
 //       const statusResponse = await fetch(`https://api.assemblyai.com/v2/transcript/${transcriptId}`, {
 //         headers: {
 //           'Authorization': process.env.ASSEMBLYAI_API_KEY || '',
 //         },
 //       });
-      
+
 //       transcriptData = await statusResponse.json();
-      
+
 //       if (transcriptData.status === 'completed') {
 //         break;
 //       } else if (transcriptData.status === 'error') {
 //         throw new Error('Transcription failed');
 //       }
-      
+
 //       // Wait 6 seconds before next attempt
 //       await new Promise(resolve => setTimeout(resolve, 6000));
 //       attempts++;
@@ -112,31 +112,31 @@ export async function POST(request: NextRequest) {
     let transcriptData;
     let attempts = 0;
     const maxAttempts = 30; // 30 attempts * 6 seconds = 3 minutes max
-    
+
     while (attempts < maxAttempts) {
       const statusResponse = await fetch(`https://api.assemblyai.com/v2/transcript/${transcriptId}`, {
         headers: {
           'Authorization': process.env.ASSEMBLYAI_API_KEY,
         },
       });
-      
+
       if (!statusResponse.ok) {
         throw new Error('Failed to check transcription status');
       }
-      
+
       transcriptData = await statusResponse.json();
-      
+
       if (transcriptData.status === 'completed') {
         console.log('Transcription completed successfully');
         break;
       } else if (transcriptData.status === 'error') {
         throw new Error(`Transcription failed: ${transcriptData.error}`);
       }
-      
+
       // Wait 6 seconds before next attempt
       await new Promise(resolve => setTimeout(resolve, 6000));
       attempts++;
-      
+
       console.log(`Transcription status: ${transcriptData.status} (attempt ${attempts}/${maxAttempts})`);
     }
 
@@ -148,8 +148,8 @@ export async function POST(request: NextRequest) {
       throw new Error('No transcription generated - audio might be silent or unclear');
     }
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       transcript: transcriptData.text,
       words: transcriptData.words?.length || 0
     });

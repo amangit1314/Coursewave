@@ -32,7 +32,7 @@ export default function Notifications() {
     (notification) => !notification.isReaded
   );
 
-  console.log("Notifications: ", notifications);
+  // console.log("Notifications: ", notifications);
 
   // Icon map for string keys
   const iconMap: Record<string, React.ComponentType<any>> = {

@@ -12,7 +12,7 @@ export function useUpdateProfile() {
   return useMutation({
     mutationFn: (data: any) => profileService.updateProfile(data),
     onSuccess: (data) => {
-      console.log("Update profile response:", data);
+      // console.log("Update profile response:", data);
 
       // Check the actual response structure from your API
       if (data.data?.user) {

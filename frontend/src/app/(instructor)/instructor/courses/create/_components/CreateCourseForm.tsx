@@ -260,15 +260,15 @@ const CreateCourseForm = () => {
 
   if (submitSuccess) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-6">
-        <div className="bg-white rounded-3xl shadow-2xl p-12 max-w-md w-full text-center">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-10 h-10 text-green-500" />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-zinc-900 dark:to-blue-950 flex items-center justify-center p-6">
+        <div className="bg-white dark:bg-zinc-800 rounded-3xl shadow-2xl p-12 max-w-md w-full text-center">
+          <div className="w-20 h-20 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-10 h-10 text-green-500 dark:text-green-400" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
             Course Created Successfully!
           </h2>
-          <p className="text-gray-600 mb-8">
+          <p className="text-gray-600 dark:text-gray-300 mb-8">
             Your course has been created and is ready for students.
           </p>
           <button
@@ -278,7 +278,7 @@ const CreateCourseForm = () => {
               setImageUrl("");
               setCurrentStep(1);
             }}
-            className="w-full bg-blue-500 text-white py-3 rounded-xl hover:bg-blue-600 transition-colors"
+            className="w-full bg-blue-500 dark:bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors"
           >
             Create Another Course
           </button>
@@ -312,11 +312,10 @@ const CreateCourseForm = () => {
               <React.Fragment key={step.id}>
                 <div className="flex items-center">
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
-                      currentStep >= step.id
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-200 text-gray-600"
-                    }`}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${currentStep >= step.id
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-gray-600"
+                      }`}
                   >
                     {currentStep > step.id ? (
                       <CheckCircle size={20} />
@@ -325,18 +324,16 @@ const CreateCourseForm = () => {
                     )}
                   </div>
                   <span
-                    className={`${dmSans.className} ml-2 text-sm font-medium ${
-                      currentStep >= step.id ? "text-blue-600" : "text-gray-500"
-                    }`}
+                    className={`${dmSans.className} ml-2 text-sm font-medium ${currentStep >= step.id ? "text-blue-600" : "text-gray-500"
+                      }`}
                   >
                     {step.title}
                   </span>
                 </div>
                 {index < steps.length - 1 && (
                   <div
-                    className={`w-12 h-0.5 ${
-                      currentStep > step.id ? "bg-blue-500" : "bg-gray-200"
-                    }`}
+                    className={`w-12 h-0.5 ${currentStep > step.id ? "bg-blue-500" : "bg-gray-200"
+                      }`}
                   />
                 )}
               </React.Fragment>
@@ -499,11 +496,10 @@ const CreateCourseForm = () => {
                     Course Image *
                   </label>
                   <div
-                    className={`relative border border-dashed rounded-xl p-2 transition-all duration-200 ${
-                      dragActive
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
-                    }`}
+                    className={`relative border border-dashed rounded-xl p-2 transition-all duration-200 ${dragActive
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
+                      }`}
                     onDragEnter={handleDrag}
                     onDragLeave={handleDrag}
                     onDragOver={handleDrag}

@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DIRECT_URL")
+  url      = env("DATABASE_URL")
 }
 
 /// --------------------------- USER & AUTH -------------------------------
@@ -49,6 +49,11 @@ model User {
   sessionBookings    SessionBooking[]
   blogReports        BlogReport[]
   notifications      Notification[]
+  blogRatings        BlogRating[]
+
+  // User Reporting
+  receivedReports UserReport[] @relation("ReportedUsers")
+  sentReports     UserReport[] @relation("UserReporters")
 
   cart              Cart?
   wishlist          Wishlist?
@@ -58,6 +63,22 @@ model User {
 
   @@index([email])
   @@index([createdAt])
+}
+
+model UserReport {
+  id         String   @id @default(uuid())
+  targetId   String
+  reporterId String
+  reason     String
+  details    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  target   User @relation("ReportedUsers", fields: [targetId], references: [id], onDelete: Cascade)
+  reporter User @relation("UserReporters", fields: [reporterId], references: [id], onDelete: Cascade)
+
+  @@index([targetId])
+  @@index([reporterId])
 }
 
 model UserRole {
@@ -141,11 +162,28 @@ model Blog {
   BlogView     BlogView[]
   SavedArticle SavedArticle[]
   BlogReport   BlogReport[]
+  BlogRating   BlogRating[]
 
   @@index([slug])
   @@index([authorId])
   @@index([isPublished])
   @@index([categoryId])
+}
+
+model BlogRating {
+  id        String   @id @default(uuid())
+  rating    Int // 1-5 stars
+  blogId    String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([blogId, userId])
+  @@index([blogId])
+  @@index([userId])
 }
 
 model BlogReport {
@@ -257,6 +295,7 @@ model Course {
   title             String
   dealPrice         Float               @default(0)
   discount          Float               @default(0)
+  level             CourseLevel         @default(ALL_LEVELS)
   CartItem          CartItem[]
   Chapter           Chapter[]
   Category          Category?           @relation(fields: [categoryId], references: [id])
@@ -1054,4 +1093,11 @@ enum SessionType {
   FREE
   GROUP
   PAID
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  ALL_LEVELS
 }

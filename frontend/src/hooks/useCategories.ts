@@ -1,4 +1,5 @@
 import { categoriesService } from "@/lib/api/services/categoriesService";
+import { BlogCategory } from "@/types/blog.service.types";
 import { Category } from "@/types/category";
 import { useCategoriesStore } from "@/zustand/categoriesStore";
 import { useQuery } from "@tanstack/react-query";
@@ -9,13 +10,13 @@ export const useCategories = () => {
   return useQuery<Category[]>({
     queryKey: ["categories"],
     queryFn: async () => {
+      console.log("🔍 useCategories: Fetching categories...");
       const res = await categoriesService.getCategories();
-      console.log("res in useCategories: ", JSON.stringify(res));
+      console.log("📦 useCategories: API Response:", res);
+      console.log("📊 useCategories: Response data:", res?.data);
 
-      // Check if res is the data directly or has a data property
       const categories: Category[] = res?.data || [];
-      //   const courses = Array.isArray(res) ? res : res?.data;
-      console.log("Categories in useCategories: ", JSON.stringify(categories));
+      console.log("✅ useCategories: Parsed categories:", categories);
 
       setCategories(categories ?? []); // sync Zustand
       return categories ?? [];

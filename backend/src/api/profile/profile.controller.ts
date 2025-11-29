@@ -32,7 +32,7 @@ export const updateUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const userData = req.body;
-    
+
     const result = await profileService.updateUser(userId, userData);
     res.status(result.status).json(result);
   } catch (error: any) {
@@ -62,7 +62,7 @@ export const changeUserRole = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const { role } = req.body;
-    
+
     const result = await profileService.changeUserRole(userId, role);
     res.status(result.status).json(result);
   } catch (error: any) {
@@ -91,6 +91,22 @@ export const contactSupport = async (req: Request, res: Response) => {
   try {
     const supportData = req.body;
     const result = await profileService.contactSupport(supportData);
+    res.status(result.status).json(result);
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      message: 'Internal Server Error'
+    });
+  }
+};
+
+export const becomeInstructor = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user?.id; // From checkAccessToken middleware
+    const instructorData = req.body;
+
+    const result = await profileService.becomeInstructor(userId, instructorData);
     res.status(result.status).json(result);
   } catch (error: any) {
     res.status(500).json({

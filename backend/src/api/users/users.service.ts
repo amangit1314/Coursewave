@@ -598,3 +598,44 @@ export const checkEnrollment = async (
     };
   }
 };
+
+export const reportUser = async (
+  reporterId: string,
+  targetId: string,
+  reason: string,
+  details?: string
+): Promise<ServiceResponse> => {
+  try {
+    if (reporterId === targetId) {
+      return {
+        success: false,
+        message: "You cannot report yourself",
+        status: 400,
+      };
+    }
+
+    const report = await prisma.userReport.create({
+      data: {
+        reporterId,
+        targetId,
+        reason,
+        details,
+      },
+    });
+
+    return {
+      success: true,
+      data: report,
+      message: "User reported successfully",
+      status: 201,
+    };
+  } catch (error: any) {
+    console.log(`ERROR in reportUser: ${error.message}`);
+    return {
+      success: false,
+      error: error.message,
+      message: "Internal Server Error",
+      status: 500,
+    };
+  }
+};

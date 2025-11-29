@@ -7,7 +7,7 @@ import { useCoursesStore } from "@/zustand/coursesStore";
 import toast from "react-hot-toast";
 import { Enrollment } from "@/types/user-enrollments-api-response";
 import { Chapter, CreateCourseRequest } from "@/types/courses.service.types";
-import {Chapter as CourseChapter} from "@/types/course-details-api-response";
+import { Chapter as CourseChapter } from "@/types/course-details-api-response";
 import { CourseSection } from "@/types/course-details-api-response";
 
 // --------------------------------------- Fetch all courses ---------------------------------------------------------------
@@ -18,11 +18,11 @@ export const useCourses = () => {
     queryKey: ["courses"],
     queryFn: async () => {
       const res = await courseService.getCourses();
-      console.log("res in useCourses: ", JSON.stringify(res));
+      // console.log("res in useCourses: ", JSON.stringify(res));
 
       // Check if res is the data directly or has a data property
       const courses = Array.isArray(res) ? res : res?.data;
-      console.log("Courses in useCourses: ", JSON.stringify(courses));
+      // console.log("Courses in useCourses: ", JSON.stringify(courses));
 
       setCourses(courses ?? []); // sync Zustand
       return courses ?? [];
@@ -164,37 +164,21 @@ export const useEnrollInCourse = () => {
 };
 
 // Check if course is purchased or not
-export const useCheckCourseIsPurchased = (userId: string, courseId: string) => {
-  const fetchIsCourseAlreadyPurchased = async () => {
-    const isCourseAlreadyPurchasedUrl =
-      process.env.ENVIRONMENT! === "DEVELOPMENT"
-        ? `/api/courses/${courseId}/alreadyPurchased?userId=${userId}`
-        : `api/courses/${courseId}/alreadyPurchased?userId=${userId}`;
-
-    const response = await fetch(isCourseAlreadyPurchasedUrl, {
-      method: "GET",
-    });
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to get course info from /api/courses/${courseId}/alreadyPurchased`
-      );
-    }
-
-    return await response.json();
-  };
-
+export const useCheckCourseIsPurchased = (courseId: string) => {
   const { data, error, isLoading } = useQuery({
-    queryKey: ["courseIsPurchased", userId, courseId],
-    queryFn: fetchIsCourseAlreadyPurchased,
+    queryKey: ["courseIsPurchased", courseId],
+    queryFn: async () => {
+      if (!courseId) return null;
+      return await courseService.checkAlreadyPurchased(courseId);
+    },
+    enabled: !!courseId,
     staleTime: 4 * 60 * 1000,
   });
 
-  const courseIsPurchased: boolean = !!(data?.data?.hasPurchased ?? false);
+  const courseIsPurchased: boolean = !!(data?.data?.isEnrolled ?? false);
   const enrollment: Enrollment = data?.data?.enrollment! as Enrollment;
-  const purchase = data?.data?.purchase!;
 
-  return { courseIsPurchased, enrollment, purchase, error, isLoading };
+  return { courseIsPurchased, enrollment, error, isLoading };
 };
 
 // Create Course

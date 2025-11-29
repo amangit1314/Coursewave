@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { dmSans, poppins } from "@/lib/config/fonts";
@@ -12,16 +11,22 @@ import SignInWithGoogleButton from "./SignInWithGoogleButton";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { loginSchema, LoginSchema } from "@/lib/validations/loginSchema";
 import { useLogin } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { useUserStore } from "@/zustand/userStore";
 
 const LoginForm = () => {
   const { mutate: login, isPending, error } = useLogin();
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+
+  // Prefetch the browse page for instant navigation
+  useEffect(() => {
+    router.prefetch("/browse");
+  }, [router]);
 
   const {
     register,
@@ -31,6 +36,40 @@ const LoginForm = () => {
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
   });
+
+  const loginStore = useUserStore((s) => s.login);
+
+  // const onSubmit = async (data: LoginSchema) => {
+  //   login(data, {
+  //     onSuccess: (response) => {
+  //       console.log("Login onSuccess triggered", response);
+  //       console.log("User data:", response.data.user);
+  //       console.log("Access token:", response.data.accessToken);
+
+  //       // Store user and token in zustand store
+  //       loginStore(response.data.user, response.data.accessToken);
+
+  //       toast.success(response.message ?? "Login successful");
+
+  //       // Log to verify store update
+  //       console.log("User stored in userStore, redirecting...");
+
+  //       setTimeout(() => {
+  //         console.log("Inside setTimeout");
+  //         console.log("Returned login data:", JSON.stringify(data));
+  //         console.log("Exiting setTimeout");
+  //       }, 100);
+
+  //       // Use immediate navigation for instant redirect
+  //       setTimeout(() => {
+  //         router.push("/browse");
+  //       }, 1000);
+  //     },
+  //     onError: (error) => {
+  //       toast.error(error.message);
+  //     }
+  //   });
+  // };
 
   const onSubmit = async (data: LoginSchema) => {
     login(data, {
@@ -187,3 +226,4 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
+

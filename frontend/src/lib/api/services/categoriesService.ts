@@ -69,12 +69,13 @@ import {
   UpdateCategoryRequest,
 } from "@/types/blog.service.types";
 import { apiManager, ApiResponse } from "../api-manager";
+import { Category } from "@/types/category";
 
 class CategoriesService {
   private static instance: CategoriesService;
   private api = apiManager;
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): CategoriesService {
     if (!CategoriesService.instance) {
@@ -84,9 +85,9 @@ class CategoriesService {
   }
 
   // ====================== GET CATEGORIES ======================
-  async getCategories(): Promise<ApiResponse<BlogCategory[]>> {
-    const response = this.api.get("/categories");
-    console.log("Response from getCategories:", JSON.stringify(response));
+  async getCategories(): Promise<ApiResponse<Category[]>> {
+    const response = this.api.get<Category[]>("/categories");
+    // console.log("Response from getCategories:", JSON.stringify(response));
     return response;
   }
 

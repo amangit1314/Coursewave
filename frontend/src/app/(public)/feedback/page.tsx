@@ -3,12 +3,12 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { 
-  MessageSquare, 
-  Send, 
-  CheckCircle, 
-  Star, 
-  ThumbsUp, 
+import {
+  MessageSquare,
+  Send,
+  CheckCircle,
+  Star,
+  ThumbsUp,
   ThumbsDown,
   Bug,
   Lightbulb,
@@ -156,17 +156,15 @@ export default function FeedbackPage() {
                       key={type.id}
                       type="button"
                       onClick={() => handleInputChange("type", type.id)}
-                      className={`p-4 rounded-xl border-2 text-left transition-all ${
-                        formData.type === type.id
+                      className={`p-4 rounded-xl border-2 text-left transition-all ${formData.type === type.id
                           ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
                           : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
-                      }`}
+                        }`}
                     >
-                      <Icon className={`h-6 w-6 mb-2 ${
-                        formData.type === type.id 
-                          ? "text-blue-600 dark:text-blue-400" 
+                      <Icon className={`h-6 w-6 mb-2 ${formData.type === type.id
+                          ? "text-blue-600 dark:text-blue-400"
                           : "text-gray-400"
-                      }`} />
+                        }`} />
                       <div className="font-medium text-gray-900 dark:text-white">
                         {type.label}
                       </div>
@@ -193,11 +191,10 @@ export default function FeedbackPage() {
                     className="p-2 hover:scale-110 transition-transform"
                   >
                     <Star
-                      className={`h-8 w-8 ${
-                        star <= formData.rating
+                      className={`h-8 w-8 ${star <= formData.rating
                           ? "fill-yellow-400 text-yellow-400"
                           : "text-gray-300 dark:text-gray-600"
-                      }`}
+                        }`}
                     />
                   </button>
                 ))}
@@ -298,7 +295,7 @@ export default function FeedbackPage() {
           className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400"
         >
           <p>
-            Your feedback helps us create a better learning experience for everyone. 
+            Your feedback helps us create a better learning experience for everyone.
             We read every submission and use it to guide our development.
           </p>
         </motion.div>

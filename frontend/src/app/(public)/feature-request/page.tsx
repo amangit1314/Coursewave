@@ -3,10 +3,10 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { 
-  Lightbulb, 
-  Send, 
-  CheckCircle, 
+import {
+  Lightbulb,
+  Send,
+  CheckCircle,
   TrendingUp,
   Users,
   Zap,
@@ -138,7 +138,7 @@ export default function FeatureRequestPage() {
             Suggest a Feature
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300 max-w-md mx-auto">
-                Have an idea to make CourseWave better? We'd love to hear it!
+            Have an idea to make CourseWave better? We'd love to hear it!
           </p>
         </motion.div>
 
@@ -179,17 +179,15 @@ export default function FeatureRequestPage() {
                       key={category.id}
                       type="button"
                       onClick={() => handleInputChange("category", category.id)}
-                      className={`p-4 rounded-xl border-2 text-left transition-all ${
-                        formData.category === category.id
+                      className={`p-4 rounded-xl border-2 text-left transition-all ${formData.category === category.id
                           ? "border-purple-500 bg-purple-50 dark:bg-purple-900/20"
                           : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
-                      }`}
+                        }`}
                     >
-                      <Icon className={`h-6 w-6 mb-2 ${
-                        formData.category === category.id 
-                          ? "text-purple-600 dark:text-purple-400" 
+                      <Icon className={`h-6 w-6 mb-2 ${formData.category === category.id
+                          ? "text-purple-600 dark:text-purple-400"
                           : "text-gray-400"
-                      }`} />
+                        }`} />
                       <div className="font-medium text-gray-900 dark:text-white">
                         {category.label}
                       </div>
@@ -213,11 +211,10 @@ export default function FeatureRequestPage() {
                     key={priority.id}
                     type="button"
                     onClick={() => handleInputChange("priority", priority.id)}
-                    className={`p-3 rounded-lg border-2 text-center transition-all ${
-                      formData.priority === priority.id
+                    className={`p-3 rounded-lg border-2 text-center transition-all ${formData.priority === priority.id
                         ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 font-medium"
                         : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
-                    }`}
+                      }`}
                   >
                     <div className={`text-sm ${formData.priority === priority.id ? priority.color : "text-gray-500"}`}>
                       {priority.label}

@@ -20,14 +20,13 @@ const SearchButton = () => {
     event.preventDefault();
     const encodedSearchQuery = encodeURI(searchQuery);
     router.push(`/browseCourses/?q=${encodedSearchQuery}`);
-    console.log("current query", encodedSearchQuery);
+    // console.log("current query", encodedSearchQuery);
   };
 
   const form = (
     <form
-      className={`hidden lg:ml-4 lg:flex text-gray-800 dark:text-white lg:pl-2 lg:pr-3 lg:py-3 lg:border lg:hover:lg:border-blue-500 lg:justify-start lg:rounded-md lg:items-center ${
-        isFormOpen ? "" : "hidden"
-      }`}
+      className={`hidden lg:ml-4 lg:flex text-gray-800 dark:text-white lg:pl-2 lg:pr-3 lg:py-3 lg:border lg:hover:lg:border-blue-500 lg:justify-start lg:rounded-md lg:items-center ${isFormOpen ? "" : "hidden"
+        }`}
       onSubmit={onSearch}
     >
       <BiSearchAlt className="ml-1 mr-2" size={20} />

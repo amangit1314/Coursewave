@@ -14,6 +14,7 @@ import {
   getUserEnrollments,
   checkEnrollment,
   checkArticleSaved,
+  reportUser,
 } from "./users.controller";
 import { verifyToken } from "../../core/middleware/verifyToken";
 import { validate } from "../../core/middleware/validate";
@@ -29,6 +30,7 @@ router.get("/enrollments/:courseId", verifyToken, checkEnrollment); // check if 
 /// ===================== User routes =====================
 router.get("/", verifyToken, getAllUsers); // (admin only)
 router.get("/:userId", verifyToken, validate(userIdParams, "params"), getUserById); // (admin or self)
+router.post("/:userId/report", verifyToken, reportUser); // (self only)
 router.delete("/:userId", verifyToken, deleteUser); // (admin only)
 
 /// ========================  Articles ============================

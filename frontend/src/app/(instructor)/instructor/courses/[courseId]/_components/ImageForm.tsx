@@ -236,7 +236,7 @@
 //               </>
 //             )}
 //           </div>
-          
+
 //           <div className="mt-4 text-xs text-zinc-600 dark:text-zinc-400">
 //             16:9 aspect ratio recommended
 //           </div>
@@ -285,9 +285,9 @@ export const ImageForm = ({ course }: { course: Course }) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       updateCourse(
-        { 
-          courseId: course.id, 
-          updates: values 
+        {
+          courseId: course.id,
+          updates: values
         },
         {
           onSuccess: (updatedCourse) => {
@@ -377,7 +377,7 @@ export const ImageForm = ({ course }: { course: Course }) => {
       const bucketIndex = pathParts.indexOf('courses');
       if (bucketIndex !== -1) {
         const filePath = pathParts.slice(bucketIndex + 1).join('/');
-        
+
         // Delete from Supabase Storage
         const { error } = await supabase.storage
           .from('courses')
@@ -404,9 +404,9 @@ export const ImageForm = ({ course }: { course: Course }) => {
         className={`${dmSans.className} flex items-center justify-between font-medium`}
       >
         Course image
-        <Button 
-          onClick={toggleEdit} 
-          variant="outline" 
+        <Button
+          onClick={toggleEdit}
+          variant="outline"
           className="rounded-full"
           disabled={isUploading}
         >
@@ -470,7 +470,7 @@ export const ImageForm = ({ course }: { course: Course }) => {
                   Uploading... {uploadProgress}%
                 </p>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
+                  <div
                     className="bg-primary h-2 rounded-full transition-all duration-300"
                     style={{ width: `${uploadProgress}%` }}
                   ></div>
@@ -502,7 +502,7 @@ export const ImageForm = ({ course }: { course: Course }) => {
               </>
             )}
           </div>
-          
+
           {/* Show current image in edit mode for reference */}
           {currentImageUrl && (
             <div className="mt-4">
@@ -517,7 +517,7 @@ export const ImageForm = ({ course }: { course: Course }) => {
               </div>
             </div>
           )}
-          
+
           <div className="mt-4 text-xs text-zinc-600 dark:text-zinc-400">
             16:9 aspect ratio recommended
           </div>

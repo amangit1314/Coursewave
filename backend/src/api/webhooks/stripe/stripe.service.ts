@@ -98,7 +98,7 @@ export const handleWebhookEvent = async (
         break;
 
       default:
-        console.log(`Unhandled event type: ${event.type}`);
+      console.log(`Unhandled event type: ${event.type}`);
     }
 
     return {

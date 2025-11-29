@@ -16,8 +16,8 @@ class AuthService {
   static async registerUser(
     email: string,
     password: string,
-    firstName?: string,
-    lastName?: string,
+    // firstName?: string,
+    // lastName?: string,
     role = "USER"
   ) {
     if (!email || !password)
@@ -37,7 +37,7 @@ class AuthService {
           id: generateResourceId(`user`),
           email,
           password: hashedPassword,
-          name: firstName ?? email.split("@")[0],
+          name: email.split("@")[0],
           isEmailVerified: false,
           createdAt: new Date(),
           updatedAt: new Date(),

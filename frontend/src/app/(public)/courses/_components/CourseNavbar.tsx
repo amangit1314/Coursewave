@@ -93,15 +93,15 @@ const CourseNavbar = ({ courseName }: { courseName: string }) => {
               </div>
             </div>
 
-            {/* Course Name - Mobile (Truncated) */}
-            <div className="flex md:hidden min-w-0 flex-1">
+            {/* Course Name - Mobile (Truncated) - REMOVED to prevent conflict, shown in sub-header */}
+            {/* <div className="flex md:hidden min-w-0 flex-1">
               <span
                 className="truncate text-sm font-semibold text-zinc-900 dark:text-white"
                 title={courseName}
               >
                 {courseName}
               </span>
-            </div>
+            </div> */}
           </div>
 
           {/* Right Section - Actions */}

@@ -158,105 +158,104 @@ const AccordionSectionItem = ({
 
     if (!res.ok) {
       console.log(
-        "ERROR, Failed to fetch chapters for a sectionId from api ...",
+      "ERROR, Failed to fetch chapters for a sectionId from api ...",
       );
     }
 
-    const data = await res.json();
-    console.log(`Chapters for sectionId: ${courseSectionId} :`, data);
+const data = await res.json();
+console.log(`Chapters for sectionId: ${courseSectionId} :`, data);
 
-    return data;
+return data;
   };
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["sectionChapters"],
-    queryFn: fetchChaptersForSection,
-  });
+const { data, isLoading, error } = useQuery({
+  queryKey: ["sectionChapters"],
+  queryFn: fetchChaptersForSection,
+});
 
-  if (isLoading) {
-    return (
-      <Callout
-        className=""
-        title="⏳ Loading course section chapters ..."
-        color="yellow"
-      >
-        ⏳ Loading course section chapters ...
-      </Callout>
-    );
-  }
-
-  if (error) {
-    console.log("ERROR: in loading section chapters", error.message);
-    return (
-      <Callout
-        className=""
-        title="Error loading section chapters 🚨❌"
-        color="red"
-      >
-        {error.message} 🚨❌ ...
-      </Callout>
-    );
-  }
-
-  const chapters: Chapter[] = data?.data as Chapter[];
-  console.log(`Section Chapters for sectionId: ${courseSectionId}`, chapters);
-
+if (isLoading) {
   return (
-    <div
-      className={`group rounded-md bg-slate-100 p-3 transition-all duration-200 dark:bg-gray-800 md:p-5 ${
-        item.active === 1 ? "activated" : ""
-      }`}
+    <Callout
+      className=""
+      title="⏳ Loading course section chapters ..."
+      color="yellow"
     >
-      <div className="py-auto flex items-center justify-between">
-        <div className="py-auto flex items-center" onClick={toggleActiveItem}>
-          <div className="cursor-pointer px-1 group-[.activated]:rotate-180">
-            <IoMdArrowDropdown size={20} />
-          </div>
-          <div className="line-clamp-1 cursor-pointer overflow-clip pl-1 text-xs group-[.activated]:font-semibold group-[.activated]:text-indigo-500 hover:text-indigo-500 md:text-sm">
-            {section.title}
-          </div>
-        </div>
-
-        <ul className="hidden items-center justify-end space-x-6 md:visible md:flex">
-          <li className="text-xs text-gray-600 dark:text-gray-400">
-            {chapters?.filter(
-              (chapter) => chapter.id === section.id,
-            )
-              ? chapters?.filter(
-                  (chapter) =>
-                    chapter.id === section.id,
-                ).length
-              : 1}{" "}
-            lecture
-          </li>
-        </ul>
-
-        <p className="visible text-xs md:hidden">
-          {chapters && chapters.length}{" "}
-          {chapters ? (chapters.length === 1 ? "chapter" : "chapters") : ""}
-        </p>
-      </div>
-
-      <div className="max-h-0 overflow-hidden text-sm group-[.activated]:max-h-[120px]">
-        {chapters ? (
-          <div className="ml-8 mt-2">
-            {chapters.map((chapter: Chapter) => {
-              return (
-                <div key={chapter.id}>
-                  <AccordionItemDescriptionItem
-                    name={chapter.title}
-                    duration={chapter.createdAt.toString()!}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div></div>
-        )}
-      </div>
-    </div>
+      ⏳ Loading course section chapters ...
+    </Callout>
   );
+}
+
+if (error) {
+  console.log("ERROR: in loading section chapters", error.message);
+  return (
+    <Callout
+      className=""
+      title="Error loading section chapters 🚨❌"
+      color="red"
+    >
+      {error.message} 🚨❌ ...
+    </Callout>
+  );
+}
+
+const chapters: Chapter[] = data?.data as Chapter[];
+console.log(`Section Chapters for sectionId: ${courseSectionId}`, chapters);
+
+return (
+  <div
+    className={`group rounded-md bg-slate-100 p-3 transition-all duration-200 dark:bg-gray-800 md:p-5 ${item.active === 1 ? "activated" : ""
+      }`}
+  >
+    <div className="py-auto flex items-center justify-between">
+      <div className="py-auto flex items-center" onClick={toggleActiveItem}>
+        <div className="cursor-pointer px-1 group-[.activated]:rotate-180">
+          <IoMdArrowDropdown size={20} />
+        </div>
+        <div className="line-clamp-1 cursor-pointer overflow-clip pl-1 text-xs group-[.activated]:font-semibold group-[.activated]:text-indigo-500 hover:text-indigo-500 md:text-sm">
+          {section.title}
+        </div>
+      </div>
+
+      <ul className="hidden items-center justify-end space-x-6 md:visible md:flex">
+        <li className="text-xs text-gray-600 dark:text-gray-400">
+          {chapters?.filter(
+            (chapter) => chapter.id === section.id,
+          )
+            ? chapters?.filter(
+              (chapter) =>
+                chapter.id === section.id,
+            ).length
+            : 1}{" "}
+          lecture
+        </li>
+      </ul>
+
+      <p className="visible text-xs md:hidden">
+        {chapters && chapters.length}{" "}
+        {chapters ? (chapters.length === 1 ? "chapter" : "chapters") : ""}
+      </p>
+    </div>
+
+    <div className="max-h-0 overflow-hidden text-sm group-[.activated]:max-h-[120px]">
+      {chapters ? (
+        <div className="ml-8 mt-2">
+          {chapters.map((chapter: Chapter) => {
+            return (
+              <div key={chapter.id}>
+                <AccordionItemDescriptionItem
+                  name={chapter.title}
+                  duration={chapter.createdAt.toString()!}
+                />
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div></div>
+      )}
+    </div>
+  </div>
+);
 };
 
 const AccordionItemDescriptionItem = ({

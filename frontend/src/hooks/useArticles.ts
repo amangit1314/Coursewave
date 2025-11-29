@@ -193,9 +193,12 @@ export const useDeleteArticle = () => {
 
   return useMutation({
     mutationFn: (articleId: string) => articleService.deleteArticle(articleId),
-    onSuccess: () => {
+    onSuccess: (_, articleId) => {
+      // Invalidate all article-related queries
       queryClient.invalidateQueries({ queryKey: ["articles"] });
       queryClient.invalidateQueries({ queryKey: ["savedArticles"] });
+      queryClient.invalidateQueries({ queryKey: ["createdArticles"] });
+      queryClient.invalidateQueries({ queryKey: ["article", articleId] });
     },
   });
 };
@@ -290,22 +293,22 @@ export const useIncrementArticleViewCount = () => {
       return response.data;
     },
     onSuccess: (data, variables) => {
-        const { blogId, slug } = variables as { blogId: string; slug?: string };
-        queryClient.setQueryData(["article", blogId], (old: any) =>
+      const { blogId, slug } = variables as { blogId: string; slug?: string };
+      queryClient.setQueryData(["article", blogId], (old: any) =>
+        old ? { ...old, ...data } : data
+      );
+      if (slug) {
+        queryClient.setQueryData(["article", slug], (old: any) =>
           old ? { ...old, ...data } : data
         );
-        if (slug) {
-          queryClient.setQueryData(["article", slug], (old: any) =>
-            old ? { ...old, ...data } : data
-          );
-        }
-        queryClient.setQueryData(["articles"], (old: any) =>
-          Array.isArray(old)
-            ? old.map((a: any) => (a.id === blogId ? { ...a, ...data } : a))
-            : old
-        );
-      },
-    }
+      }
+      queryClient.setQueryData(["articles"], (old: any) =>
+        Array.isArray(old)
+          ? old.map((a: any) => (a.id === blogId ? { ...a, ...data } : a))
+          : old
+      );
+    },
+  }
   );
 };
 

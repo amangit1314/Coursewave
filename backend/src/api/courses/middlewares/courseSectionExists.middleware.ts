@@ -49,7 +49,7 @@ export async function courseSectionExists(
   try {
     // Get sectionId from URL params (not body)
     const sectionId = req.params.sectionId;
-    
+
     if (!sectionId) {
       return res.status(400).json({
         success: false,

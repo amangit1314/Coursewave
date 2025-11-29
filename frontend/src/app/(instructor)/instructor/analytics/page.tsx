@@ -10,6 +10,8 @@ import { useMyInstructorAnlaytics } from "@/hooks/useInstructor";
 const AnalyticsPage = () => {
   const { user } = useUserStore();
 
+  console.log("User in the analytics page: ", JSON.stringify(user));
+
   // 🔹 Role check: Only allow users with INSTRUCTOR role
   const isInstructor = user?.roles?.includes("INSTRUCTOR");
 

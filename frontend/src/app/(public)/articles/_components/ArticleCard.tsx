@@ -4,6 +4,7 @@ import Image from "next/image";
 import { GoDotFill } from "react-icons/go";
 import Link from "next/link";
 import { FaHandsClapping, FaShareFromSquare } from "react-icons/fa6";
+import { FaStar } from "react-icons/fa";
 import { AiOutlineComment } from "react-icons/ai";
 import { MdMoreHoriz } from "react-icons/md";
 import {
@@ -267,6 +268,18 @@ export const ArticleCard = ({ article }: ArticleCardProps) => {
           <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
             <GoDotFill className="text-primary animate-pulse" size={10} />
             <span>{readMins} min read</span>
+            {article.averageRating && article.averageRating > 0 && (
+              <>
+                <GoDotFill className="text-primary animate-pulse" size={10} />
+                <div className="flex items-center gap-1 text-yellow-500">
+                  <FaStar className="w-3 h-3" />
+                  <span>{article.averageRating.toFixed(1)}</span>
+                  <span className="text-muted-foreground">
+                    ({article.ratingsCount})
+                  </span>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Title & description */}

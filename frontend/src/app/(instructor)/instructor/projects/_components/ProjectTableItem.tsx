@@ -161,18 +161,16 @@ const ProjectTableItem = ({ project }: ProjectItemProps) => {
           <div className="flex justify-end relative">
             <button
               onClick={() => setOpenDropdown(!openDropdown)}
-              className={`relative flex items-center justify-center h-9 w-9 rounded-lg transition-all duration-200 ${
-                openDropdown
+              className={`relative flex items-center justify-center h-9 w-9 rounded-lg transition-all duration-200 ${openDropdown
                   ? "bg-zinc-100 dark:bg-zinc-700 shadow-lg scale-95"
                   : "hover:bg-zinc-100 dark:hover:bg-zinc-700/50"
-              }`}
+                }`}
               aria-haspopup="true"
               aria-expanded={openDropdown}
             >
               <MoreHorizontal
-                className={`h-5 w-5 transition-transform duration-200 ${
-                  openDropdown ? "rotate-90" : ""
-                }`}
+                className={`h-5 w-5 transition-transform duration-200 ${openDropdown ? "rotate-90" : ""
+                  }`}
               />
             </button>
 

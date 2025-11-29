@@ -44,16 +44,14 @@ const ModernDropdownMenu = () => {
         {/* Dropdown Trigger Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`group relative flex items-center justify-center h-10 w-10 rounded-lg transition-all duration-200 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 ${
-            isOpen
+          className={`group relative flex items-center justify-center h-10 w-10 rounded-lg transition-all duration-200 hover:bg-gray-100/80 dark:hover:bg-gray-700/50 ${isOpen
               ? 'bg-gray-100 dark:bg-gray-700 shadow-lg scale-95'
               : ''
-          }`}
+            }`}
         >
-          <MoreHorizontal 
-            className={`h-5 w-5 transition-transform duration-200 ${
-              isOpen ? 'rotate-90' : 'group-hover:scale-110'
-            }`} 
+          <MoreHorizontal
+            className={`h-5 w-5 transition-transform duration-200 ${isOpen ? 'rotate-90' : 'group-hover:scale-110'
+              }`}
           />
           <span className="sr-only">Open menu</span>
         </button>
@@ -62,7 +60,7 @@ const ModernDropdownMenu = () => {
         {isOpen && (
           <>
             {/* Backdrop */}
-            <div 
+            <div
               className="fixed inset-0 z-40"
               onClick={() => setIsOpen(false)}
             />
@@ -161,7 +159,7 @@ const ModernDropdownMenu = () => {
         {showDeleteConfirm && (
           <>
             {/* Modal Backdrop */}
-            <div 
+            <div
               className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 animate-in fade-in duration-200"
               onClick={() => setShowDeleteConfirm(false)}
             />

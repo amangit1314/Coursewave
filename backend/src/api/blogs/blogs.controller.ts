@@ -99,7 +99,7 @@ export const createBlog = async (req: Request, res: Response) => {
 export const reportBlog = async (req: Request, res: Response) => {
   try {
     const { blogId } = req.params;
-    const userId = req.user?.id  || "";
+    const userId = req.user?.id || "";
     const { reason } = req.body;
 
     console.log("req.user:", JSON.stringify(req.user));
@@ -154,7 +154,7 @@ export const incrementBlogViewCount = async (req: Request, res: Response) => {
 export const followUnfollowAuthor = async (req: Request, res: Response) => {
   try {
     const { blogId } = req.params; // Changed from id to blogId
-    const userId = req.user?.id  || "";
+    const userId = req.user?.id || "";
 
     const result = await BlogsService.followUnfollowAuthor(blogId, userId);
 
@@ -509,6 +509,39 @@ export const addComment = async (req: Request, res: Response) => {
   }
 };
 
+export const updateComment = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { content } = req.body;
+    const userId = req.user?.id || "";
+
+    const comment = await BlogsService.updateComment(id, userId, content);
+
+    return res.status(200).json({
+      success: true,
+      data: comment,
+    });
+  } catch (error: any) {
+    console.log("ERROR in updating comment: ", error.message);
+    if (error.message === "Comment not found") {
+      return res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+    }
+    if (error.message === "You are not authorized to update this comment") {
+      return res.status(403).json({
+        success: false,
+        message: error.message,
+      });
+    }
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
 export const likeUnlikeComment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -538,6 +571,87 @@ export const likeUnlikeComment = async (req: Request, res: Response) => {
   }
 };
 
+export const rateArticle = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { rating } = req.body;
+    const userId = req.user?.id || "";
+
+    if (!rating || rating < 1 || rating > 5) {
+      return res.status(400).json({
+        success: false,
+        message: "Rating must be between 1 and 5",
+      });
+    }
+
+    const result = await BlogsService.rateArticle(id, userId, rating);
+
+    return res.status(200).json({
+      success: true,
+      data: result,
+      message: "Article rated successfully",
+    });
+  } catch (error: any) {
+    console.log("ERROR in rating article: ", error.message);
+    if (error.message === "Blog not found") {
+      return res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+    }
+    if (error.message === "Rating must be between 1 and 5") {
+      return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
+export const getUserRating = async (req: Request, res: Response) => {
+  try {
+    const { blogId } = req.params;
+    const userId = req.user?.id || "";
+
+    const rating = await BlogsService.getUserRating(blogId, userId);
+
+    return res.status(200).json({
+      success: true,
+      data: { rating },
+    });
+  } catch (error: any) {
+    console.log("ERROR in getting user rating: ", error.message);
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
+export const getAverageRating = async (req: Request, res: Response) => {
+  try {
+    const { blogId } = req.params;
+
+    const ratingData = await BlogsService.getAverageRating(blogId);
+
+    return res.status(200).json({
+      success: true,
+      data: ratingData,
+    });
+  } catch (error: any) {
+    console.log("ERROR in getting average rating: ", error.message);
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
+
 export const deleteComment = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -566,6 +680,25 @@ export const deleteComment = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       error: error.message,
+    });
+  }
+};
+// Get user's own blogs/articles
+export const getUserOwnBlogs = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id || '';
+    const blogs = await BlogsService.getUserOwnBlogs(userId);
+
+    res.status(200).json({
+      success: true,
+      data: blogs,
+      message: 'Articles fetched successfully',
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      message: 'Failed to fetch articles',
     });
   }
 };

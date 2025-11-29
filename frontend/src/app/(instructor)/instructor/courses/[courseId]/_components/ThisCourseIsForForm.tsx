@@ -130,7 +130,7 @@ export const ThisCourseIsForForm = ({ course }: { course: Course }) => {
                   className="flex w-full items-center rounded-xl border border-sky-200 bg-sky-100 p-3 text-sky-700 dark:border-none dark:bg-zinc-800 dark:text-gray-100"
                 >
                   <Pencil className="mr-2 h-4 w-4 flex-shrink-0" />
-                  <p className="line-clamp-1 text-[12px]">{audience}</p>
+                  <p className="line-clamp-2 mr-2 ml-1 text-[12px]">{audience}</p>
                   {deletingId === index.toString() && (
                     <div>
                       <Loader2 className="h-4 w-4 animate-spin" />

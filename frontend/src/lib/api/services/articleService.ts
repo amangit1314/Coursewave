@@ -15,7 +15,7 @@ class ArticleService {
   private static instance: ArticleService;
   private api = apiManager;
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): ArticleService {
     if (!ArticleService.instance) {

@@ -16,17 +16,11 @@ import {
 } from "lucide-react";
 import { useProjectDetails } from "@/hooks/useProjects";
 import { useParams } from "next/navigation";
-
-const mockIsEnrolled = true;
-const mockSubmissionFeedback = {
-  rating: 4,
-  comments:
-    "Great job on your project! The implementation is solid and shows good understanding of Next.js concepts. Consider improving the UI accessibility with proper ARIA labels and keyboard navigation. Also, add more comprehensive error handling for the payment flow.",
-};
+import { dmSans, poppins } from "@/lib/config/fonts";
+import { useCheckCourseIsPurchased } from "@/hooks/useCourses";
+import { useSubmitProject, useProjectSubmissions, useSubmissionFeedback } from "@/hooks/useProjects";
 
 const ProjectPage = () => {
-  // Simulate useParams from Next.js
-  // const projectId = "ecommerce-nextjs-project";
   const params = useParams<{ slug: string }>();
   const projectId = params.slug;
 
@@ -36,70 +30,54 @@ const ProjectPage = () => {
     isError,
     error,
   } = useProjectDetails(projectId);
+  const { data: submissions } = useProjectSubmissions(projectId);
+  const { data: feedback } = useSubmissionFeedback(projectId, submissions?.[0]?.id);
 
-  const [isDark, setIsDark] = useState(false);
   const [submissionUrl, setSubmissionUrl] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const { courseIsPurchased } = useCheckCourseIsPurchased(project?.courseId!);
 
   const handleSubmit = () => {
     if (!submissionUrl?.trim()) return;
     setSubmitted(true);
   };
 
-  const toggleTheme = () => setIsDark(!isDark);
-
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty.toLowerCase()) {
       case "beginner":
-        return isDark
-          ? "bg-green-500/20 text-green-300 border-green-500/30"
-          : "bg-green-100 text-green-700 border-green-300";
+        return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 dark:bg-emerald-50 dark:text-emerald-700 dark:border-emerald-200 bg-emerald-50 dark:bg-emerald-50 dark:text-emerald-700 dark:text-emerald-700 dark:border-emerald-200";
       case "intermediate":
-        return isDark
-          ? "bg-yellow-500/20 text-yellow-300 border-yellow-500/30"
-          : "bg-yellow-100 text-yellow-700 border-yellow-300";
+        return "bg-amber-500/10 text-amber-400 border-amber-500/20 dark:bg-amber-50 dark:text-amber-700 dark:border-amber-200";
       case "advanced":
-        return isDark
-          ? "bg-red-500/20 text-red-300 border-red-500/30"
-          : "bg-red-100 text-red-700 border-red-300";
+        return "bg-rose-500/10 text-rose-400 border-rose-500/20 dark:bg-rose-50 dark:text-rose-700 dark:border-rose-200";
       default:
-        return isDark
-          ? "bg-zinc-500/20 text-zinc-300 border-zinc-500/30"
-          : "bg-zinc-100 text-zinc-700 border-zinc-300";
+        return "bg-zinc-500/10 text-zinc-400 border-zinc-500/20 dark:bg-zinc-50 dark:text-zinc-700 dark:border-zinc-200";
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "active":
-        return isDark
-          ? "bg-blue-500/20 text-blue-300 border-blue-500/30"
-          : "bg-blue-100 text-blue-700 border-blue-300";
+        return "bg-blue-500/10 text-blue-400 border-blue-500/20 dark:bg-blue-500 dark:text-blue-700 dark:border-blue-200";
       case "completed":
-        return isDark
-          ? "bg-green-500/20 text-green-300 border-green-500/30"
-          : "bg-green-100 text-green-700 border-green-300";
+        return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 dark:bg-emerald-50- dark:text-emerald-700 dark:border-emerald-200";
       case "upcoming":
-        return isDark
-          ? "bg-purple-500/20 text-purple-300 border-purple-500/30"
-          : "bg-purple-100 text-purple-700 border-purple-300";
+        return "bg-purple-500/10 text-purple-400 border-purple-500/20 dark:bg-purple-500 dark:text-purple-700 dark:border-purple-200";
       default:
-        return isDark
-          ? "bg-zinc-500/20 text-zinc-300 border-zinc-500/30"
-          : "bg-zinc-100 text-zinc-700 border-zinc-300";
+        return "bg-zinc-500/10 text-zinc-400 border-zinc-500/20 dark:bg-zinc-500 dark:text-zinc-700 dark:border-zinc-200";
     }
   };
 
   if (isLoading) {
     return (
       <div
-        className={`flex justify-center items-center h-screen ${isDark ? "bg-zinc-900 text-zinc-300" : "bg-zinc-50 text-zinc-500"}`}
+        className={`${poppins.className} flex justify-center items-center h-screen dark:bg-zinc-950 dark:text-zinc-400 bg-white text-zinc-500`}
       >
         <div className="text-center">
           <div
-            className={`animate-spin rounded-full h-16 w-16 border-b-2 mx-auto mb-4 ${isDark ? "border-blue-400" : "border-blue-600"}`}
+            className={`animate-spin rounded-full h-12 w-12 border-2 border-t-transparent mx-auto mb-4 dark:border-blue-500 border-blue-600`}
           ></div>
-          <p className="text-lg font-medium">Loading project details...</p>
+          <p className="text-sm font-medium">Loading project details...</p>
         </div>
       </div>
     );
@@ -108,20 +86,20 @@ const ProjectPage = () => {
   if (isError) {
     return (
       <div
-        className={`flex justify-center items-center h-screen ${isDark ? "bg-zinc-900" : "bg-zinc-50"}`}
+        className={`flex justify-center items-center h-screen dark:bg-zinc-950 dark:text-zinc-400 bg-white text-zinc-500`}
       >
         <div
-          className={`text-center p-8 rounded-2xl ${isDark ? "bg-zinc-800" : "bg-white"} shadow-xl max-w-md`}
+          className={`text-center p-8 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200 max-w-md`}
         >
           <AlertCircle
-            className={`w-16 h-16 mx-auto mb-4 ${isDark ? "text-red-400" : "text-red-500"}`}
+            className={`w-12 h-12 mx-auto mb-4 dark:text-rose-500 text-rose-600`}
           />
           <h2
-            className={`text-2xl font-bold mb-2 ${isDark ? "text-white" : "text-zinc-900"}`}
+            className={`${dmSans.className} text-xl font-semibold mb-2 dark:text-white text-zinc-900`}
           >
             Error Loading Project
           </h2>
-          <p className={isDark ? "text-zinc-300" : "text-zinc-600"}>
+          <p className={`${poppins.className} text-sm dark:text-zinc-400 text-zinc-600`}>
             {(error as any)?.message || "Something went wrong"}
           </p>
         </div>
@@ -132,20 +110,20 @@ const ProjectPage = () => {
   if (!project) {
     return (
       <div
-        className={`flex justify-center items-center h-screen ${isDark ? "bg-zinc-900" : "bg-zinc-50"}`}
+        className={`flex justify-center items-center h-screen dark:bg-zinc-950 dark:text-zinc-400 bg-white text-zinc-500`}
       >
         <div
-          className={`text-center p-8 rounded-2xl ${isDark ? "bg-zinc-800" : "bg-white"} shadow-xl max-w-md`}
+          className={`text-center p-8 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200 max-w-md`}
         >
           <BookOpen
-            className={`w-16 h-16 mx-auto mb-4 ${isDark ? "text-zinc-500" : "text-zinc-400"}`}
+            className={`w-12 h-12 mx-auto mb-4 dark:text-zinc-600 text-zinc-400`}
           />
           <h2
-            className={`text-2xl font-bold mb-2 ${isDark ? "text-white" : "text-zinc-900"}`}
+            className={`${dmSans.className} text-xl font-semibold mb-2 dark:text-white text-zinc-900`}
           >
             Project Not Found
           </h2>
-          <p className={isDark ? "text-zinc-300" : "text-zinc-600"}>
+          <p className={`${poppins.className} text-sm dark:text-zinc-400 text-zinc-600`}>
             The project you're looking for doesn't exist or has been removed.
           </p>
         </div>
@@ -155,39 +133,39 @@ const ProjectPage = () => {
 
   return (
     <div
-      className={`min-h-screen  transition-colors duration-300 dark:bg-zinc-900 bg-gradient-to-br from-zinc-50 dark:from-zinc-900  via-blue-50 dark:via-zinc-950 to-purple-50"}`}
+      className={`min-h-screen transition-colors duration-200 dark:bg-zinc-950 bg-white`}
     >
-      <main className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-0 md:pb-12 md:pt-24">
+
+      <main className="max-w-screen mt-16 mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
         {/* Hero Section */}
         <div
-          className={`rounded-3xl overflow-hidden shadow-2xl mb-12 ${isDark ? "bg-zinc-800" : "bg-white"}`}
+          className={`rounded-2xl overflow-hidden border mb-10 dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
         >
           <div className="grid lg:grid-cols-2 gap-0">
             {/* Image Section */}
-            <div className="relative h-64 lg:h-auto overflow-hidden group">
+            <div className="relative h-72 lg:h-auto overflow-hidden">
               {project.thumbnailUrl ? (
                 <img
                   src={project.thumbnailUrl}
                   alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-cover"
                 />
               ) : (
                 <div
-                  className={`flex items-center justify-center w-full h-full ${isDark ? "bg-zinc-700 text-zinc-500" : "bg-zinc-200 text-zinc-400"}`}
+                  className={`flex items-center justify-center w-full h-full dark:bg-zinc-800 dark:text-zinc-600 bg-zinc-200 text-zinc-400`}
                 >
-                  <Code className="w-20 h-20" />
+                  <Code className="w-16 h-16" />
                 </div>
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <div className="absolute bottom-6 left-6 flex gap-3 flex-wrap">
+              <div className="absolute bottom-4 left-4 flex gap-2 flex-wrap">
                 <span
-                  className={`px-4 py-2 rounded-full text-sm font-semibold border backdrop-blur-sm ${getStatusColor(project.status)}`}
+                  className={`${poppins.className} px-3 py-1.5 rounded-lg text-xs font-medium border ${getStatusColor(project.status)}`}
                 >
                   {project.status}
                 </span>
                 {project.difficulty && (
                   <span
-                    className={`px-4 py-2 rounded-full text-sm font-semibold border backdrop-blur-sm ${getDifficultyColor(project.difficulty)}`}
+                    className={`${poppins.className} px-3 py-1.5 rounded-lg text-xs font-medium border ${getDifficultyColor(project.difficulty)}`}
                   >
                     {project.difficulty}
                   </span>
@@ -196,111 +174,131 @@ const ProjectPage = () => {
             </div>
 
             {/* Content Section */}
-            <div className="p-8 lg:p-12">
+            <div className="p-8 lg:p-10">
               <h1
-                className={`text-4xl lg:text-5xl font-bold mb-6 ${isDark ? "text-white" : "text-zinc-900"}`}
+                className={`${dmSans.className} text-3xl lg:text-4xl font-bold mb-4 dark:text-white text-zinc-900`}
               >
                 {project.title}
               </h1>
               <p
-                className={`text-lg leading-relaxed mb-8 whitespace-pre-line ${isDark ? "text-zinc-300" : "text-zinc-600"}`}
+                className={`${poppins.className} text-base leading-relaxed mb-8 dark:text-zinc-400 text-zinc-600`}
               >
                 {project.description}
               </p>
 
-              {/* Quick Stats */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {/* deadline, max  Stats */}
+              <div className="grid grid-cols-2 gap-3">
                 {project.deadline && (
                   <div
-                    className={`p-4 rounded-xl ${isDark ? "bg-zinc-700/50" : "bg-zinc-50"}`}
+                    className={`p-4 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700 bg-white border-zinc-200`}
                   >
                     <div className="flex items-center gap-2 mb-1">
                       <Calendar
-                        className={`w-4 h-4 ${isDark ? "text-blue-400" : "text-blue-600"}`}
+                        className={`w-4 h-4 dark:text-blue-400 text-blue-600`}
                       />
                       <span
-                        className={`text-sm font-medium ${isDark ? "text-zinc-400" : "text-zinc-500"}`}
+                        className={`${poppins.className} text-xs dark:text-zinc-500 text-zinc-500`}
                       >
                         Deadline
                       </span>
                     </div>
                     <p
-                      className={`text-lg font-semibold ${isDark ? "text-white" : "text-zinc-900"}`}
+                      className={`${dmSans.className} text-sm font-semibold dark:text-white text-zinc-900`}
                     >
                       {new Date(project.deadline).toLocaleDateString()}
                     </p>
                   </div>
                 )}
-                {project.startDate && (
-                  <div
-                    className={`p-4 rounded-xl ${isDark ? "bg-zinc-700/50" : "bg-zinc-50"}`}
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      <Target
-                        className={`w-4 h-4 ${isDark ? "text-green-400" : "text-green-600"}`}
-                      />
-                      <span
-                        className={`text-sm font-medium ${isDark ? "text-zinc-400" : "text-zinc-500"}`}
-                      >
-                        Start Date
-                      </span>
-                    </div>
-                    <p
-                      className={`text-lg font-semibold ${isDark ? "text-white" : "text-zinc-900"}`}
-                    >
-                      {new Date(project.startDate).toLocaleDateString()}
-                    </p>
-                  </div>
-                )}
+
                 <div
-                  className={`p-4 rounded-xl ${isDark ? "bg-zinc-700/50" : "bg-zinc-50"}`}
+                  className={`p-4 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700 bg-white border-zinc-200`}
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <Zap
-                      className={`w-4 h-4 dark:text-purple-400" text-purple-600`}
+                      className={`w-4 h-4 dark:text-purple-400 text-purple-600`}
                     />
                     <span
-                      className={`text-sm font-medium dark:text-zinc-400 text-zinc-500`}
+                      className={`${poppins.className} text-xs dark:text-zinc-500 text-zinc-500`}
                     >
                       Max Submissions
                     </span>
+
+                    {/* <p
+                      className={`${dmSans.className} text-sm font-semibold dark:text-white text-zinc-900`}
+                    >
+                      {project.maxSubmissions ?? "Unlimited"}
+                    </p> */}
                   </div>
                   <p
-                    className={`text-lg font-semibold ${isDark ? "text-white" : "text-zinc-900"}`}
+                    className={`${dmSans.className} text-sm font-semibold dark:text-white text-zinc-900`}
                   >
                     {project.maxSubmissions ?? "Unlimited"}
                   </p>
                 </div>
               </div>
 
-              {project.endDate && (
-                <div
-                  className={`mt-4 p-3 rounded-lg ${isDark ? "bg-blue-500/10 border border-blue-500/20" : "bg-blue-50 border border-blue-100"}`}
-                >
-                  <p
-                    className={`text-sm ${isDark ? "text-blue-300" : "text-blue-700"}`}
+              {/* Start Date, end date */}
+              <div className="grid grid-cols-2 gap-3 mt-3">
+                {project.startDate && (
+                  <div
+                    className={`p-4 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700 bg-white border-zinc-200`}
                   >
-                    <span className="font-semibold">End Date:</span>{" "}
-                    {new Date(project.endDate).toLocaleDateString()}
-                  </p>
-                </div>
-              )}
+                    <div className="flex items-center gap-2 mb-1">
+                      <Target
+                        className={`w-4 h-4 dark:text-emerald-400 text-emerald-600`}
+                      />
+                      <span
+                        className={`${poppins.className} text-xs dark:text-zinc-500 text-zinc-500`}
+                      >
+                        Start Date
+                      </span>
+                    </div>
+                    <p
+                      className={`${dmSans.className} text-sm font-semibold dark:text-white text-zinc-900`}
+                    >
+                      {new Date(project.startDate).toLocaleDateString()}
+                    </p>
+                  </div>
+                )}
+
+                {project.endDate && (
+                  <div
+                    className={`p-4 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700 bg-white border-zinc-200`}
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <Target
+                        className={`w-4 h-4 dark:text-emerald-400 text-emerald-600`}
+                      />
+                      <span
+                        className={`${poppins.className} text-xs dark:text-zinc-500 text-zinc-500`}
+                      >
+                        End Date
+                      </span>
+                    </div>
+                    <p
+                      className={`${dmSans.className} text-sm font-semibold dark:text-white text-zinc-900`}
+                    >
+                      {new Date(project.endDate).toLocaleDateString()}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6">
           {/* Left Column - Details */}
           <div className="lg:col-span-2 space-y-6">
             {/* Categories & Tags */}
             <div
-              className={`p-8 rounded-2xl shadow-lg ${isDark ? "bg-zinc-800" : "bg-white"}`}
+              className={`p-6 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
             >
               {project.categories.length > 0 && (
                 <div className="mb-6">
                   <h3
-                    className={`text-xl font-semibold mb-4 flex items-center gap-2 ${isDark ? "text-white" : "text-zinc-900"}`}
+                    className={`${dmSans.className} text-lg font-semibold mb-3 flex items-center gap-2 dark:text-white text-zinc-900`}
                   >
                     <BookOpen className="w-5 h-5" />
                     Categories
@@ -309,11 +307,7 @@ const ProjectPage = () => {
                     {project.categories.map((cat) => (
                       <span
                         key={cat}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                          isDark
-                            ? "bg-blue-500/20 text-blue-300 hover:bg-blue-500/30"
-                            : "bg-blue-100 text-blue-700 hover:bg-blue-200"
-                        }`}
+                        className={`${poppins.className} px-3 py-1.5 rounded-lg text-sm border dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20 bg-blue-50 text-blue-700 border-blue-200`}
                       >
                         {cat}
                       </span>
@@ -325,7 +319,7 @@ const ProjectPage = () => {
               {project.tags.length > 0 && (
                 <div>
                   <h3
-                    className={`text-xl font-semibold mb-4 flex items-center gap-2 ${isDark ? "text-white" : "text-zinc-900"}`}
+                    className={`${dmSans.className} text-lg font-semibold mb-3 flex items-center gap-2 dark:text-white text-zinc-900`}
                   >
                     <Code className="w-5 h-5" />
                     Tags
@@ -334,11 +328,7 @@ const ProjectPage = () => {
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                          isDark
-                            ? "bg-green-500/20 text-green-300 hover:bg-green-500/30"
-                            : "bg-green-100 text-green-700 hover:bg-green-200"
-                        }`}
+                        className={`${poppins.className} px-3 py-1.5 rounded-lg text-sm border dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20 bg-emerald-50 text-emerald-700 border-emerald-200`}
                       >
                         {tag}
                       </span>
@@ -351,10 +341,10 @@ const ProjectPage = () => {
             {/* Learning Outcomes */}
             {project.learningOutcomes.length > 0 && (
               <div
-                className={`p-8 rounded-2xl shadow-lg ${isDark ? "bg-zinc-800" : "bg-white"}`}
+                className={`p-6 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
               >
                 <h3
-                  className={`text-xl font-semibold mb-4 flex items-center gap-2 ${isDark ? "text-white" : "text-zinc-900"}`}
+                  className={`${dmSans.className} text-lg font-semibold mb-4 flex items-center gap-2 dark:text-white text-zinc-900`}
                 >
                   <Award className="w-5 h-5" />
                   Learning Outcomes
@@ -363,10 +353,10 @@ const ProjectPage = () => {
                   {project.learningOutcomes.map((outcome, idx) => (
                     <li key={idx} className="flex items-start gap-3">
                       <CheckCircle
-                        className={`w-5 h-5 mt-0.5 flex-shrink-0 ${isDark ? "text-green-400" : "text-green-600"}`}
+                        className={`w-5 h-5 mt-0.5 flex-shrink-0 dark:text-emerald-400 text-emerald-600`}
                       />
                       <span
-                        className={isDark ? "text-zinc-300" : "text-zinc-700"}
+                        className={`${poppins.className} text-sm dark:text-zinc-400 text-zinc-700`}
                       >
                         {outcome}
                       </span>
@@ -378,21 +368,21 @@ const ProjectPage = () => {
 
             {/* Submission Section */}
             <div
-              className={`p-8 rounded-2xl shadow-lg ${isDark ? "bg-zinc-800" : "bg-white"}`}
+              className={`p-6 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
             >
               <h2
-                className={`text-2xl font-semibold mb-6 flex items-center gap-2 ${isDark ? "text-white" : "text-zinc-900"}`}
+                className={`${dmSans.className} text-xl font-semibold mb-5 flex items-center gap-2 dark:text-white text-zinc-900`}
               >
-                <ArrowRight className="w-6 h-6" />
+                <ArrowRight className="w-5 h-5" />
                 Submit Your Project
               </h2>
-              {mockIsEnrolled ? (
+              {courseIsPurchased ? (
                 <>
                   {!submitted ? (
                     <div className="space-y-4">
                       <div>
                         <label
-                          className={`block text-sm font-medium mb-2 ${isDark ? "text-zinc-300" : "text-zinc-700"}`}
+                          className={`${poppins.className} block text-sm font-medium mb-2 dark:text-zinc-400 text-zinc-700`}
                         >
                           Project URL (GitHub, CodePen, Live Demo, etc.)
                         </label>
@@ -401,22 +391,21 @@ const ProjectPage = () => {
                           placeholder="https://github.com/username/project"
                           value={submissionUrl}
                           onChange={(e) => setSubmissionUrl(e.target.value)}
-                          className={`w-full px-4 py-3 rounded-xl border-2 transition-colors ${
-                            isDark
-                              ? "bg-zinc-700 border-zinc-600 text-white placeholder-zinc-400 focus:border-blue-500"
-                              : "bg-white border-zinc-200 text-zinc-900 placeholder-zinc-400 focus:border-blue-500"
-                          } focus:outline-none`}
+                          className={`${poppins.className} w-full px-4 py-2.5 rounded-lg border transition-colors dark:bg-zinc-800 dark:border-zinc-700 dark:text-white dark:placeholder-zinc-500 dark:focus:border-blue-500 bg-white border-zinc-300 text-zinc-900 placeholder-zinc-400 focus:border-blue-500 focus:outline-none text-sm`}
                         />
                       </div>
                       <button
                         onClick={handleSubmit}
                         disabled={!submissionUrl.trim()}
-                        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl px-6 py-3 font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:from-blue-600 disabled:hover:to-purple-600"
+                        className={`${dmSans.className} w-full rounded-lg px-6 py-2.5 font-medium transition-colors text-sm ${submissionUrl.trim()
+                          ? "bg-blue-600 text-white hover:bg-blue-700"
+                          : "bg-zinc-300 text-zinc-500 cursor-not-allowed"
+                          }`}
                       >
                         Submit Project
                       </button>
                       <p
-                        className={`text-sm ${isDark ? "text-zinc-400" : "text-zinc-500"}`}
+                        className={`${poppins.className} text-xs dark:text-zinc-500 text-zinc-500`}
                       >
                         Make sure your project meets all the requirements before
                         submitting. You can submit up to{" "}
@@ -425,26 +414,26 @@ const ProjectPage = () => {
                     </div>
                   ) : (
                     <div
-                      className={`rounded-xl p-6 ${isDark ? "bg-green-500/20 border border-green-500/30" : "bg-green-50 border border-green-200"}`}
+                      className={`rounded-lg p-5 border dark:bg-emerald-500/5 dark:border-emerald-500/20 bg-emerald-50 border-emerald-200`}
                     >
                       <div className="flex items-start gap-3">
                         <CheckCircle
-                          className={`w-6 h-6 flex-shrink-0 ${isDark ? "text-green-400" : "text-green-600"}`}
+                          className={`w-5 h-5 flex-shrink-0 mt-0.5 dark:text-emerald-400 text-emerald-600`}
                         />
                         <div>
                           <p
-                            className={`font-semibold mb-1 ${isDark ? "text-green-300" : "text-green-800"}`}
+                            className={`${dmSans.className} font-semibold mb-1 text-sm dark:text-emerald-400 text-emerald-800`}
                           >
                             Submission Received!
                           </p>
                           <p
-                            className={`text-sm ${isDark ? "text-green-400" : "text-green-700"}`}
+                            className={`${poppins.className} text-sm dark:text-emerald-400 text-emerald-700`}
                           >
                             Thank you for your submission. You'll receive
                             feedback within 2-3 business days.
                           </p>
                           <p
-                            className={`text-sm mt-2 ${isDark ? "text-green-400" : "text-green-700"}`}
+                            className={`${poppins.className} text-sm mt-2 dark:text-emerald-400 text-emerald-700`}
                           >
                             <strong>Submitted URL:</strong> {submissionUrl}
                           </p>
@@ -455,17 +444,17 @@ const ProjectPage = () => {
 
                   {submitted && (
                     <div
-                      className={`mt-6 p-6 rounded-xl border-2 ${isDark ? "bg-zinc-700/50 border-zinc-600" : "bg-zinc-50 border-zinc-200"}`}
+                      className={`mt-6 p-5 rounded-lg border dark:bg-zinc-800/50 dark:border-zinc-700 bg-white border-zinc-200`}
                     >
                       <h3
-                        className={`text-lg font-semibold mb-4 flex items-center gap-2 ${isDark ? "text-white" : "text-zinc-900"}`}
+                        className={`${dmSans.className} text-base font-semibold mb-4 flex items-center gap-2 dark:text-white text-zinc-900`}
                       >
                         <Award className="w-5 h-5" />
                         Submission Feedback
                       </h3>
                       <div className="flex items-center gap-2 mb-3">
                         <span
-                          className={`font-medium ${isDark ? "text-zinc-300" : "text-zinc-700"}`}
+                          className={`${poppins.className} text-sm font-medium dark:text-zinc-400 text-zinc-700`}
                         >
                           Rating:
                         </span>
@@ -473,30 +462,30 @@ const ProjectPage = () => {
                           {[...Array(5)].map((_, i) => (
                             <span
                               key={i}
-                              className={`text-2xl ${i < mockSubmissionFeedback.rating ? "text-yellow-400" : isDark ? "text-zinc-600" : "text-zinc-300"}`}
+                              className={`text-xl ${i < feedback?.rating ? "text-amber-400" : "text-zinc-700"}`}
                             >
                               ★
                             </span>
                           ))}
                         </div>
                         <span
-                          className={`font-semibold ml-2 ${isDark ? "text-white" : "text-zinc-900"}`}
+                          className={`${dmSans.className} text-sm font-semibold ml-1 dark:text-white text-zinc-900`}
                         >
-                          {mockSubmissionFeedback.rating} / 5
+                          {feedback?.rating} / 5
                         </span>
                       </div>
                       <div
-                        className={`p-4 rounded-lg ${isDark ? "bg-zinc-600/50" : "bg-white"}`}
+                        className={`p-4 rounded-lg border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
                       >
                         <p
-                          className={`font-medium mb-2 ${isDark ? "text-zinc-200" : "text-zinc-800"}`}
+                          className={`${dmSans.className} text-sm font-medium mb-2 dark:text-zinc-300 text-zinc-800`}
                         >
                           Instructor Comments:
                         </p>
                         <p
-                          className={isDark ? "text-zinc-300" : "text-zinc-700"}
+                          className={`${poppins.className} text-sm dark:text-zinc-400 text-zinc-700`}
                         >
-                          {mockSubmissionFeedback.comments}
+                          {feedback?.comments}
                         </p>
                       </div>
                     </div>
@@ -504,22 +493,20 @@ const ProjectPage = () => {
                 </>
               ) : (
                 <div
-                  className={`rounded-xl p-6 ${isDark ? "bg-yellow-500/20 border border-yellow-500/30" : "bg-yellow-50 border border-yellow-200"}`}
+                  className={`rounded-lg p-5 border dark:bg-amber-500/5 dark:border-amber-500/20 bg-amber-50 dark:bg-amber-800 border-amber-200`}
                 >
                   <div className="flex items-start gap-3">
                     <AlertCircle
-                      className={`w-6 h-6 flex-shrink-0 ${isDark ? "text-yellow-400" : "text-yellow-600"}`}
+                      className={`w-5 h-5 flex-shrink-0 mt-0.5 dark:text-amber-300 text-amber-600`}
                     />
                     <div>
                       <p
-                        className={`font-semibold mb-1 ${isDark ? "text-yellow-300" : "text-yellow-800"}`}
+                        className={`${dmSans.className} font-semibold mb-1 text-sm dark:text-amber-300 text-amber-800`}
                       >
                         Enrollment Required
                       </p>
                       <p
-                        className={
-                          isDark ? "text-yellow-300" : "text-yellow-800"
-                        }
+                        className={`${poppins.className} text-sm dark:text-amber-300 text-amber-700`}
                       >
                         You must be enrolled in the course to submit this
                         project and receive feedback.
@@ -536,10 +523,10 @@ const ProjectPage = () => {
             {/* Prerequisites */}
             {project.prerequisites.length > 0 && (
               <div
-                className={`p-6 rounded-2xl shadow-lg ${isDark ? "bg-zinc-800" : "bg-white"}`}
+                className={`p-6 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
               >
                 <h3
-                  className={`text-lg font-semibold mb-4 ${isDark ? "text-white" : "text-zinc-900"}`}
+                  className={`${dmSans.className} text-base font-semibold mb-4 dark:text-white text-zinc-900`}
                 >
                   Prerequisites
                 </h3>
@@ -547,10 +534,10 @@ const ProjectPage = () => {
                   {project.prerequisites.map((pre, idx) => (
                     <li key={idx} className="flex items-start gap-2">
                       <span
-                        className={`mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0 ${isDark ? "bg-blue-400" : "bg-blue-600"}`}
+                        className={`mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0 dark:bg-blue-400 bg-blue-600`}
                       />
                       <span
-                        className={`text-sm ${isDark ? "text-zinc-300" : "text-zinc-700"}`}
+                        className={`${poppins.className} text-sm dark:text-zinc-400 text-zinc-700`}
                       >
                         {pre}
                       </span>
@@ -563,10 +550,10 @@ const ProjectPage = () => {
             {/* Technologies */}
             {project.technologies.length > 0 && (
               <div
-                className={`p-6 rounded-2xl shadow-lg ${isDark ? "bg-zinc-800" : "bg-white"}`}
+                className={`p-6 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
               >
                 <h3
-                  className={`text-lg font-semibold mb-4 ${isDark ? "text-white" : "text-zinc-900"}`}
+                  className={`${dmSans.className} text-base font-semibold mb-4 dark:text-white text-zinc-900`}
                 >
                   Technologies
                 </h3>
@@ -574,10 +561,10 @@ const ProjectPage = () => {
                   {project.technologies.map((tech, idx) => (
                     <li key={idx} className="flex items-start gap-2">
                       <Code
-                        className={`w-4 h-4 mt-0.5 flex-shrink-0 ${isDark ? "text-purple-400" : "text-purple-600"}`}
+                        className={`w-4 h-4 mt-0.5 flex-shrink-0 dark:text-purple-400 text-purple-600`}
                       />
                       <span
-                        className={`text-sm ${isDark ? "text-zinc-300" : "text-zinc-700"}`}
+                        className={`${poppins.className} text-sm dark:text-zinc-400 text-zinc-700`}
                       >
                         {tech}
                       </span>
@@ -590,10 +577,10 @@ const ProjectPage = () => {
             {/* Resources */}
             {project.resources.length > 0 && (
               <div
-                className={`p-6 rounded-2xl shadow-lg ${isDark ? "bg-zinc-800" : "bg-white"}`}
+                className={`p-6 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
               >
                 <h3
-                  className={`text-lg font-semibold mb-4 ${isDark ? "text-white" : "text-zinc-900"}`}
+                  className={`${dmSans.className} text-base font-semibold mb-4 dark:text-white text-zinc-900`}
                 >
                   Resources
                 </h3>
@@ -604,13 +591,9 @@ const ProjectPage = () => {
                         href={res}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`flex items-center gap-2 text-sm hover:underline transition-colors group ${
-                          isDark
-                            ? "text-blue-400 hover:text-blue-300"
-                            : "text-blue-600 hover:text-blue-700"
-                        }`}
+                        className={`${poppins.className} flex items-center gap-2 text-sm transition-colors dark:text-blue-400 hover:text-blue-300 text-blue-600 hover:text-blue-700`}
                       >
-                        <ExternalLink className="w-4 h-4 flex-shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                        <ExternalLink className="w-4 h-4 flex-shrink-0" />
                         <span className="truncate">{res}</span>
                       </a>
                     </li>
@@ -621,14 +604,14 @@ const ProjectPage = () => {
 
             {/* Meta Info */}
             <div
-              className={`p-6 rounded-2xl shadow-lg text-sm ${isDark ? "bg-zinc-800 text-zinc-400" : "bg-white text-zinc-500"}`}
+              className={`p-6 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
             >
               <h3
-                className={`text-base font-semibold mb-3 ${isDark ? "text-zinc-300" : "text-zinc-700"}`}
+                className={`${dmSans.className} text-base font-semibold mb-3 dark:text-white text-zinc-900`}
               >
                 Project Information
               </h3>
-              <div className="space-y-2">
+              <div className={`${poppins.className} space-y-2 text-sm dark:text-zinc-400 text-zinc-600`}>
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4" />
                   <span>
@@ -649,19 +632,18 @@ const ProjectPage = () => {
 
       {/* Footer */}
       <footer
-        className={`mt-16 py-8 border-t ${isDark ? "border-zinc-800" : "border-zinc-200"}`}
+        className={`mt-16 py-8 border-t dark:border-zinc-800 border-zinc-200`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p
-            className={`text-sm ${isDark ? "text-zinc-400" : "text-zinc-500"}`}
+            className={`${poppins.className} text-sm dark:text-zinc-500 text-zinc-500`}
           >
-            Need help? Contact your instructor or check the course discussion
-            forum.
+            Need help? Contact your instructor or check the course discussion forum.
           </p>
         </div>
       </footer>
-    </div>
-  );
+    </div>);
 };
+
 
 export default ProjectPage;

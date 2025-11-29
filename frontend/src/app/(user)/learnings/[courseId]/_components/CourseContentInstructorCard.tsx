@@ -64,38 +64,38 @@ const CourseContentInstructorCard = ({
   //    odit nam quae repellat quis cumque reiciendis autem ab expedita. Provident eos odit nam quae repellat.`;
 
   console.log(
-    `Instructor id in the instructor-card inside (course)/courses/[id]/courseContent/page.tsx: ${instructorID}`
+  `Instructor id in the instructor-card inside (course)/courses/[id]/courseContent/page.tsx: ${instructorID}`
   );
-  console.log(
-    "Instructor Info in instructor-card inside (course)/courses/[id]/courseContent/page.tsx: ",
-    instructor
+console.log(
+"Instructor Info in instructor-card inside (course)/courses/[id]/courseContent/page.tsx: ",
+  instructor
   );
 
-  return (
-    <div className="flex w-full max-w-3xl flex-col items-start justify-start space-y-4 rounded-xl py-4 md:py-2">
-      <div className="flex items-center justify-start space-x-4">
-        <Image
-          src={instructorProfilePicUrl}
-          alt={`Image of ${instructorName}`}
-          height={50}
-          width={50}
-          objectFit="cover"
-          className="flex h-[50px] w-[50px] items-center justify-center rounded-full ring-1 ring-white"
-        />
+return (
+  <div className="flex w-full max-w-3xl flex-col items-start justify-start space-y-4 rounded-xl py-4 md:py-2">
+    <div className="flex items-center justify-start space-x-4">
+      <Image
+        src={instructorProfilePicUrl}
+        alt={`Image of ${instructorName}`}
+        height={50}
+        width={50}
+        objectFit="cover"
+        className="flex h-[50px] w-[50px] items-center justify-center rounded-full ring-1 ring-white"
+      />
 
-        <div className="mr-auto flex flex-col items-start justify-start text-base">
-          <p className="text-lg font-semibold tracking-tight text-gray-800 dark:text-slate-200">
-            {instructorName}
-          </p>
-          <p className="text-md line-clamp-2 text-base font-thin tracking-tight text-gray-700 dark:text-gray-400">
-            {instructorTag}
-          </p>
-        </div>
+      <div className="mr-auto flex flex-col items-start justify-start text-base">
+        <p className="text-lg font-semibold tracking-tight text-gray-800 dark:text-slate-200">
+          {instructorName}
+        </p>
+        <p className="text-md line-clamp-2 text-base font-thin tracking-tight text-gray-700 dark:text-gray-400">
+          {instructorTag}
+        </p>
       </div>
+    </div>
 
-      {/* <p className="text-md md:text-md line-clamp-3 w-auto text-start text-base font-normal text-gray-700 dark:text-gray-400 md:p-0">
+    {/* <p className="text-md md:text-md line-clamp-3 w-auto text-start text-base font-normal text-gray-700 dark:text-gray-400 md:p-0">
         {aboutInstructor}
       </p> */}
-    </div>
-  );
+  </div>
+);
 };

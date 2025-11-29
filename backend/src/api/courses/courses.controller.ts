@@ -743,7 +743,7 @@ export const createSection = async (req: Request, res: Response) => {
           course.sections.length === 0
             ? 1
             : Math.max(...course.sections.map((s: any) => s.position || 0), 0) +
-              1,
+            1,
         course: { connect: { id: courseId } },
       },
     });

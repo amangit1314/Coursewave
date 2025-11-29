@@ -1,127 +1,64 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import { Instructor } from "@/types/instructor";
 import { Course } from "@/types/course";
-import { instructorService } from "@/lib/api/services/instructorService";
-import { useQuery } from "@tanstack/react-query";
+import { Instructor } from "@/types/instructor";
+import { InstructorPreference, getErrorMessage } from "@/types/common-types";
 
-type LoadingState = {
-  loading: boolean;
-  error: string | null;
-};
-
-type InstructorState = {
+// =================== TYPES ===================
+type InstructorStore = {
   instructor: Instructor | null;
-  instructorCreatedCourses: Course[] | null;
-  instructorStudentsCount: number;
-  instructorAverageStarRating: number;
-  loadingState: LoadingState;
-  instructorSettingsPreferences: any[]; // Customize as per your preferences schema
+  instructorError: string | null;
+  instructorLoading: boolean;
+  instructorCourses: Course[];
+  totalEarnings: number;
+  instructorSettingsPreferences: InstructorPreference[];
+
+  // Actions
+  fetchInstructorInfo: (instructorId: string) => Promise<void>;
+  fetchInstructorCourses: (instructorId: string) => Promise<void>;
+  setPreferences: (preferences: InstructorPreference[]) => void;
 };
 
-type InstructorActions = {
-  fetchInstructorById: (instructorId: string) => Promise<void>;
-  fetchInstructorStats: (instructorId: string) => Promise<void>;
-  setInstructor: (instructor: Instructor | null) => void;
-  setPreferences: (preferences: any[]) => void;
-};
+// =================== STORE ===================
+export const useInstructorStore = create<InstructorStore>((set) => ({
+  // Initial State
+  instructor: null,
+  instructorError: null,
+  instructorLoading: false,
+  instructorCourses: [],
+  totalEarnings: 0,
+  instructorSettingsPreferences: [],
 
-export const useInstructorStore = create<InstructorState & InstructorActions>()(
-  persist(
-    (set) => ({
-      instructor: null,
-      instructorCreatedCourses: null,
-      instructorStudentsCount: 0,
-      instructorAverageStarRating: 0,
-      loadingState: { loading: false, error: null },
-      instructorSettingsPreferences: [],
-
-      // Set instructor data
-      setInstructor: (instructor: Instructor | null) => set({ instructor }),
-
-      // Fetch instructor by ID
-      fetchInstructorById: async (userId: string) => {
-        set({ loadingState: { loading: true, error: null } });
-        try {
-          const instructor = await instructorService.getInstructorById(userId);
-          set({
-            instructor: instructor?.data,
-            loadingState: { loading: false, error: null },
-          });
-        } catch (error: any) {
-          set({
-            loadingState: { loading: false, error: error.message },
-          });
-        }
-      },
-
-      // Fetch instructor statistics (courses, student count, average rating)
-      fetchInstructorStats: async (userId: string) => {
-        set({ loadingState: { loading: true, error: null } });
-        try {
-          // First get the instructor by user ID
-          const instructor = await instructorService.getInstructorById(userId);
-          if (!instructor?.data) {
-            throw new Error("Instructor not found");
-          }
-
-          // Then get analytics using the instructor ID
-          const analytics = await instructorService.getInstructorAnalytics(
-            instructor?.data.id ?? ""
-          );
-
-          set({
-
-            instructorStudentsCount: analytics.data?.totalStudents, /// todo: fix it
-            instructorAverageStarRating: analytics.data?.averageRating,
-            loadingState: { loading: false, error: null },
-          });
-        } catch (error: any) {
-          set({
-            loadingState: { loading: false, error: error.message },
-          });
-        }
-      },
-
-      // Set instructor preferences
-      setPreferences: (preferences: any[]) =>
-        set({ instructorSettingsPreferences: preferences }),
-    }),
-    {
-      name: "instructor-storage",
+  // Fetch instructor information
+  fetchInstructorInfo: async (instructorId: string) => {
+    set({ instructorLoading: true, instructorError: null });
+    try {
+      // TODO: Implement API call
+      // const response = await instructorService.getInstructorById(instructorId);
+      // set({ instructor: response.data, instructorLoading: false });
+      set({ instructorLoading: false });
+    } catch (error: unknown) {
+      const errorMessage = getErrorMessage(error);
+      console.error("Error fetching instructor info:", errorMessage);
+      set({ instructorError: errorMessage, instructorLoading: false });
     }
-  )
-);
+  },
 
-// Fetch Instructor's Courses
-export const useFetchInstructorCreatedCourses = (userId: string) => {
-  return useQuery({
-    queryKey: ["instructorCourses", userId],
-    queryFn: async () => {
-      // First get the instructor by user ID
-      const instructor = await instructorService.getInstructorById(userId);
-      if (!instructor) {
-        throw new Error("Instructor not found");
-      }
+  // Fetch instructor's courses
+  fetchInstructorCourses: async (instructorId: string) => {
+    set({ instructorLoading: true, instructorError: null });
+    try {
+      // TODO: Implement API call
+      // const response = await instructorService.getInstructorCourses(instructorId);
+      // set({ instructorCourses: response.data, instructorLoading: false });
+      set({ instructorLoading: false });
+    } catch (error: unknown) {
+      const errorMessage = getErrorMessage(error);
+      console.error("Error fetching instructor courses:", errorMessage);
+      set({ instructorError: errorMessage, instructorLoading: false });
+    }
+  },
 
-      // Then get courses using the instructor ID
-      const courses = await instructorService.getInstructorCourses(
-        instructor.data?.id ?? ""
-      );
-      return courses;
-    },
-    enabled: !!userId, // Only run the query if userId is available
-  });
-};
-
-// Fetch Instructor's Earnings
-export const useFetchInstructorEarnings = (userId: string) => {
-  return useQuery({
-    queryKey: ["instructorEarnings", userId],
-    queryFn: async () => {
-      // TODO: IMPLEMENT (This endpoint might not exist yet, so we'll return a placeholder)
-      return { earnings: 0 };
-    },
-    enabled: !!userId,
-  });
-};
+  // Set instructor preferences
+  setPreferences: (preferences: InstructorPreference[]) =>
+    set({ instructorSettingsPreferences: preferences }),
+}));

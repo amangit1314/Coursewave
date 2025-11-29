@@ -21,7 +21,7 @@ export const requireRole = (requiredRole: Role) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.user?.id;
-      
+
       if (!userId) {
         return res.status(401).json({
           success: false,
@@ -61,7 +61,7 @@ export const requireRole = (requiredRole: Role) => {
 export const requireInstructor = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = req.user?.id;
-    
+
     if (!userId) {
       return res.status(401).json({
         success: false,
@@ -133,7 +133,7 @@ export async function isInstructor(req: Request, res: Response, next: NextFuncti
 
     if (!instructor) {
       console.log('❌ [isInstructor] User is not an instructor, sending 403');
-      return res.status(403).json({ 
+      return res.status(403).json({
         success: false,
         message: "Instructor access required"
       });

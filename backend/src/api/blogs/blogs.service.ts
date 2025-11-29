@@ -6,7 +6,7 @@ import { generateResourceId } from "../../core/utils/idGenerator";
 export const BlogsService = {
   // Get all published blogs
   getAllBlogs: async () => {
-    return await prisma.blog.findMany({
+    const blogs = await prisma.blog.findMany({
       where: {
         isPublished: true,
       },
@@ -19,6 +19,11 @@ export const BlogsService = {
           },
         },
         Category: true,
+        BlogRating: {
+          select: {
+            rating: true,
+          },
+        },
         _count: {
           select: {
             BlogLike: true,
@@ -29,6 +34,20 @@ export const BlogsService = {
       orderBy: {
         publishedAt: "desc",
       },
+    });
+
+    return blogs.map((blog) => {
+      const totalRating = blog.BlogRating.reduce((acc, curr) => acc + curr.rating, 0);
+      const averageRating = blog.BlogRating.length > 0 ? totalRating / blog.BlogRating.length : 0;
+
+      // Remove BlogRating from the response to keep it clean, or keep it if needed
+      const { BlogRating, ...rest } = blog;
+
+      return {
+        ...rest,
+        averageRating,
+        ratingsCount: blog.BlogRating.length,
+      };
     });
   },
 
@@ -534,9 +553,9 @@ export const BlogsService = {
 
     const slug = data.title
       ? data.title
-          .toLowerCase()
-          .replace(/[^\w\s-]/g, "")
-          .replace(/\s+/g, "-")
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/\s+/g, "-")
       : existingBlog.slug;
 
     // Prepare the update data with proper typing
@@ -689,6 +708,34 @@ export const BlogsService = {
     });
   },
 
+  // Update a comment
+  updateComment: async (commentId: string, userId: string, content: string) => {
+    const comment = await prisma.blogComment.findUnique({
+      where: { id: commentId },
+    });
+
+    if (!comment) throw new Error("Comment not found");
+    if (comment.authorId !== userId)
+      throw new Error("You are not authorized to update this comment");
+
+    return await prisma.blogComment.update({
+      where: { id: commentId },
+      data: {
+        content,
+        updatedAt: new Date(),
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+            profileImageUrl: true,
+          },
+        },
+      },
+    });
+  },
+
   // Like/unlike a comment
   likeUnlikeComment: async (commentId: string, userId: string) => {
     const comment = await prisma.blogComment.findUnique({
@@ -744,5 +791,133 @@ export const BlogsService = {
     });
 
     return { message: "Comment deleted successfully" };
+  },
+
+  // Rate an article (1-5 stars)
+  rateArticle: async (blogId: string, userId: string, rating: number) => {
+    // Validate rating
+    if (rating < 1 || rating > 5) {
+      throw new Error("Rating must be between 1 and 5");
+    }
+
+    const blog = await prisma.blog.findUnique({
+      where: { id: blogId },
+    });
+
+    if (!blog) throw new Error("Blog not found");
+
+    // Check if user already rated
+    const existingRating = await prisma.blogRating.findUnique({
+      where: {
+        blogId_userId: {
+          blogId,
+          userId,
+        },
+      },
+    });
+
+    if (existingRating) {
+      // Update existing rating
+      return await prisma.blogRating.update({
+        where: {
+          blogId_userId: {
+            blogId,
+            userId,
+          },
+        },
+        data: {
+          rating,
+          updatedAt: new Date(),
+        },
+      });
+    }
+
+    // Create new rating
+    return await prisma.blogRating.create({
+      data: {
+        id: generateResourceId(`blogRating`),
+        blogId,
+        userId,
+        rating,
+      },
+    });
+  },
+
+  // Get user's rating for an article
+  getUserRating: async (blogId: string, userId: string) => {
+    const rating = await prisma.blogRating.findUnique({
+      where: {
+        blogId_userId: {
+          blogId,
+          userId,
+        },
+      },
+    });
+
+    return rating?.rating || null;
+  },
+
+  // Get average rating and count for an article
+  getAverageRating: async (blogId: string) => {
+    const ratings = await prisma.blogRating.findMany({
+      where: { blogId },
+      select: { rating: true },
+    });
+
+    if (ratings.length === 0) {
+      return {
+        average: 0,
+        count: 0,
+        distribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 },
+      };
+    }
+
+    const sum = ratings.reduce((acc: number, r: { rating: number }) => acc + r.rating, 0);
+    const average = sum / ratings.length;
+
+    // Calculate distribution
+    const distribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    ratings.forEach((r: { rating: number }) => {
+      distribution[r.rating as keyof typeof distribution]++;
+    });
+
+    return {
+      average: parseFloat(average.toFixed(1)),
+      count: ratings.length,
+      distribution,
+    };
+  },
+
+  // Get user's (instructor's) own blogs/articles
+  getUserOwnBlogs: async (userId: string) => {
+    try {
+      const blogs = await prisma.blog.findMany({
+        where: { authorId: userId },
+        include: {
+          Category: true,
+          _count: {
+            select: {
+              BlogLike: true,
+              comments: true,
+              BlogView: true,
+            },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      // Format response with counts
+      const formattedBlogs = blogs.map((blog) => ({
+        ...blog,
+        likesCount: blog._count.BlogLike,
+        commentsCount: blog._count.comments,
+        viewsCount: blog._count.BlogView,
+      }));
+
+      return formattedBlogs;
+    } catch (error: any) {
+      console.error('Error fetching user own blogs:', error);
+      throw new Error('Failed to fetch your articles');
+    }
   },
 };

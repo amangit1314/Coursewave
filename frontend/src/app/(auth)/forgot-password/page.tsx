@@ -167,7 +167,7 @@ const ForgotPasswordPage = () => {
                   disabled={
                     !form.formState.isValid || forgotPasswordMutation.isPending
                   }
-                  className={`${dmSans.className} group relative h-12 w-full overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25 disabled:opacity-50`}
+                  className={`cursor-pointer ${dmSans.className} group relative h-12 w-full overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25 disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {forgotPasswordMutation.isPending ? (
                     <RefreshCw className="h-5 w-5 animate-spin" />

@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import CourseNavbar from "../../_components/CourseNavbar";
-import { useUserStore } from "@/zustand/userStore";
 import { Footer } from "@/components/LandingPage/footer";
 import { CoursePreviewLoadingSkeleton } from "./skeletons/CoursePreviewLoadingSekeleton";
 import { ErrorMessage } from "./ErrorMessage";
@@ -16,7 +15,7 @@ import { CourseDetailsLeftSection } from "./CourseDetailsLeftSection";
 import { useCourse } from "@/hooks/useCourses";
 import { useCourseReviews } from "@/hooks/useCourses";
 import { useCourseSections } from "@/hooks/useCourses";
-import { useCheckAuth, useRefreshToken } from "@/hooks/useAuth";
+// import { useCheckAuth, useRefreshToken } from "@/hooks/useAuth";
 import { Review } from "@/types/review";
 
 const CoursePreviewClient = ({ courseId }: { courseId: string }) => {
@@ -28,9 +27,9 @@ const CoursePreviewClient = ({ courseId }: { courseId: string }) => {
   const { data: sections } = useCourseSections(courseId);
 
   // Auth management
-  const { user } = useUserStore();
-  const { refetch: checkAuth } = useCheckAuth();
-  const { mutateAsync: refreshAuth } = useRefreshToken();
+  // const { user } = useUserStore();
+  // const { refetch: checkAuth } = useCheckAuth();
+  // const { mutateAsync: refreshAuth } = useRefreshToken();
 
   // Mount detection
   useEffect(() => {
@@ -97,18 +96,27 @@ const CoursePreviewClient = ({ courseId }: { courseId: string }) => {
 
   // Normalize data for safe rendering
   const courseData = course;
-  const safeReviews: Review[] = Array.isArray(reviews?.data)
-    ? reviews.data
-    : reviews?.data
-      ? [reviews.data]
-      : [];
+  ///! ORIGINAL
+
+  // const safeReviews: Review[] = Array.isArray(reviews?.data)
+  //   ? reviews.data
+  //   : reviews?.data
+  //     ? [reviews.data]
+  //     : [];
+
+  ///! TRYING TO OPTIMIZE
+  const safeReviews: Review[] = reviews?.data
+    ? Array.isArray(reviews.data)
+      ? reviews.data
+      : [reviews.data]
+    : [];
 
   const safeSections = Array.isArray(sections)
     ? sections.map((s: any) => ({
-        ...s,
-        courseId,
-        Chapter: Array.isArray(s.Chapter) ? s.Chapter : [],
-      }))
+      ...s,
+      courseId,
+      Chapter: Array.isArray(s.Chapter) ? s.Chapter : [],
+    }))
     : [];
 
   // Course not found state

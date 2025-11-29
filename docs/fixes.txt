@@ -1,0 +1,11 @@
+1. The hero section doesn't have the image uploader. Add image uploaf in hero section, dark theme is removed and should be there.
+2. on instructor dashboard for `/instructor/analytics` need to show real data in place of placeholder data.
+3. the data gets cleared after 15m of user, and need to login again.
+4. created course price (0), status (DRAFT), Prerequisites, thisCourseIsFor, technologiesYouWillLearn, whatYouWillLearn are not saved. 
+5. upgrade ui of project id page.
+6. ✅ RESOLVED - On project details page for user, show the project submission section only when user is enrolled in the course where project is created.
+7. ✅ RESOLVED - If user is not enrolled in the course where course is created show callout that you have to enroll in the course to submit the project.
+8. ✅ RESOLVED - And if enrolled but not logged in need to login to see submission section.
+9. Project submissions list, project submission with feedback
+10. Project submission restriction
+11. Notifications & Preference Setting

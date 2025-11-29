@@ -107,7 +107,7 @@ const CreatedArticles = () => {
 
           {/* Create button */}
           <Button
-            onClick={() => router.push(`/instructor/articles/new`)}
+            onClick={() => router.push(`/writeArticle`)}
             className="ml-auto flex items-center gap-1 border-none rounded-lg bg-blue-500 p-2 font-medium text-white shadow-xl hover:bg-blue-700 hover:font-semibold"
           >
             <IoAddCircleOutline size={22} />
@@ -143,7 +143,7 @@ const CreatedArticles = () => {
                 article.
               </p>
               <Button
-                onClick={() => router.push(`/instructor/articles/new`)}
+                onClick={() => router.push(`/writeArticle`)}
                 className="bg-blue-500 hover:bg-blue-600 border-none text-white rounded-xl px-4 py-2 font-medium"
               >
                 Create Your First Article

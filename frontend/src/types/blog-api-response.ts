@@ -106,6 +106,8 @@ export type BlogArticle = {
   author: BlogAuthor;
   Category: BlogCategory; // Note: Capital 'C' from API response
   _count: BlogCounts;
+  averageRating?: number;
+  ratingsCount?: number;
 };
 
 // Type for the API response structure

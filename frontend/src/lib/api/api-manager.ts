@@ -9,6 +9,7 @@ import {
   RefreshTokenResponse,
   RefreshTokenResponseData,
 } from "@/types/auth.service.types";
+import { ErrorResponse } from "@/types/common-types";
 
 // const API_BASE_URL =
 //   process.env.ENVIRONMENT === "DEVELOPMENT"
@@ -22,7 +23,7 @@ const API_TIMEOUT = 30000;
 const STATIC_TOKEN = "coursewave_access_token"; // static token header
 
 // === Types ===
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T> {
   success: boolean;
   data: T;
   message?: string;
@@ -49,9 +50,9 @@ export interface ListResponse<T> {
 export class ApiError extends Error {
   public status: number;
   public code?: string;
-  public data?: any;
+  public data?: ErrorResponse;
 
-  constructor(message: string, status: number, code?: string, data?: any) {
+  constructor(message: string, status: number, code?: string, data?: ErrorResponse) {
     super(message);
     this.name = "ApiError";
     this.status = status;
@@ -183,7 +184,23 @@ class ApiManager {
           "color: green;"
         );
         console.log("Headers:", response.headers);
-        console.log("Data:", response.data);
+        console.log("Raw Data:", response.data);
+
+        // ✅ GLOBAL UNWRAP LOGIC
+        // Check if response.data has a nested 'data' property and 'success' property
+        // This handles the double-wrapping issue: { success: true, data: { success: true, data: { ... } } }
+        // if (
+        //   response.data &&
+        //   typeof response.data === "object" &&
+        //   "data" in response.data &&
+        //   "success" in response.data
+        // ) {
+        //   console.log("📦 Detected double-wrapped response. Unwrapping...");
+        //   response.data = response.data.data;
+        //   console.log("Unwrapped Data:", response.data);
+        // }
+
+        console.log("Final Data:", response.data);
         console.groupEnd();
 
         return response;
@@ -220,11 +237,12 @@ class ApiManager {
   private isRefreshing = false;
   private refreshSubscribers: ((token: string) => void)[] = [];
 
-  private async handleError(error: AxiosError): Promise<ApiError | any> {
+  private async handleError(error: AxiosError): Promise<never> {
     if (error.response) {
       const { status, data } = error.response;
-      const message = (data as any)?.message || error.message;
-      const code = (data as any)?.code;
+      const errorData = data as ErrorResponse | undefined;
+      const message = errorData?.message || error.message;
+      const code = errorData?.code;
 
       // ✅ PREVENT INFINITE LOOP - if refresh endpoint itself fails
       if (error.config?.url?.includes("/auth/refresh")) {
@@ -349,11 +367,19 @@ class ApiManager {
           } else {
             throw new Error("Invalid response from refresh endpoint");
           }
-        } catch (refreshErr: any) {
+        } catch (refreshErr: unknown) {
+          const refreshError = refreshErr instanceof Error
+            ? refreshErr
+            : new Error(String(refreshErr));
+
           console.error("❌ Token refresh failed:", {
-            message: refreshErr.message,
-            status: refreshErr.response?.status,
-            data: refreshErr.response?.data,
+            message: refreshError.message,
+            status: refreshErr && typeof refreshErr === 'object' && 'response' in refreshErr
+              ? (refreshErr as AxiosError).response?.status
+              : undefined,
+            data: refreshErr && typeof refreshErr === 'object' && 'response' in refreshErr
+              ? (refreshErr as AxiosError).response?.data
+              : undefined,
           });
 
           // Clear all subscribers on failure
@@ -386,35 +412,35 @@ class ApiManager {
       switch (status) {
         case 400:
           return Promise.reject(
-            new ApiError(message || "Bad request", status, code, data)
+            new ApiError(message || "Bad request", status, code, errorData)
           );
         case 403:
           return Promise.reject(
-            new ApiError(message || "Forbidden", status, code, data)
+            new ApiError(message || "Forbidden", status, code, errorData)
           );
         case 404:
           return Promise.reject(
-            new ApiError(message || "Resource not found", status, code, data)
+            new ApiError(message || "Resource not found", status, code, errorData)
           );
         case 429:
           return Promise.reject(
-            new ApiError(message || "Too many requests", status, code, data)
+            new ApiError(message || "Too many requests", status, code, errorData)
           );
         case 500:
           return Promise.reject(
-            new ApiError(message || "Internal server error", status, code, data)
+            new ApiError(message || "Internal server error", status, code, errorData)
           );
         case 502:
           return Promise.reject(
-            new ApiError(message || "Bad gateway", status, code, data)
+            new ApiError(message || "Bad gateway", status, code, errorData)
           );
         case 503:
           return Promise.reject(
-            new ApiError(message || "Service unavailable", status, code, data)
+            new ApiError(message || "Service unavailable", status, code, errorData)
           );
         default:
           return Promise.reject(
-            new ApiError(message || "Unknown error", status, code, data)
+            new ApiError(message || "Unknown error", status, code, errorData)
           );
       }
     }
@@ -443,7 +469,7 @@ class ApiManager {
   }
 
   // === HTTP Methods ===
-  public async get<T = any>(
+  public async get<T>(
     url: string,
     config?: AxiosRequestConfig
   ): Promise<ApiResponse<T>> {
@@ -452,9 +478,9 @@ class ApiManager {
     return res.data;
   }
 
-  public async post<T = any>(
+  public async post<T, D = unknown>(
     url: string,
-    data?: any,
+    data?: D,
     config?: AxiosRequestConfig
   ): Promise<ApiResponse<T>> {
     checkRateLimit(url, "POST");
@@ -466,9 +492,9 @@ class ApiManager {
     return res.data;
   }
 
-  public async put<T = any>(
+  public async put<T, D = unknown>(
     url: string,
-    data?: any,
+    data?: D,
     config?: AxiosRequestConfig
   ): Promise<ApiResponse<T>> {
     checkRateLimit(url, "PUT");
@@ -476,9 +502,9 @@ class ApiManager {
     return res.data;
   }
 
-  public async patch<T = any>(
+  public async patch<T, D = unknown>(
     url: string,
-    data?: any,
+    data?: D,
     config?: AxiosRequestConfig
   ): Promise<ApiResponse<T>> {
     checkRateLimit(url, "PATCH");
@@ -490,7 +516,7 @@ class ApiManager {
     return res.data;
   }
 
-  public async delete<T = any>(
+  public async delete<T>(
     url: string,
     config?: AxiosRequestConfig
   ): Promise<ApiResponse<T>> {
@@ -500,7 +526,7 @@ class ApiManager {
   }
 
   // === File Upload ===
-  public async upload<T = any>(
+  public async upload<T>(
     url: string,
     file: File,
     onProgress?: (progress: number) => void,

@@ -7,14 +7,15 @@ type UserState = {
   user: User | null;
   token: string | null;
   isLoggedIn: boolean;
+};
 
-  // actions
+type UserActions = {
   login: (user: User, token: string) => void;
   logout: () => void;
   updateUser: (user: Partial<User>) => void;
-};
+}
 
-export const useUserStore = create<UserState>()(
+export const useUserStore = create<UserState & UserActions>()(
   persist(
     (set) => ({
       user: null,
@@ -33,7 +34,7 @@ export const useUserStore = create<UserState>()(
         })),
     }),
     {
-      name: "user-store", // localStorage key
+      name: "Coursewave-User-Store", // localStorage key
     }
   )
 );

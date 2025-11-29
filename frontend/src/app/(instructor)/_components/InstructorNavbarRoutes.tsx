@@ -16,6 +16,8 @@ const InstructorNavbarRoutes = () => {
 
   const { user } = useUserStore();
 
+  console.log("Navbar user: ", JSON.stringify(user));
+
   const gotToSignIn = () => {
     router.push("/login");
   };
@@ -24,8 +26,8 @@ const InstructorNavbarRoutes = () => {
     router.push("/browseCourses");
   };
 
-  const isBrowseCoursesScreen = pathname?.match("/browseCourses");
-  const isDashboardScreen = pathname?.includes("dashboard");
+  const isBrowseCoursesScreen = pathname.match("/browse");
+  const isDashboardScreen = pathname.includes("dashboard"); // Checks for dashboard in pathname
 
   return (
     <Suspense>

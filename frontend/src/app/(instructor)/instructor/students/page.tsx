@@ -622,188 +622,186 @@ const Students = () => {
                 <tbody>
                   {loading
                     ? Array.from({ length: 3 }).map((_, i) => (
-                        <tr
-                          key={i}
-                          className="border-b border-stone-200 dark:border-stone-800"
-                        >
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                              <div className="h-11 w-11 bg-stone-200 dark:bg-stone-800 rounded-full animate-pulse"></div>
-                              <div className="h-4 w-32 bg-stone-200 dark:bg-stone-800 rounded animate-pulse"></div>
-                            </div>
-                          </td>
-                          <td className="px-4 py-4 hidden md:table-cell">
-                            <div className="h-4 w-48 bg-stone-200 dark:bg-stone-800 rounded animate-pulse"></div>
-                          </td>
-                          <td className="px-4 py-4 hidden lg:table-cell">
-                            <div className="h-4 w-16 bg-stone-200 dark:bg-stone-800 rounded animate-pulse"></div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="flex justify-end gap-2">
-                              <div className="h-8 w-24 bg-stone-200 dark:bg-stone-800 rounded animate-pulse"></div>
-                            </div>
-                          </td>
-                        </tr>
-                      ))
+                      <tr
+                        key={i}
+                        className="border-b border-stone-200 dark:border-stone-800"
+                      >
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="h-11 w-11 bg-stone-200 dark:bg-stone-800 rounded-full animate-pulse"></div>
+                            <div className="h-4 w-32 bg-stone-200 dark:bg-stone-800 rounded animate-pulse"></div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 hidden md:table-cell">
+                          <div className="h-4 w-48 bg-stone-200 dark:bg-stone-800 rounded animate-pulse"></div>
+                        </td>
+                        <td className="px-4 py-4 hidden lg:table-cell">
+                          <div className="h-4 w-16 bg-stone-200 dark:bg-stone-800 rounded animate-pulse"></div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex justify-end gap-2">
+                            <div className="h-8 w-24 bg-stone-200 dark:bg-stone-800 rounded animate-pulse"></div>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
                     : students.map((student) => (
-                        <tr
-                          key={student.id}
-                          className="border-b border-stone-200 dark:border-stone-800 hover:bg-stone-50 dark:hover:bg-stone-900/30 transition-colors"
-                        >
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                              <Avatar className="h-11 w-11 border-2 border-stone-200 dark:border-stone-700 shadow-sm">
-                                <AvatarImage
-                                  src={student.profileImageUrl}
-                                  alt={student.name}
-                                />
-                                <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold text-sm">
-                                  {getInitials(student.name)}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div>
-                                <p className="font-semibold text-stone-900 dark:text-white text-sm">
-                                  {student.name}
-                                </p>
-                                <p className="text-xs text-stone-500 dark:text-stone-400 md:hidden">
-                                  {student.email}
-                                </p>
-                              </div>
+                      <tr
+                        key={student.id}
+                        className="border-b border-stone-200 dark:border-stone-800 hover:bg-stone-50 dark:hover:bg-stone-900/30 transition-colors"
+                      >
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-11 w-11 border-2 border-stone-200 dark:border-stone-700 shadow-sm">
+                              <AvatarImage
+                                src={student.profileImageUrl}
+                                alt={student.name}
+                              />
+                              <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold text-sm">
+                                {getInitials(student.name)}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="font-semibold text-stone-900 dark:text-white text-sm">
+                                {student.name}
+                              </p>
+                              <p className="text-xs text-stone-500 dark:text-stone-400 md:hidden">
+                                {student.email}
+                              </p>
                             </div>
-                          </td>
-                          <td className="px-4 py-4 hidden md:table-cell text-sm text-stone-600 dark:text-stone-400">
-                            {student.email}
-                          </td>
-                          <td className="px-4 py-4 hidden lg:table-cell">
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 rounded-full text-xs font-medium">
-                              {student.courses.length}{" "}
-                              {student.courses.length === 1
-                                ? "course"
-                                : "courses"}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="flex justify-end gap-2">
-                              <Dialog>
-                                <DialogTrigger asChild>
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 hover:border-stone-400 dark:hover:border-stone-600 text-stone-700 dark:text-stone-300 shadow-sm transition-all"
-                                    onClick={() => setSelectedStudent(student)}
-                                  >
-                                    <Eye className="h-3.5 w-3.5 mr-1.5" />
-                                    <span className="hidden sm:inline">
-                                      View
-                                    </span>
-                                  </Button>
-                                </DialogTrigger>
-                                <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-                                  <DialogHeader className="pb-4 border-b border-stone-200 dark:border-stone-800">
-                                    <div className="flex items-center gap-3 mb-2">
-                                      <Avatar className="h-12 w-12 border-2 border-stone-200 dark:border-stone-700">
-                                        <AvatarImage
-                                          src={student.profileImageUrl}
-                                          alt={student.name}
-                                        />
-                                        <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
-                                          {getInitials(student.name)}
-                                        </AvatarFallback>
-                                      </Avatar>
-                                      <div>
-                                        <DialogTitle className="text-xl font-bold text-stone-900 dark:text-white">
-                                          {student.name}'s Courses
-                                        </DialogTitle>
-                                        <p className="text-sm text-stone-600 dark:text-stone-400 mt-0.5">
-                                          {student.email}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </DialogHeader>
-                                  <div className="mt-4">
-                                    <div className="overflow-x-auto">
-                                      <table className="w-full">
-                                        <thead>
-                                          <tr className="border-b border-stone-200 dark:border-stone-800">
-                                            <th className="text-left font-semibold text-stone-700 dark:text-stone-300 px-4 py-3 text-sm">
-                                              Course Title
-                                            </th>
-                                            <th className="text-left font-semibold text-stone-700 dark:text-stone-300 px-4 py-3 text-sm">
-                                              Progress
-                                            </th>
-                                            <th className="text-left font-semibold text-stone-700 dark:text-stone-300 px-4 py-3 text-sm">
-                                              Last Active
-                                            </th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          {student.courses.map((course) => (
-                                            <tr
-                                              key={course.id}
-                                              className="border-b border-stone-200 dark:border-stone-800"
-                                            >
-                                              <td className="px-4 py-3 font-medium text-stone-900 dark:text-white text-sm">
-                                                {course.title}
-                                              </td>
-                                              <td className="px-4 py-3">
-                                                <div className="flex items-center gap-2">
-                                                  <div className="w-20 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
-                                                    <div
-                                                      className={`h-full rounded-full transition-all ${
-                                                        course.progress === 100
-                                                          ? "bg-green-500"
-                                                          : course.progress >=
-                                                              50
-                                                            ? "bg-blue-500"
-                                                            : "bg-yellow-500"
-                                                      }`}
-                                                      style={{
-                                                        width: `${course.progress}%`,
-                                                      }}
-                                                    ></div>
-                                                  </div>
-                                                  <span
-                                                    className={`px-2 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap ${
-                                                      course.progress === 100
-                                                        ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400"
-                                                        : course.progress >= 50
-                                                          ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400"
-                                                          : "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-400"
-                                                    }`}
-                                                  >
-                                                    {course.progress}%
-                                                  </span>
-                                                </div>
-                                              </td>
-                                              <td className="px-4 py-3 text-stone-600 dark:text-stone-400 text-sm">
-                                                {getTimeAgo(
-                                                  course.lastAccessed
-                                                )}
-                                              </td>
-                                            </tr>
-                                          ))}
-                                        </tbody>
-                                      </table>
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 hidden md:table-cell text-sm text-stone-600 dark:text-stone-400">
+                          {student.email}
+                        </td>
+                        <td className="px-4 py-4 hidden lg:table-cell">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 rounded-full text-xs font-medium">
+                            {student.courses.length}{" "}
+                            {student.courses.length === 1
+                              ? "course"
+                              : "courses"}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex justify-end gap-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="border-stone-300 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800 hover:border-stone-400 dark:hover:border-stone-600 text-stone-700 dark:text-stone-300 shadow-sm transition-all"
+                                  onClick={() => setSelectedStudent(student)}
+                                >
+                                  <Eye className="h-3.5 w-3.5 mr-1.5" />
+                                  <span className="hidden sm:inline">
+                                    View
+                                  </span>
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+                                <DialogHeader className="pb-4 border-b border-stone-200 dark:border-stone-800">
+                                  <div className="flex items-center gap-3 mb-2">
+                                    <Avatar className="h-12 w-12 border-2 border-stone-200 dark:border-stone-700">
+                                      <AvatarImage
+                                        src={student.profileImageUrl}
+                                        alt={student.name}
+                                      />
+                                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
+                                        {getInitials(student.name)}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    <div>
+                                      <DialogTitle className="text-xl font-bold text-stone-900 dark:text-white">
+                                        {student.name}'s Courses
+                                      </DialogTitle>
+                                      <p className="text-sm text-stone-600 dark:text-stone-400 mt-0.5">
+                                        {student.email}
+                                      </p>
                                     </div>
                                   </div>
-                                </DialogContent>
-                              </Dialog>
-                              <Button
-                                size="sm"
-                                className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md transition-all"
-                                onClick={() =>
+                                </DialogHeader>
+                                <div className="mt-4">
+                                  <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                      <thead>
+                                        <tr className="border-b border-stone-200 dark:border-stone-800">
+                                          <th className="text-left font-semibold text-stone-700 dark:text-stone-300 px-4 py-3 text-sm">
+                                            Course Title
+                                          </th>
+                                          <th className="text-left font-semibold text-stone-700 dark:text-stone-300 px-4 py-3 text-sm">
+                                            Progress
+                                          </th>
+                                          <th className="text-left font-semibold text-stone-700 dark:text-stone-300 px-4 py-3 text-sm">
+                                            Last Active
+                                          </th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {student.courses.map((course) => (
+                                          <tr
+                                            key={course.id}
+                                            className="border-b border-stone-200 dark:border-stone-800"
+                                          >
+                                            <td className="px-4 py-3 font-medium text-stone-900 dark:text-white text-sm">
+                                              {course.title}
+                                            </td>
+                                            <td className="px-4 py-3">
+                                              <div className="flex items-center gap-2">
+                                                <div className="w-20 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
+                                                  <div
+                                                    className={`h-full rounded-full transition-all ${course.progress === 100
+                                                        ? "bg-green-500"
+                                                        : course.progress >=
+                                                          50
+                                                          ? "bg-blue-500"
+                                                          : "bg-yellow-500"
+                                                      }`}
+                                                    style={{
+                                                      width: `${course.progress}%`,
+                                                    }}
+                                                  ></div>
+                                                </div>
+                                                <span
+                                                  className={`px-2 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap ${course.progress === 100
+                                                      ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-400"
+                                                      : course.progress >= 50
+                                                        ? "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400"
+                                                        : "bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-400"
+                                                    }`}
+                                                >
+                                                  {course.progress}%
+                                                </span>
+                                              </div>
+                                            </td>
+                                            <td className="px-4 py-3 text-stone-600 dark:text-stone-400 text-sm">
+                                              {getTimeAgo(
+                                                course.lastAccessed
+                                              )}
+                                            </td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                            <Button
+                              size="sm"
+                              className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md transition-all"
+                              onClick={() =>
                                   console.log(`Message ${student.id}`)
                                 }
-                              >
-                                <MessageSquare className="h-3.5 w-3.5 mr-1.5" />
-                                <span className="hidden sm:inline">
-                                  Message
-                                </span>
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
+                            >
+                              <MessageSquare className="h-3.5 w-3.5 mr-1.5" />
+                              <span className="hidden sm:inline">
+                                Message
+                              </span>
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>

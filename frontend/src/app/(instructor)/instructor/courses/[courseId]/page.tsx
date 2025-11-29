@@ -10,9 +10,6 @@ import { Loader2 } from "lucide-react";
 const CourseIdPage = () => {
   const params = useParams<{ courseId: string }>();
   const courseId = params.courseId;
-
-  // console.log("COURSE IN CONTENT BEFORE USE", JSON.stringify(course));
-
   const { data: course, isLoading, error } = useCourse(courseId); // data is now the course directly
 
   if (isLoading) {
@@ -54,12 +51,6 @@ const CourseIdPage = () => {
       {course ? (
         <CourseContent
           course={course as unknown as Course}
-          // sections={course.sections}
-          // chapters={
-          //   course?.sections
-          //     ? course.sections.flatMap((section) => section.Chapter || [])
-          //     : []
-          // }
         />
       ) : (
         <div className="p-6 text-center text-gray-500">

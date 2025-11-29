@@ -45,7 +45,7 @@ class ProjectsService {
   private static instance: ProjectsService;
   private api = ApiManager.getInstance();
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): ProjectsService {
     if (!ProjectsService.instance) {

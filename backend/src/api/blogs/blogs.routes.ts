@@ -13,15 +13,20 @@ import {
   getArticleComments,
   getAuthorFollowerCount,
   getAuthorFollowers,
+  getAverageRating,
   getBlogById,
   getBlogBySlug,
   getUserFollowing,
+  getUserOwnBlogs,
   getUserFollowingCount,
+  getUserRating,
   incrementBlogViewCount,
   likeUnlikeBlog,
   likeUnlikeComment,
+  rateArticle,
   reportBlog,
   updateBlog,
+  updateComment,
 } from "./blogs.controller";
 import { report } from "process";
 
@@ -29,6 +34,9 @@ const router: Router = express.Router();
 
 // Get all blogs (public)
 router.get("/", getAllBlogs);
+
+// Get instructor's own articles
+router.get("/instructor/my-articles", verifyToken, getUserOwnBlogs);
 
 // Get blog by slug (public)
 router.get("/:blogId", getBlogById);
@@ -79,11 +87,23 @@ router.post("/:id/like", verifyToken, likeUnlikeBlog);
 // Check if user have liked blog (private)
 router.get("/:blogId/like-status", verifyToken, checkLikeStatus);
 
+// Rate article (private)
+router.post("/:id/rate", verifyToken, rateArticle);
+
+// Get user's rating for article (private)
+router.get("/:blogId/rating/user", verifyToken, getUserRating);
+
+// Get average rating for article (public)
+router.get("/:blogId/rating/average", getAverageRating);
+
 // Add comment to blog (public)
 router.get("/:id/comments", getArticleComments);
 
 // Add comment to blog (private)
 router.post("/:id/comments", verifyToken, addComment);
+
+// Update comment (private)
+router.put("/comments/:id", verifyToken, updateComment);
 
 // Like comment (private)
 router.post("/comments/:id/like", verifyToken, likeUnlikeComment);

@@ -26,7 +26,7 @@ async function main() {
     data: categoryData,
     skipDuplicates: true,
   });
-  
+
   console.log(`✅ Created ${categories.count} categories`);
 
   // USERS (10 entries)
@@ -192,7 +192,7 @@ async function main() {
 main()
   .catch((e) => {
     console.error('❌ Seed failed:', e);
-    (typeof globalThis.process !== "undefined" ? globalThis.process : { exit: () => {} }).exit(1);
+    (typeof globalThis.process !== "undefined" ? globalThis.process : { exit: () => { } }).exit(1);
   })
   .finally(async () => {
     await prisma.$disconnect();

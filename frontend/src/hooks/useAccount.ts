@@ -60,7 +60,7 @@ export function useUpdateProfile() {
 export const useEnrolledCourses = () => {
   const fetchEnrolledCourses = async () => {
     const enrollments = await profileService.getEnrolledCourses();
-    console.log("Enrolled courses response:", JSON.stringify(enrollments));
+    // console.log("Enrolled courses response:", JSON.stringify(enrollments));
     return enrollments || [];
   };
 

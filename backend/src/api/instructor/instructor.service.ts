@@ -101,11 +101,12 @@ export const getInstructorAnalytics = async (
     return {
       success: true,
       data: {
-        totalEarning: (totalEarning._sum?.amount || 0).toString(),
+        totalEarnings: totalEarning._sum?.amount || 0,
+        currency: "USD",
         totalStudents: totalEnrolledStudents._count?.userId || 0,
         totalCourses: instructor.courses.length,
         createdCourses: instructor.courses,
-        averageStarRating: averageStarRating._avg?.averageRating || 5.0,
+        averageRating: averageStarRating._avg?.averageRating || 0,
       },
       message: "Instructor analytics fetched successfully",
       status: 200,

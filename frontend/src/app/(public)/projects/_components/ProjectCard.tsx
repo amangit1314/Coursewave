@@ -10,32 +10,32 @@ import { dmSans } from "@/lib/config/fonts";
 const getStatusColor = (status: string) => {
   switch (status.toLowerCase()) {
     case "planning":
-      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400";
+      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 shadow-none";
     case "published":
-      return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400";
+      return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 shadow-none";
     case "in-progress":
-      return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400";
+      return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 shadow-none";
     case "completed":
-      return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
+      return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 shadow-none";
     case "on-hold":
-      return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
+      return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 shadow-none";
     default:
-      return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400";
+      return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400 shadow-none";
   }
 };
 
 const getDifficultyColor = (difficulty: string) => {
   switch (difficulty.toLowerCase()) {
     case "beginner":
-      return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
+      return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 shadow-none";
     case "intermediate":
-      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400";
+      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 shadow-none";
     case "advanced":
-      return "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400";
+      return "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400 shadow-none";
     case "expert":
-      return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
+      return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 shadow-none";
     default:
-      return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400";
+      return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400 shadow-none";
   }
 };
 
@@ -59,7 +59,9 @@ const ProjectCard = ({
 
   if (viewMode === "list") {
     return (
-      <Card className="group relative border border-gray-200 dark:border-zinc-800 overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:shadow-zinc-800/50">
+      <Card
+        onClick={viewProject}
+        className="group relative border border-gray-200 dark:border-zinc-800 overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:shadow-zinc-800/50">
         <CardContent className="p-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             {/* Left: Icon + Text */}
@@ -112,7 +114,7 @@ const ProjectCard = ({
               <Button
                 size="sm"
                 onClick={viewProject}
-                className={`${dmSans.className} bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600`}
+                className={`${dmSans.className} bg-gradient-to-r mt-4 from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600`}
               >
                 <CircleArrowRight className="h-3 w-3" />
                 View Project
@@ -125,7 +127,9 @@ const ProjectCard = ({
   }
 
   return (
-    <Card className="group border shadow-none border-gray-200 dark:border-zinc-800 hover:border-blue-500 dark:hover:border-blue-500 relative overflow-hidden transition-all duration-300 hover:shadow-sm  dark:hover:shadow-blue-500">
+    <Card
+      onClick={viewProject}
+      className="group border shadow-none border-gray-200 dark:border-zinc-800 hover:border-blue-500 dark:hover:border-blue-500 relative overflow-hidden transition-all duration-300 hover:shadow-sm  dark:hover:shadow-blue-500">
       <CardContent className="p-4">
         {/* Header */}
         <div className="mb-4 flex items-start justify-between">
@@ -162,7 +166,7 @@ const ProjectCard = ({
 
         {/* Footer */}
         <div className="flex flex-col items-start justify-between space-y-4">
-          <div className="flex items-center space-x-2">
+          {/* <div className="flex items-center space-x-2">
             <div className="flex items-center space-x-4 text-xs text-gray-500">
               <div className="flex items-center space-x-1">
                 <Eye className="h-3 w-3" />
@@ -173,7 +177,7 @@ const ProjectCard = ({
                 <span>{project.likes}</span>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* status and view button */}
           <div className="flex items-center space-x-2">

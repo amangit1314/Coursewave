@@ -31,8 +31,8 @@ import { requestId } from "./core/middleware/requestId";
 import { requestLogger } from "./core/middleware/requestLogger";
 import { errorHandler, notFound } from "./core/middleware/errorHandler";
 import { logger } from "./core/utils/logger";
-// Ensure Express Request augmentation is loaded
-import "./types/express";
+import { connectRabbitMQ } from "./config/rabbitmq";
+import multer from "multer";
 
 ///? <=================================== Load environment variables ==============>
 dotenv.config();
@@ -128,8 +128,6 @@ app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-import multer from "multer";
-import { connectRabbitMQ } from "./config/rabbitmq";
 const upload = multer();
 
 ///? <==================================== CUSTOM Middlewares ================================>
@@ -205,12 +203,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Centralized error handling should be last before routes end
-app.use(notFound);
-
-// Error handler (final)
-app.use(errorHandler);
-
 ///? <==================================== API routes ====================================>
 app.post("/api/your-form-route", upload.none(), (req, res) => {
   // Now works with "form-data" in Postman
@@ -248,12 +240,27 @@ app.use("/api/projects", projectsRoutes);
 app.use("/api/communities", communitiesRoutes);
 app.use("/api/health", healthRoutes);
 
+// Centralized error handling should be last before routes end
+app.use(notFound);
+
+// Error handler (final)
+app.use(errorHandler);
+
 ///? <==================================== INITIALIZE CRON JOBS ======================================>
 initJobs();
 
 /// ? <=================================== CREATING HTTP SERVER APP ============================>
-// const server = http.createServer(app);
+const PORT = process.env.PORT || 5002;
+const server = http.createServer(app);
 
+///? <==================================== LISTEN TO HTTP SERVER ON PORT ======================================>
+
+server.listen(PORT, () => logger.info("server:start", { port: PORT }));
+
+/// ? <=================================== Initialize Socket.IO ============================>
+initSocket(server);
+
+/// ? <=================================== RabitMQ setup ============================>
 // (async () => {
 //   try {
 //     await connectRabbitMQ();
@@ -263,14 +270,3 @@ initJobs();
 //     process.exit(1);
 //   }
 // })();
-
-///? <==================================== LISTEN TO HTTP SERVER ON PORT ======================================>
-
-
-
-const PORT = process.env.PORT || 5001;
-const server = http.createServer(app);
-server.listen(PORT, () => logger.info("server:start", { port: PORT }));
-
-/// ? <=================================== Initialize Socket.IO ============================>
-initSocket(server);

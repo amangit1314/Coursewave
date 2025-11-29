@@ -23,6 +23,14 @@ export class UserService {
     return response.data;
   }
 
+  async reportUser(userId: string, reason: string, details?: string): Promise<any> {
+    const response = await this.apiManager.post(`/users/${userId}/report`, {
+      reason,
+      details,
+    });
+    return response.data;
+  }
+
   // -------------------------------------- SESSIONS -------------------------------------------------
   // TODO: verify
   async getScheduledSessions(userId: string): Promise<any> {

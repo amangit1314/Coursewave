@@ -218,7 +218,7 @@ import { Review } from "@/types/review";
 class InstructorService {
   private static instance: InstructorService;
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): InstructorService {
     if (!InstructorService.instance) {
@@ -230,6 +230,10 @@ class InstructorService {
   // ------------------------
   // 🔹 PUBLIC INSTRUCTOR ROUTES
   // ------------------------
+
+  async getIsInstructor(): Promise<ApiResponse<boolean>> {
+    return apiManager.get<boolean>("/instructor/me/status");
+  }
 
   async getInstructors(
     params?: InstructorQueryParams

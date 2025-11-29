@@ -11,24 +11,25 @@ export function useLogin() {
   return useMutation({
     mutationFn: (data: LoginRequest) => authService.login(data),
     onSuccess: (data) => {
-      loginStore(data.data.user, data.data.accessToken);
+      console.log("Data on success:", JSON.stringify(data, null, 2));
+      const { data: loginData } = data;
+      console.log("loginData:", loginData);
+      console.log("User:", loginData?.user);
+      console.log("Token:", loginData?.accessToken);
+
+      loginStore(loginData.user, loginData.accessToken);
+      console.log("✅ [useLogin.onSuccess] Stored in Zustand store");
     },
     onError: (error) => {
+      console.error("❌ [useLogin.onError]", error);
       toast.error(error.message ?? "🚨 Failed to sign ...");
     },
   });
 }
 
 export function useRegister() {
-  const loginStore = useUserStore((s) => s.login);
-
   return useMutation({
     mutationFn: (data: RegisterRequest) => authService.register(data),
-    onSuccess: (data) => {
-      // loginStore(data.data.user, data.data.accessToken);
-      toast.success(data.message ?? "User registered successfully 🎉 ...");
-      // window.href.location = '/login';
-    },
     onError: (error) => {
       toast.error(error.message ?? "🚨 Failed to register user ...");
     },
