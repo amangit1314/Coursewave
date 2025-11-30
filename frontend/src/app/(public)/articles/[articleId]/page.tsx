@@ -5,7 +5,7 @@ import { ArticleHeader } from "./_components/ArticleHeader";
 import { ArticleContent } from "./_components/ArticleContent";
 import { ArticleSidebar } from "./_components/ArticleSidebar";
 import { ArticleFooter } from "./_components/ArticleFooter";
-import { ArticleLoadingSkeleton } from "./_components/skeletons/article-loading-skeleton";
+import { ArticleLoadingSkeleton } from "./_components/skeletons/ArticleLoadingSkeleton";
 import {
   useArticleBySlug,
   useIncrementArticleViewCount,
