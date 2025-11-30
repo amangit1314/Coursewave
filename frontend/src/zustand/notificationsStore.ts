@@ -1,3 +1,5 @@
+"use client";
+
 import { generateUid } from "@/lib/helpers/id-helper";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";

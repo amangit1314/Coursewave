@@ -1,3 +1,6 @@
+"use client";
+
+
 import { create } from "zustand";
 import { Course } from "@/types/course";
 import { Instructor } from "@/types/instructor";

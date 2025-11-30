@@ -1,3 +1,5 @@
+"use client";
+
 import { CartItem } from "@/types/cart-item";
 import { Course } from "@/types/course-details-api-response";
 import { create } from "zustand";

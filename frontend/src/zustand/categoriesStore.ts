@@ -1,3 +1,6 @@
+"use client";
+
+
 import { categoriesService } from "@/lib/api/services/categoriesService";
 import { Category } from "@/types/category";
 import { create } from "zustand";

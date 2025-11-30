@@ -1,3 +1,6 @@
+"use client";
+
+
 import { create } from "zustand";
 import { Message } from "@/types/message";
 import { OnlineUser } from "@/types/online-user";

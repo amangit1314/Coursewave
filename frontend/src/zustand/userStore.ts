@@ -1,3 +1,6 @@
+"use client";
+
+
 // stores/userStore.ts
 import { User } from "@/types/auth.service.types";
 import { create } from "zustand";

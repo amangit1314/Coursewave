@@ -1,3 +1,4 @@
+"use client";
 
 import { BlogArticle } from "@/types/blog-api-response";
 import { BlogWithComments } from "@/types/blog-with-comments";

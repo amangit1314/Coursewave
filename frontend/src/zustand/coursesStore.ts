@@ -2,6 +2,9 @@
  * ------------------------------------------------------------------------------------------------------------
  */
 
+"use client";
+
+
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Chapter, Course, Section } from "@/types/course-details-api-response";
