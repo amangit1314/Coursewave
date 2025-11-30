@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { useInstructorDashboard } from '@/hooks/useInstructorDashboard';
 import { useUserStore } from '@/zustand/userStore';
