@@ -11,12 +11,12 @@ import {
 } from "@/types/auth.service.types";
 import { ErrorResponse } from "@/types/common-types";
 
-const API_BASE_URL =
-  process.env.ENVIRONMENT === "DEVELOPMENT"
-    ? process.env.API_LOCAL_URL
-    : process.env.API_LIVE_URL;
+// const API_BASE_URL =
+//   process.env.ENVIRONMENT === "DEVELOPMENT"
+//     ? process.env.API_LOCAL_URL
+//     : process.env.API_LIVE_URL;
 
-// const API_BASE_URL = "https://male-nathalie-amanic-af4ba0b9.koyeb.app/api";
+const API_BASE_URL = "https://male-nathalie-amanic-af4ba0b9.koyeb.app/api";
 // const API_BASE_URL = "http://localhost:5002/api";
 
 const API_TIMEOUT = 30000;
