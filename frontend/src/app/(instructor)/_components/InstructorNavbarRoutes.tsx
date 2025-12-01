@@ -19,11 +19,11 @@ const InstructorNavbarRoutes = () => {
   console.log("Navbar user: ", JSON.stringify(user));
 
   const gotToSignIn = () => {
-    router.push("/login");
+    router.push("/login?from=" + encodeURIComponent(pathname));
   };
 
   const switchBack = () => {
-    router.push("/browseCourses");
+    router.push("/browse");
   };
 
   const isBrowseCoursesScreen = pathname.match("/browse");

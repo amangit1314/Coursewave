@@ -34,8 +34,8 @@ export const CourseCard = ({ course }: { course: Course }) => {
     course?.dealPrice && course?.price && course.dealPrice < course.price;
   const discountPercentage = hasDiscount
     ? Math.round(
-      ((course.price - (course.dealPrice ?? 0)) / course.price) * 100
-    )
+        ((course.price - (course.dealPrice ?? 0)) / course.price) * 100
+      )
     : 0;
 
   return (
@@ -53,6 +53,7 @@ export const CourseCard = ({ course }: { course: Course }) => {
             <div className="absolute inset-0 animate-pulse bg-zinc-200 dark:bg-zinc-700" />
           )}
 
+          {/* Course Image */}
           <Image
             src={course.imageUrl ?? "/assets/images/cover/cover-01.png"}
             alt={course.title || "Course image"}
@@ -116,7 +117,7 @@ export const CourseCard = ({ course }: { course: Course }) => {
 
           {/* Pricing Section */}
           <div className="flex items-center justify-start gap-2 flex-wrap mt-1">
-            {/* Current Price (dealPrice if available, otherwise regular price) */}
+            {/* Current Price (dealPrice if available and greater then 0, otherwise regular price) */}
             <span
               className={cn(
                 "text-lg font-extrabold bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-400 dark:to-blue-300 bg-clip-text text-transparent",
@@ -125,11 +126,11 @@ export const CourseCard = ({ course }: { course: Course }) => {
             >
               {course?.isFree
                 ? "Free"
-                : `${formatPrice(course?.dealPrice ?? course?.price ?? 499)}`}
+                : `${formatPrice(hasDiscount && discountPercentage > 0 && course.dealPrice && course.dealPrice > 0 ? course?.dealPrice : course?.price)}`}
             </span>
 
             {/* Original Price (show only when there's a discount) */}
-            {!course?.isFree && hasDiscount && (
+            {!course?.isFree && hasDiscount && discountPercentage > 0 && (
               <span
                 className={cn(
                   "text-sm text-gray-400 dark:text-gray-500 line-through",

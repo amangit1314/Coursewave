@@ -48,7 +48,7 @@ export default function QuickActions() {
       title: "Continue Teaching",
       desc: "Resume where you left off",
       icon: <PlayCircle className="w-5 h-5" />,
-      onClick: () => router.push("/instructor/dashboard"),
+      onClick: () => router.push("/instructor/analytics"),
       color: "from-emerald-600 to-lime-500",
     },
     {

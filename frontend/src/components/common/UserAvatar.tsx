@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -24,9 +24,7 @@ import { IMAGES } from "@/constants/images";
 const SimpleDialog = ({ open, onConfirm, onCancel }: any) => {
   if (!open) return null;
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
       <div className="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow-lg w-[90vw] max-w-sm">
         <h3 className="text-lg font-semibold mb-2 text-black dark:text-white">
           Confirm Logout
@@ -58,31 +56,46 @@ const UserAvatar = () => {
   const router = useRouter();
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
+  // let isInstructor = user?.roles?.includes("INSTRUCTOR") ?? false;
+  const pathname = usePathname(); // Add this import: import { usePathname } from 'next/navigation';
+
   const options = [
     {
       icon: <BsPersonFillCheck className="h-4 w-4" />,
       name: "Profile",
       link: `/profile`,
     },
-    {
-      icon: <FiShoppingCart className="h-4 w-4" />,
-      name: "Cart",
-      link: "/cart",
-    },
-    {
-      icon: <TbJewishStar className="h-4 w-4" />,
-      name: "Wishlist",
-      link: "/wishlist",
-    },
-    {
-      icon: <FiLogOut className="h-4 w-4" />,
-      name: "Logout",
-      link: "",
-    },
   ];
 
+  // Conditionally add Cart and Wishlist only when not on instructor routes
+  if (!pathname.includes("/instructor/")) {
+    options.push(
+      {
+        icon: <FiShoppingCart className="h-4 w-4" />,
+        name: "Cart",
+        link: "/cart",
+      },
+      {
+        icon: <TbJewishStar className="h-4 w-4" />,
+        name: "Wishlist",
+        link: "/wishlist",
+      }
+    );
+  }
+
+  // Always add Logout
+  options.push({
+    icon: <FiLogOut className="h-4 w-4" />,
+    name: "Logout",
+    link: "",
+  });
+
   // Handles click on dropdown items
-  const handleOptionClick = (option: { icon?: React.JSX.Element; name: any; link: any; }) => {
+  const handleOptionClick = (option: {
+    icon?: React.JSX.Element;
+    name: any;
+    link: any;
+  }) => {
     if (option.name === "Logout") {
       setLogoutDialogOpen(true);
     } else if (option.link) {
@@ -136,7 +149,7 @@ const UserAvatar = () => {
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
-      
+
       {/* Logout confirmation dialog */}
       <SimpleDialog
         open={logoutDialogOpen}
@@ -148,4 +161,3 @@ const UserAvatar = () => {
 };
 
 export default UserAvatar;
-
