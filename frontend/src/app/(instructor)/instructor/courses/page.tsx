@@ -1,5 +1,8 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
 import React from "react";
 import toast from "react-hot-toast";
 import { Flex, Button } from "@tremor/react";
@@ -27,7 +30,6 @@ const CreatedCourses = () => {
   const instructorId = user?.id;
   const router = useRouter();
 
-  // 🔹 Use React Query hook
   const {
     data: createdCourses,
     isLoading,
@@ -35,7 +37,6 @@ const CreatedCourses = () => {
     error,
   } = useMyCreatedCourses();
 
-  // Transform API response into DataTable props
   const transformedCourses = React.useMemo(() => {
     if (!createdCourses) return [];
     const toCreatedCourseProps = (course: Course): CreatedCourseProps => ({
@@ -50,7 +51,6 @@ const CreatedCourses = () => {
     return (createdCourses as Course[]).map(toCreatedCourseProps);
   }, [createdCourses, instructorId]);
 
-  // Toast notifications for error/success
   React.useEffect(() => {
     if (isError && error instanceof Error) {
       toast.error(`Error fetching courses: ${error.message}`);
@@ -63,13 +63,7 @@ const CreatedCourses = () => {
   return (
     <div className="h-full pt-6 dark:bg-zinc-900">
       <div className="bg-white space-y-4 dark:bg-zinc-800 rounded-3xl shadow-sm border border-zinc-200 dark:border-zinc-700 p-4 sm:p-6">
-      
-        {/* <div className="hidden md:block bg-red-500 text-white p-4">
-          Visible only on medium screens and up
-        </div> */}
-
         <Flex className="flex-wrap gap-4">
-          {/* Header section */}
           <div className="flex flex-wrap items-center gap-3">
             <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex-shrink-0">
               <BookOpenIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
@@ -84,7 +78,6 @@ const CreatedCourses = () => {
             </div>
           </div>
 
-          {/* Create button */}
           <Button
             onClick={() => router.push(`/instructor/courses/create`)}
             className="ml-auto flex items-center gap-1 rounded-lg border-none bg-blue-500 p-2 font-medium text-white shadow-xl hover:bg-blue-700 hover:font-semibold"
@@ -94,7 +87,6 @@ const CreatedCourses = () => {
           </Button>
         </Flex>
 
-        {/* Table */}
         <div className="overflow-x-auto">
           {isLoading ? (
             <p className="text-sm text-zinc-500 dark:text-zinc-400">

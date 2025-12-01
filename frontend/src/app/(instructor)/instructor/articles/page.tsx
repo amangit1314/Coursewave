@@ -1,5 +1,8 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
 import React from "react";
 import toast from "react-hot-toast";
 import { Flex, Button } from "@tremor/react";
