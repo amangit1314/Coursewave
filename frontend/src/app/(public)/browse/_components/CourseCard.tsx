@@ -156,7 +156,10 @@ export const CourseCard = ({ course }: { course: Course }) => {
               )}
 
             {/* Discount Badge (inline version for card body) */}
-            {!course?.isFree && hasDiscount && discountPercentage > 0 && (
+            {!course?.isFree &&
+              discountPercentage > 0 && // Remove hasDiscount dependency
+              course.dealPrice &&
+              course.dealPrice > 0 && (
               <Badge
                 className={cn(
                   "bg-red-500 rounded-full text-white border-0 px-2 py-0.5 font-bold text-xs",
