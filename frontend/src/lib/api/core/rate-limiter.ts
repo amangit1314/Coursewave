@@ -6,9 +6,11 @@ interface RateLimitEntry {
 class ClientRateLimiter {
   private static instance: ClientRateLimiter;
   private rateLimitMap: Map<string, RateLimitEntry> = new Map();
-  private readonly WINDOW_MS = 60 * 1000; // 1 minute
+  // private readonly WINDOW_MS = 60 * 1000; // 1 minute
+  private readonly WINDOW_MS = 1 * 1000; // 1 second
   // Increase rate limit for development mode
-  private readonly MAX_REQUESTS = process.env.NODE_ENV === 'development' ? 30 : 3; // 30 requests per minute in dev, 3 in prod
+  private readonly MAX_REQUESTS =
+    process.env.NODE_ENV === "development" ? 30 : 3; // 30 requests per minute in dev, 3 in prod
 
   private constructor() {}
 
@@ -19,11 +21,11 @@ class ClientRateLimiter {
     return ClientRateLimiter.instance;
   }
 
-  private generateKey(url: string, method: string = 'GET'): string {
+  private generateKey(url: string, method: string = "GET"): string {
     return `${method}:${url}`;
   }
 
-  public isRateLimited(url: string, method: string = 'GET'): boolean {
+  public isRateLimited(url: string, method: string = "GET"): boolean {
     const key = this.generateKey(url, method);
     const now = Date.now();
     const entry = this.rateLimitMap.get(key);
@@ -42,7 +44,7 @@ class ClientRateLimiter {
     return false;
   }
 
-  public recordRequest(url: string, method: string = 'GET'): void {
+  public recordRequest(url: string, method: string = "GET"): void {
     const key = this.generateKey(url, method);
     const now = Date.now();
     const entry = this.rateLimitMap.get(key);
@@ -59,10 +61,10 @@ class ClientRateLimiter {
     }
   }
 
-  public getRemainingRequests(url: string, method: string = 'GET'): number {
+  public getRemainingRequests(url: string, method: string = "GET"): number {
     const key = this.generateKey(url, method);
     const entry = this.rateLimitMap.get(key);
-    
+
     if (!entry) {
       return this.MAX_REQUESTS;
     }
@@ -75,10 +77,10 @@ class ClientRateLimiter {
     return Math.max(0, this.MAX_REQUESTS - entry.count);
   }
 
-  public getResetTime(url: string, method: string = 'GET'): number {
+  public getResetTime(url: string, method: string = "GET"): number {
     const key = this.generateKey(url, method);
     const entry = this.rateLimitMap.get(key);
-    
+
     if (!entry) {
       return Date.now() + this.WINDOW_MS;
     }
@@ -90,7 +92,10 @@ class ClientRateLimiter {
     this.rateLimitMap.clear();
   }
 
-  public getStatus(url: string, method: string = 'GET'): {
+  public getStatus(
+    url: string,
+    method: string = "GET"
+  ): {
     isLimited: boolean;
     remaining: number;
     resetTime: number;
@@ -126,9 +131,14 @@ export class RateLimitError extends Error {
   public remaining: number;
   public total: number;
 
-  constructor(message: string, resetTime: number, remaining: number, total: number) {
+  constructor(
+    message: string,
+    resetTime: number,
+    remaining: number,
+    total: number
+  ) {
     super(message);
-    this.name = 'RateLimitError';
+    this.name = "RateLimitError";
     this.resetTime = resetTime;
     this.remaining = remaining;
     this.total = total;
@@ -136,16 +146,16 @@ export class RateLimitError extends Error {
 }
 
 // Utility function to check and record API calls
-export function checkRateLimit(url: string, method: string = 'GET'): void {
+export function checkRateLimit(url: string, method: string = "GET"): void {
   // Disable rate limiting in development mode
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === "development") {
     return;
   }
-  
+
   if (clientRateLimiter.isRateLimited(url, method)) {
     const status = clientRateLimiter.getStatus(url, method);
     const resetTime = new Date(status.resetTime).toLocaleTimeString();
-    
+
     throw new RateLimitError(
       `Rate limit exceeded. Maximum ${status.total} requests per minute. Try again after ${resetTime}`,
       status.resetTime,
@@ -153,11 +163,11 @@ export function checkRateLimit(url: string, method: string = 'GET'): void {
       status.total
     );
   }
-  
+
   clientRateLimiter.recordRequest(url, method);
 }
 
 // Utility function to get rate limit status
-export function getRateLimitStatus(url: string, method: string = 'GET') {
+export function getRateLimitStatus(url: string, method: string = "GET") {
   return clientRateLimiter.getStatus(url, method);
-} 
+}
