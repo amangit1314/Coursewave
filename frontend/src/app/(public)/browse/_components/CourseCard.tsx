@@ -130,7 +130,7 @@ export const CourseCard = ({ course }: { course: Course }) => {
             </span>
 
             {/* Original Price (show only when there's a discount) */}
-            {!course?.isFree && hasDiscount && discountPercentage > 0 && (
+            {/* {!course?.isFree && hasDiscount && discountPercentage > 0 && (
               <span
                 className={cn(
                   "text-sm text-gray-400 dark:text-gray-500 line-through",
@@ -139,7 +139,21 @@ export const CourseCard = ({ course }: { course: Course }) => {
               >
                 {formatPrice(course.price)}
               </span>
-            )}
+            )} */}
+
+            {!course?.isFree &&
+              discountPercentage > 0 && // Remove hasDiscount dependency
+              course.dealPrice &&
+              course.dealPrice > 0 && (
+                <span
+                  className={cn(
+                    "text-sm text-gray-400 dark:text-gray-500 line-through",
+                    dmSans.className
+                  )}
+                >
+                  {formatPrice(course.price)}
+                </span>
+              )}
 
             {/* Discount Badge (inline version for card body) */}
             {!course?.isFree && hasDiscount && discountPercentage > 0 && (
