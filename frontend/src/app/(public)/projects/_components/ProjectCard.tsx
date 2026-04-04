@@ -1,43 +1,26 @@
 import { Project } from "@/types/project";
-import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CircleArrowRight, Eye, Star } from "lucide-react";
+import { ArrowRight, Calendar, Code2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { dmSans } from "@/lib/config/fonts";
 
-const getStatusColor = (status: string) => {
-  switch (status.toLowerCase()) {
-    case "planning":
-      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 shadow-none";
-    case "published":
-      return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 shadow-none";
-    case "in-progress":
-      return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 shadow-none";
-    case "completed":
-      return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 shadow-none";
-    case "on-hold":
-      return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 shadow-none";
-    default:
-      return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400 shadow-none";
-  }
+const statusStyles: Record<string, string> = {
+  planning: "bg-amber-100 text-amber-800 dark:bg-amber-500/15 dark:text-amber-400",
+  published: "bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-400",
+  "in-progress": "bg-blue-100 text-blue-800 dark:bg-blue-500/15 dark:text-blue-400",
+  completed: "bg-green-100 text-green-800 dark:bg-green-500/15 dark:text-green-400",
+  "on-hold": "bg-red-100 text-red-800 dark:bg-red-500/15 dark:text-red-400",
 };
 
-const getDifficultyColor = (difficulty: string) => {
-  switch (difficulty.toLowerCase()) {
-    case "beginner":
-      return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 shadow-none";
-    case "intermediate":
-      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 shadow-none";
-    case "advanced":
-      return "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400 shadow-none";
-    case "expert":
-      return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 shadow-none";
-    default:
-      return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400 shadow-none";
-  }
+const difficultyStyles: Record<string, string> = {
+  beginner: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400",
+  intermediate: "bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400",
+  advanced: "bg-orange-100 text-orange-700 dark:bg-orange-500/15 dark:text-orange-400",
+  expert: "bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400",
 };
+
+const fallbackStyle = "bg-zinc-100 text-zinc-700 dark:bg-zinc-500/15 dark:text-zinc-400";
 
 const ProjectCard = ({
   project,
@@ -46,162 +29,113 @@ const ProjectCard = ({
   project: Project;
   viewMode: "grid" | "list";
 }) => {
-  const [isBookmarked, setIsBookmarked] = useState(project.isBookmarked);
   const router = useRouter();
+  const viewProject = () => router.push(`/projects/${project.id}`);
 
-  const toggleBookmark = () => {
-    setIsBookmarked(!isBookmarked);
-  };
+  const statusClass = statusStyles[project.status.toLowerCase()] || fallbackStyle;
+  const difficultyClass = difficultyStyles[project.difficulty?.toLowerCase()] || fallbackStyle;
 
-  const viewProject = () => {
-    router.push(`/projects/${project.id}`);
-  };
-
+  // List view
   if (viewMode === "list") {
     return (
       <Card
         onClick={viewProject}
-        className="group relative border border-gray-200 dark:border-zinc-800 overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:shadow-zinc-800/50">
-        <CardContent className="p-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            {/* Left: Icon + Text */}
-            <div className="flex items-start gap-4 w-full md:w-2/3">
-              {/* Text */}
-              <div className="flex-1 min-w-0">
-                <h3
-                  className={`${dmSans.className} text-base font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors`}
-                >
+        className="group cursor-pointer border border-zinc-200 dark:border-zinc-800 hover:border-blue-400 dark:hover:border-blue-500 transition-colors duration-200"
+      >
+        <CardContent className="p-4 sm:p-5">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className={`${dmSans.className} font-semibold text-zinc-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate`}>
                   {project.title}
                 </h3>
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-                  {project.description}
-                </p>
-
-                {/* Tags */}
-                <div className="mt-2 flex flex-wrap gap-1">
-                  {project.tags.slice(0, 4).map((tag) => (
-                    <Badge
-                      key={tag}
-                      variant="secondary"
-                      className="text-xs bg-blue-100 dark:bg-blue-500 text-blue-600 dark:text-white rounded-full font-medium tracking-tight"
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                  {project.tags.length > 4 && (
-                    <Badge
-                      variant="outline"
-                      className="text-xs rounded-full text-blue-600 border-blue-600 font-medium tracking-tight"
-                    >
-                      +{project.tags.length - 3}
-                    </Badge>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Status + Difficulty + Button */}
-            <div className="flex flex-col items-start md:items-end gap-2 w-full md:w-auto">
-              <div className="flex gap-2">
-                <Badge className={getStatusColor(project.status)}>
+                <Badge className={`${statusClass} text-[11px] font-medium border-0 shrink-0`}>
                   {project.status.replace("-", " ")}
                 </Badge>
-                <Badge className={getDifficultyColor(project.difficulty)}>
-                  {project.difficulty}
-                </Badge>
               </div>
-
-              <Button
-                size="sm"
-                onClick={viewProject}
-                className={`${dmSans.className} bg-gradient-to-r mt-4 from-blue-500 to-cyan-500 text-white hover:from-blue-600 hover:to-cyan-600`}
-              >
-                <CircleArrowRight className="h-3 w-3" />
-                View Project
-              </Button>
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-1 mb-2">
+                {project.description}
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {project.tags.slice(0, 4).map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-[11px] font-medium px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400"
+                  >
+                    {tag}
+                  </span>
+                ))}
+                {project.tags.length > 4 && (
+                  <span className="text-[11px] text-zinc-400">+{project.tags.length - 4}</span>
+                )}
+              </div>
             </div>
+            <ArrowRight className="h-4 w-4 text-zinc-400 group-hover:text-blue-500 transition-colors shrink-0 hidden sm:block" />
           </div>
         </CardContent>
       </Card>
     );
   }
 
+  // Grid view
   return (
     <Card
       onClick={viewProject}
-      className="group border shadow-none border-gray-200 dark:border-zinc-800 hover:border-blue-500 dark:hover:border-blue-500 relative overflow-hidden transition-all duration-300 hover:shadow-sm  dark:hover:shadow-blue-500">
-      <CardContent className="p-4">
-        {/* Header */}
-        <div className="mb-4 flex items-start justify-between">
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-              {project.title}
-            </h3>
-            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-              {project.description}
-            </p>
-          </div>
-        </div>
+      className="group cursor-pointer border border-zinc-200 dark:border-zinc-800 hover:border-blue-400 dark:hover:border-blue-500 transition-colors duration-200 overflow-hidden"
+    >
+      {/* Colored top bar */}
+      <div className="h-1 bg-gradient-to-r from-blue-500 to-indigo-500" />
 
-        {/* Tags */}
-        <div className="mb-4 flex flex-wrap gap-1 line-clamp-2">
-          {project.tags.slice(0, 4).map((tag) => (
-            <Badge
-              key={tag}
-              variant="secondary"
-              className="text-xs bg-blue-500 px-2 py-1 text-white rounded-full font-medium tracking-tight"
-            >
-              {tag}
-            </Badge>
-          ))}
-          {project.tags.length > 4 && (
-            <Badge
-              variant="outline"
-              className="text-xs rounded-full text-blue-600 border-blue-600 font-medium tracking-tight"
-            >
-              +{project.tags.length - 3}
+      <CardContent className="p-5">
+        {/* Badges */}
+        <div className="flex items-center gap-2 mb-3">
+          <Badge className={`${statusClass} text-[11px] font-medium border-0`}>
+            {project.status.replace("-", " ")}
+          </Badge>
+          {project.difficulty && (
+            <Badge className={`${difficultyClass} text-[11px] font-medium border-0`}>
+              {project.difficulty}
             </Badge>
           )}
         </div>
 
-        {/* Footer */}
-        <div className="flex flex-col items-start justify-between space-y-4">
-          {/* <div className="flex items-center space-x-2">
-            <div className="flex items-center space-x-4 text-xs text-gray-500">
-              <div className="flex items-center space-x-1">
-                <Eye className="h-3 w-3" />
-                <span>{project.views}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <Star className="h-3 w-3" />
-                <span>{project.likes}</span>
-              </div>
-            </div>
-          </div> */}
+        {/* Title */}
+        <h3 className={`${dmSans.className} text-base font-semibold text-zinc-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors mb-1.5`}>
+          {project.title}
+        </h3>
 
-          {/* status and view button */}
-          <div className="flex items-center space-x-2">
-            {/* project status */}
-            <Badge className={`${getStatusColor(project.status)} shadow-none `}>
-              {project.status.replace("-", " ")}
-            </Badge>
+        {/* Description */}
+        <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2 mb-4 leading-relaxed">
+          {project.description}
+        </p>
 
-            {/* difficulty badge */}
-            <Badge
-              className={`${getDifficultyColor(project.difficulty)} shadow-none`}
+        {/* Tags */}
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          {project.tags.slice(0, 4).map((tag) => (
+            <span
+              key={tag}
+              className="text-[11px] font-medium px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400"
             >
-              {project.difficulty}
-            </Badge>
-          </div>
+              {tag}
+            </span>
+          ))}
+          {project.tags.length > 4 && (
+            <span className="text-[11px] text-zinc-400 self-center">+{project.tags.length - 4}</span>
+          )}
+        </div>
 
-          {/* view / start project button */}
-          <Button
-            size="sm"
-            className="bg-gradient-to-r from-blue-500 text-white cursor-pointer to-cyan-500 hover:from-blue-600 hover:to-cyan-600 w-full"
-          >
-            <CircleArrowRight className="h-3 w-3" />
-            View Project
-          </Button>
+        {/* Footer */}
+        <div className="flex items-center justify-between pt-3 border-t border-zinc-100 dark:border-zinc-800">
+          {project.startDate && (
+            <div className="flex items-center gap-1.5 text-xs text-zinc-400">
+              <Calendar className="h-3 w-3" />
+              {new Date(project.startDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+            </div>
+          )}
+          <div className="flex items-center gap-1 text-xs font-medium text-blue-600 dark:text-blue-400 group-hover:gap-2 transition-all">
+            View
+            <ArrowRight className="h-3 w-3" />
+          </div>
         </div>
       </CardContent>
     </Card>

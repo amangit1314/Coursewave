@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client';
 import crypto from 'crypto';
 import { generateResourceId } from '../utils/idGenerator';
-
-const prisma = new PrismaClient();
+import { prisma } from '../../config/prisma';
 
 // CSRF Configuration
 const CSRF_CONFIG = {

@@ -1,22 +1,32 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import toast from "react-hot-toast";
 
 import CourseNavbar from "../../_components/CourseNavbar";
-import { Footer } from "@/components/LandingPage/footer";
 import { CoursePreviewLoadingSkeleton } from "./skeletons/CoursePreviewLoadingSekeleton";
 import { ErrorMessage } from "./ErrorMessage";
-import { CourseRatingsSection } from "./CourseRatingsSection";
-import { CourseSectionsAndChapters } from "./CourseSectionAndChapters";
 import { CourseDetailsRightSection } from "./CourseDetailsRightSection";
 import { CourseDetailsLeftSection } from "./CourseDetailsLeftSection";
 
-import { useCourse } from "@/hooks/useCourses";
-import { useCourseReviews } from "@/hooks/useCourses";
-import { useCourseSections } from "@/hooks/useCourses";
-// import { useCheckAuth, useRefreshToken } from "@/hooks/useAuth";
+import { useCourse, useCourseReviews, useCourseSections } from "@/hooks/useCourses";
 import { Review } from "@/types/review";
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "@/constants/messages";
+
+// Lazy-load heavy below-the-fold sections
+const CourseSectionsAndChapters = dynamic(
+  () => import("./CourseSectionAndChapters").then((m) => ({ default: m.CourseSectionsAndChapters })),
+  { ssr: false }
+);
+const CourseRatingsSection = dynamic(
+  () => import("./CourseRatingsSection").then((m) => ({ default: m.CourseRatingsSection })),
+  { ssr: false }
+);
+const Footer = dynamic(
+  () => import("@/components/LandingPage/footer").then((m) => ({ default: m.Footer })),
+  { ssr: false }
+);
 
 const CoursePreviewClient = ({ courseId }: { courseId: string }) => {
   const [mounted, setMounted] = useState(false);
@@ -25,11 +35,6 @@ const CoursePreviewClient = ({ courseId }: { courseId: string }) => {
   const { data: course, isLoading, isError, error } = useCourse(courseId);
   const { data: reviews } = useCourseReviews(courseId);
   const { data: sections } = useCourseSections(courseId);
-
-  // Auth management
-  // const { user } = useUserStore();
-  // const { refetch: checkAuth } = useCheckAuth();
-  // const { mutateAsync: refreshAuth } = useRefreshToken();
 
   // Mount detection
   useEffect(() => {
@@ -45,13 +50,7 @@ const CoursePreviewClient = ({ courseId }: { courseId: string }) => {
     const canceled = params.get("canceled");
 
     if (success === "1") {
-      toast.success(
-        "🎉 Payment successful! You are now enrolled in this course.",
-        {
-          duration: 5000,
-          icon: "🎓",
-        }
-      );
+      toast.success(SUCCESS_MESSAGES.ENROLLMENT_SUCCESS, { duration: 5000 });
     } else if (canceled === "1") {
       toast.error("Payment was canceled. You can try again anytime.", {
         duration: 4000,
@@ -63,30 +62,48 @@ const CoursePreviewClient = ({ courseId }: { courseId: string }) => {
     }
   }, [mounted]);
 
-  // Loading State with improved skeleton
+  // Memoize data transformations to avoid recalculation on every render
+  const safeReviews: Review[] = useMemo(
+    () =>
+      reviews?.data
+        ? Array.isArray(reviews.data)
+          ? reviews.data
+          : [reviews.data]
+        : [],
+    [reviews?.data]
+  );
+
+  const safeSections = useMemo(
+    () =>
+      Array.isArray(sections)
+        ? sections.map((s: any) => ({
+            ...s,
+            courseId,
+            Chapter: Array.isArray(s.Chapter) ? s.Chapter : [],
+          }))
+        : [],
+    [sections, courseId]
+  );
+
+  // Loading
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-zinc-50 via-white to-blue-50/30 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
+      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
         <CoursePreviewLoadingSkeleton />
       </div>
     );
   }
 
-  // Error State with better styling
+  // Error
   if (isError && error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-zinc-50 via-white to-blue-50/30 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
+      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
         <div className="container mx-auto max-w-7xl px-4 py-8 lg:px-8">
           <div className="flex min-h-[70vh] items-center justify-center">
-            <div className="w-full max-w-2xl animate-in fade-in slide-in-from-top-4 duration-500">
-              <ErrorMessage
-                title="Failed to Load Course"
-                message={
-                  error.message ||
-                  "An unexpected error occurred while fetching the course information."
-                }
-              />
-            </div>
+            <ErrorMessage
+              title={ERROR_MESSAGES.COURSE_LOAD_FAILED}
+              message={error.message || ERROR_MESSAGES.GENERIC}
+            />
           </div>
         </div>
         <Footer />
@@ -94,113 +111,70 @@ const CoursePreviewClient = ({ courseId }: { courseId: string }) => {
     );
   }
 
-  // Normalize data for safe rendering
-  const courseData = course;
-  ///! ORIGINAL
-
-  // const safeReviews: Review[] = Array.isArray(reviews?.data)
-  //   ? reviews.data
-  //   : reviews?.data
-  //     ? [reviews.data]
-  //     : [];
-
-  ///! TRYING TO OPTIMIZE
-  const safeReviews: Review[] = reviews?.data
-    ? Array.isArray(reviews.data)
-      ? reviews.data
-      : [reviews.data]
-    : [];
-
-  const safeSections = Array.isArray(sections)
-    ? sections.map((s: any) => ({
-      ...s,
-      courseId,
-      Chapter: Array.isArray(s.Chapter) ? s.Chapter : [],
-    }))
-    : [];
-
-  // Course not found state
-  if (!courseData) {
+  // Not found
+  if (!course) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-zinc-50 via-white to-blue-50/30 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
+      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
         <div className="container mx-auto max-w-7xl px-4 py-8 lg:px-8">
           <div className="flex min-h-[70vh] items-center justify-center">
-            <div className="w-full max-w-2xl animate-in fade-in slide-in-from-top-4 duration-500">
-              <ErrorMessage
-                title="Course Not Found"
-                message="This course does not exist or has been removed. Please browse our catalog for other courses."
-              />
-            </div>
+            <ErrorMessage
+              title={ERROR_MESSAGES.COURSE_NOT_FOUND}
+              message="This course does not exist or has been removed. Please browse our catalog for other courses."
+            />
           </div>
         </div>
         <Footer />
       </div>
     );
   }
-
-  const courseTitle = courseData.title;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-50 via-white to-blue-50/30 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       {/* Course Navbar - Sticky */}
-      {courseTitle && (
+      {course.title && (
         <div className="sticky top-0 z-50">
-          <CourseNavbar courseName={courseTitle} />
+          <CourseNavbar courseName={course.title} />
         </div>
       )}
 
-      {/* Main Content Container */}
+      {/* Main Content */}
       <div className="container mx-auto max-w-7xl px-4 py-6 lg:px-8">
-        {/* Course Content Grid with staggered animations */}
         <div className="space-y-8 lg:space-y-12">
-          {/* Hero Section - Course Details */}
-          <div className="grid gap-6 lg:grid-cols-3 lg:gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            {/* Left Section - Main Course Info */}
+          {/* Hero Section */}
+          <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
             <div className="lg:col-span-2 space-y-6">
-              {/* Show right section ONLY on mobile (below md) */}
+              {/* Mobile-only pricing card */}
               <div className="block md:hidden mt-6">
-                <CourseDetailsRightSection course={courseData} />
+                <CourseDetailsRightSection course={course} />
               </div>
 
               <CourseDetailsLeftSection
-                course={courseData}
+                course={course}
                 reviews={safeReviews}
               />
             </div>
 
-            {/* Right Section - Enrollment Card */}
+            {/* Desktop pricing card */}
             <div className="hidden md:flex md:flex-col lg:col-span-1">
               <div className="lg:sticky lg:top-24">
-                <CourseDetailsRightSection course={courseData} />
+                <CourseDetailsRightSection course={course} />
               </div>
             </div>
           </div>
 
           {/* Curriculum Section */}
-          <div
-            className="animate-in fade-in slide-in-from-bottom-4 duration-700"
-            style={{ animationDelay: "100ms" }}
-          >
-            <div className="rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm p-6 lg:p-8 shadow-lg">
-              <CourseSectionsAndChapters
-                courseId={courseId}
-                sections={safeSections}
-              />
-            </div>
+          <div className="rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 bg-white/50 dark:bg-zinc-900/50 p-6 lg:p-8 shadow-md">
+            <CourseSectionsAndChapters
+              courseId={courseId}
+              sections={safeSections}
+            />
           </div>
 
           {/* Reviews Section */}
-          <div
-            className="animate-in fade-in slide-in-from-bottom-4 duration-700"
-            style={{ animationDelay: "200ms" }}
-          >
-            <div className="rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm p-6 lg:p-8 shadow-lg">
-              <CourseRatingsSection reviews={safeReviews} course={courseData} />
-            </div>
+          <div className="rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 bg-white/50 dark:bg-zinc-900/50 p-6 lg:p-8 shadow-md">
+            <CourseRatingsSection reviews={safeReviews} course={course} />
           </div>
         </div>
-
-        {/* Scroll to top button could go here */}
       </div>
 
       {/* Footer */}

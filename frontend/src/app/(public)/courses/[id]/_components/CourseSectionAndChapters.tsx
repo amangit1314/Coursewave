@@ -20,10 +20,10 @@ import {
 import { CourseSection } from "@/types/course-details-api-response";
 import { useUserStore } from "@/zustand/userStore";
 import { ErrorMessage } from "./ErrorMessage";
-import { SampleCourseContent } from "./SampleCourseContent";
 import { useCourse } from "@/hooks/useCourses";
 import { cn } from "@/lib/utils/utils";
 import { dmSans } from "@/lib/config/fonts";
+import { COURSE_MESSAGES, ERROR_MESSAGES, pluralize } from "@/constants/messages";
 
 export const CourseSectionsAndChapters = ({
   courseId,
@@ -113,9 +113,24 @@ export const CourseSectionsAndChapters = ({
     );
   }
 
-  // Handle empty or null sections - show sample content
+  // Handle empty or null sections
   if (!sections || !Array.isArray(sections) || sections.length === 0) {
-    return <SampleCourseContent />;
+    return (
+      <Card className="border-0 shadow-xl dark:bg-zinc-900/90 rounded-2xl overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-zinc-800 dark:to-zinc-900 border-b border-gray-200 dark:border-zinc-700">
+          <h2 className={`${dmSans.className} text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2`}>
+            <BookOpen className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+            {COURSE_MESSAGES.CONTENT_TITLE}
+          </h2>
+        </CardHeader>
+        <CardContent className="p-8 text-center">
+          <BookOpen className="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+          <p className="text-gray-500 dark:text-gray-400">
+            {COURSE_MESSAGES.NO_CONTENT}
+          </p>
+        </CardContent>
+      </Card>
+    );
   }
 
   // Calculate totals safely
@@ -145,20 +160,11 @@ export const CourseSectionsAndChapters = ({
   const hours = Math.floor(totalDuration / 60);
   const minutes = Math.floor(totalDuration % 60);
 
-  // Precompute each section's duration for display
+  // Precompute each section's own duration for display
   const sectionDurations: number[] = sections.map((section) => {
     const lessons = Array.isArray(section.Chapter) ? section.Chapter : [];
     return lessons.reduce((total, lesson) => total + (lesson.duration || 0), 0);
   });
-
-  // Precompute previous section durations for each section
-  const prevSectionDurations: number[] = [];
-  let runningTotal = 0;
-
-  for (let i = 0; i < sectionDurations.length; i++) {
-    prevSectionDurations.push(runningTotal);
-    runningTotal += sectionDurations[i];
-  }
 
   return (
     <Card className="border-0 shadow-xl dark:bg-zinc-900/90 rounded-2xl overflow-hidden">
@@ -166,15 +172,15 @@ export const CourseSectionsAndChapters = ({
       <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-zinc-800 dark:to-zinc-900 border-b border-gray-200 dark:border-zinc-700 p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className={`${dmSans.className} text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2 `}>
+            <h2 className={`${dmSans.className} text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2`}>
               <BookOpen className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-              Course Content
+              {COURSE_MESSAGES.CONTENT_TITLE}
             </h2>
             <div className="flex items-center gap-4 mt-2">
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-700">
                 <BookOpen className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {totalLessons} lessons
+                  {totalLessons} {pluralize(totalLessons, 'lesson')}
                 </span>
               </div>
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-zinc-900 rounded-lg border border-emerald-200 dark:border-emerald-800">
@@ -189,7 +195,7 @@ export const CourseSectionsAndChapters = ({
 
           <div className="text-right">
             <div className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-              Total Duration
+              {COURSE_MESSAGES.TOTAL_DURATION}
             </div>
             <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl shadow-md">
               <Clock className="h-4 w-4" />
@@ -210,9 +216,9 @@ export const CourseSectionsAndChapters = ({
               const lessons = Array.isArray(section.Chapter)
                 ? section.Chapter
                 : [];
-              const prevDuration = prevSectionDurations[sectionIndex] || 0;
-              const prevHours = Math.floor(prevDuration / 60);
-              const prevMinutes = prevDuration % 60;
+              const secDuration = sectionDurations[sectionIndex] || 0;
+              const secHours = Math.floor(secDuration / 60);
+              const secMinutes = secDuration % 60;
 
               return (
                 <div
@@ -246,7 +252,7 @@ export const CourseSectionsAndChapters = ({
 
                       <div className="flex flex-col items-start">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="px-2 py-0.5 bg-blue-600 text-white text-xs font-bold rounded">
+                          <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-blue-600 text-white text-xs font-bold rounded">
                             {sectionIndex + 1}
                           </span>
                           <h3 className={`${dmSans.className} font-bold text-gray-900 dark:text-white text-left`}>
@@ -254,16 +260,16 @@ export const CourseSectionsAndChapters = ({
                           </h3>
                         </div>
 
-                        <div className="flex justify-start items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
-                          <span className="flex justify-start items-center gap-1">
+                        <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400 ml-8">
+                          <span className="flex items-center gap-1">
                             <BookOpen className="h-3.5 w-3.5" />
                             {lessons.length} {lessons.length === 1 ? 'lesson' : 'lessons'}
                           </span>
-                          {(prevHours > 0 || prevMinutes > 0) && (
+                          {secDuration > 0 && (
                             <span className="flex items-center gap-1">
                               <Clock className="h-3.5 w-3.5" />
-                              {prevHours > 0 && `${prevHours}h `}
-                              {prevMinutes}m
+                              {secHours > 0 && `${secHours}h `}
+                              {secMinutes}m
                             </span>
                           )}
                         </div>
@@ -378,12 +384,10 @@ export const CourseSectionsAndChapters = ({
             </div>
             <div className="flex-1">
               <h4 className={`${dmSans.className} font-bold text-blue-900 dark:text-blue-100 mb-1`}>
-                Course Access Information
+                {COURSE_MESSAGES.ACCESS_TITLE}
               </h4>
               <p className="text-sm text-blue-800 dark:text-blue-200 leading-relaxed">
-                The first 2 lessons are available for free preview. Enroll in
-                the course to unlock all {totalLessons} lessons, including{" "}
-                <span className="font-semibold">{totalLessons - freeLessons} premium lessons</span> with lifetime access.
+                {COURSE_MESSAGES.ACCESS_NOTICE(totalLessons, totalLessons - freeLessons)}
               </p>
             </div>
           </div>

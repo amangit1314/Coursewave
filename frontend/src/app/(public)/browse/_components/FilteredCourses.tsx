@@ -7,18 +7,23 @@ import { CourseCard } from "./CourseCard";
 import { CoursesPagination } from "../../courses/_components/CoursesPagination";
 import { useCourses } from "@/hooks/useCourses";
 import { Course } from "@/types";
+import { SortOption, PriceFilter } from "./BrowseSection";
 
 interface FilteredCoursesComponentProps {
   activeCategory: string | null;
   searchQuery: string | null;
   categories: Category[];
+  sortBy?: SortOption;
+  priceFilter?: PriceFilter;
 }
 
 export default function FilteredCoursesComponent({
   activeCategory,
   searchQuery,
   categories,
-}: FilteredCoursesComponentProps) { // Added categories prop
+  sortBy = "newest",
+  priceFilter = "all",
+}: FilteredCoursesComponentProps) {
   const { data: courses, isLoading, isError, error, refetch } = useCourses();
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,7 +32,7 @@ export default function FilteredCoursesComponent({
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, activeCategory]);
+  }, [searchQuery, activeCategory, sortBy, priceFilter]);
 
   // --- FIXED Helper Functions ---
   const matchesCategory = useCallback((course: Course, category: string | null) => {
@@ -53,17 +58,43 @@ export default function FilteredCoursesComponent({
     );
   }, []);
 
-  // --- Filtering + Pagination (memoized) ---
+  const matchesPriceFilter = useCallback((course: Course, filter: PriceFilter) => {
+    if (filter === "all") return true;
+    if (filter === "free") return course.isFree || course.price === 0;
+    if (filter === "paid") return !course.isFree && course.price > 0;
+    return true;
+  }, []);
+
+  const sortCourses = useCallback((coursesToSort: Course[], sort: SortOption) => {
+    const sorted = [...coursesToSort];
+    switch (sort) {
+      case "newest":
+        return sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      case "oldest":
+        return sorted.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+      case "price_asc":
+        return sorted.sort((a, b) => (a.price ?? 0) - (b.price ?? 0));
+      case "price_desc":
+        return sorted.sort((a, b) => (b.price ?? 0) - (a.price ?? 0));
+      default:
+        return sorted;
+    }
+  }, []);
+
+  // --- Filtering + Sorting + Pagination (memoized) ---
   const filteredCourses = useMemo(() => {
     if (!courses) return [];
 
-    return courses.filter((course) => {
+    const filtered = courses.filter((course) => {
       return (
         matchesCategory(course, activeCategory) &&
-        matchesSearch(course, searchQuery)
+        matchesSearch(course, searchQuery) &&
+        matchesPriceFilter(course, priceFilter)
       );
     });
-  }, [courses, activeCategory, searchQuery, matchesCategory, matchesSearch]); // Added dependencies
+
+    return sortCourses(filtered, sortBy);
+  }, [courses, activeCategory, searchQuery, priceFilter, sortBy, matchesCategory, matchesSearch, matchesPriceFilter, sortCourses]);
 
   const totalPages = Math.ceil(filteredCourses.length / coursesPerPage) || 1;
 

@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { generateResourceId } from "../../../core/utils/idGenerator";
 // import { invalidateCache } from "../../../config/redis";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../../config/prisma";
 
 export const getAllAttachmentsForCourse = async (courseId: string) => {
   return await prisma.courseAttachment.findMany({

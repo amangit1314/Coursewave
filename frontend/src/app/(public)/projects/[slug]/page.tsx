@@ -45,33 +45,33 @@ const ProjectPage = () => {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty.toLowerCase()) {
       case "beginner":
-        return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 dark:bg-emerald-50 dark:text-emerald-700 dark:border-emerald-200 bg-emerald-50 dark:bg-emerald-50 dark:text-emerald-700 dark:text-emerald-700 dark:border-emerald-200";
+        return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20";
       case "intermediate":
-        return "bg-amber-500/10 text-amber-400 border-amber-500/20 dark:bg-amber-50 dark:text-amber-700 dark:border-amber-200";
+        return "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20";
       case "advanced":
-        return "bg-rose-500/10 text-rose-400 border-rose-500/20 dark:bg-rose-50 dark:text-rose-700 dark:border-rose-200";
+        return "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20";
       default:
-        return "bg-zinc-500/10 text-zinc-400 border-zinc-500/20 dark:bg-zinc-50 dark:text-zinc-700 dark:border-zinc-200";
+        return "bg-zinc-50 text-zinc-700 border-zinc-200 dark:bg-zinc-500/10 dark:text-zinc-400 dark:border-zinc-500/20";
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "active":
-        return "bg-blue-500/10 text-blue-400 border-blue-500/20 dark:bg-blue-500 dark:text-blue-700 dark:border-blue-200";
+        return "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20";
       case "completed":
-        return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 dark:bg-emerald-50- dark:text-emerald-700 dark:border-emerald-200";
+        return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20";
       case "upcoming":
-        return "bg-purple-500/10 text-purple-400 border-purple-500/20 dark:bg-purple-500 dark:text-purple-700 dark:border-purple-200";
+        return "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20";
       default:
-        return "bg-zinc-500/10 text-zinc-400 border-zinc-500/20 dark:bg-zinc-500 dark:text-zinc-700 dark:border-zinc-200";
+        return "bg-zinc-50 text-zinc-700 border-zinc-200 dark:bg-zinc-500/10 dark:text-zinc-400 dark:border-zinc-500/20";
     }
   };
 
   if (isLoading) {
     return (
       <div
-        className={`${poppins.className} flex justify-center items-center h-screen dark:bg-zinc-950 dark:text-zinc-400 bg-white text-zinc-500`}
+        className={`${poppins.className} flex justify-center items-center h-screen dark:bg-zinc-900 dark:text-zinc-400 bg-white text-zinc-500`}
       >
         <div className="text-center">
           <div
@@ -86,10 +86,10 @@ const ProjectPage = () => {
   if (isError) {
     return (
       <div
-        className={`flex justify-center items-center h-screen dark:bg-zinc-950 dark:text-zinc-400 bg-white text-zinc-500`}
+        className={`flex justify-center items-center h-screen dark:bg-zinc-900 dark:text-zinc-400 bg-white text-zinc-500`}
       >
         <div
-          className={`text-center p-8 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200 max-w-md`}
+          className={`text-center p-8 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700/50 bg-zinc-50 border-zinc-200 max-w-md`}
         >
           <AlertCircle
             className={`w-12 h-12 mx-auto mb-4 dark:text-rose-500 text-rose-600`}
@@ -110,10 +110,10 @@ const ProjectPage = () => {
   if (!project) {
     return (
       <div
-        className={`flex justify-center items-center h-screen dark:bg-zinc-950 dark:text-zinc-400 bg-white text-zinc-500`}
+        className={`flex justify-center items-center h-screen dark:bg-zinc-900 dark:text-zinc-400 bg-white text-zinc-500`}
       >
         <div
-          className={`text-center p-8 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200 max-w-md`}
+          className={`text-center p-8 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700/50 bg-zinc-50 border-zinc-200 max-w-md`}
         >
           <BookOpen
             className={`w-12 h-12 mx-auto mb-4 dark:text-zinc-600 text-zinc-400`}
@@ -133,17 +133,17 @@ const ProjectPage = () => {
 
   return (
     <div
-      className={`min-h-screen transition-colors duration-200 dark:bg-zinc-950 bg-white`}
+      className="min-h-screen dark:bg-zinc-900 bg-white"
     >
 
-      <main className="max-w-screen mt-16 mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
+      <main className="max-w-7xl mt-16 mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
         {/* Hero Section */}
         <div
-          className={`rounded-2xl overflow-hidden border mb-10 dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
+          className="rounded-2xl overflow-hidden border mb-10 bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700/50"
         >
           <div className="grid lg:grid-cols-2 gap-0">
             {/* Image Section */}
-            <div className="relative h-72 lg:h-auto overflow-hidden">
+            <div className="relative h-72 lg:h-auto lg:min-h-[320px] overflow-hidden">
               {project.thumbnailUrl ? (
                 <img
                   src={project.thumbnailUrl}
@@ -152,7 +152,7 @@ const ProjectPage = () => {
                 />
               ) : (
                 <div
-                  className={`flex items-center justify-center w-full h-full dark:bg-zinc-800 dark:text-zinc-600 bg-zinc-200 text-zinc-400`}
+                  className="flex items-center justify-center w-full h-full bg-zinc-100 dark:bg-zinc-800 text-zinc-300 dark:text-zinc-600"
                 >
                   <Code className="w-16 h-16" />
                 </div>
@@ -190,7 +190,7 @@ const ProjectPage = () => {
               <div className="grid grid-cols-2 gap-3">
                 {project.deadline && (
                   <div
-                    className={`p-4 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700 bg-white border-zinc-200`}
+                    className={`p-4 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700/50 bg-white border-zinc-200`}
                   >
                     <div className="flex items-center gap-2 mb-1">
                       <Calendar
@@ -211,7 +211,7 @@ const ProjectPage = () => {
                 )}
 
                 <div
-                  className={`p-4 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700 bg-white border-zinc-200`}
+                  className={`p-4 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700/50 bg-white border-zinc-200`}
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <Zap
@@ -241,7 +241,7 @@ const ProjectPage = () => {
               <div className="grid grid-cols-2 gap-3 mt-3">
                 {project.startDate && (
                   <div
-                    className={`p-4 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700 bg-white border-zinc-200`}
+                    className={`p-4 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700/50 bg-white border-zinc-200`}
                   >
                     <div className="flex items-center gap-2 mb-1">
                       <Target
@@ -263,7 +263,7 @@ const ProjectPage = () => {
 
                 {project.endDate && (
                   <div
-                    className={`p-4 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700 bg-white border-zinc-200`}
+                    className={`p-4 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700/50 bg-white border-zinc-200`}
                   >
                     <div className="flex items-center gap-2 mb-1">
                       <Target
@@ -293,7 +293,7 @@ const ProjectPage = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Categories & Tags */}
             <div
-              className={`p-6 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
+              className={`p-6 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700/50 bg-zinc-50 border-zinc-200`}
             >
               {project.categories.length > 0 && (
                 <div className="mb-6">
@@ -341,7 +341,7 @@ const ProjectPage = () => {
             {/* Learning Outcomes */}
             {project.learningOutcomes.length > 0 && (
               <div
-                className={`p-6 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
+                className={`p-6 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700/50 bg-zinc-50 border-zinc-200`}
               >
                 <h3
                   className={`${dmSans.className} text-lg font-semibold mb-4 flex items-center gap-2 dark:text-white text-zinc-900`}
@@ -368,7 +368,7 @@ const ProjectPage = () => {
 
             {/* Submission Section */}
             <div
-              className={`p-6 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
+              className={`p-6 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700/50 bg-zinc-50 border-zinc-200`}
             >
               <h2
                 className={`${dmSans.className} text-xl font-semibold mb-5 flex items-center gap-2 dark:text-white text-zinc-900`}
@@ -444,7 +444,7 @@ const ProjectPage = () => {
 
                   {submitted && (
                     <div
-                      className={`mt-6 p-5 rounded-lg border dark:bg-zinc-800/50 dark:border-zinc-700 bg-white border-zinc-200`}
+                      className={`mt-6 p-5 rounded-lg border dark:bg-zinc-800/50 dark:border-zinc-700/50 bg-white border-zinc-200`}
                     >
                       <h3
                         className={`${dmSans.className} text-base font-semibold mb-4 flex items-center gap-2 dark:text-white text-zinc-900`}
@@ -475,7 +475,7 @@ const ProjectPage = () => {
                         </span>
                       </div>
                       <div
-                        className={`p-4 rounded-lg border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
+                        className={`p-4 rounded-lg border dark:bg-zinc-800/50 dark:border-zinc-700/50 bg-zinc-50 border-zinc-200`}
                       >
                         <p
                           className={`${dmSans.className} text-sm font-medium mb-2 dark:text-zinc-300 text-zinc-800`}
@@ -523,7 +523,7 @@ const ProjectPage = () => {
             {/* Prerequisites */}
             {project.prerequisites.length > 0 && (
               <div
-                className={`p-6 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
+                className={`p-6 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700/50 bg-zinc-50 border-zinc-200`}
               >
                 <h3
                   className={`${dmSans.className} text-base font-semibold mb-4 dark:text-white text-zinc-900`}
@@ -550,7 +550,7 @@ const ProjectPage = () => {
             {/* Technologies */}
             {project.technologies.length > 0 && (
               <div
-                className={`p-6 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
+                className={`p-6 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700/50 bg-zinc-50 border-zinc-200`}
               >
                 <h3
                   className={`${dmSans.className} text-base font-semibold mb-4 dark:text-white text-zinc-900`}
@@ -577,7 +577,7 @@ const ProjectPage = () => {
             {/* Resources */}
             {project.resources.length > 0 && (
               <div
-                className={`p-6 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
+                className={`p-6 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700/50 bg-zinc-50 border-zinc-200`}
               >
                 <h3
                   className={`${dmSans.className} text-base font-semibold mb-4 dark:text-white text-zinc-900`}
@@ -604,7 +604,7 @@ const ProjectPage = () => {
 
             {/* Meta Info */}
             <div
-              className={`p-6 rounded-xl border dark:bg-zinc-900 dark:border-zinc-800 bg-zinc-50 border-zinc-200`}
+              className={`p-6 rounded-xl border dark:bg-zinc-800/50 dark:border-zinc-700/50 bg-zinc-50 border-zinc-200`}
             >
               <h3
                 className={`${dmSans.className} text-base font-semibold mb-3 dark:text-white text-zinc-900`}
@@ -632,9 +632,9 @@ const ProjectPage = () => {
 
       {/* Footer */}
       <footer
-        className={`mt-16 py-8 border-t dark:border-zinc-800 border-zinc-200`}
+        className="mt-16 py-8 border-t border-zinc-200 dark:border-zinc-700/50"
       >
-        <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p
             className={`${poppins.className} text-sm dark:text-zinc-500 text-zinc-500`}
           >

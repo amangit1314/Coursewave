@@ -12,7 +12,7 @@ model User {
   id              String   @id @default(uuid())
   name            String?
   email           String   @unique
-  password        String
+  password        String?
   profileImageUrl String?
   about           String?
   shortSummary    String?
@@ -60,9 +60,26 @@ model User {
   subscription      UserSubscription?
   stripeCustomer    StripeCustomer?
   instructorProfile Instructor?
+  oauthAccounts     OAuthAccount[]
 
   @@index([email])
   @@index([createdAt])
+}
+
+model OAuthAccount {
+  id                String   @id @default(uuid())
+  userId            String
+  provider          String   // "google" | "github"
+  providerAccountId String   // The ID from the provider
+  accessToken       String?
+  refreshToken      String?
+  expiresAt         Int?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model UserReport {

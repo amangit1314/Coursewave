@@ -2,10 +2,10 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MdClose, MdPushPin } from "react-icons/md";
-import { Message } from "@/types/message";
+import { ChatMessage } from "@/zustand/communityChatStore";
 
 type PinnedMessagesButtonProps = {
-  pinnedMessages: Array<Message>;
+  pinnedMessages: Array<ChatMessage>;
   showPinnedPanel: boolean;
   setShowPinnedPanel: (show: boolean) => void;
   isAdmin: boolean;

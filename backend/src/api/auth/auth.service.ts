@@ -1,16 +1,15 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { PrismaClient, Role } from "@prisma/client";
+import { Role } from "@prisma/client";
 import EmailService from "../../core/services/emailService";
 import TokenService from "../../core/services/tokenService";
 import CSRFService from "../../core/services/csrfService";
 import { generateResourceId } from "../../core/utils/idGenerator";
+import { env } from "../../config/config";
+import { prisma } from "../../config/prisma";
 
-const prisma = new PrismaClient();
-
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
-const JWT_REFRESH_SECRET =
-  process.env.JWT_REFRESH_SECRET || "your-refresh-secret-key";
+const JWT_SECRET = env.JWT_SECRET;
+const JWT_REFRESH_SECRET = env.JWT_REFRESH_SECRET;
 
 class AuthService {
   static async registerUser(
@@ -117,6 +116,9 @@ class AuthService {
     });
     if (!user) throw { status: 401, message: "Invalid credentials" };
 
+    if (!user.password) {
+      throw { status: 400, message: "This account uses Google or GitHub login. Please sign in with your provider." };
+    }
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) throw { status: 401, message: "Invalid credentials" };
 

@@ -11,16 +11,12 @@ import {
 } from "@/types/auth.service.types";
 import { ErrorResponse } from "@/types/common-types";
 
-// const API_BASE_URL =
-//   process.env.ENVIRONMENT === "DEVELOPMENT"
-//     ? process.env.API_LOCAL_URL
-//     : process.env.API_LIVE_URL;
-
-const API_BASE_URL = "https://male-nathalie-amanic-af4ba0b9.koyeb.app/api";
-// const API_BASE_URL = "http://localhost:5002/api";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5002/api";
 
 const API_TIMEOUT = 30000;
 const STATIC_TOKEN = "coursewave_access_token"; // static token header
+const isDev = process.env.NODE_ENV === "development";
 
 // === Types ===
 export interface ApiResponse<T> {
@@ -132,45 +128,25 @@ class ApiManager {
       (config) => {
         const token = ApiManager.getAuthToken();
 
-        // ✅ ADD DEBUG LOGGING
-        console.log("🔍 Request Interceptor Debug:", {
-          url: config.url,
-          method: config.method,
-          tokenExists: !!token,
-          token: token ? `${token.substring(0, 20)}...` : "MISSING",
-          storageCheck: {
-            localStorage: localStorage.getItem("coursewave_access_token")
-              ? "EXISTS"
-              : "MISSING",
-            sessionStorage: sessionStorage.getItem("coursewave_access_token")
-              ? "EXISTS"
-              : "MISSING",
-          },
-        });
-
-        if (token) {
-          if (token && config.headers?.set) {
-            config.headers.set("Authorization", `Bearer ${token}`);
-            config.headers.set("access_token", token);
-          }
+        if (isDev) {
+          console.log("🔍 Request Interceptor Debug:", {
+            url: config.url,
+            method: config.method,
+            tokenExists: !!token,
+          });
         }
 
-        // ✅ Apply rate limiting
-        checkRateLimit(config.url!, config.method?.toUpperCase() || "GET");
+        if (token && config.headers?.set) {
+          config.headers.set("Authorization", `Bearer ${token}`);
+          config.headers.set("access_token", token);
+        }
 
-        // === Log request ===
-        console.groupCollapsed(
-          `%c[API Request] ${config.method?.toUpperCase()} ${config.url}`,
-          "color: blue;"
-        );
-        console.log("Headers:", config.headers);
-        if (config.data) console.log("Body:", config.data);
-        console.groupEnd();
+        // Apply rate limiting
+        checkRateLimit(config.url!, config.method?.toUpperCase() || "GET");
 
         return config;
       },
       (error) => {
-        console.error("[API Request Error]", error);
         return Promise.reject(error);
       }
     );
@@ -178,47 +154,25 @@ class ApiManager {
     // Response interceptor
     this.axiosInstance.interceptors.response.use(
       (response) => {
-        // === Log response ===
-        console.groupCollapsed(
-          `%c[API Response] ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`,
-          "color: green;"
-        );
-        console.log("Headers:", response.headers);
-        console.log("Raw Data:", response.data);
-
-        // ✅ GLOBAL UNWRAP LOGIC
-        // Check if response.data has a nested 'data' property and 'success' property
-        // This handles the double-wrapping issue: { success: true, data: { success: true, data: { ... } } }
-        // if (
-        //   response.data &&
-        //   typeof response.data === "object" &&
-        //   "data" in response.data &&
-        //   "success" in response.data
-        // ) {
-        //   console.log("📦 Detected double-wrapped response. Unwrapping...");
-        //   response.data = response.data.data;
-        //   console.log("Unwrapped Data:", response.data);
-        // }
-
-        console.log("Final Data:", response.data);
-        console.groupEnd();
-
+        if (isDev) {
+          console.groupCollapsed(
+            `%c[API Response] ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`,
+            "color: green;"
+          );
+          console.log("Data:", response.data);
+          console.groupEnd();
+        }
         return response;
       },
       (error) => {
-        // Log error response
-        if (error.response) {
+        if (isDev && error.response) {
           console.groupCollapsed(
-            `%c[API Error Response] ${error.config?.method?.toUpperCase()} ${error.config?.url} - ${error.response.status}`,
+            `%c[API Error] ${error.config?.method?.toUpperCase()} ${error.config?.url} - ${error.response.status}`,
             "color: red;"
           );
-          console.log("Headers:", error.response.headers);
           console.log("Data:", error.response.data);
           console.groupEnd();
-        } else {
-          console.error("[API Error] No response received", error.message);
         }
-
         return this.handleError(error);
       }
     );
@@ -244,11 +198,9 @@ class ApiManager {
       const message = errorData?.message || error.message;
       const code = errorData?.code;
 
-      // ✅ PREVENT INFINITE LOOP - if refresh endpoint itself fails
+      // Prevent infinite loop - if refresh endpoint itself fails
       if (error.config?.url?.includes("/auth/refresh")) {
-        console.log(
-          "🛑 Refresh endpoint failed - stopping loop and redirecting to login"
-        );
+        if (isDev) console.log("Refresh endpoint failed - redirecting to login");
         ApiManager.clearTokens();
         window.location.href = "/login";
         return Promise.reject(
@@ -259,7 +211,7 @@ class ApiManager {
       if (status === 401 && typeof window !== "undefined") {
         // ✅ PREVENT MULTIPLE SIMULTANEOUS REFRESHES
         if (this.isRefreshing) {
-          console.log("⏳ Refresh already in progress, queuing request");
+          if (isDev) console.log("Refresh already in progress, queuing request");
           return new Promise((resolve, reject) => {
             this.refreshSubscribers.push((token: string) => {
               if (error.config) {
@@ -292,13 +244,7 @@ class ApiManager {
           const refreshToken = this.getRefreshToken();
           const currentAccessToken = ApiManager.getAuthToken();
 
-          console.log("🔄 Attempting token refresh...", {
-            hasRefreshToken: !!refreshToken,
-            hasAccessToken: !!currentAccessToken,
-            currentToken: currentAccessToken?.substring(0, 20) + "...",
-            refreshToken: refreshToken?.substring(0, 20) + "...",
-            endpoint: "/auth/refresh",
-          });
+          if (isDev) console.log("Attempting token refresh...");
 
           if (!refreshToken) {
             throw new Error("No refresh token available");
@@ -323,7 +269,7 @@ class ApiManager {
             // ❌ No Authorization header needed
           );
 
-          console.log("✅ Token refresh successful", response.data);
+          if (isDev) console.log("Token refresh successful");
 
           const res: RefreshTokenResponse = response.data;
 
@@ -336,17 +282,14 @@ class ApiManager {
               }
             }
 
-            console.log(
-              "🔄 Processing queued requests:",
-              this.refreshSubscribers.length
-            );
+            if (isDev) console.log("Processing queued requests:", this.refreshSubscribers.length);
 
             // Update all queued requests with new token
             this.refreshSubscribers.forEach((callback) => {
               try {
                 callback(res.data.accessToken);
               } catch (err) {
-                console.error("Error in refresh subscriber:", err);
+                if (isDev) console.error("Error in refresh subscriber:", err);
               }
             });
             this.refreshSubscribers = [];
@@ -361,7 +304,7 @@ class ApiManager {
                 },
               };
 
-              console.log("🔄 Retrying original request with new token");
+              if (isDev) console.log("Retrying original request with new token");
               return this.axiosInstance.request(retryConfig);
             }
           } else {
@@ -372,22 +315,14 @@ class ApiManager {
             ? refreshErr
             : new Error(String(refreshErr));
 
-          console.error("❌ Token refresh failed:", {
-            message: refreshError.message,
-            status: refreshErr && typeof refreshErr === 'object' && 'response' in refreshErr
-              ? (refreshErr as AxiosError).response?.status
-              : undefined,
-            data: refreshErr && typeof refreshErr === 'object' && 'response' in refreshErr
-              ? (refreshErr as AxiosError).response?.data
-              : undefined,
-          });
+          if (isDev) console.error("Token refresh failed:", refreshError.message);
 
           // Clear all subscribers on failure
           this.refreshSubscribers.forEach((callback) => {
             try {
               callback(""); // Notify subscribers of failure
             } catch (err) {
-              console.error("Error in failed subscriber:", err);
+              if (isDev) console.error("Error in failed subscriber:", err);
             }
           });
           this.refreshSubscribers = [];
@@ -447,7 +382,7 @@ class ApiManager {
 
     // Network errors (no response received)
     if (error.request) {
-      console.error("🌐 Network error - no response received:", error.message);
+      if (isDev) console.error("Network error:", error.message);
       return Promise.reject(
         new ApiError(
           "Network error - please check your connection",
@@ -458,7 +393,7 @@ class ApiManager {
     }
 
     // Request configuration errors
-    console.error("⚙️ Request configuration error:", error.message);
+    if (isDev) console.error("Request config error:", error.message);
     return Promise.reject(
       new ApiError(
         error.message || "Request configuration error",

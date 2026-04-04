@@ -4,6 +4,7 @@ import { BlogArticle } from "@/types/blog-api-response";
 import { BlogWithComments } from "@/types/blog-with-comments";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { safeLocalStorage } from "./safe-storage";
 
 interface ArticlesState {
   selectedArticle: BlogArticle | null;
@@ -44,6 +45,6 @@ export const useArticlesStore = create<ArticlesState & ArticlesActions>()(
           savedArticles: state.savedArticles.filter((a) => a.id !== id),
         })),
     }),
-    { name: "Coursewave-Articles-Store" }
+    { name: "Coursewave-Articles-Store", storage: safeLocalStorage }
   )
 );

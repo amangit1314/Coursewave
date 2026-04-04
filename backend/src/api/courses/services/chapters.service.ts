@@ -1,11 +1,10 @@
 // chapters.service.ts
 
-import { ChapterContentType, PrismaClient } from "@prisma/client";
+import { ChapterContentType } from "@prisma/client";
 
 import { z } from "zod";
 import { generateResourceId } from "../../../core/utils/idGenerator";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../../config/prisma";
 
 const chapterSchema = z.object({
   title: z.string().min(10).max(150),

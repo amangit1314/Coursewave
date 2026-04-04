@@ -1,10 +1,10 @@
 "use client";
 
-
 // stores/userStore.ts
 import { User } from "@/types/auth.service.types";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { safeLocalStorage } from "./safe-storage";
 
 type UserState = {
   user: User | null;
@@ -37,7 +37,8 @@ export const useUserStore = create<UserState & UserActions>()(
         })),
     }),
     {
-      name: "Coursewave-User-Store", // localStorage key
+      name: "Coursewave-User-Store",
+      storage: safeLocalStorage,
     }
   )
 );

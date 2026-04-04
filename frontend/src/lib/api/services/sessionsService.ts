@@ -409,6 +409,45 @@ class SessionService {
   }
 
   // -----------------------
+  // Booking & Joining
+  // -----------------------
+
+  async bookSession(sessionId: string): Promise<ApiResponse<any>> {
+    return apiManager.post<any>(`/sessions/${sessionId}/book`);
+  }
+
+  async payForSession(
+    sessionId: string,
+    paymentMethod: string,
+    paymentId: string
+  ): Promise<ApiResponse<any>> {
+    return apiManager.post<any>(`/sessions/${sessionId}/pay`, {
+      paymentMethod,
+      paymentId,
+    });
+  }
+
+  async joinSession(
+    sessionId: string
+  ): Promise<ApiResponse<{
+    rtcRoomId: string;
+    rtcToken: string | null;
+    rtcConfig: any;
+    sessionTitle: string;
+    instructorId: string;
+  }>> {
+    return apiManager.post<any>(`/sessions/${sessionId}/join`);
+  }
+
+  async cancelBooking(sessionId: string): Promise<ApiResponse<void>> {
+    return apiManager.delete<void>(`/sessions/${sessionId}/cancel`);
+  }
+
+  async getMyUpcomingSessions(): Promise<ApiResponse<any[]>> {
+    return apiManager.get<any[]>("/sessions/my/upcoming");
+  }
+
+  // -----------------------
   // Bulk
   // -----------------------
 

@@ -34,12 +34,12 @@ const SideBarRoutes = () => {
       href: `/articles`,
       isLocked: false,
     },
-    // {
-    //   icon: <BiBroadcast size={22} />,
-    //   label: "Sessions",
-    //   href: `/browseSessions`,
-    //   isLocked: false,
-    // },
+    {
+      icon: <BiBroadcast size={22} />,
+      label: "Sessions",
+      href: `/browseSessions`,
+      isLocked: false,
+    },
     {
       icon: <RiRoadMapLine size={22} />,
       label: "Roadmaps",
@@ -52,12 +52,12 @@ const SideBarRoutes = () => {
       href: `/projects`,
       isLocked: false,
     },
-    // {
-    //   icon: <PiChatsTeardropFill size={22} />,
-    //   label: "Community Chat",
-    //   href: `/communityChat`,
-    //   isLocked: user ? false : true,
-    // },
+    {
+      icon: <PiChatsTeardropFill size={22} />,
+      label: "Community Chat",
+      href: `/communityChat`,
+      isLocked: user ? false : true,
+    },
     {
     icon: <AiOutlineTransaction size={22} />,
     label: "Subscriptions",

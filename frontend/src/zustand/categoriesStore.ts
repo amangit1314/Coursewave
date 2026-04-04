@@ -5,6 +5,7 @@ import { categoriesService } from "@/lib/api/services/categoriesService";
 import { Category } from "@/types/category";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { safeLocalStorage } from "./safe-storage";
 
 type CategoriesState = {
   categories: Category[];
@@ -59,6 +60,7 @@ export const useCategoriesStore = create<CategoriesState & CategoriesActions>()(
     }),
     {
       name: "Coursewave-Categories-Store",
+      storage: safeLocalStorage,
     }
   )
 );

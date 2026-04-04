@@ -1,9 +1,7 @@
 // notes.service.ts
 
-import { PrismaClient } from "@prisma/client";
 import { generateResourceId } from "../../../core/utils/idGenerator";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../../config/prisma";
 
 export const createNote = async ({
   content,

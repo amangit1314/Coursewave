@@ -12,7 +12,7 @@ import LearningHeader from "./LearningHeader";
 import AISummary from "./AiSummary";
 import { Chapter, Instructor } from "@/types/course-details-api-response";
 import CourseNotes from "./CourseNotes";
-import { useCourse } from "@/hooks/useCourses";
+import { useCourse, useUpdateChapterProgress } from "@/hooks/useCourses";
 import toast from "react-hot-toast";
 import CourseContentScreenSkeleton from "@/app/(public)/courses/[id]/courseContent/_components/skeletons/CourseContentScreenSkeleton";
 import { Section } from "@/types/course-details-api-response";
@@ -34,6 +34,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({ courseId }) => {
 
   const [activeChapterIndex, setActiveChapterIndex] = React.useState(0);
   const [showFullDescription, setShowFullDescription] = React.useState(false);
+  const { mutate: markChapterComplete } = useUpdateChapterProgress(courseId);
 
   // Extract chapters from all sections
   const chapters = React.useMemo(() => {
@@ -186,7 +187,12 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({ courseId }) => {
               </div>
             </section> */}
 
-            <DynamicContentSection activeChapter={activeChapter} />
+            <DynamicContentSection
+              activeChapter={activeChapter}
+              onChapterComplete={(chapterId) =>
+                markChapterComplete({ chapterId, isCompleted: true })
+              }
+            />
           </div>
 
           {/* About Section */}

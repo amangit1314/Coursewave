@@ -40,17 +40,23 @@ export const CourseEnrollButton = React.memo(
       try {
         const response = await enrollMutation({ courseId, userId: user.id });
         if (response.success && response.data?.url) {
+          // Paid course → redirect to Stripe checkout
           window.location.assign(response.data.url);
+          return;
+        } else if (response.success) {
+          // Free course → enrolled directly, redirect to course
+          setNotification(
+            "Course Enrollment Successful 🎉",
+            `Congratulations! You have successfully enrolled in "${course?.title}".`
+          );
+          toast.success(
+            `Congratulations 🎉! You have successfully enrolled in "${course?.title}"`
+          );
+          router.push(`/learnings/${courseId}`);
+          return;
         } else {
-          throw new Error("Checkout failed - no URL received");
+          throw new Error("Enrollment failed");
         }
-        setNotification(
-          "Course Enrollment Successful 🎉",
-          `Congratulations! You have successfully enrolled in "${course?.title}" course?.`
-        );
-        toast.success(
-          `Congratulations 🎉! You have successfully enrolled in "${course?.title}" course`
-        );
       } catch (error) {
         const apiErrorMessage =
           (error as any)?.response?.data?.error ||

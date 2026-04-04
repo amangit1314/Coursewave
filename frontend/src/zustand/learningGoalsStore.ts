@@ -3,6 +3,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { safeLocalStorage } from "./safe-storage";
 import { LearningGoal } from "@/types/learning-goal";
 
 type LearningGoalsState = {
@@ -75,6 +76,7 @@ export const useLearningGoalsStore = create<
 
     {
       name: "Coursewave-Learning-Goals-Store",
+      storage: safeLocalStorage,
     }
   )
 );

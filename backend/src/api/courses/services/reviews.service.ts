@@ -1,10 +1,8 @@
 
-import { PrismaClient } from "@prisma/client";
-
 import { z } from "zod";
 import { generateResourceId } from "../../../core/utils/idGenerator";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../../config/prisma";
+import { notifyNewReview } from "../../../core/services/notificationService";
 
 export const getAllReviewsForCourseIdService = async (courseId: string) => {
   const data = await prisma.review.findMany({
@@ -56,7 +54,7 @@ export const writeReviewService = async ({
     throw { code: 400, message: "You have already reviewed this course." };
   }
 
-  return prisma.review.create({
+  const review = await prisma.review.create({
     data: {
       id: generateResourceId("review"),
       courseId,
@@ -79,6 +77,20 @@ export const writeReviewService = async ({
       },
     },
   });
+
+  // Notify the instructor in background
+  const course = await prisma.course.findUnique({
+    where: { id: courseId },
+    select: { title: true, instructorId: true },
+  });
+  if (course?.instructorId) {
+    notifyNewReview(course.instructorId, course.title, courseId, rating);
+  }
+
+  // Update average rating on the course
+  await updateCourseAverageRating(courseId);
+
+  return review;
 };
 
 export const editReviewService = async ({
@@ -116,7 +128,7 @@ export const editReviewService = async ({
     throw { code: 400, message: parseResult.error.issues };
   }
 
-  return prisma.review.update({
+  const updated = await prisma.review.update({
     where: { id: reviewId },
     data: {
       rating: rating ?? review.rating,
@@ -136,6 +148,8 @@ export const editReviewService = async ({
       },
     },
   });
+  await updateCourseAverageRating(courseId);
+  return updated;
 };
 
 export const deleteReviewService = async ({
@@ -160,4 +174,19 @@ export const deleteReviewService = async ({
   }
 
   await prisma.review.delete({ where: { id: reviewId } });
+  await updateCourseAverageRating(courseId);
 };
+
+/**
+ * Recalculate and update the average rating on a course
+ */
+async function updateCourseAverageRating(courseId: string) {
+  const result = await prisma.review.aggregate({
+    where: { courseId },
+    _avg: { rating: true },
+  });
+  await prisma.course.update({
+    where: { id: courseId },
+    data: { averageRating: result._avg.rating || 0 },
+  });
+}

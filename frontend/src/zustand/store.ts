@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { safeLocalStorage } from "./safe-storage";
 import { LearningGoal } from "@/types/learning-goal";
 import { fetchCourseInfo } from "@/lib/helpers/data-fetching-methods";
 import { User } from "@/types/user";
@@ -329,6 +330,7 @@ export const useZustandStore = create<CoursewaveState & CoursewaveActions>()(
 
     {
       name: "Coursewave-Store",
+      storage: safeLocalStorage,
     }
   )
 );

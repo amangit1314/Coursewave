@@ -1,11 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { RootProvider } from "@/providers/root-provider";
 import { poppins } from "@/lib/config/fonts";
 import { Toaster } from "react-hot-toast";
-
-export const dynamic = "force-dynamic"; // 👈 global dynamic rendering
 
 export const viewport: Viewport = {
   width: 'device-width',

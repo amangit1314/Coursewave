@@ -44,7 +44,7 @@ export const AddToCartButton = ({ course }: { course: Course }) => {
   };
 
   if (alreadyEnrolled) {
-    return <div></div>;
+    return null;
   }
 
   return (

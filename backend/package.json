@@ -4,9 +4,9 @@
   "description": "Backend for CourseWave application",
   "main": "dist/server.js",
   "scripts": {
-    "start": "node -r module-alias/register dist/server.js",
-    "dev": "nodemon --watch \"src/**/*.ts\" --exec ts-node src/server.ts",
-    "dev:build": "nodemon dist/server.js",
+    "start": "node -r ./src/polyfill-slowbuffer.js -r module-alias/register dist/server.js",
+    "dev": "nodemon --watch \"src/**/*.ts\" --exec \"node -r ./src/polyfill-slowbuffer.js -r ts-node/register src/server.ts\"",
+    "dev:build": "nodemon -r ./src/polyfill-slowbuffer.js dist/server.js",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:email": "ts-node src/test-email.ts",

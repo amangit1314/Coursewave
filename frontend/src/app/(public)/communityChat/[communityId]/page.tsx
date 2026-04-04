@@ -14,66 +14,74 @@ import ReplyPreview from "./_components/ReplyPreview";
 import ChatMessages from "./_components/ChatMessages";
 import PinnedMessagesTopBanner from "./_components/PinnedMessagesTopBanner";
 import MessageInput from "./_components/MessageInput";
-import { initCommunitySocket } from "@/lib/socket/communitySocket";
+import {
+  initCommunitySocket,
+  disconnectSocket,
+} from "@/lib/socket/communitySocket";
 import { useParams } from "next/navigation";
 
 const CommunityPage = () => {
   const { user, token } = useUserStore();
-  const userId = user?.id!;
+  const userId = user?.id;
 
-  const params = useParams<{ communityChatId?: string }>();
-  const communityId = params?.communityChatId!;
+  const params = useParams<{ communityId?: string }>();
+  const communityId = params?.communityId;
 
-  // -----------------------------------------------------------------------------
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const reactionPickerRef = useRef<HTMLDivElement>(null);
 
-  // ----------------------------------------------------------------------------------------------------
-  const { data: community, isLoading, error } = useCommunityById(communityId);
+  const { data: community, isLoading, error } = useCommunityById(communityId || "");
   const {
     messages,
-    isAdmin,
     onlineUsers,
-    addReaction,
-    togglePinMessage,
     setMessages,
     addMessage,
-    setIsTyping,
+    updateMessage,
+    removeMessage,
+    setReactions,
+    setPinned,
+    setTypingUser,
+    setUserPresence,
+    reset,
   } = useCommunityChatStore();
 
-  // ----------------------------------------------------------------------------------------------------
-
-  // Get pinned messages
   const pinnedMessages = messages.filter((msg) => msg.isPinned);
 
-  // ---------------------------------------------------------------------------------------
+  // Initialize socket connection
   useEffect(() => {
-    if (!token) {
-      console.error("No token found, cannot initialize socket connection.");
-      return;
-    }
+    if (!token || !communityId) return;
+
     const socket = initCommunitySocket(communityId, token, {
       onInitMessages: (msgs) => setMessages(msgs),
       onNewMessage: (msg) => addMessage(msg),
-      onReaction: (messageId, reaction) =>
-        addReaction(messageId, reaction.emoji),
-      onPinned: (msg) => togglePinMessage(msg.id),
-      onTypingUpdate: (_, typing) => setIsTyping(typing),
-      onPresenceUpdate: (userId, isOnline) => {
-        console.log(`User ${userId} is now ${isOnline ? "online" : "offline"}`);
+      onMessageEdited: (msg) => updateMessage(msg),
+      onMessageDeleted: ({ messageId }) => removeMessage(messageId),
+      onReaction: ({ messageId, reactions }) => setReactions(messageId, reactions),
+      onPinned: ({ message, isPinned }) => {
+        if (message) setPinned(message.id, isPinned);
       },
+      onTypingUpdate: ({ userId, name, isTyping }) =>
+        setTypingUser(userId, name || "Someone", isTyping),
+      onPresenceUpdate: ({ userId, isOnline }) => setUserPresence(userId, isOnline),
     });
 
     return () => {
-      socket.disconnect();
+      disconnectSocket();
+      reset();
     };
-  }, [setMessages, addMessage, addReaction, togglePinMessage, setIsTyping]);
+  }, [communityId, token]);
 
+  // Auto-scroll on new messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages.length]);
 
-  // -----------------------------------------------------------------------------------------
+  if (!userId || !communityId) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-zinc-500">Please log in to access community chat.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen flex-col bg-gray-50 dark:bg-zinc-900">
@@ -82,45 +90,44 @@ const CommunityPage = () => {
         <ChatHeaderComponent
           userId={userId}
           community={community}
-          onlineCount={onlineUsers.length}
-          isAdmin={isAdmin}
+          onlineCount={onlineUsers.filter((u) => u.isOnline).length}
+          isAdmin={false}
         />
       )}
 
       {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden">
         {/* Chat Area */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex flex-1 flex-col">
           <ScrollArea className="flex-1 p-4">
-            {/* Pinned Messages Section */}
-            <PinnedMessagesTopBanner isAdmin={isAdmin} />
+            {/* Pinned Messages Banner */}
+            <PinnedMessagesTopBanner isAdmin={false} />
 
-            {/* Welcome Message (only if no pinned messages) */}
-            {pinnedMessages.length === 0 && (
+            {/* Welcome Message */}
+            {pinnedMessages.length === 0 && messages.length === 0 && (
               <Callout
-                className="mb-4 rounded-lg bg-blue-50 text-blue-900 border-blue-200 dark:bg-blue-900/20 dark:text-blue-100 dark:border-blue-800"
-                title="Welcome to Tech Enthusiasts"
+                className="mb-4 rounded-lg border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-100"
+                title={`Welcome to ${community?.title || "this community"}`}
               >
-                This is a community for discussing all things tech. Be
-                respectful and enjoy the conversation! 🚀
+                This is the start of the conversation. Be respectful and enjoy
+                the discussion!
               </Callout>
             )}
 
-            {/* Chat Messages List */}
+            {/* Messages */}
             <ChatMessages />
+            <div ref={messagesEndRef} />
           </ScrollArea>
 
           {/* Reply Preview */}
           <ReplyPreview />
 
           {/* Message Input */}
-          <MessageInput />
+          <MessageInput communityId={communityId} />
         </div>
 
-        {/* Pinned Messages Panel */}
+        {/* Panels */}
         <PinnedMessagesPanel />
-
-        {/* Online Users Sidebar */}
         <OnlineUsersSidebar />
       </div>
     </div>

@@ -7,6 +7,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { safeLocalStorage } from "./safe-storage";
 import { Chapter, Course, Section } from "@/types/course-details-api-response";
 
 type CoursesState = {
@@ -198,6 +199,6 @@ export const useCoursesStore = create<CoursesState & CoursesActions>()(
         );
       },
     }),
-    { name: "Coursewave-Courses-Store" }
+    { name: "Coursewave-Courses-Store", storage: safeLocalStorage }
   )
 );

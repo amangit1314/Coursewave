@@ -18,15 +18,15 @@ export const getAllUsers = async (
       where: { userId: currentUserId },
     });
 
-    // const isAdmin = userRoles.some((role) => role.role === Role.ADMIN);
+    const isAdmin = userRoles.some((role) => role.role === Role.ADMIN);
 
-    // if (!isAdmin) {
-    //   return {
-    //     success: false,
-    //     message: "You are not authorized to access this resource",
-    //     status: 403,
-    //   };
-    // }
+    if (!isAdmin) {
+      return {
+        success: false,
+        message: "You are not authorized to access this resource",
+        status: 403,
+      };
+    }
 
     const users = await prisma.user.findMany({
       select: {
@@ -67,15 +67,15 @@ export const getUserById = async (
       where: { userId: currentUserId },
     });
 
-    // const isAdmin = userRoles.some((role) => role.role === Role.ADMIN);
+    const isAdmin = userRoles.some((role) => role.role === Role.ADMIN);
 
-    // if (!isAdmin && userId !== currentUserId) {
-    //   return {
-    //     success: false,
-    //     message: "You are not authorized to access this resource",
-    //     status: 403,
-    //   };
-    // }
+    if (!isAdmin && userId !== currentUserId) {
+      return {
+        success: false,
+        message: "You are not authorized to access this resource",
+        status: 403,
+      };
+    }
 
     const user = await prisma.user.findUnique({
       where: { id: userId },

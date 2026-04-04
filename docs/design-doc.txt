@@ -1,141 +1,353 @@
-Coursewave: LMS Platform – System Design Overview
-Given the features you've outlined for Coursewave, we can break down the system design into High-Level Design (HLD) and Low-Level Design (LLD).
-Below, I'll describe each aspect of the design, considering the stack you're using (Next.js, Node.js, NestJS, Prisma, Supabase, SendGrid, and others).
-I'll also include a few suggestions regarding whether or not to use NestJS and other potential tools to enhance your system.
+CourseWave: LMS Platform — System Design Document
+==================================================
+Last updated: 2026-04-04
 
-High-Level Design (HLD) Overview
-The High-Level Design (HLD) focuses on providing a broad view of the architecture and how different components interact.
+1. PRODUCT OVERVIEW
+-------------------
+CourseWave is an all-in-one learning platform that combines four things competitors sell separately:
+  1. Course marketplace (like Udemy)
+  2. Community chat (like Discord)
+  3. Live mentoring sessions (like Calendly + video)
+  4. Project-based portfolio building (like Buildspace)
 
-1. Overview
-The system is a Learning Management System (LMS) that includes the following key modules:
+Additional differentiators:
+  - AI-powered learning roadmap generation
+  - Article/blog publishing platform (like Medium for devs)
+  - Completion certificates with verification
 
-User Management (auth, subscription, dashboard)
-Instructor Management (dashboard, pay cut, subscription)
-Content Management (courses, articles, roadmaps, sessions)
-Collaboration (projects, mentorships, community chat)
-Testing & Certifications (create tests, issue certificates)
-Admin Features (manage income mechanism, control access)
-2. Components and Modules
-The system will be divided into various components that are loosely coupled, ensuring scalability and maintainability.
-
-Core Components:
-
-Frontend (Next.js)
-
-Handles the client-side rendering and static pages.
-Authentication and authorization via email and social logins.
-Displays course content, user dashboards, and other modules (like chat, profiles).
-Backend (Node.js + NestJS or just Node.js)
-
-Next.js can handle server-side API routes for authentication and data fetching, but for more complex business logic (e.g., user subscriptions, instructor income mechanisms), NestJS could be an excellent choice because it’s a full-fledged framework built on Node.js that supports:
-Modular structure
-Dependency injection
-TypeORM/Prisma integration
-Middlewares, guards, and pipes (great for authorization, validation)
-Option: If you’re already familiar with the simplicity of Next.js API routes, you may not need NestJS. But NestJS is beneficial for a large, complex system, as it will help you with scalability and maintainability in the long run.
-
-Database (Supabase)
-
-PostgreSQL is used for structured data storage (users, courses, sessions, transactions, etc.).
-Supabase will handle user authentication (email, social logins) and storage (for file uploads, such as course content, user uploads, etc.).
-Prisma ORM: Will manage DB schema migrations and queries (with automatic generation of type-safe queries).
-External Services
-
-SendGrid for email-based authentication (welcome emails, notifications, password resets).
-Stripe (or PayPal) for instructor pay cuts, user subscriptions, and financial transactions.
-Chat Service (e.g., Firebase or custom WebSocket server) for real-time community chat and messaging.
-AWS S3 (or Supabase Storage) for large file storage (e.g., video files, documents).
-Authentication and Authorization
-
-Supabase Authentication for social logins (OAuth), email-based sign-ups, and JWT-based session management.
-Roles-based access control (RBAC): Different user roles (admin, instructor, student) will have access to specific resources.
-Cloud/Hosting
-
-Vercel or Netlify for hosting the Next.js frontend.
-AWS (EC2 or Lambda) for the backend (if using NestJS or any backend that requires dynamic execution).
-Docker for containerization (if you're planning to scale horizontally).
-System Flow Diagram (Simplified)
-lua
-Copy code
-                  +-------------------+
-                  |                   |
-                  |  Next.js Frontend |
-                  |                   |
-                  +-------------------+
-                          |
-         +-----------------------------------+
-         |              API Routes          |
-         | (Next.js or NestJS Backend)      |
-         +-----------------------------------+
-                          |
-           +----------------------------+
-           |        Authentication      |
-           |      (Supabase + JWT)       |
-           +----------------------------+
-                          |
-          +----------------------------------+
-          |            PostgreSQL DB       |
-          |        (Supabase + Prisma)     |
-          +----------------------------------+
-             /          |             \  
-   +----------------+   +----------------+  +----------------+
-   | Courses, Tests |   | Community Chat |  | Payments & Fees |
-   +----------------+   +----------------+  +----------------+
-          |                 |                   |
-     +----------+      +----------+       +-----------+
-     | AWS S3   |      | SendGrid |       | Stripe    |
-     +----------+      +----------+       +-----------+
-Low-Level Design (LLD)
-The Low-Level Design (LLD) involves detailing how each module interacts with its subcomponents, how data flows, and how specific tasks are handled in code.
-
-1. Authentication (User & Instructor)
-Flow: Users can authenticate via email/password or social logins (Google, GitHub, etc.).
-Implementation:
-Supabase handles user authentication and stores the user's credentials.
-After authentication, the user gets a JWT token for further API calls.
-User roles are assigned in the DB (admin, instructor, student) and controlled via middleware/guards in the backend (if using NestJS).
-2. Courses, Tests, Articles & Sessions
-Database Schema:
-Courses: id, title, description, created_at, updated_at, instructor_id (foreign key)
-Articles: id, title, content, created_at, updated_at, author_id (foreign key)
-Sessions: id, title, date, course_id (foreign key), instructor_id (foreign key)
-Tests: id, test_name, course_id (foreign key), instructor_id (foreign key), questions[]
-CRUD Operations:
-Use Prisma to define models and relationships between entities.
-Backend APIs will expose endpoints for CRUD operations (e.g., /courses, /sessions, etc.).
-3. Real-Time Community Chat
-WebSocket or Firebase: Use WebSockets for real-time chat. A custom WebSocket server (or use Firebase Realtime Database/Firestore) can be set up to handle messages between users.
-Message Model: id, sender_id (foreign key), recipient_id (foreign key, optional), content, timestamp
-4. Instructor Dashboard and Pay Cut
-Instructor Dashboard: Displays analytics (e.g., courses taught, income earned, upcoming sessions).
-Pay Cut Mechanism: After each course sale, a portion is deducted as the platform's revenue, and the remaining is paid to the instructor.
-Stripe Integration: Use Stripe to handle payments to instructors (via direct bank transfers or wallet mechanisms).
-5. Subscriptions (Instructor & User)
-Instructor Subscription: This could be a recurring payment system (e.g., monthly or yearly subscription for instructors to be able to create and sell courses).
-User Subscription: A different subscription model for students, where they pay for access to premium content or courses.
-Implementation:
-Use Stripe's subscription APIs to manage recurring billing.
-Subscription details are stored in the database and tied to the user or instructor.
-6. Certificate Generation
-Generation: After a user completes a course, a certificate can be generated as a PDF.
-Libraries: Use libraries like pdf-lib or puppeteer for PDF generation.
-Flow:
-The backend will generate a certificate when a user finishes the course and store it in Supabase Storage or another file storage service (AWS S3).
-The link to the certificate is shared with the user via email (SendGrid).
-7. Admin Dashboard
-Income Management: Admins can see total income generated from users and instructors.
-Data: Admin can access detailed reports on course performance, user signups, instructor earnings, etc.
-8. Project Collaboration
-Real-Time Collaboration: Similar to community chat, this module will allow users to work on projects together, sharing files and comments in real-time.
-Implementation: Use WebSockets or Firebase to implement this feature with file sharing stored in Supabase or AWS S3.
-Tech Stack Considerations
-NestJS is optional but recommended if you're building a scalable, maintainable backend with complex logic. If your backend is relatively simple, sticking to Next.js API routes might suffice.
-Prisma ORM is perfect for working with PostgreSQL and simplifies database interactions with type-safe queries.
-Supabase provides a great all-in-one solution for authentication and storage, especially when you want a Postgres database with built-in functionality for storage, real-time capabilities, and API routing.
-Conclusion
-The design and architecture of Coursewave should prioritize scalability, maintainability, and a modular approach. Using Next.js for the frontend with NestJS for the backend (if complexity demands it) is a strong combination, while Supabase and Prisma provide solid database and storage solutions.
-
-The next steps would be to define your database schema and API endpoints in detail, considering security aspects (JWT, OAuth), and then move on to implementing the actual modules in smaller iterations.
+Target: Developers and tech learners.
+Business model: Hybrid — individual course purchases + monthly subscriptions.
+Operator: Solo developer (Aman), launching as SaaS for side income.
 
 
+2. ARCHITECTURE OVERVIEW
+------------------------
 
+    ┌─────────────────────────────────────────────────────┐
+    │                    FRONTEND                         │
+    │          Next.js 15 (App Router, Turbopack)         │
+    │          React 18 · Tailwind CSS v4 · Framer Motion │
+    │          Zustand (state) · React Query (data)       │
+    │          NextAuth (OAuth) · Socket.io-client        │
+    │                                                     │
+    │          Hosted on: Vercel                           │
+    └──────────────────────┬──────────────────────────────┘
+                           │ HTTPS / WebSocket
+    ┌──────────────────────┴──────────────────────────────┐
+    │                    BACKEND                          │
+    │          Express.js · TypeScript · ts-node           │
+    │          Prisma ORM · JWT auth · Socket.io           │
+    │          Stripe (payments) · SendGrid (email)        │
+    │                                                     │
+    │          Hosted on: Koyeb                            │
+    └──────────────────────┬──────────────────────────────┘
+                           │
+    ┌──────────────────────┴──────────────────────────────┐
+    │                   DATA LAYER                        │
+    │                                                     │
+    │  PostgreSQL (primary DB) ←── Prisma ORM             │
+    │  Supabase Storage (videos, images, files)           │
+    │  Stripe (payments, subscriptions, webhooks)         │
+    │  SendGrid (transactional email)                     │
+    └─────────────────────────────────────────────────────┘
+
+
+3. TECH STACK (ACTUAL)
+----------------------
+
+Frontend:
+  - Framework: Next.js 15.3.8 (App Router, Turbopack)
+  - UI: React 18.3.1, Tailwind CSS v4.1, Framer Motion 12
+  - Components: shadcn/ui (Radix), Tremor (charts), Lucide (icons)
+  - State: Zustand with SSR-safe localStorage persistence
+  - Data fetching: TanStack React Query v5
+  - Auth: NextAuth v4 (Google + GitHub OAuth), JWT tokens synced to Zustand
+  - Real-time: Socket.io-client
+  - Rich text: EditorJS (articles), DOMPurify (sanitization)
+  - Fonts: Poppins (body), DM Sans (headings)
+  - Hosting: Vercel
+
+Backend:
+  - Runtime: Node.js 22 (LTS)
+  - Framework: Express.js with TypeScript
+  - ORM: Prisma with PostgreSQL
+  - Auth: JWT (access + refresh tokens), bcrypt password hashing
+  - OAuth: Backend endpoint POST /api/auth/oauth (receives NextAuth callback)
+  - Real-time: Socket.io (community chat)
+  - Payments: Stripe Checkout + Webhooks + Subscriptions
+  - Email: SendGrid
+  - File storage: Supabase Storage (videos, images, documents)
+  - Validation: Zod (request schemas + env config)
+  - Hosting: Koyeb
+
+NOT using (decided against):
+  - NestJS (Express is simpler for solo dev)
+  - Supabase Auth (built custom JWT system for full control)
+  - Firebase (Socket.io gives better control for chat)
+  - AWS S3 (Supabase Storage is simpler)
+  - Redis (commented out — may add later for caching/presence)
+
+
+4. DATABASE SCHEMA (KEY MODELS)
+-------------------------------
+
+User System:
+  User → UserRole (USER | INSTRUCTOR | ADMIN)
+  User → OAuthAccount (Google, GitHub — multiple providers per user)
+  User → Token (access, refresh, verify_email, reset_password)
+  User.password is nullable (OAuth users don't need passwords)
+
+Course System:
+  Course → CourseSection → Chapter (video, text, quiz, audio)
+  Course → Category (single)
+  Course → Review (rating 1-5, auto-aggregates to Course.averageRating)
+  Course → Enrollment (PENDING → ACTIVE → COMPLETED)
+  Course → CourseProgress → ChapterProgress (per-user tracking)
+  Course → Instructor (userId, bio, expertise, earnings)
+
+Payment System:
+  User → StripeCustomer (one-to-one)
+  User → Cart → CartItem (course references)
+  User → Wishlist → WishlistItem
+  User → CoursePurchase (one-time buys)
+  User → UserSubscription → SubscriptionPlan → PlanCourse (tier-gated access)
+  Instructor → InstructorEarning (per-course, per-period)
+
+Community System:
+  Community → CommunityMember (ADMIN | MODERATOR | MEMBER)
+  Community → Message (content, attachments JSON, parentId for threads)
+  Message → Reaction (LIKE | DISLIKE | LOVE | LAUGH, toggle per user)
+  Community → PinnedMessage
+  Community → ModerationLog
+
+Article System:
+  Blog → BlogComment → CommentLike
+  Blog → BlogLike, BlogView, BlogRating, BlogReport
+  User → SavedArticle
+  User → UserFollower (follow/unfollow authors)
+
+Project System:
+  Project → ProjectSubmission → ProjectFeedback
+  Project belongs to Course + Instructor
+  Fields: milestones, rubric, difficulty, technologies, prerequisites
+
+Session System:
+  Session → SessionBooking (with Stripe payment)
+  Session has rtcType (WEBRTC | STREAM | ZEGO | AGORA | CUSTOM)
+  Fields: rtcRoomId, rtcToken, rtcConfig
+
+Notification System:
+  Notification (userId, role, type, title, message, link, channel, read status)
+  Triggered by: enrollment, completion, review, payment
+  Channels: in-app (implemented), email (planned)
+
+
+5. AUTHENTICATION FLOW
+----------------------
+
+Email/Password:
+  1. POST /api/auth/register → hash password → create User + UserRole → generate JWT pair
+  2. POST /api/auth/login → verify password → generate JWT pair
+  3. Access token in Authorization header, refresh via POST /api/auth/refresh
+  4. Token stored in Zustand userStore (persisted to localStorage)
+
+OAuth (Google/GitHub):
+  1. Frontend: NextAuth handles OAuth redirect + callback
+  2. NextAuth signIn callback → POST /api/auth/oauth with provider profile
+  3. Backend: create User if new, link OAuthAccount, generate JWT pair
+  4. JWT tokens attached to NextAuth session → synced to Zustand via useOAuthSync hook
+  5. OAuth users have password: null — cannot use email/password login
+
+Security measures:
+  - Rate limiting: 5 attempts/15min on login/forgot/reset, 10/15min on register
+  - ADMIN role blocked from registration schema
+  - verifyToken middleware on all protected routes
+  - CORS restricted in production (HTTP + Socket.io)
+  - XSS sanitized with DOMPurify for user-generated HTML content
+  - No hardcoded secrets (all from Zod-validated env)
+
+
+6. PAYMENT SYSTEM
+-----------------
+
+Model: Hybrid (individual purchases + subscriptions)
+
+Individual Course Purchase:
+  1. User clicks "Enroll Now" on course page
+  2. If course.isFree → direct enrollment (ACTIVE status)
+  3. If paid → POST /api/courses/:id/checkout → create Stripe Checkout Session
+  4. User redirected to Stripe → pays → Stripe webhook fires
+  5. Webhook: checkout.session.completed → activateEnrollmentAfterPayment()
+  6. Enrollment: PENDING → ACTIVE, notifications sent to student + instructor
+
+Subscription Plans (3 tiers):
+  Free:     $0    — Browse, first chapter free, 3 AI roadmaps/month, read articles
+  Learner:  $12/mo ($99/yr) — All standard courses, certificates, community, projects
+  Pro:      $29/mo ($249/yr) — All courses, priority feedback, 4 live sessions/month
+
+Instructor Plans:
+  Free:     2 courses max, 70% revenue share
+  Premium:  $19/mo ($149/yr) — Unlimited courses, analytics, 85% revenue share
+
+Revenue target at 6 months: $2,000-2,500/month
+
+
+7. REAL-TIME SYSTEM (COMMUNITY CHAT)
+-------------------------------------
+
+Transport: Socket.io over WebSocket (with polling fallback)
+Auth: JWT token in socket handshake, verified by verifySocketToken middleware
+Rooms: community:{communityId}
+
+Events (Client → Server):
+  joinCommunity   → Join room, receive last 50 messages, set online
+  sendMessage     → Create message (with optional parentId for replies, attachments JSON)
+  editMessage     → Edit own message (sender verification)
+  deleteMessage   → Delete own message or admin/moderator can delete any
+  reactToMessage  → Toggle reaction (LIKE/DISLIKE/LOVE/LAUGH)
+  togglePinMessage → Pin/unpin (any member)
+  typing          → Broadcast typing indicator to room
+
+Events (Server → Client):
+  messages:init     → Initial message history (last 50)
+  message:new       → New message broadcast
+  message:edited    → Edited message broadcast
+  message:deleted   → Deleted message ID broadcast
+  message:reaction  → Full reaction state for a message
+  message:pinned    → Pin/unpin status change
+  typing:update     → Typing indicator (userId, name, isTyping)
+  presence:update   → Online/offline status
+  error:message     → Error feedback to sender
+
+Disconnect: Sets CommunityMember.isOnline = false for all joined rooms, broadcasts presence.
+
+
+8. KEY USER FLOWS
+-----------------
+
+Student Journey:
+  Landing → Browse/Search → Course Detail → Enroll (free/paid) → Learn (video/text)
+  → Complete chapters → Progress tracked → 100% → Certificate generated
+  → Join community → Chat → Submit projects → Get feedback
+
+Instructor Journey:
+  Register → Create course → Add sections/chapters → Upload videos (Supabase)
+  → Publish → Students enroll → View analytics/earnings → Review submissions
+  → Give project feedback → Host live sessions
+
+Content Creation:
+  Write article (EditorJS) → Save draft / Publish → Community reads/likes/comments
+  Generate AI roadmap → View/download → Share
+
+
+9. FRONTEND ARCHITECTURE
+------------------------
+
+App Router structure (src/app/):
+  (auth)/         — login, register, forgot-password, reset-password, verify-email
+  (public)/       — browse, courses, articles, projects, roadmaps, communityChat,
+                    instructors, subscriptions, legal, feedback, feature-request
+  (user)/         — dashboard, cart, wishlist, learnings, profile, settings, writeArticle
+  (instructor)/   — courses, analytics, earnings, projects, sessions, students, settings
+  (sessions)/     — browseSessions, bookSession, pastSessions, upcomingSessions
+  api/auth/       — NextAuth route ([...nextauth])
+
+State management:
+  - Zustand stores: userStore, communityChatStore, cartStore, currencyStore,
+    coursesStore, categoriesStore, articlesStore, notificationsStore,
+    preferencesStore, learningGoalsStore, notificationPreferencesStore
+  - All use SSR-safe storage (safeLocalStorage utility)
+  - No mega store — each concern has its own store
+
+API layer:
+  - ApiManager singleton (axios-based) with:
+    - Request interceptor: attach JWT token
+    - Response interceptor: auto-refresh on 401
+    - Rate limiting (client-side)
+    - Dev-only logging (gated behind NODE_ENV)
+  - Service classes: courseService, projectsService, authService, etc.
+  - React Query for server state (5min stale, 10min cache)
+
+
+10. DEPLOYMENT & ENVIRONMENT
+-----------------------------
+
+Environment variables required:
+
+Frontend (.env):
+  NEXT_PUBLIC_API_URL        — Backend API base URL
+  NEXT_PUBLIC_APP_URL        — Frontend URL (for metadata)
+  NEXTAUTH_SECRET            — NextAuth session secret
+  NEXTAUTH_URL               — NextAuth callback URL
+  GOOGLE_CLIENT_ID           — Google OAuth client ID
+  GOOGLE_CLIENT_SECRET       — Google OAuth secret
+  GITHUB_CLIENT_ID           — GitHub OAuth client ID
+  GITHUB_CLIENT_SECRET       — GitHub OAuth secret
+
+Backend (.env):
+  DATABASE_URL               — PostgreSQL connection string
+  JWT_SECRET                 — Access token secret (min 20 chars)
+  JWT_REFRESH_SECRET         — Refresh token secret (min 20 chars)
+  STRIPE_SECRET_KEY          — Stripe secret key
+  STRIPE_WEBHOOK_SECRET      — Stripe webhook signing secret
+  SENDGRID_API_KEY           — SendGrid API key
+  FRONTEND_URL_PROD          — Frontend URL for CORS
+  GOOGLE_CLIENT_ID           — (optional, for future backend OAuth validation)
+  GITHUB_CLIENT_ID           — (optional, for future backend OAuth validation)
+  SUPABASE_URL               — Supabase project URL
+  SUPABASE_SERVICE_KEY       — Supabase service role key
+
+
+11. MVP FEATURE CHECKLIST
+--------------------------
+
+Must have for launch:
+  [x] Course marketplace (browse, purchase, enroll, learn)
+  [x] Video player with chapter progress tracking
+  [x] Free + paid course enrollment
+  [x] Stripe checkout + webhook integration
+  [x] Subscription plans (Stripe)
+  [x] User dashboard (enrolled courses, progress, goals)
+  [x] Instructor dashboard (courses, analytics, earnings, students)
+  [x] Community chat (messages, reactions, replies, pins, typing, presence)
+  [x] Article/blog system (write, read, like, comment, save)
+  [x] Project submissions with instructor feedback
+  [x] AI learning roadmaps
+  [x] Completion certificates
+  [x] Google + GitHub OAuth login
+  [x] Notification system (in-app)
+  [x] Cart + wishlist
+  [x] Search + filter + sort on courses
+  [x] Dark mode
+  [x] Responsive design
+  [x] Legal pages (privacy, terms, refund, license, changelog)
+  [ ] Quiz/assessment engine (multiple choice, auto-graded, per chapter)
+  [ ] Live sessions (1:1 and group, booking, payment, video)
+
+Post-launch (Phase 2):
+  [ ] Email notifications (drip campaigns)
+  [ ] Referral system
+  [ ] Project showcase/portfolio
+  [ ] Instructor payout automation (Stripe Connect)
+  [ ] Learning streaks + analytics
+  [ ] Course-scoped Q&A forums
+  [ ] File upload for chat (cloud storage)
+  [ ] Admin dashboard (using Prisma Studio for now — reports, requests, moderation)
+
+
+12. COMPETITIVE POSITIONING
+----------------------------
+
+                    Udemy   Coursera  Teachable  Skillshare  CourseWave
+Course marketplace   Yes     Yes       No         Yes         Yes
+Video + progress     Yes     Yes       Yes        Yes         Yes
+Subscriptions        No      Yes       Partial    Yes         Yes
+Community chat       No      Forums    No         No          YES
+AI roadmaps          No      No        No         No          YES
+Project learning     No      Partial   No         No          YES
+Live sessions        No      No        No         No          YES (planned)
+Article platform     No      No        Blog only  No          YES
+Certificates         Yes     Yes       Yes        No          Yes
+
+Unique angle: "Learn, build, connect, get mentored — all in one place."
+No single competitor offers all four pillars.

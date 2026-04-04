@@ -28,19 +28,51 @@ import {
 
 import { prisma } from "../../config/prisma";
 import { slugify } from "../../core/utils/slugify";
-// import * as stripeService from "./../webhooks/stripe/stripe.service";
 import { stripe } from "../../config/stripe";
-import { aw } from "@upstash/redis/zmscore-BshEAkn7";
 import { EnrollmentStatus } from "@prisma/client";
+import {
+  notifyEnrollment,
+  notifyCourseComplete,
+  notifyInstructorNewStudent,
+} from "../../core/services/notificationService";
+import { ERRORS, SUCCESS } from "../../config/constants/messages";
 
 // ------------------------------------------ COURSES ----------------------------------------
 export const getAllPublishedCourses = async (req: Request, res: Response) => {
   try {
     const limit = parseInt(req.query.limit as string) || 20;
     const cursor = req.query.cursor as string | undefined;
+    const search = req.query.search as string | undefined;
+    const categoryId = req.query.categoryId as string | undefined;
+    const isFree = req.query.isFree as string | undefined;
+    const sortBy = (req.query.sortBy as string) || "newest";
+
+    // Build where clause
+    const where: any = { isPublished: true };
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
+      ];
+    }
+    if (categoryId) {
+      where.categoryId = categoryId;
+    }
+    if (isFree === "true") {
+      where.isFree = true;
+    } else if (isFree === "false") {
+      where.isFree = false;
+    }
+
+    // Build sort
+    const orderBy: any =
+      sortBy === "price_low" ? { price: "asc" }
+      : sortBy === "price_high" ? { price: "desc" }
+      : sortBy === "oldest" ? { createdAt: "asc" }
+      : { createdAt: "desc" }; // default: newest
 
     const courses = await prisma.course.findMany({
-      where: { isPublished: true },
+      where,
       select: {
         id: true,
         title: true,
@@ -69,9 +101,9 @@ export const getAllPublishedCourses = async (req: Request, res: Response) => {
           },
         },
       },
-      orderBy: { createdAt: "desc" },
-      take: limit + 1, // fetch one extra to check if there's a next page
-      ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}), // skip the current cursor
+      orderBy,
+      take: limit + 1,
+      ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
     });
 
     const coursesWithStudentCount = courses.map((course) => ({
@@ -216,7 +248,7 @@ export const getCourseById = async (req: Request, res: Response) => {
     if (!courseId) {
       return res.status(400).json({
         success: false,
-        error: "courseId is required",
+        error: ERRORS.COURSE_ID_REQUIRED,
       });
     }
 
@@ -249,7 +281,7 @@ export const getCourseById = async (req: Request, res: Response) => {
     if (!course) {
       return res.status(404).json({
         success: false,
-        error: "Course not found",
+        error: ERRORS.COURSE_NOT_FOUND,
       });
     }
 
@@ -274,6 +306,7 @@ export const createCourse = async (req: Request, res: Response) => {
       title,
       description,
       price,
+      isFree,
       categories,
       imageUrl,
       categoryId,
@@ -282,24 +315,57 @@ export const createCourse = async (req: Request, res: Response) => {
       technologies,
       prerequisites,
       learningOutcomes,
+      discount,
+      dealPrice,
+      level,
     } = req.body;
+
+    // Validate required fields
+    if (!title || typeof title !== "string" || title.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: ERRORS.COURSE_TITLE_REQUIRED,
+      });
+    }
+
+    if (!description || typeof description !== "string" || description.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: ERRORS.COURSE_DESC_REQUIRED,
+      });
+    }
+
+    // Price validation: must be > 0 for paid courses
+    const courseIsFree = isFree === true;
+    const coursePrice = courseIsFree ? 0 : (typeof price === "number" && price > 0 ? price : 0);
+
+    if (!courseIsFree && coursePrice <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: ERRORS.COURSE_PRICE_REQUIRED,
+      });
+    }
 
     const course = await prisma.course.create({
       data: {
         id: generateResourceId("course"),
-        title: title,
+        title: title.trim(),
         slug: slugify(title),
-        description: description,
-        price: price,
+        description: description.trim(),
+        price: coursePrice,
+        isFree: courseIsFree,
         imageUrl,
         instructorId: userId,
         categoryId,
         duration: durationInSeconds,
         categories: categories ?? [],
-        technologies,
-        targetAudience,
-        prerequisites,
-        learningOutcomes,
+        technologies: technologies ?? [],
+        targetAudience: targetAudience ?? [],
+        prerequisites: prerequisites ?? [],
+        learningOutcomes: learningOutcomes ?? [],
+        discount: typeof discount === "number" ? discount : 0,
+        dealPrice: typeof dealPrice === "number" ? dealPrice : 0,
+        level: level || undefined,
       },
       include: {
         instructor: {
@@ -342,6 +408,7 @@ export const updateCourse = async (req: Request, res: Response) => {
       title,
       description,
       price,
+      isFree,
       categories,
       categoryId,
       isPublished,
@@ -353,6 +420,7 @@ export const updateCourse = async (req: Request, res: Response) => {
       prerequisites,
       discount,
       dealPrice,
+      level,
     } = req.body;
 
     // Only update fields if they are provided in req.body
@@ -360,6 +428,7 @@ export const updateCourse = async (req: Request, res: Response) => {
     if (title !== undefined) updateData.title = title;
     if (description !== undefined) updateData.description = description;
     if (price !== undefined) updateData.price = price;
+    if (isFree !== undefined) updateData.isFree = isFree;
     if (categoryId !== undefined) updateData.categoryId = categoryId;
     if (isPublished !== undefined) updateData.isPublished = isPublished;
     if (isLive !== undefined) updateData.isLive = isLive;
@@ -372,6 +441,7 @@ export const updateCourse = async (req: Request, res: Response) => {
       updateData.targetAudience = targetAudience;
     if (prerequisites !== undefined) updateData.prerequisites = prerequisites;
     if (discount !== undefined) updateData.discount = discount;
+    if (level !== undefined) updateData.level = level;
     if (dealPrice !== undefined) updateData.dealPrice = dealPrice;
 
     const updatedCourse = await prisma.course.update({
@@ -483,6 +553,13 @@ export const createCheckout = async (req: Request, res: Response) => {
           progress: 0,
         },
       });
+
+      // Notify student + instructor in background
+      notifyEnrollment(userId, course.title, courseId);
+      if (course.instructorId) {
+        notifyInstructorNewStudent(course.instructorId, course.title, user!.name || "A student", courseId);
+      }
+
       return res.status(201).json({
         success: true,
         message: "Successfully enrolled in free course",
@@ -1294,6 +1371,13 @@ export const updateChapterProgress = async (req: Request, res: Response) => {
         overallProgress,
       };
     });
+
+    // Notify on course completion
+    if (result.overallProgress === 100) {
+      const courseTitle = chapter!.CourseSection.course.title;
+      const courseId = chapter!.CourseSection.courseId;
+      notifyCourseComplete(userId, courseTitle, courseId);
+    }
 
     return res.status(200).json({
       success: true,

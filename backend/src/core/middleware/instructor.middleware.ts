@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../config/prisma";
 
 export async function isInstructor(req: Request, res: Response, next: NextFunction) {
   try {

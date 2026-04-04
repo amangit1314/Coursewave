@@ -189,6 +189,7 @@ router.get(
 // Create chapter in the section
 router.post(
   "/:courseId/sections/:sectionId/chapters/",
+  verifyToken,
   requireInstructor,
   courseExists,
   ownsCourse,

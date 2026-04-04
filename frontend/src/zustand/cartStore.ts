@@ -4,6 +4,7 @@ import { CartItem } from "@/types/cart-item";
 import { Course } from "@/types/course-details-api-response";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { safeLocalStorage } from "./safe-storage";
 
 interface CartState {
   cartItems: CartItem[];
@@ -98,6 +99,7 @@ export const useCartStore = create<CartState & Actions>()(
     }),
     {
       name: "Coursewave-Cart-Store",
+      storage: safeLocalStorage,
     },
   ),
 );

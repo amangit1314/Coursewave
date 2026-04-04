@@ -205,8 +205,8 @@ class CourseService {
     chapterId: string,
     isCompleted: boolean
   ): Promise<ApiResponse<CourseProgress>> {
-    return this.api.patch<CourseProgress>(
-      `/courses/${courseId}/chapters/${chapterId}/progress`,
+    return this.api.put<CourseProgress>(
+      `/courses/chapters/${chapterId}/progress`,
       { isCompleted }
     );
   }

@@ -1,13 +1,12 @@
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { env } from '../../config/config';
+import { prisma } from '../../config/prisma';
 
 // Generate JWT token
 export const generateToken = (userId: string): string => {
   return jwt.sign(
     { id: userId },
-    process.env.JWT_SECRET || 'your_jwt_secret',
+    env.JWT_SECRET,
     { expiresIn: '7d' }
   );
 };
@@ -16,7 +15,7 @@ export const generateToken = (userId: string): string => {
 export const generateRefreshToken = (userId: string): string => {
   return jwt.sign(
     { id: userId },
-    process.env.JWT_REFRESH_SECRET || 'your_refresh_secret',
+    env.JWT_REFRESH_SECRET,
     { expiresIn: '30d' }
   );
 };
@@ -24,7 +23,7 @@ export const generateRefreshToken = (userId: string): string => {
 // Verify JWT token
 export const verifyToken = (token: string): { id: string } | null => {
   try {
-    return jwt.verify(token, process.env.JWT_SECRET || 'your_jwt_secret') as { id: string };
+    return jwt.verify(token, env.JWT_SECRET) as { id: string };
   } catch (error) {
     return null;
   }
@@ -33,7 +32,7 @@ export const verifyToken = (token: string): { id: string } | null => {
 // Verify refresh token
 export const verifyRefreshToken = (token: string): { id: string } | null => {
   try {
-    return jwt.verify(token, process.env.JWT_REFRESH_SECRET || 'your_refresh_secret') as { id: string };
+    return jwt.verify(token, env.JWT_REFRESH_SECRET) as { id: string };
   } catch (error) {
     return null;
   }

@@ -3,6 +3,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { safeLocalStorage } from "./safe-storage";
 import axios from "axios";
 
 type NotificationPreferences = {
@@ -66,6 +67,7 @@ export const useNotificationPreferencesStore =
 
       {
         name: "Coursewave-Notification-Preferences-Store",
+        storage: safeLocalStorage,
       },
     ),
   );

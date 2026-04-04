@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { safeLocalStorage } from "./safe-storage";
 
 type PreferencesState = {
   // Notifications
@@ -48,6 +49,6 @@ export const usePreferencesStore = create<PreferencesState>()(
       toggle: (key) => set((state) => ({ [key]: !state[key] })),
       setPreference: (key, value) => set(() => ({ [key]: value })),
     }),
-    { name: "preferences-store" }
+    { name: "preferences-store", storage: safeLocalStorage }
   )
 );

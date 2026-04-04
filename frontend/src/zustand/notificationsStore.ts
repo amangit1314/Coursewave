@@ -3,6 +3,7 @@
 import { generateUid } from "@/lib/helpers/id-helper";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { safeLocalStorage } from "./safe-storage";
 import { BellRing, X } from "lucide-react";
 
 export type Notification = {
@@ -66,6 +67,7 @@ export const useNotificationsStore = create<State & Actions>()(
 
     {
       name: "Coursewave-Notification-Store",
+      storage: safeLocalStorage,
     }
   )
 );

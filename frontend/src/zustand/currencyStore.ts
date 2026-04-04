@@ -3,6 +3,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { safeLocalStorage } from "./safe-storage";
 
 interface CurrencyState {
   currentCurrency: string;
@@ -106,6 +107,7 @@ export const useCurrencyStore = create<CurrencyState>()(
       detectUserCurrency: async () => {
         try {
           // Method 1: Use browser's language setting (less accurate but works without API calls)
+          if (typeof window === "undefined") return;
           const browserLanguage = navigator.language || "en-US";
           if (
             browserLanguage.includes("en-IN") ||
@@ -133,6 +135,7 @@ export const useCurrencyStore = create<CurrencyState>()(
     }),
     {
       name: "currency-storage",
+      storage: safeLocalStorage,
     }
   )
 );

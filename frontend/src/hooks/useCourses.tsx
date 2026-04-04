@@ -642,3 +642,16 @@ export const useCourseReviews = (courseId: string) =>
     queryFn: () => courseService.getCourseReviews(courseId),
     enabled: !!courseId,
   });
+
+export const useUpdateChapterProgress = (courseId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ chapterId, isCompleted }: { chapterId: string; isCompleted: boolean }) =>
+      courseService.updateChapterProgress(courseId, chapterId, isCompleted),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["courseProgress", courseId] });
+      queryClient.invalidateQueries({ queryKey: ["course", courseId] });
+      queryClient.invalidateQueries({ queryKey: ["learningDashboard"] });
+    },
+  });
+};

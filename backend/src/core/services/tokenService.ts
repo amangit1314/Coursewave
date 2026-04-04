@@ -1,9 +1,9 @@
-import { PrismaClient, TokenType, TokenStatus } from '@prisma/client';
+import { TokenType, TokenStatus } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import { generateResourceId } from '../utils/idGenerator';
-
-const prisma = new PrismaClient();
+import { env } from '../../config/config';
+import { prisma } from '../../config/prisma';
 
 // Token configuration
 const TOKEN_CONFIG = {
@@ -49,7 +49,7 @@ class TokenService {
       jti: jti || uuidv4(),
     };
 
-    return jwt.sign(payload, process.env.JWT_SECRET || 'your-secret-key', {
+    return jwt.sign(payload, env.JWT_SECRET, {
       expiresIn: TOKEN_CONFIG.ACCESS_TOKEN_EXPIRY,
       issuer: 'coursewave-api',
       audience: 'coursewave-client',

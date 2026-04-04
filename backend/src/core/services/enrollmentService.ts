@@ -31,6 +31,7 @@
 // Assume in enrollmentService.ts or similar
 
 import { prisma } from "../../config/prisma";
+import { notifyEnrollment, notifyInstructorNewStudent } from "./notificationService";
 // import { sendEnrollmentSuccessEmail } from "../email/emailService"; // example
 
 export const activateEnrollmentAfterPayment = async (
@@ -64,10 +65,26 @@ export const activateEnrollmentAfterPayment = async (
     },
   });
 
-  // 3. Send email/notification (asynchronous)
-  // sendEnrollmentSuccessEmail(userId, courseId).catch(console.error);
-
-  // 4. Optionally: notify frontend (WebSocket/event/etc.)
+  // 3. Send notifications in background
+  const course = await prisma.course.findUnique({
+    where: { id: courseId },
+    select: { title: true, instructorId: true },
+  });
+  if (course) {
+    notifyEnrollment(userId, course.title, courseId);
+    if (course.instructorId) {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { name: true },
+      });
+      notifyInstructorNewStudent(
+        course.instructorId,
+        course.title,
+        user?.name || "A student",
+        courseId
+      );
+    }
+  }
 
   return updated;
 };

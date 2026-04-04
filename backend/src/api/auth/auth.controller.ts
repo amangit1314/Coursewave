@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import AuthService from "./auth.service";
+import OAuthService from "./oauth.service";
 import { sendSuccess, sendError } from "../../core/middleware/errorHandler";
 import { logger } from "../../core/utils/logger";
 
@@ -88,6 +89,26 @@ export const logoutUser = async (req: Request, res: Response) => {
   } catch (error: any) {
     logger.warn("auth.logoutUser error", { error: error.message });
     return sendError(res, error.message || "Logout failed", error.status || 500);
+  }
+};
+
+export const oauthLogin = async (req: Request, res: Response) => {
+  try {
+    const { provider, providerAccountId, email, name, image, accessToken, refreshToken, expiresAt } = req.body;
+    const result = await OAuthService.handleOAuthLogin({
+      provider,
+      providerAccountId,
+      email,
+      name,
+      image,
+      accessToken,
+      refreshToken,
+      expiresAt,
+    });
+    return sendSuccess(res, result.data, result.message ?? "OAuth login successful");
+  } catch (error: any) {
+    logger.warn("auth.oauthLogin error", { error: error.message });
+    return sendError(res, error.message || "OAuth login failed", error.status || 500);
   }
 };
 

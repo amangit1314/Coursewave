@@ -1,7 +1,9 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import cors from "cors";
 import http from "http";
-import dotenv from "dotenv";
 import compression from "compression";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
@@ -35,7 +37,6 @@ import { connectRabbitMQ } from "./config/rabbitmq";
 import multer from "multer";
 
 ///? <=================================== Load environment variables ==============>
-dotenv.config();
 
 ///? <==================================== Check for required environment variables ========>
 const requiredEnvVars = ["DATABASE_URL", "JWT_SECRET", "JWT_REFRESH_SECRET"];
@@ -78,7 +79,7 @@ app.use((req, res, next) => {
 // Replace ad-hoc header logging with Winston and safe requestId
 app.use((req, res, next) => {
   logger.info("request:headers", {
-    requestId: (req as any).requestId,
+    requestId: req.requestId,
     method: req.method,
     url: req.originalUrl,
     headers: req.headers,
@@ -162,7 +163,7 @@ app.use((req, res, next) => {
   res.on("finish", () => {
     const duration = Date.now() - start;
     logger.info("route:timing", {
-      requestId: (req as any).requestId,
+      requestId: req.requestId,
       method: req.method,
       url: req.originalUrl,
       durationMs: duration
@@ -187,21 +188,6 @@ app.use(
     });
   }
 );
-
-// Slow route tracking using logger
-app.use((req, res, next) => {
-  const start = Date.now();
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    logger.info("route:timing", {
-      requestId: req.requestId,
-      method: req.method,
-      url: req.originalUrl,
-      durationMs: duration,
-    });
-  });
-  next();
-});
 
 ///? <==================================== API routes ====================================>
 app.post("/api/your-form-route", upload.none(), (req, res) => {

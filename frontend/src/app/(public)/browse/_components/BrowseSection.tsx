@@ -1,21 +1,25 @@
 "use client";
 
 import React, { useMemo, useState, useCallback } from "react";
-import { FiSearch, FiX } from "react-icons/fi";
+import { FiX } from "react-icons/fi";
 import CategoriesComponent from "../../courses/_components/CategoriesComponent";
 import FilteredCoursesComponent from "./FilteredCourses";
 import { dmSans } from "@/lib/config/fonts";
 import { useCategories } from "@/hooks/useCategories";
 import { Category } from "@/types/category";
-import { Search } from "lucide-react";
+import { Search, ArrowUpDown } from "lucide-react";
+
+export type SortOption = "newest" | "oldest" | "price_asc" | "price_desc";
+export type PriceFilter = "all" | "free" | "paid";
 
 const BrowseSection = () => {
   const [activeCategoryIndex, setActiveCategoryIndex] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false);
+  const [sortBy, setSortBy] = useState<SortOption>("newest");
+  const [priceFilter, setPriceFilter] = useState<PriceFilter>("all");
 
   const { data: categories, isLoading, error } = useCategories();
-  console.log("Categories from hook in ui: ", JSON.stringify(categories));
 
   const categoriesWithData = useMemo(() => {
     return [
@@ -115,10 +119,47 @@ const BrowseSection = () => {
         <div className="flex justify-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-100 dark:bg-zinc-800 text-sm text-zinc-600 dark:text-zinc-400 animate-in fade-in slide-in-from-top-2 duration-300">
             <span>Searching for:</span>
-            <span className="font-semibold text-zinc-900 dark:text-white">"{searchQuery}"</span>
+            <span className="font-semibold text-zinc-900 dark:text-white">&quot;{searchQuery}&quot;</span>
           </div>
         </div>
       )}
+
+      {/* Sort & Price Filter Controls */}
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        {/* Price Filter Toggle */}
+        <div className="inline-flex items-center rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900/50 p-1 shadow-sm">
+          {(["all", "free", "paid"] as PriceFilter[]).map((option) => (
+            <button
+              key={option}
+              onClick={() => setPriceFilter(option)}
+              className={`${dmSans.className} px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                priceFilter === option
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              }`}
+            >
+              {option === "all" ? "All Courses" : option === "free" ? "Free" : "Paid"}
+            </button>
+          ))}
+        </div>
+
+        {/* Sort Dropdown */}
+        <div className="relative">
+          <div className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900/50 px-4 py-2 shadow-sm">
+            <ArrowUpDown className="h-4 w-4 text-zinc-500 dark:text-zinc-400" />
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
+              className={`${dmSans.className} bg-transparent text-sm font-medium text-zinc-700 dark:text-zinc-300 outline-none cursor-pointer appearance-none pr-6`}
+            >
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
       {/* Categories with improved spacing */}
       <div className="relative">
@@ -137,6 +178,8 @@ const BrowseSection = () => {
             activeCategory={activeCategory}
             categories={categoriesWithData as Category[]}
             searchQuery={searchQuery}
+            sortBy={sortBy}
+            priceFilter={priceFilter}
           />
         </div>
       </div>

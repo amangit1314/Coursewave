@@ -21,48 +21,48 @@ const Home = () => {
   };
 
   return (
-    <main className="relative flex min-h-screen w-full flex-col items-center justify-start overflow-x-hidden bg-white dark:bg-black">
+    <main className="relative flex min-h-screen w-full flex-col items-center justify-start overflow-x-hidden bg-white dark:bg-[hsl(222,47%,6%)]">
       {/* Header */}
       <LandingPageHeader handleLoginClick={handleLoginClick} />
 
       {/* Hero Section */}
       <HeroSection />
 
-      {/* Main Content Sections */}
-      <div className="w-full space-y-16 px-4 py-8 sm:space-y-20 sm:px-6 sm:py-12 md:space-y-24 md:px-8 lg:space-y-32 lg:px-12 xl:px-16">
-        {/* Stats Section */}
+      {/* Main Content */}
+      <div className="w-full space-y-24 px-4 py-12 sm:space-y-32 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+        {/* Stats */}
         <section className="mx-auto w-full max-w-7xl">
           <LandingCoursewaveStats />
         </section>
 
-        {/* About Section */}
+        {/* About */}
         <section className="mx-auto w-full max-w-7xl">
           <About />
         </section>
 
-        {/* Offerings Section */}
+        {/* Offerings */}
         <section className="mx-auto w-full max-w-7xl">
           <Offerings />
         </section>
 
-        {/* Featured Courses Section */}
+        {/* Featured Courses */}
         <section className="mx-auto w-full max-w-7xl">
           <FeaturedCourses />
         </section>
 
-        {/* Browse Roadmaps Section */}
+        {/* Browse Categories */}
         <section className="mx-auto w-full max-w-7xl">
           <HomeBrowseSection />
         </section>
 
-        {/* Achieve Coding Goals Section */}
-        <section className="mx-auto w-full max-w-7xl">
-          <AchieveCodingGoals />
-        </section>
-
-        {/* Testimonials Section */}
+        {/* Testimonials */}
         <section className="mx-auto w-full max-w-7xl">
           <Testimonials />
+        </section>
+
+        {/* CTA */}
+        <section className="mx-auto w-full max-w-7xl">
+          <AchieveCodingGoals />
         </section>
       </div>
 
