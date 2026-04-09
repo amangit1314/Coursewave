@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "../../config/prisma";
 // import { invalidateCache } from "../../config/redis";
 import { generateResourceId } from "../../core/utils/idGenerator";
+import { AppError } from "../../core/middleware/errorHandler";
 
 export const BlogsService = {
   // Get all published blogs
@@ -51,9 +52,9 @@ export const BlogsService = {
     });
   },
 
-  // Get blog by slug
+  // Get blog by ID
   getBlogById: async (id: string) => {
-    return await prisma.blog.findUnique({
+    const blog = await prisma.blog.findUnique({
       where: {
         id,
       },
@@ -111,11 +112,14 @@ export const BlogsService = {
         },
       },
     });
+
+    if (!blog) throw new AppError("Blog not found", 404);
+    return blog;
   },
 
   // Get blog by slug
   getBlogBySlug: async (slug: string) => {
-    return await prisma.blog.findUnique({
+    const blog = await prisma.blog.findUnique({
       where: {
         slug,
       },
@@ -173,6 +177,9 @@ export const BlogsService = {
         },
       },
     });
+
+    if (!blog) throw new AppError("Blog not found", 404);
+    return blog;
   },
 
   // Track blog view and increment view count
@@ -186,7 +193,7 @@ export const BlogsService = {
       where: { id: blogId },
       select: { id: true },
     });
-    if (!blog) throw new Error("Blog not found");
+    if (!blog) throw new AppError("Blog not found", 404);
 
     // 2. Create a new BlogView record:
     await prisma.blogView.create({
@@ -234,14 +241,14 @@ export const BlogsService = {
     });
 
     if (!blog) {
-      throw new Error("Blog not found");
+      throw new AppError("Blog not found", 404);
     }
 
     const authorId = blog.authorId;
 
     // Check if user is trying to follow themselves
     if (authorId === userId) {
-      throw new Error("You cannot follow/unfollow yourself");
+      throw new AppError("You cannot follow/unfollow yourself", 400);
     }
 
     // Verify author exists
@@ -250,7 +257,7 @@ export const BlogsService = {
     });
 
     if (!author) {
-      throw new Error("Author not found");
+      throw new AppError("Author not found", 404);
     }
 
     // Check if follow relationship already exists
@@ -517,7 +524,7 @@ export const BlogsService = {
     const blog = await prisma.blog.findUnique({
       where: { id: blogId },
     });
-    if (!blog) throw new Error("Blog not found");
+    if (!blog) throw new AppError("Blog not found", 404);
     await prisma.blogReport.create({
       data: {
         id: generateResourceId(`blogReport`),
@@ -547,9 +554,9 @@ export const BlogsService = {
       where: { id },
     });
 
-    if (!existingBlog) throw new Error("Blog not found");
+    if (!existingBlog) throw new AppError("Blog not found", 404);
     if (existingBlog.authorId !== userId)
-      throw new Error("You are not authorized to update this blog");
+      throw new AppError("You are not authorized to update this blog", 403);
 
     const slug = data.title
       ? data.title
@@ -602,9 +609,9 @@ export const BlogsService = {
       where: { id },
     });
 
-    if (!existingBlog) throw new Error("Blog not found");
+    if (!existingBlog) throw new AppError("Blog not found", 404);
     if (existingBlog.authorId !== userId)
-      throw new Error("You are not authorized to delete this blog");
+      throw new AppError("You are not authorized to delete this blog", 403);
 
     await prisma.blog.delete({
       where: { id },
@@ -680,13 +687,13 @@ export const BlogsService = {
       where: { id: blogId },
     });
 
-    if (!blog) throw new Error("Blog not found");
+    if (!blog) throw new AppError("Blog not found", 404);
 
     if (parentId) {
       const parentComment = await prisma.blogComment.findUnique({
         where: { id: parentId },
       });
-      if (!parentComment) throw new Error("Parent comment not found");
+      if (!parentComment) throw new AppError("Parent comment not found", 404);
     }
 
     return await prisma.blogComment.create({
@@ -714,9 +721,9 @@ export const BlogsService = {
       where: { id: commentId },
     });
 
-    if (!comment) throw new Error("Comment not found");
+    if (!comment) throw new AppError("Comment not found", 404);
     if (comment.authorId !== userId)
-      throw new Error("You are not authorized to update this comment");
+      throw new AppError("You are not authorized to update this comment", 403);
 
     return await prisma.blogComment.update({
       where: { id: commentId },
@@ -742,7 +749,7 @@ export const BlogsService = {
       where: { id: commentId },
     });
 
-    if (!comment) throw new Error("Comment not found");
+    if (!comment) throw new AppError("Comment not found", 404);
 
     const existingLike = await prisma.commentLike.findUnique({
       where: {
@@ -782,9 +789,9 @@ export const BlogsService = {
       where: { id: commentId },
     });
 
-    if (!comment) throw new Error("Comment not found");
+    if (!comment) throw new AppError("Comment not found", 404);
     if (comment.authorId !== userId)
-      throw new Error("You are not authorized to delete this comment");
+      throw new AppError("You are not authorized to delete this comment", 403);
 
     await prisma.blogComment.delete({
       where: { id: commentId },
@@ -797,14 +804,14 @@ export const BlogsService = {
   rateArticle: async (blogId: string, userId: string, rating: number) => {
     // Validate rating
     if (rating < 1 || rating > 5) {
-      throw new Error("Rating must be between 1 and 5");
+      throw new AppError("Rating must be between 1 and 5", 400);
     }
 
     const blog = await prisma.blog.findUnique({
       where: { id: blogId },
     });
 
-    if (!blog) throw new Error("Blog not found");
+    if (!blog) throw new AppError("Blog not found", 404);
 
     // Check if user already rated
     const existingRating = await prisma.blogRating.findUnique({
@@ -916,8 +923,8 @@ export const BlogsService = {
 
       return formattedBlogs;
     } catch (error: any) {
-      console.error('Error fetching user own blogs:', error);
-      throw new Error('Failed to fetch your articles');
+      console.error("Error fetching user own blogs:", error);
+      throw new AppError("Failed to fetch your articles", 500);
     }
   },
 };
