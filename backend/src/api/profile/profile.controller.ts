@@ -1,118 +1,71 @@
-import { Request, Response } from 'express';
-import * as profileService from './profile.service';
+import { Request, Response } from "express";
+import * as profileService from "./profile.service";
+import {
+  asyncHandler,
+  sendSuccess,
+  AppError,
+} from "../../core/middleware/errorHandler";
 
-export const getAllUsers = async (req: Request, res: Response) => {
-  try {
-    const result = await profileService.getAllUsers();
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      message: 'Internal Server Error'
-    });
+export const getAllUsers = asyncHandler(
+  async (_req: Request, res: Response) => {
+    const users = await profileService.getAllUsers();
+    sendSuccess(res, users, "Users fetched successfully");
   }
-};
+);
 
-export const getUserById = async (req: Request, res: Response) => {
-  try {
+export const getUserById = asyncHandler(
+  async (req: Request, res: Response) => {
     const { userId } = req.params;
-    const result = await profileService.getUserById(userId);
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      message: 'Internal Server Error'
-    });
+    const user = await profileService.getUserById(userId);
+    sendSuccess(res, user, "User fetched successfully");
   }
-};
+);
 
-export const updateUser = async (req: Request, res: Response) => {
-  try {
-    const { userId } = req.params;
-    const userData = req.body;
+export const updateUser = asyncHandler(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const updated = await profileService.updateUser(userId, req.body);
+  sendSuccess(res, updated, "User updated successfully");
+});
 
-    const result = await profileService.updateUser(userId, userData);
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      message: 'Internal Server Error'
-    });
-  }
-};
+export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  await profileService.deleteUser(userId);
+  sendSuccess(res, null, "User deleted successfully");
+});
 
-export const deleteUser = async (req: Request, res: Response) => {
-  try {
-    const { userId } = req.params;
-    const result = await profileService.deleteUser(userId);
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      message: 'Internal Server Error'
-    });
-  }
-};
-
-export const changeUserRole = async (req: Request, res: Response) => {
-  try {
+export const changeUserRole = asyncHandler(
+  async (req: Request, res: Response) => {
     const { userId } = req.params;
     const { role } = req.body;
-
     const result = await profileService.changeUserRole(userId, role);
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      message: 'Internal Server Error'
-    });
+    sendSuccess(res, result, `User role changed to ${result.role} successfully`);
   }
-};
+);
 
-export const getUserStats = async (req: Request, res: Response) => {
-  try {
-    const result = await profileService.getUserStats();
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      message: 'Internal Server Error'
-    });
+export const getUserStats = asyncHandler(
+  async (_req: Request, res: Response) => {
+    const stats = await profileService.getUserStats();
+    sendSuccess(res, stats, "User statistics fetched successfully");
   }
-};
+);
 
-export const contactSupport = async (req: Request, res: Response) => {
-  try {
-    const supportData = req.body;
-    const result = await profileService.contactSupport(supportData);
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      message: 'Internal Server Error'
-    });
+export const contactSupport = asyncHandler(
+  async (req: Request, res: Response) => {
+    await profileService.contactSupport(req.body);
+    sendSuccess(
+      res,
+      null,
+      "Support request submitted successfully. We'll get back to you soon!"
+    );
   }
-};
+);
 
-export const becomeInstructor = async (req: Request, res: Response) => {
-  try {
-    const userId = (req as any).user?.id; // From checkAccessToken middleware
-    const instructorData = req.body;
+export const becomeInstructor = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = req.user?.id;
+    if (!userId) throw new AppError("Unauthorized", 401);
 
-    const result = await profileService.becomeInstructor(userId, instructorData);
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      message: 'Internal Server Error'
-    });
+    const instructor = await profileService.becomeInstructor(userId, req.body);
+    sendSuccess(res, instructor, "Successfully registered as an instructor", 201);
   }
-};
+);

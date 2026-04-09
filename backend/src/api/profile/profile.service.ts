@@ -1,279 +1,155 @@
 import { Role } from "@prisma/client";
 import { prisma } from "../../config/prisma";
-// profileService.ts
 import nodemailer from "nodemailer";
+import { AppError } from "../../core/middleware/errorHandler";
 
-export interface ServiceResponse {
-  success: boolean;
-  data?: any;
-  message: string;
-  status: number;
-  error?: string;
-}
-
-export const getAllUsers = async (): Promise<ServiceResponse> => {
-  try {
-    const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        profileImageUrl: true,
-        about: true,
-        createdAt: true,
-        updatedAt: true,
-        roles: {
-          select: {
-            role: true,
-          },
+export const getAllUsers = async () => {
+  return prisma.user.findMany({
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      profileImageUrl: true,
+      about: true,
+      createdAt: true,
+      updatedAt: true,
+      roles: {
+        select: {
+          role: true,
         },
       },
-      orderBy: { createdAt: "desc" },
-    });
-
-    return {
-      success: true,
-      data: users,
-      message: "Users fetched successfully",
-      status: 200,
-    };
-  } catch (error: any) {
-    console.log("ERROR in getAllUsers:", error.message);
-    return {
-      success: false,
-      error: error.message,
-      message: "Failed to fetch users",
-      status: 500,
-    };
-  }
+    },
+    orderBy: { createdAt: "desc" },
+  });
 };
 
-export const getUserById = async (userId: string): Promise<ServiceResponse> => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        profileImageUrl: true,
-        about: true,
-        createdAt: true,
-        updatedAt: true,
-        roles: {
-          select: {
-            role: true,
-          },
+export const getUserById = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      profileImageUrl: true,
+      about: true,
+      createdAt: true,
+      updatedAt: true,
+      roles: {
+        select: {
+          role: true,
         },
-        enrollments: {
-          include: {
-            course: {
-              select: {
-                id: true,
-                title: true,
-                description: true,
-              },
+      },
+      enrollments: {
+        include: {
+          course: {
+            select: {
+              id: true,
+              title: true,
+              description: true,
             },
           },
         },
       },
-    });
+    },
+  });
 
-    if (!user) {
-      return {
-        success: false,
-        message: "User not found",
-        status: 404,
-      };
-    }
-
-    return {
-      success: true,
-      data: user,
-      message: "User fetched successfully",
-      status: 200,
-    };
-  } catch (error: any) {
-    console.log("ERROR in getUserById:", error.message);
-    return {
-      success: false,
-      error: error.message,
-      message: "Failed to fetch user",
-      status: 500,
-    };
+  if (!user) {
+    throw new AppError("User not found", 404);
   }
+
+  return user;
 };
 
-export const updateUser = async (
-  userId: string,
-  userData: any
-): Promise<ServiceResponse> => {
-  try {
-    const { name, email, profileImageUrl, about } = userData;
+export const updateUser = async (userId: string, userData: any) => {
+  const { name, email, profileImageUrl, about } = userData;
 
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-    });
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
 
-    if (!user) {
-      return {
-        success: false,
-        message: "User not found",
-        status: 404,
-      };
-    }
-
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: {
-        name,
-        email,
-        profileImageUrl,
-        about,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        profileImageUrl: true,
-        about: true,
-        updatedAt: true,
-      },
-    });
-
-    return {
-      success: true,
-      data: updatedUser,
-      message: "User updated successfully",
-      status: 200,
-    };
-  } catch (error: any) {
-    console.log("ERROR in updateUser:", error.message);
-    return {
-      success: false,
-      error: error.message,
-      message: "Failed to update user",
-      status: 500,
-    };
+  if (!user) {
+    throw new AppError("User not found", 404);
   }
+
+  return prisma.user.update({
+    where: { id: userId },
+    data: {
+      name,
+      email,
+      profileImageUrl,
+      about,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      profileImageUrl: true,
+      about: true,
+      updatedAt: true,
+    },
+  });
 };
 
-export const deleteUser = async (userId: string): Promise<ServiceResponse> => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-    });
+export const deleteUser = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
 
-    if (!user) {
-      return {
-        success: false,
-        message: "User not found",
-        status: 404,
-      };
-    }
-
-    await prisma.user.delete({
-      where: { id: userId },
-    });
-
-    return {
-      success: true,
-      message: "User deleted successfully",
-      status: 200,
-    };
-  } catch (error: any) {
-    console.log("ERROR in deleteUser:", error.message);
-    return {
-      success: false,
-      error: error.message,
-      message: "Failed to delete user",
-      status: 500,
-    };
+  if (!user) {
+    throw new AppError("User not found", 404);
   }
+
+  await prisma.user.delete({
+    where: { id: userId },
+  });
+
+  return null;
 };
 
-export const changeUserRole = async (
-  userId: string,
-  role: string
-): Promise<ServiceResponse> => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-    });
+export const changeUserRole = async (userId: string, role: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
 
-    if (!user) {
-      return {
-        success: false,
-        message: "User not found",
-        status: 404,
-      };
-    }
-
-    // Remove existing roles and add new role
-    await prisma.userRole.deleteMany({
-      where: { userId },
-    });
-
-    await prisma.userRole.create({
-      data: {
-        userId,
-        role: role.toUpperCase() as Role,
-      },
-    });
-
-    return {
-      success: true,
-      message: `User role changed to ${role} successfully`,
-      status: 200,
-    };
-  } catch (error: any) {
-    console.log("ERROR in changeUserRole:", error.message);
-    return {
-      success: false,
-      error: error.message,
-      message: "Failed to change user role",
-      status: 500,
-    };
+  if (!user) {
+    throw new AppError("User not found", 404);
   }
+
+  await prisma.userRole.deleteMany({
+    where: { userId },
+  });
+
+  await prisma.userRole.create({
+    data: {
+      userId,
+      role: role.toUpperCase() as Role,
+    },
+  });
+
+  return { role };
 };
 
-export const getUserStats = async (): Promise<ServiceResponse> => {
-  try {
-    const totalUsers = await prisma.user.count();
-    const totalInstructors = await prisma.userRole.count({
-      where: { role: "INSTRUCTOR" },
-    });
-    const totalStudents = await prisma.userRole.count({
-      where: { role: "USER" },
-    });
-    const recentUsers = await prisma.user.count({
-      where: {
-        createdAt: {
-          gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Last 30 days
+export const getUserStats = async () => {
+  const [totalUsers, totalInstructors, totalStudents, recentUsers] =
+    await Promise.all([
+      prisma.user.count(),
+      prisma.userRole.count({ where: { role: "INSTRUCTOR" } }),
+      prisma.userRole.count({ where: { role: "USER" } }),
+      prisma.user.count({
+        where: {
+          createdAt: {
+            gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+          },
         },
-      },
-    });
+      }),
+    ]);
 
-    return {
-      success: true,
-      data: {
-        totalUsers,
-        totalInstructors,
-        totalStudents,
-        recentUsers,
-      },
-      message: "User statistics fetched successfully",
-      status: 200,
-    };
-  } catch (error: any) {
-    console.log("ERROR in getUserStats:", error.message);
-    return {
-      success: false,
-      error: error.message,
-      message: "Failed to fetch user statistics",
-      status: 500,
-    };
-  }
+  return {
+    totalUsers,
+    totalInstructors,
+    totalStudents,
+    recentUsers,
+  };
 };
 
 export interface ContactSupportData {
@@ -285,32 +161,19 @@ export interface ContactSupportData {
   message: string;
 }
 
-export const contactSupport = async (
-  data: ContactSupportData
-): Promise<ServiceResponse> => {
-  try {
-    const { firstName, lastName, email, phone, subject, message } = data;
+export const contactSupport = async (data: ContactSupportData) => {
+  const { firstName, lastName, email, phone, subject, message } = data;
 
-    // Validate required fields
-    if (!firstName || !lastName || !email || !subject || !message) {
-      return {
-        success: false,
-        message: "All required fields must be provided",
-        status: 400,
-      };
-    }
+  if (!firstName || !lastName || !email || !subject || !message) {
+    throw new AppError("All required fields must be provided", 400);
+  }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return {
-        success: false,
-        message: "Please provide a valid email address",
-        status: 400,
-      };
-    }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    throw new AppError("Please provide a valid email address", 400);
+  }
 
-    // Create email transporter
+  // Create email transporter
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT || "587"),
@@ -435,28 +298,10 @@ export const contactSupport = async (
       `,
     };
 
-    // Send emails
-    await transporter.sendMail(supportEmailContent);
+  await transporter.sendMail(supportEmailContent);
+  await transporter.sendMail(userConfirmationEmail);
 
-    // Send confirmation email to user (optional - you can remove this if not needed)
-    await transporter.sendMail(userConfirmationEmail);
-
-    return {
-      success: true,
-      message:
-        "Support request submitted successfully. We'll get back to you soon!",
-      status: 200,
-    };
-  } catch (error: any) {
-    console.error("Error in contactSupport service:", error);
-
-    return {
-      success: false,
-      error: error.message,
-      message: "Failed to submit support request. Please try again later.",
-      status: 500,
-    };
-  }
+  return null;
 };
 
 export interface BecomeInstructorData {
@@ -471,112 +316,63 @@ export interface BecomeInstructorData {
   };
 }
 
-// export const becomeInstructor = async (
-//   userId: string,
-//   data: BecomeInstructorData
-// ): Promise<ServiceResponse> => {
-//   try {
-//     const { bio, expertise, socialLinks } = data;
-
-
 export const becomeInstructor = async (
   userId: string,
   data: BecomeInstructorData
-): Promise<ServiceResponse> => {
-  try {
-    if (!userId) {
-      return {
-        success: false,
-        message: "User ID is required",
-        status: 400,
-      };
-    }
+) => {
+  if (!userId) {
+    throw new AppError("User ID is required", 400);
+  }
 
-    const { bio, expertise, socialLinks } = data;
+  const { bio, expertise, socialLinks } = data;
 
-    // Validate required fields
-    if (!bio || !expertise || expertise.length === 0) {
-      return {
-        success: false,
-        message: "Bio and at least one area of expertise are required",
-        status: 400,
-      };
-    }
+  if (!bio || !expertise || expertise.length === 0) {
+    throw new AppError("Bio and at least one area of expertise are required", 400);
+  }
 
-    // Check if user exists
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  const existingInstructor = await prisma.instructor.findUnique({
+    where: { userId },
+  });
+
+  if (existingInstructor) {
+    throw new AppError("User is already an instructor", 409);
+  }
+
+  return prisma.$transaction(async (tx) => {
+    const instructor = await tx.instructor.create({
+      data: {
+        userId,
+        bio,
+        expertise,
+        socialLinks: socialLinks || {},
+      },
     });
 
-    if (!user) {
-      return {
-        success: false,
-        message: "User not found",
-        status: 404,
-      };
-    }
-
-    // Check if user is already an instructor
-    const existingInstructor = await prisma.instructor.findUnique({
-      where: { userId },
+    const existingRole = await tx.userRole.findFirst({
+      where: {
+        userId,
+        role: "INSTRUCTOR",
+      },
     });
 
-    if (existingInstructor) {
-      return {
-        success: false,
-        message: "User is already an instructor",
-        status: 400,
-      };
-    }
-
-    // Create instructor profile and assign role in a transaction
-    const result = await prisma.$transaction(async (tx) => {
-      // Create instructor profile with social links as JSON
-      const instructor = await tx.instructor.create({
+    if (!existingRole) {
+      await tx.userRole.create({
         data: {
           userId,
-          bio,
-          expertise,
-          socialLinks: socialLinks || {},
+          role: Role.INSTRUCTOR,
         },
       });
+    }
 
-      // Check if user already has INSTRUCTOR role
-      const existingRole = await tx.userRole.findFirst({
-        where: {
-          userId,
-          role: "INSTRUCTOR",
-        },
-      });
-
-      // Add INSTRUCTOR role if not already present
-      if (!existingRole) {
-        await tx.userRole.create({
-          data: {
-            userId,
-            role: Role.INSTRUCTOR,
-          },
-        });
-      }
-
-      return instructor;
-    });
-
-    return {
-      success: true,
-      data: result,
-      message: "Successfully registered as an instructor",
-      status: 201,
-    };
-  } catch (error: any) {
-    console.error("Error in becomeInstructor service:", error);
-
-    return {
-      success: false,
-      error: error.message,
-      message: "Failed to register as instructor. Please try again later.",
-      status: 500,
-    };
-  }
+    return instructor;
+  });
 };
 

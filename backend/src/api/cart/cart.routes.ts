@@ -3,36 +3,15 @@ import {
   getCart,
   addToCart,
   removeFromCart,
-  clearCart
+  clearCart,
 } from "./cart.controller";
-import { 
-  verifyToken, 
-  validateUUID,
-  asyncHandler 
-} from "../../core/middleware";
+import { verifyToken, validateUUID } from "../../core/middleware";
 
 const router: Router = Router();
 
-router.get("/", 
-  verifyToken,
-  asyncHandler(getCart)
-);
-
-router.post("/items", 
-  verifyToken,
-  validateUUID('courseId'),
-  asyncHandler(addToCart)
-);
-
-router.delete("/items/:courseId", 
-  verifyToken,
-  validateUUID('courseId'),
-  asyncHandler(removeFromCart)
-);
-
-router.delete("/", 
-  verifyToken,
-  asyncHandler(clearCart)
-);
+router.get("/", verifyToken, getCart);
+router.post("/items", verifyToken, validateUUID("courseId"), addToCart);
+router.delete("/items/:courseId", verifyToken, validateUUID("courseId"), removeFromCart);
+router.delete("/", verifyToken, clearCart);
 
 export default router;

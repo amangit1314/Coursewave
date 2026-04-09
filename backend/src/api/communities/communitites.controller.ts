@@ -1,39 +1,38 @@
-import { Request, Response } from 'express';
-import * as communitiesService from './communities.service';
+import { Request, Response } from "express";
+import * as communitiesService from "./communities.service";
+import {
+  asyncHandler,
+  sendSuccess,
+  AppError,
+} from "../../core/middleware/errorHandler";
 
-export const getAllCommunities = async (req: Request, res: Response) => {
-  try {
-    const result = await communitiesService.getAllCommunities();
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      message: 'Internal Server Error'
-    });
-  }
+const requireUserId = (req: Request): string => {
+  const userId = req.user?.id;
+  if (!userId) throw new AppError("Unauthorized", 401);
+  return userId;
 };
 
-export const getCommunityById = async (req: Request, res: Response) => {
-  try {
+export const getAllCommunities = asyncHandler(
+  async (_req: Request, res: Response) => {
+    const communities = await communitiesService.getAllCommunities();
+    sendSuccess(res, communities, "Communities fetched successfully");
+  }
+);
+
+export const getCommunityById = asyncHandler(
+  async (req: Request, res: Response) => {
     const { communityId } = req.params;
-    const result = await communitiesService.getCommunityById(communityId);
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      message: 'Internal Server Error'
-    });
+    const community = await communitiesService.getCommunityById(communityId);
+    sendSuccess(res, community, "Community fetched successfully");
   }
-};
+);
 
-export const createCommunity = async (req: Request, res: Response) => {
-  try {
+export const createCommunity = asyncHandler(
+  async (req: Request, res: Response) => {
     const { title, description, categoryId, isPublic, tags } = req.body;
-    const userId = req.user!.id;
-    
-    const result = await communitiesService.createCommunity(
+    const userId = requireUserId(req);
+
+    const community = await communitiesService.createCommunity(
       title,
       description,
       categoryId,
@@ -41,60 +40,39 @@ export const createCommunity = async (req: Request, res: Response) => {
       tags,
       userId
     );
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      message: 'Internal Server Error'
-    });
+    sendSuccess(res, community, "Community created successfully", 201);
   }
-};
+);
 
-export const joinCommunity = async (req: Request, res: Response) => {
-  try {
+export const joinCommunity = asyncHandler(
+  async (req: Request, res: Response) => {
     const { communityId } = req.params;
-    const userId = req.user!.id;
-    
-    const result = await communitiesService.joinCommunity(communityId, userId);
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      message: 'Internal Server Error'
-    });
-  }
-};
+    const userId = requireUserId(req);
 
-export const getCommunityMessages = async (req: Request, res: Response) => {
-  try {
+    const member = await communitiesService.joinCommunity(communityId, userId);
+    sendSuccess(res, member, "Joined community successfully");
+  }
+);
+
+export const getCommunityMessages = asyncHandler(
+  async (req: Request, res: Response) => {
     const { communityId } = req.params;
-    const userId = req.user!.id;
-    
-    const result = await communitiesService.getCommunityMessages(communityId, userId);
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      message: 'Internal Server Error'
-    });
-  }
-};
+    const userId = requireUserId(req);
 
-export const deleteMessage = async (req: Request, res: Response) => {
-  try {
+    const messages = await communitiesService.getCommunityMessages(
+      communityId,
+      userId
+    );
+    sendSuccess(res, messages, "Messages fetched successfully");
+  }
+);
+
+export const deleteMessage = asyncHandler(
+  async (req: Request, res: Response) => {
     const { communityId, messageId } = req.params;
-    const moderatorId = req.user!.id;
-    
-    const result = await communitiesService.deleteMessage(communityId, messageId, moderatorId);
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      message: 'Internal Server Error'
-    });
+    const moderatorId = requireUserId(req);
+
+    await communitiesService.deleteMessage(communityId, messageId, moderatorId);
+    sendSuccess(res, null, "Message deleted successfully");
   }
-};
+);

@@ -2,37 +2,51 @@ import { Request, Response } from "express";
 import { TokenType, TokenStatus } from "@prisma/client";
 import { prisma } from "../../config/prisma";
 import TokenService from "../../core/services/tokenService";
+import {
+  asyncHandler,
+  sendSuccess,
+  AppError,
+} from "../../core/middleware/errorHandler";
+
+const requireUserId = (req: Request): string => {
+  const userId = req.user?.id;
+  if (!userId) throw new AppError("Unauthorized", 401);
+  return userId;
+};
+
+const requireAdmin = async (req: Request) => {
+  const userId = requireUserId(req);
+  const userRoles = await prisma.userRole.findMany({ where: { userId } });
+  const isAdmin = userRoles.some((role) => role.role === "ADMIN");
+  if (!isAdmin) {
+    throw new AppError("Admin access required", 403);
+  }
+  return userId;
+};
 
 // Get user's active sessions
-export const getUserSessions = async (req: Request, res: Response) => {
-  try {
-    const userId = req.user?.id || "";
+export const getUserSessions = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = requireUserId(req);
     const sessions = await TokenService.getUserSessions(userId);
 
-    return res.status(200).json({
-      success: true,
-      data: sessions.map((session) => ({
+    sendSuccess(
+      res,
+      sessions.map((session) => ({
         id: session.id,
         createdAt: session.createdAt,
         expiresAt: session.expiresAt,
         status: session.status,
         deviceInfo: session.deviceInfo || "Unknown",
-      })),
-    });
-  } catch (error: any) {
-    console.error("Error fetching sessions:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch sessions",
-      error: error.message,
-    });
+      }))
+    );
   }
-};
+);
 
-//  Revoke specific session
-export const revokeSession = async (req: Request, res: Response) => {
-  try {
-    const userId = req.user?.id;
+// Revoke specific session
+export const revokeSession = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = requireUserId(req);
     const sessionId = req.params.sessionId;
 
     const session = await prisma.token.findFirst({
@@ -40,224 +54,126 @@ export const revokeSession = async (req: Request, res: Response) => {
     });
 
     if (!session) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Session not found" });
+      throw new AppError("Session not found", 404);
     }
 
     await TokenService.revokeToken(sessionId, "USER_REVOKE");
 
-    return res
-      .status(200)
-      .json({ success: true, message: "Session revoked successfully" });
-  } catch (error: any) {
-    console.error("Error revoking session:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to revoke session",
-      error: error.message,
-    });
+    sendSuccess(res, null, "Session revoked successfully");
   }
-};
+);
 
-//  Revoke all sessions
-export const revokeAllSessions = async (req: Request, res: Response) => {
-  try {
-    const userId = req.user?.id || "";
+// Revoke all sessions
+export const revokeAllSessions = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = requireUserId(req);
     await TokenService.revokeAllUserTokens(userId, "LOGOUT_ALL_DEVICES");
-
-    return res.status(200).json({
-      success: true,
-      message: "Logged out from all devices successfully",
-    });
-  } catch (error: any) {
-    console.error("Error revoking all sessions:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to logout from all devices",
-      error: error.message,
-    });
+    sendSuccess(res, null, "Logged out from all devices successfully");
   }
-};
+);
 
-//  Rollback token
-export const rollbackToken = async (req: Request, res: Response) => {
-  try {
-    const userId = req.user?.id || "";
+// Rollback token
+export const rollbackToken = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = requireUserId(req);
     const { currentTokenId } = req.body;
 
     if (!currentTokenId) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Current token ID is required" });
+      throw new AppError("Current token ID is required", 400);
     }
 
-    const rollbackToken = await TokenService.rollbackToken(
-      userId,
-      currentTokenId
-    );
+    const rolledBack = await TokenService.rollbackToken(userId, currentTokenId);
 
-    if (!rollbackToken) {
-      return res.status(404).json({
-        success: false,
-        message: "No previous valid token found for rollback",
-      });
+    if (!rolledBack) {
+      throw new AppError("No previous valid token found for rollback", 404);
     }
 
-    return res.status(200).json({
-      success: true,
-      data: { rollbackToken, message: "Token rolled back successfully" },
-    });
-  } catch (error: any) {
-    console.error("Error rolling back token:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to rollback token",
-      error: error.message,
-    });
+    sendSuccess(res, { rollbackToken: rolledBack }, "Token rolled back successfully");
   }
-};
+);
 
-//  Refresh token
-export const refreshAccessToken = async (req: Request, res: Response) => {
-  try {
+// Refresh token — note: failure here is 401 (unauthenticated), not 500
+export const refreshAccessToken = asyncHandler(
+  async (req: Request, res: Response) => {
     const { refreshToken } = req.body;
     const ipAddress = req.ip || req.connection.remoteAddress;
     const userAgent = req.headers["user-agent"];
 
     if (!refreshToken) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Refresh token is required" });
+      throw new AppError("Refresh token is required", 400);
     }
 
-    const result = await TokenService.refreshAccessToken(
-      refreshToken,
-      ipAddress,
-      userAgent
-    );
-
-    return res.status(200).json({ success: true, data: result });
-  } catch (error: any) {
-    console.error("Token refresh error:", error);
-    return res.status(401).json({
-      success: false,
-      message: error.message || "Failed to refresh token",
-    });
+    try {
+      const result = await TokenService.refreshAccessToken(
+        refreshToken,
+        ipAddress,
+        userAgent
+      );
+      sendSuccess(res, result);
+    } catch (error: any) {
+      // Token service throws plain errors — translate to 401 for auth failures
+      throw new AppError(error.message || "Failed to refresh token", 401);
+    }
   }
-};
+);
 
-//  Validate token security
-export const validateSecurity = async (req: Request, res: Response) => {
-  try {
+// Validate token security
+export const validateSecurity = asyncHandler(
+  async (req: Request, res: Response) => {
     const { tokenId } = req.body;
 
     if (!tokenId) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Token ID is required" });
+      throw new AppError("Token ID is required", 400);
     }
 
     const isValid = await TokenService.validateTokenSecurity(tokenId);
 
-    return res.status(200).json({
-      success: true,
-      data: {
-        isValid,
-        message: isValid
-          ? "Token security validation passed"
-          : "Token security validation failed",
-      },
-    });
-  } catch (error: any) {
-    console.error("Security validation error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to validate token security",
-      error: error.message,
+    sendSuccess(res, {
+      isValid,
+      message: isValid
+        ? "Token security validation passed"
+        : "Token security validation failed",
     });
   }
-};
+);
 
-//  Cleanup expired tokens (admin)
-export const cleanupExpiredTokens = async (req: Request, res: Response) => {
-  try {
-    const userRoles = await prisma.userRole.findMany({
-      where: { userId: req.user?.id },
-    });
-    const isAdmin = userRoles.some((role) => role.role === "ADMIN");
-
-    if (!isAdmin) {
-      return res
-        .status(403)
-        .json({ success: false, message: "Admin access required" });
-    }
+// Cleanup expired tokens (admin)
+export const cleanupExpiredTokens = asyncHandler(
+  async (req: Request, res: Response) => {
+    await requireAdmin(req);
 
     const cleanedCount = await TokenService.cleanupExpiredTokens();
 
-    return res.status(200).json({
-      success: true,
-      data: {
-        cleanedCount,
-        message: `Cleaned up ${cleanedCount} expired tokens`,
-      },
-    });
-  } catch (error: any) {
-    console.error("Token cleanup error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to cleanup expired tokens",
-      error: error.message,
+    sendSuccess(res, {
+      cleanedCount,
+      message: `Cleaned up ${cleanedCount} expired tokens`,
     });
   }
-};
+);
 
-//  Get token statistics (admin)
-export const getTokenStats = async (req: Request, res: Response) => {
-  try {
-    const userRoles = await prisma.userRole.findMany({
-      where: { userId: req.user?.id },
-    });
-    const isAdmin = userRoles.some((role) => role.role === "ADMIN");
+// Get token statistics (admin)
+export const getTokenStats = asyncHandler(
+  async (req: Request, res: Response) => {
+    await requireAdmin(req);
 
-    if (!isAdmin) {
-      return res
-        .status(403)
-        .json({ success: false, message: "Admin access required" });
-    }
+    const [stats, totalTokens, activeTokens, expiredTokens, revokedTokens] =
+      await Promise.all([
+        prisma.token.groupBy({
+          by: ["type", "status"],
+          _count: { id: true },
+        }),
+        prisma.token.count(),
+        prisma.token.count({ where: { status: TokenStatus.ACTIVE } }),
+        prisma.token.count({ where: { status: TokenStatus.EXPIRED } }),
+        prisma.token.count({ where: { status: TokenStatus.REVOKED } }),
+      ]);
 
-    const stats = await prisma.token.groupBy({
-      by: ["type", "status"],
-      _count: { id: true },
-    });
-
-    const totalTokens = await prisma.token.count();
-    const activeTokens = await prisma.token.count({
-      where: { status: TokenStatus.ACTIVE },
-    });
-    const expiredTokens = await prisma.token.count({
-      where: { status: TokenStatus.EXPIRED },
-    });
-    const revokedTokens = await prisma.token.count({
-      where: { status: TokenStatus.REVOKED },
-    });
-
-    return res.status(200).json({
-      success: true,
-      data: {
-        totalTokens,
-        activeTokens,
-        expiredTokens,
-        revokedTokens,
-        breakdown: stats,
-      },
-    });
-  } catch (error: any) {
-    console.error("Token stats error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to get token statistics",
-      error: error.message,
+    sendSuccess(res, {
+      totalTokens,
+      activeTokens,
+      expiredTokens,
+      revokedTokens,
+      breakdown: stats,
     });
   }
-};
+);

@@ -1,74 +1,33 @@
 import { Request, Response } from "express";
 import * as cartService from "./cart.service";
-import { sendSuccess, sendNotFound, sendError } from "../../core/middleware";
+import {
+  asyncHandler,
+  sendSuccess,
+  AppError,
+} from "../../core/middleware/errorHandler";
 
-export const getCart = async (req: Request, res: Response) => {
-  try {
-    const result = await cartService.getCart(req.user?.id  || "");
-
-    if (result.success) {
-      sendSuccess(res, result.data, "Cart fetched successfully");
-    } else {
-      sendError(res, result.message, result.status);
-    }
-  } catch (error: any) {
-    console.error("Error in getCart controller:", error);
-    sendError(res, "Failed to fetch cart", 500, error.message);
-  }
+const requireUserId = (req: Request): string => {
+  const userId = req.user?.id;
+  if (!userId) throw new AppError("Unauthorized", 401);
+  return userId;
 };
 
-export const addToCart = async (req: Request, res: Response) => {
-  try {
-    const result = await cartService.addToCart(req.user?.id  || "", req.body.courseId);
+export const getCart = asyncHandler(async (req: Request, res: Response) => {
+  const cart = await cartService.getCart(requireUserId(req));
+  sendSuccess(res, cart, "Cart fetched successfully");
+});
 
-    if (result.success) {
-      sendSuccess(res, result.data, "Course added to cart", 201);
-    } else {
-      if (result.status === 404) {
-        sendNotFound(res, result.message);
-      } else {
-        sendError(res, result.message, result.status);
-      }
-    }
-  } catch (error: any) {
-    console.error("Error in addToCart controller:", error);
-    sendError(res, "Failed to add item to cart", 500, error.message);
-  }
-};
+export const addToCart = asyncHandler(async (req: Request, res: Response) => {
+  const item = await cartService.addToCart(requireUserId(req), req.body.courseId);
+  sendSuccess(res, item, "Course added to cart", 201);
+});
 
-export const removeFromCart = async (req: Request, res: Response) => {
-  try {
-    const result = await cartService.removeFromCart(
-      req.user?.id  || "",
-      req.params.courseId
-    );
+export const removeFromCart = asyncHandler(async (req: Request, res: Response) => {
+  await cartService.removeFromCart(requireUserId(req), req.params.courseId);
+  sendSuccess(res, null, "Item removed from cart");
+});
 
-    if (result.success) {
-      sendSuccess(res, null, "Item removed from cart");
-    } else {
-      if (result.status === 404) {
-        sendNotFound(res, result.message);
-      } else {
-        sendError(res, result.message, result.status);
-      }
-    }
-  } catch (error: any) {
-    console.error("Error in removeFromCart controller:", error);
-    sendError(res, "Failed to remove item from cart", 500, error.message);
-  }
-};
-
-export const clearCart = async (req: Request, res: Response) => {
-  try {
-    const result = await cartService.clearCart(req.user?.id  || "");
-
-    if (result.success) {
-      sendSuccess(res, null, "Cart cleared successfully");
-    } else {
-      sendError(res, result.message, result.status);
-    }
-  } catch (error: any) {
-    console.error("Error in clearCart controller:", error);
-    sendError(res, "Failed to clear cart", 500, error.message);
-  }
-};
+export const clearCart = asyncHandler(async (req: Request, res: Response) => {
+  await cartService.clearCart(requireUserId(req));
+  sendSuccess(res, null, "Cart cleared successfully");
+});
