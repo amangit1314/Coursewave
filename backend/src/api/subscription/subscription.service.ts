@@ -12,12 +12,12 @@ import { ensureStripeCustomerForUser } from "../../core/middleware/ensureStripeC
 import { AppError } from "../../core/middleware/errorHandler";
 import { env } from "../../config/config";
 
-const requireInstructorProfile = async (userId: string) => {
-  const userRoles = await prisma.userRole.findMany({ where: { userId } });
-  const isInstructor = userRoles.some(
-    (role: { role: string }) => role.role === "INSTRUCTOR"
-  );
-  if (!isInstructor) {
+const requireInstructorProfile = async (
+  userId: string,
+  roles: readonly string[]
+) => {
+  // Role check is zero-query (roles come from req.user.roles via controller)
+  if (!roles.includes("INSTRUCTOR")) {
     throw new AppError("Only instructors can access this resource", 403);
   }
 
@@ -44,8 +44,11 @@ export const getUserSubscriptions = async (userId: string) => {
   });
 };
 
-export const getInstructorSubscriptions = async (userId: string) => {
-  const instructor = await requireInstructorProfile(userId);
+export const getInstructorSubscriptions = async (
+  userId: string,
+  roles: readonly string[]
+) => {
+  const instructor = await requireInstructorProfile(userId, roles);
 
   return prisma.instructorSubscription.findMany({
     where: { instructorId: instructor.userId },
@@ -336,10 +339,14 @@ export const getStripeBillingPortal = async (
   return session.url;
 };
 
-export const subscribeInstructor = async (userId: string, data: any) => {
+export const subscribeInstructor = async (
+  userId: string,
+  roles: readonly string[],
+  data: any
+) => {
   const { planId, stripeSubscriptionId } = data;
 
-  const instructor = await requireInstructorProfile(userId);
+  const instructor = await requireInstructorProfile(userId, roles);
 
   const plan = await prisma.subscriptionPlan.findUnique({
     where: { id: planId },
@@ -395,8 +402,11 @@ export const cancelUserSubscription = async (userId: string) => {
   return null;
 };
 
-export const cancelInstructorSubscription = async (userId: string) => {
-  const instructor = await requireInstructorProfile(userId);
+export const cancelInstructorSubscription = async (
+  userId: string,
+  roles: readonly string[]
+) => {
+  const instructor = await requireInstructorProfile(userId, roles);
 
   const subscription = await prisma.instructorSubscription.findFirst({
     where: {

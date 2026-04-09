@@ -18,6 +18,9 @@ const requireUserId = (req: Request): string => {
   return userId;
 };
 
+const getActorRoles = (req: Request): readonly string[] =>
+  req.user?.roles ?? [];
+
 export const getSubscriptionPlans = asyncHandler(
   async (_req: Request, res: Response) => {
     const plans = await subscriptionService.getSubscriptionPlans();
@@ -35,7 +38,8 @@ export const getUserSubscriptions = asyncHandler(
 export const getInstructorSubscriptions = asyncHandler(
   async (req: Request, res: Response) => {
     const subs = await subscriptionService.getInstructorSubscriptions(
-      requireUserId(req)
+      requireUserId(req),
+      getActorRoles(req)
     );
     sendSuccess(res, subs, "Instructor subscriptions fetched successfully");
   }
@@ -137,11 +141,15 @@ export const subscribeInstructor = asyncHandler(
       req.user?.email
     );
 
-    const result = await subscriptionService.subscribeInstructor(userId, {
-      planId,
-      stripeSubscriptionId,
-      stripeCustomerId,
-    });
+    const result = await subscriptionService.subscribeInstructor(
+      userId,
+      getActorRoles(req),
+      {
+        planId,
+        stripeSubscriptionId,
+        stripeCustomerId,
+      }
+    );
     sendSuccess(res, result, "Instructor subscription created successfully", 201);
   }
 );
@@ -155,7 +163,10 @@ export const cancelUserSubscription = asyncHandler(
 
 export const cancelInstructorSubscription = asyncHandler(
   async (req: Request, res: Response) => {
-    await subscriptionService.cancelInstructorSubscription(requireUserId(req));
+    await subscriptionService.cancelInstructorSubscription(
+      requireUserId(req),
+      getActorRoles(req)
+    );
     sendSuccess(res, null, "Subscription cancelled successfully");
   }
 );

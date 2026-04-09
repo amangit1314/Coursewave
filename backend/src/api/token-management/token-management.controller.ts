@@ -14,11 +14,9 @@ const requireUserId = (req: Request): string => {
   return userId;
 };
 
-const requireAdmin = async (req: Request) => {
+const requireAdmin = (req: Request) => {
   const userId = requireUserId(req);
-  const userRoles = await prisma.userRole.findMany({ where: { userId } });
-  const isAdmin = userRoles.some((role) => role.role === "ADMIN");
-  if (!isAdmin) {
+  if (!req.user?.roles?.includes("ADMIN")) {
     throw new AppError("Admin access required", 403);
   }
   return userId;
@@ -140,7 +138,7 @@ export const validateSecurity = asyncHandler(
 // Cleanup expired tokens (admin)
 export const cleanupExpiredTokens = asyncHandler(
   async (req: Request, res: Response) => {
-    await requireAdmin(req);
+    requireAdmin(req);
 
     const cleanedCount = await TokenService.cleanupExpiredTokens();
 
@@ -154,7 +152,7 @@ export const cleanupExpiredTokens = asyncHandler(
 // Get token statistics (admin)
 export const getTokenStats = asyncHandler(
   async (req: Request, res: Response) => {
-    await requireAdmin(req);
+    requireAdmin(req);
 
     const [stats, totalTokens, activeTokens, expiredTokens, revokedTokens] =
       await Promise.all([

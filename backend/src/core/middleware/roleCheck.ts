@@ -1,6 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
-import { Role } from '@prisma/client';
-import { prisma } from '../../config/prisma';
+import { Request, Response, NextFunction } from "express";
+import { Role } from "@prisma/client";
+import { prisma } from "../../config/prisma";
+import { AppError, asyncHandler } from "./errorHandler";
 
 // Extend Request interface to include instructor
 declare global {
@@ -12,77 +13,37 @@ declare global {
 }
 
 /**
- * Middleware to check if user has a specific role
- * @param requiredRole - The role required to access the route
- * @returns Middleware function
+ * Middleware to check if the authenticated user has a specific role.
+ * Reads roles from req.user (populated by verifyToken) — no DB query.
  */
-export const requireRole = (requiredRole: Role) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const userId = req.user?.id;
-
-      if (!userId) {
-        return res.status(401).json({
-          success: false,
-          message: 'Authentication required'
-        });
-      }
-
-      const userRoles = await prisma.userRole.findMany({
-        where: { userId }
-      });
-
-      const hasRole: boolean = userRoles.some((role) => role.role === requiredRole);
-
-      if (!hasRole) {
-        return res.status(403).json({
-          success: false,
-          message: `Access denied. ${requiredRole} role required.`
-        });
-      }
-
-      next();
-    } catch (error: any) {
-      console.error('Role check error:', error);
-      return res.status(500).json({
-        success: false,
-        message: 'Error checking user role',
-        error: error.message
-      });
+export const requireRole = (requiredRole: Role) =>
+  asyncHandler(async (req: Request, _res: Response, next: NextFunction) => {
+    const roles = req.user?.roles;
+    if (!req.user?.id) {
+      throw new AppError("Authentication required", 401);
     }
-  };
-};
+    if (!roles?.includes(requiredRole)) {
+      throw new AppError(`Access denied. ${requiredRole} role required.`, 403);
+    }
+    next();
+  });
 
 /**
- * Middleware to check if user is an instructor and attach instructor profile
- * @returns Middleware function
+ * Middleware to check if user is an instructor AND attach their instructor
+ * profile to req.instructor for downstream handlers. The role check is
+ * zero-query (reads req.user.roles); only the profile lookup hits the DB.
  */
-export const requireInstructor = async (req: Request, res: Response, next: NextFunction) => {
-  try {
+export const requireInstructor = asyncHandler(
+  async (req: Request, _res: Response, next: NextFunction) => {
     const userId = req.user?.id;
-
     if (!userId) {
-      return res.status(401).json({
-        success: false,
-        message: 'Authentication required'
-      });
+      throw new AppError("Authentication required", 401);
     }
 
-    // Check if user is an instructor
-    const userRoles = await prisma.userRole.findMany({
-      where: { userId }
-    });
-
-    const isInstructor = userRoles.some((role) => role.role === Role.INSTRUCTOR);
-
-    if (!isInstructor) {
-      return res.status(403).json({
-        success: false,
-        message: 'Only instructors can perform this action'
-      });
+    if (!req.user?.roles?.includes(Role.INSTRUCTOR)) {
+      throw new AppError("Only instructors can perform this action", 403);
     }
 
-    // Get instructor profile
     const instructor = await prisma.instructor.findUnique({
       where: { userId },
       include: {
@@ -91,76 +52,46 @@ export const requireInstructor = async (req: Request, res: Response, next: NextF
             id: true,
             name: true,
             email: true,
-            profileImageUrl: true
-          }
-        }
-      }
+            profileImageUrl: true,
+          },
+        },
+      },
     });
 
     if (!instructor) {
-      return res.status(404).json({
-        success: false,
-        message: 'Instructor profile not found'
-      });
+      throw new AppError("Instructor profile not found", 404);
     }
 
-    // Attach instructor to request for use in route handlers
     req.instructor = instructor;
     next();
-  } catch (error: any) {
-    console.error('Instructor check error:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Error checking instructor status',
-      error: error.message
-    });
   }
-};
+);
 
-export async function isInstructor(req: Request, res: Response, next: NextFunction) {
-  try {
-    console.log('🛡️ [isInstructor] Checking if user is instructor:', {
-      userId: req.user?.id,
-      userEmail: req.user?.email
-    });
+/**
+ * Lightweight instructor check that only attaches req.instructor if present.
+ * Used on routes where we want the instructor profile but already know the
+ * user is an instructor (e.g. after requireInstructor has already run).
+ */
+export const isInstructor = asyncHandler(
+  async (req: Request, _res: Response, next: NextFunction) => {
+    const userId = req.user?.id;
+    if (!userId) {
+      throw new AppError("Authentication required", 401);
+    }
 
     const instructor = await prisma.instructor.findUnique({
-      where: { userId: req.user?.id }
+      where: { userId },
     });
 
-    console.log('🛡️ [isInstructor] Instructor lookup result:', instructor);
-
     if (!instructor) {
-      console.log('❌ [isInstructor] User is not an instructor, sending 403');
-      return res.status(403).json({
-        success: false,
-        message: "Instructor access required"
-      });
+      throw new AppError("Instructor access required", 403);
     }
 
-    console.log('✅ [isInstructor] User is instructor, proceeding');
     req.instructor = instructor;
     next();
-  } catch (error) {
-    console.error('💥 [isInstructor] Error:', error);
-    next(error);
   }
-}
+);
 
-/**
- * Middleware to check if user is an admin
- * @returns Middleware function
- */
 export const requireAdmin = requireRole(Role.ADMIN);
-
-/**
- * Middleware to check if user is a moderator
- * @returns Middleware function
- */
 export const requireModerator = requireRole(Role.MODERATOR);
-
-/**
- * Middleware to check if user is a support agent
- * @returns Middleware function
- */
-export const requireSupport = requireRole(Role.USER); 
+export const requireSupport = requireRole(Role.USER);

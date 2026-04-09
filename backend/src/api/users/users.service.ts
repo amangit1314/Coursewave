@@ -3,18 +3,16 @@ import { prisma } from "../../config/prisma";
 import { hashPassword, verifyPassword } from "../../core/utils/password";
 import { AppError } from "../../core/middleware/errorHandler";
 
-const requireAdmin = async (userId: string) => {
-  const userRoles = await prisma.userRole.findMany({
-    where: { userId },
-  });
-  const isAdmin = userRoles.some((role) => role.role === Role.ADMIN);
-  if (!isAdmin) {
+// Synchronous role gate — expects roles pulled from req.user.roles by the
+// controller. No DB query.
+const requireAdmin = (roles: readonly string[]) => {
+  if (!roles.includes(Role.ADMIN)) {
     throw new AppError("You are not authorized to access this resource", 403);
   }
 };
 
-export const getAllUsers = async (currentUserId: string) => {
-  await requireAdmin(currentUserId);
+export const getAllUsers = async (currentUserRoles: readonly string[]) => {
+  requireAdmin(currentUserRoles);
 
   return prisma.user.findMany({
     select: {
@@ -30,9 +28,13 @@ export const getAllUsers = async (currentUserId: string) => {
   });
 };
 
-export const getUserById = async (userId: string, currentUserId: string) => {
+export const getUserById = async (
+  userId: string,
+  currentUserId: string,
+  currentUserRoles: readonly string[]
+) => {
   if (userId !== currentUserId) {
-    await requireAdmin(currentUserId);
+    requireAdmin(currentUserRoles);
   }
 
   const user = await prisma.user.findUnique({
@@ -132,9 +134,13 @@ export const changePassword = async (userId: string, data: any) => {
   return null;
 };
 
-export const deleteUser = async (userId: string, currentUserId: string) => {
+export const deleteUser = async (
+  userId: string,
+  currentUserId: string,
+  currentUserRoles: readonly string[]
+) => {
   if (userId !== currentUserId) {
-    await requireAdmin(currentUserId);
+    requireAdmin(currentUserRoles);
   }
 
   const user = await prisma.user.findUnique({

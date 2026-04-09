@@ -1,22 +1,25 @@
 import { Request, Response, NextFunction } from "express";
-import { prisma } from "../../config/prisma";
+import { AppError } from "./errorHandler";
 
-export const requireInstructor = async (
+/**
+ * Lightweight instructor role check — reads req.user.roles (populated by
+ * verifyToken) so it's zero-query. Used by sessions.routes where we only
+ * need to confirm the caller is an instructor without loading their profile.
+ *
+ * For a version that also attaches req.instructor (the full profile),
+ * import { requireInstructor } from "./roleCheck" instead.
+ */
+export const requireInstructor = (
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ) => {
-  // Add type to req to fix missing 'user' property error
-  const userId = req.user?.id;
-  const userRoles = await prisma.userRole.findMany({ where: { userId } });
+  if (!req.user?.id) {
+    throw new AppError("Authentication required", 401);
+  }
 
-  const isInstructor = userRoles.some((role) => role.role === "INSTRUCTOR");
-
-  if (!isInstructor) {
-    return res.status(403).json({
-      success: false,
-      message: "Only instructors can access this resource",
-    });
+  if (!req.user.roles?.includes("INSTRUCTOR")) {
+    throw new AppError("Only instructors can access this resource", 403);
   }
 
   next();

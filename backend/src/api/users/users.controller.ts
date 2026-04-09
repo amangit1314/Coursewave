@@ -12,13 +12,21 @@ const requireUserId = (req: Request): string => {
   return userId;
 };
 
+const getActorRoles = (req: Request): readonly string[] =>
+  req.user?.roles ?? [];
+
 export const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
-  const users = await userService.getAllUsers(requireUserId(req));
+  requireUserId(req);
+  const users = await userService.getAllUsers(getActorRoles(req));
   sendSuccess(res, users, "Users fetched successfully");
 });
 
 export const getUserById = asyncHandler(async (req: Request, res: Response) => {
-  const user = await userService.getUserById(req.params.userId, requireUserId(req));
+  const user = await userService.getUserById(
+    req.params.userId,
+    requireUserId(req),
+    getActorRoles(req)
+  );
   sendSuccess(res, user, "User details successfully accessed");
 });
 
@@ -38,7 +46,11 @@ export const changePassword = asyncHandler(async (req: Request, res: Response) =
 });
 
 export const deleteUser = asyncHandler(async (req: Request, res: Response) => {
-  await userService.deleteUser(req.params.userId, requireUserId(req));
+  await userService.deleteUser(
+    req.params.userId,
+    requireUserId(req),
+    getActorRoles(req)
+  );
   sendSuccess(res, null, "User deleted successfully");
 });
 
