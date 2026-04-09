@@ -1,91 +1,84 @@
 import { Request, Response } from "express";
 import * as liveSessionsService from "./sessions.service";
-import { asyncHandler } from "../../core/middleware";
+import {
+  asyncHandler,
+  sendSuccess,
+  AppError,
+} from "../../core/middleware/errorHandler";
+
+const requireUserId = (req: Request): string => {
+  const userId = req.user?.id;
+  if (!userId) throw new AppError("Unauthorized", 401);
+  return userId;
+};
 
 export const getAllSessions = asyncHandler(
-  async (req: Request, res: Response) => {
-    const result = await liveSessionsService.getAllSessions();
-    res.status(result.status).json(result);
+  async (_req: Request, res: Response) => {
+    const sessions = await liveSessionsService.getAllSessions();
+    sendSuccess(res, sessions, "Sessions fetched successfully");
   }
 );
 
 export const getSessionById = asyncHandler(
   async (req: Request, res: Response) => {
     const { sessionId } = req.params;
-    const result = await liveSessionsService.getSessionById(sessionId);
-    res.status(result.status).json(result);
+    const session = await liveSessionsService.getSessionById(sessionId);
+    sendSuccess(res, session, "Session details fetched successfully");
   }
 );
 
 export const createSession = asyncHandler(
   async (req: Request, res: Response) => {
-    const sessionData = req.body;
-    const instructorId = req.user?.id;
-
-    if (!instructorId) {
-      return res.status(400).json({ message: "instructorId is required" });
-    }
-
-    const result = await liveSessionsService.createSession(
-      instructorId,
-      sessionData
+    const session = await liveSessionsService.createSession(
+      requireUserId(req),
+      req.body
     );
-    res.status(result.status).json(result);
+    sendSuccess(res, session, "Session created successfully", 201);
   }
 );
 
 export const bookSession = asyncHandler(async (req: Request, res: Response) => {
   const { sessionId } = req.params;
-  const userId = req.user?.id || "";
-
-  const result = await liveSessionsService.bookSession(sessionId, userId);
-  res.status(result.status).json(result);
+  const booking = await liveSessionsService.bookSession(sessionId, requireUserId(req));
+  sendSuccess(res, booking, "Session booked successfully", 201);
 });
 
 export const payForSession = asyncHandler(
   async (req: Request, res: Response) => {
     const { sessionId } = req.params;
-    const userId = req.user?.id;
-    const { paymentMethod, paymentId } = req.body;
+    const { paymentId } = req.body;
 
-    if (!userId) {
-      return res.status(400).json({ message: "userId is required" });
-    }
-
-    const result = await liveSessionsService.payForSession(
+    const booking = await liveSessionsService.payForSession(
       sessionId,
-      userId,
+      requireUserId(req),
       paymentId
     );
-    res.status(result.status).json(result);
+    sendSuccess(res, booking, "Payment processed successfully");
   }
 );
 
 export const joinSession = asyncHandler(async (req: Request, res: Response) => {
   const { sessionId } = req.params;
-  const userId = req.user?.id || "";
-
-  const result = await liveSessionsService.joinSession(sessionId, userId);
-  res.status(result.status).json(result);
+  const connection = await liveSessionsService.joinSession(
+    sessionId,
+    requireUserId(req)
+  );
+  sendSuccess(res, connection, "Session joined successfully");
 });
 
 export const cancelBooking = asyncHandler(
   async (req: Request, res: Response) => {
     const { sessionId } = req.params;
-    const userId = req.user?.id || "";
-
-    const result = await liveSessionsService.cancelBooking(sessionId, userId);
-    res.status(result.status).json(result);
+    await liveSessionsService.cancelBooking(sessionId, requireUserId(req));
+    sendSuccess(res, null, "Booking cancelled successfully");
   }
 );
 
 export const getMyFutureScheduledSessions = asyncHandler(
   async (req: Request, res: Response) => {
-    const userId = req.user?.id || "";
-
-    const result = await liveSessionsService.getMyFutureScheduledSessions(
-      userId
+    const bookings = await liveSessionsService.getMyFutureScheduledSessions(
+      requireUserId(req)
     );
-    res.status(result.status).json(result);
+    sendSuccess(res, bookings, "Upcoming sessions fetched successfully");
   }
 );
