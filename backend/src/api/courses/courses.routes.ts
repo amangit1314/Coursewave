@@ -71,24 +71,15 @@ router.get(
 
 /// * ================================= Course =====================================
 
-// Get course by ID
-router.get("/:courseId", courseExists, async (req: Request, res: Response) => {
-  try {
-    const course = (req as any).course;
-    const studentCount = course.studentCount || 0;
-
-    return res.status(200).json({
-      success: true,
-      data: course,
-      studentCount: studentCount,
-    });
-  } catch (error: any) {
-    console.log("ERROR in fetching course: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
+// Get course by ID. Preserves legacy response shape: { success, data, studentCount }
+// with studentCount at the root (frontend reads response.data.studentCount).
+router.get("/:courseId", courseExists, (req: Request, res: Response) => {
+  const course = (req as any).course;
+  res.status(200).json({
+    success: true,
+    data: course,
+    studentCount: course.studentCount || 0,
+  });
 });
 
 // Create course

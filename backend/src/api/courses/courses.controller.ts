@@ -1,16 +1,17 @@
-import { NextFunction, Request, Response } from "express";
-// import { invalidateCache } from "../../config/redis";
+import { Request, Response } from "express";
 import { generateResourceId } from "../../core/utils/idGenerator";
-import { sendError, sendNotFound, sendSuccess } from "../../core/middleware";
+import {
+  asyncHandler,
+  sendSuccess,
+  AppError,
+} from "../../core/middleware/errorHandler";
 import z from "zod";
-// import * as AttachmentService from "../courses/services/attachments.service";
 import {
   getAllAttachmentsForCourse,
   getAttachmentDetails as getAttachmentService,
   createNewAttachment as createAttachmentService,
   updateExistingAttachment as updateAttachmentService,
   deleteAttachmentById as deleteAttachmentService,
-  updateExistingAttachment,
 } from "../courses/services/attachments.service";
 import {
   createNote,
@@ -35,11 +36,25 @@ import {
   notifyCourseComplete,
   notifyInstructorNewStudent,
 } from "../../core/services/notificationService";
-import { ERRORS, SUCCESS } from "../../config/constants/messages";
+import { ERRORS } from "../../config/constants/messages";
+
+const requireUserId = (req: Request): string => {
+  const userId = req.user?.id;
+  if (!userId) throw new AppError("Unauthorized", 401);
+  return userId;
+};
+
+// Translate service errors that carry a numeric `.code` as HTTP status
+// (reviews.service and attachments.service still use this pattern).
+const throwAsAppError = (err: any, fallbackStatus = 500): never => {
+  if (err instanceof AppError) throw err;
+  const status = typeof err?.code === "number" ? err.code : fallbackStatus;
+  throw new AppError(err?.message ?? "Unknown error", status);
+};
 
 // ------------------------------------------ COURSES ----------------------------------------
-export const getAllPublishedCourses = async (req: Request, res: Response) => {
-  try {
+export const getAllPublishedCourses = asyncHandler(
+  async (req: Request, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 20;
     const cursor = req.query.cursor as string | undefined;
     const search = req.query.search as string | undefined;
@@ -47,7 +62,6 @@ export const getAllPublishedCourses = async (req: Request, res: Response) => {
     const isFree = req.query.isFree as string | undefined;
     const sortBy = (req.query.sortBy as string) || "newest";
 
-    // Build where clause
     const where: any = { isPublished: true };
     if (search) {
       where.OR = [
@@ -64,12 +78,14 @@ export const getAllPublishedCourses = async (req: Request, res: Response) => {
       where.isFree = false;
     }
 
-    // Build sort
     const orderBy: any =
-      sortBy === "price_low" ? { price: "asc" }
-      : sortBy === "price_high" ? { price: "desc" }
-      : sortBy === "oldest" ? { createdAt: "asc" }
-      : { createdAt: "desc" }; // default: newest
+      sortBy === "price_low"
+        ? { price: "asc" }
+        : sortBy === "price_high"
+          ? { price: "desc" }
+          : sortBy === "oldest"
+            ? { createdAt: "asc" }
+            : { createdAt: "desc" };
 
     const courses = await prisma.course.findMany({
       where,
@@ -111,14 +127,14 @@ export const getAllPublishedCourses = async (req: Request, res: Response) => {
       studentCount: course._count.Enrollment,
     }));
 
-    // Determine next cursor
     let nextCursor: string | null = null;
     if (courses.length > limit) {
-      const nextItem = courses.pop(); // remove extra record
+      const nextItem = courses.pop();
       nextCursor = nextItem?.id || null;
     }
 
-    return res.status(200).json({
+    // Preserves legacy response shape with `pagination` at root
+    res.status(200).json({
       success: true,
       data: coursesWithStudentCount,
       pagination: {
@@ -127,34 +143,19 @@ export const getAllPublishedCourses = async (req: Request, res: Response) => {
         limit,
       },
     });
-  } catch (error: any) {
-    console.error("ERROR in fetching courses: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
   }
-};
+);
 
-export const getInstructorCreatedCourses = async (
-  req: Request,
-  res: Response
-) => {
-  try {
-    const userId = req.user?.id;
+export const getInstructorCreatedCourses = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = requireUserId(req);
 
-    // Get instructor profile
     const instructor = await prisma.instructor.findUnique({
-      where: {
-        userId,
-      },
+      where: { userId },
     });
 
     if (!instructor) {
-      return res.status(404).json({
-        success: false,
-        message: "Instructor profile not found",
-      });
+      throw new AppError("Instructor profile not found", 404);
     }
 
     const courses = await prisma.course.findMany({
@@ -174,22 +175,13 @@ export const getInstructorCreatedCourses = async (
       },
     });
 
-    return res.status(200).json({
-      success: true,
-      data: courses,
-    });
-  } catch (error: any) {
-    console.log("ERROR in fetching instructor courses: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    sendSuccess(res, courses);
   }
-};
+);
 
-export const getEnrolledCourses = async (req: Request, res: Response) => {
-  try {
-    const userId = req.user?.id;
+export const getEnrolledCourses = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = requireUserId(req);
 
     const enrollments = await prisma.enrollment.findMany({
       where: {
@@ -226,30 +218,18 @@ export const getEnrolledCourses = async (req: Request, res: Response) => {
 
     const courses = enrollments.map((enrollment: any) => enrollment.course);
 
-    return res.status(200).json({
-      success: true,
-      data: courses,
-    });
-  } catch (error: any) {
-    console.log("ERROR in fetching enrolled courses: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    sendSuccess(res, courses);
   }
-};
+);
 
 // ------------------------------------------- COURSE ----------------------------------------
 
-export const getCourseById = async (req: Request, res: Response) => {
-  try {
+export const getCourseById = asyncHandler(
+  async (req: Request, res: Response) => {
     const { courseId } = req.params;
 
     if (!courseId) {
-      return res.status(400).json({
-        success: false,
-        error: ERRORS.COURSE_ID_REQUIRED,
-      });
+      throw new AppError(ERRORS.COURSE_ID_REQUIRED, 400);
     }
 
     const course = await prisma.course.findUnique({
@@ -279,28 +259,16 @@ export const getCourseById = async (req: Request, res: Response) => {
     });
 
     if (!course) {
-      return res.status(404).json({
-        success: false,
-        error: ERRORS.COURSE_NOT_FOUND,
-      });
+      throw new AppError(ERRORS.COURSE_NOT_FOUND, 404);
     }
 
-    return res.status(200).json({
-      success: true,
-      data: course,
-    });
-  } catch (error: any) {
-    console.log("ERROR in fetching course by id: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    sendSuccess(res, course);
   }
-};
+);
 
-export const createCourse = async (req: Request, res: Response) => {
-  try {
-    const userId = req.user?.id;
+export const createCourse = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = requireUserId(req);
 
     const {
       title,
@@ -320,30 +288,27 @@ export const createCourse = async (req: Request, res: Response) => {
       level,
     } = req.body;
 
-    // Validate required fields
     if (!title || typeof title !== "string" || title.trim().length === 0) {
-      return res.status(400).json({
-        success: false,
-        error: ERRORS.COURSE_TITLE_REQUIRED,
-      });
+      throw new AppError(ERRORS.COURSE_TITLE_REQUIRED, 400);
     }
 
-    if (!description || typeof description !== "string" || description.trim().length === 0) {
-      return res.status(400).json({
-        success: false,
-        error: ERRORS.COURSE_DESC_REQUIRED,
-      });
+    if (
+      !description ||
+      typeof description !== "string" ||
+      description.trim().length === 0
+    ) {
+      throw new AppError(ERRORS.COURSE_DESC_REQUIRED, 400);
     }
 
-    // Price validation: must be > 0 for paid courses
     const courseIsFree = isFree === true;
-    const coursePrice = courseIsFree ? 0 : (typeof price === "number" && price > 0 ? price : 0);
+    const coursePrice = courseIsFree
+      ? 0
+      : typeof price === "number" && price > 0
+        ? price
+        : 0;
 
     if (!courseIsFree && coursePrice <= 0) {
-      return res.status(400).json({
-        success: false,
-        error: ERRORS.COURSE_PRICE_REQUIRED,
-      });
+      throw new AppError(ERRORS.COURSE_PRICE_REQUIRED, 400);
     }
 
     const course = await prisma.course.create({
@@ -383,25 +348,12 @@ export const createCourse = async (req: Request, res: Response) => {
       },
     });
 
-    // Invalidate course cache after creation
-    // await invalidateCache.courses();
-
-    return res.status(201).json({
-      success: true,
-      data: course,
-    });
-  } catch (error: any) {
-    console.log("ERROR in creating course: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    sendSuccess(res, course, "Course created successfully", 201);
   }
-};
+);
 
-export const updateCourse = async (req: Request, res: Response) => {
-  try {
-    const userId = req.user?.id;
+export const updateCourse = asyncHandler(
+  async (req: Request, res: Response) => {
     const courseId = req.params.courseId;
 
     const {
@@ -423,7 +375,6 @@ export const updateCourse = async (req: Request, res: Response) => {
       level,
     } = req.body;
 
-    // Only update fields if they are provided in req.body
     const updateData: any = {};
     if (title !== undefined) updateData.title = title;
     if (description !== undefined) updateData.description = description;
@@ -437,8 +388,7 @@ export const updateCourse = async (req: Request, res: Response) => {
     if (learningOutcomes !== undefined)
       updateData.learningOutcomes = learningOutcomes;
     if (technologies !== undefined) updateData.technologies = technologies;
-    if (targetAudience !== undefined)
-      updateData.targetAudience = targetAudience;
+    if (targetAudience !== undefined) updateData.targetAudience = targetAudience;
     if (prerequisites !== undefined) updateData.prerequisites = prerequisites;
     if (discount !== undefined) updateData.discount = discount;
     if (level !== undefined) updateData.level = level;
@@ -465,24 +415,12 @@ export const updateCourse = async (req: Request, res: Response) => {
       },
     });
 
-    // Invalidate course cache after update
-    // await invalidateCache.courses(courseId);
-
-    return res.status(200).json({
-      success: true,
-      data: updatedCourse,
-    });
-  } catch (error: any) {
-    console.log("ERROR in updating course: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    sendSuccess(res, updatedCourse, "Course updated successfully");
   }
-};
+);
 
-export const deleteCourse = async (req: Request, res: Response) => {
-  try {
+export const deleteCourse = asyncHandler(
+  async (req: Request, res: Response) => {
     const courseId = req.params.courseId;
 
     await prisma.course.delete({
@@ -491,56 +429,39 @@ export const deleteCourse = async (req: Request, res: Response) => {
       },
     });
 
-    // Invalidate course cache after deletion
-    // await invalidateCache.courses(courseId);
-
-    return res.status(200).json({
-      success: true,
-      message: "Course deleted successfully",
-    });
-  } catch (error: any) {
-    console.log("ERROR in deleting course: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    sendSuccess(res, null, "Course deleted successfully");
   }
-};
+);
 
 // ------------------------------------------- COURSE ENROLLMENT & PAYMENT --------------------
 
-export const createCheckout = async (req: Request, res: Response) => {
-  try {
+export const createCheckout = asyncHandler(
+  async (req: Request, res: Response) => {
     const { courseId } = req.params;
-    const { finalPrice, isCartCheckout } = req.body;
-    const userId = req.user?.id || "";
+    const userId = requireUserId(req);
 
-    // Fetch user
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: { stripeCustomer: true },
     });
-    if (!user)
-      return res.status(404).json({ success: false, error: "User not found" });
+    if (!user) {
+      throw new AppError("User not found", 404);
+    }
 
-    // Fetch course
     const course = await prisma.course.findUnique({
       where: { id: courseId },
     });
-    if (!course)
-      return res
-        .status(404)
-        .json({ success: false, error: "Course not found" });
+    if (!course) {
+      throw new AppError("Course not found", 404);
+    }
 
-    // Check if already enrolled
     const existingEnrollment = await prisma.enrollment.findUnique({
       where: { userId_courseId: { userId, courseId } },
     });
 
-    if (existingEnrollment)
-      return res
-        .status(400)
-        .json({ success: false, error: "Already enrolled in this course" });
+    if (existingEnrollment) {
+      throw new AppError("Already enrolled in this course", 409);
+    }
 
     // Handle free course
     if (course.isFree) {
@@ -557,14 +478,16 @@ export const createCheckout = async (req: Request, res: Response) => {
       // Notify student + instructor in background
       notifyEnrollment(userId, course.title, courseId);
       if (course.instructorId) {
-        notifyInstructorNewStudent(course.instructorId, course.title, user!.name || "A student", courseId);
+        notifyInstructorNewStudent(
+          course.instructorId,
+          course.title,
+          user.name || "A student",
+          courseId
+        );
       }
 
-      return res.status(201).json({
-        success: true,
-        message: "Successfully enrolled in free course",
-        data: enrollment,
-      });
+      sendSuccess(res, enrollment, "Successfully enrolled in free course", 201);
+      return;
     }
 
     // --- Stripe Customer Setup ---
@@ -581,16 +504,14 @@ export const createCheckout = async (req: Request, res: Response) => {
     }
 
     // --- Dynamic Price Creation ---
-    const effectivePrice =
-      course.discount > 0 ? course.dealPrice : course.price; // use discounted if available
+    const effectivePrice = course.discount > 0 ? course.dealPrice : course.price;
     const price = await stripe.prices.create({
-      unit_amount: Math.round(effectivePrice), // amount in cents
+      unit_amount: Math.round(effectivePrice),
       currency: "usd",
       product_data: {
         name: course.title,
         metadata: {
           id: course.id,
-          // description: course.description
         },
       },
     });
@@ -602,8 +523,9 @@ export const createCheckout = async (req: Request, res: Response) => {
         : process.env.FRONTEND_URL;
 
     if (!frontendUrl || !frontendUrl.startsWith("http")) {
-      throw new Error(
-        `Invalid FRONTEND_URL: ${frontendUrl}. Must include http:// or https://`
+      throw new AppError(
+        `Invalid FRONTEND_URL: ${frontendUrl}. Must include http:// or https://`,
+        500
       );
     }
 
@@ -624,31 +546,21 @@ export const createCheckout = async (req: Request, res: Response) => {
         id: `enrollment-${userId.slice(0, 6)}-${courseId.slice(0, 6)}`,
         userId,
         courseId,
-        status: EnrollmentStatus.PENDING, // mark as pending until payment confirmed via webhook
+        status: EnrollmentStatus.PENDING,
       },
     });
 
-    // --- Return Checkout URL ---
-    return res.status(200).json({
-      success: true,
-      data: {
-        checkoutUrl: session.url,
-        sessionId: session.id,
-      },
-    });
-  } catch (error: any) {
-    console.error("Error creating checkout:", error);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
+    sendSuccess(res, {
+      checkoutUrl: session.url,
+      sessionId: session.id,
     });
   }
-};
+);
 
-export const getEnrollmentStatus = async (req: Request, res: Response) => {
-  try {
+export const getEnrollmentStatus = asyncHandler(
+  async (req: Request, res: Response) => {
     const { courseId } = req.params;
-    const userId = (req as any).user.id;
+    const userId = requireUserId(req);
 
     const enrollment = await prisma.enrollment.findUnique({
       where: {
@@ -659,30 +571,20 @@ export const getEnrollmentStatus = async (req: Request, res: Response) => {
       },
     });
 
-    return res.status(200).json({
-      success: true,
-      data: {
-        isEnrolled: !!enrollment,
-        enrollment,
-      },
-    });
-  } catch (error: any) {
-    console.log("ERROR checking enrollment: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
+    sendSuccess(res, {
+      isEnrolled: !!enrollment,
+      enrollment,
     });
   }
-};
+);
 
 // -------------------------------------- COURSE PROGRESS -------------------------------------
 
-export const getCourseProgress = async (req: Request, res: Response) => {
-  try {
-    const userId = req.user?.id || "";
+export const getCourseProgress = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = requireUserId(req);
     const courseId = req.params.courseId;
 
-    // Check enrollment and get progress with proper typing
     const enrollment = await prisma.enrollment.findUnique({
       where: {
         userId_courseId: {
@@ -696,7 +598,6 @@ export const getCourseProgress = async (req: Request, res: Response) => {
             sections: {
               include: {
                 Chapter: {
-                  // Use 'Chapter' instead of 'chapters'
                   include: {
                     ChapterProgress: {
                       where: { userId },
@@ -716,13 +617,9 @@ export const getCourseProgress = async (req: Request, res: Response) => {
     });
 
     if (!enrollment) {
-      return res.status(404).json({
-        success: false,
-        message: "You are not enrolled in this course",
-      });
+      throw new AppError("You are not enrolled in this course", 404);
     }
 
-    // Calculate overall progress
     const totalChapters = enrollment.course.sections.reduce(
       (total, section) => total + section.Chapter.length,
       0
@@ -737,7 +634,6 @@ export const getCourseProgress = async (req: Request, res: Response) => {
         ? Math.round((completedChapters / totalChapters) * 100)
         : 0;
 
-    // Format chapter progress by section for better frontend consumption
     const sectionsWithProgress = enrollment.course.sections.map((section) => ({
       id: section.id,
       title: section.title,
@@ -755,57 +651,38 @@ export const getCourseProgress = async (req: Request, res: Response) => {
       }),
     }));
 
-    return res.status(200).json({
-      success: true,
-      data: {
-        enrollment: {
-          id: enrollment.id,
-          status: enrollment.status,
-          progress: overallProgress,
-          startDate: enrollment.startDate,
-          endDate: enrollment.endDate,
-        },
-        course: {
-          id: enrollment.course.id,
-          title: enrollment.course.title,
-          totalChapters,
-          completedChapters,
-          progress: overallProgress,
-        },
-        sections: sectionsWithProgress,
-        chapterProgress: enrollment.ChapterProgress,
+    sendSuccess(res, {
+      enrollment: {
+        id: enrollment.id,
+        status: enrollment.status,
+        progress: overallProgress,
+        startDate: enrollment.startDate,
+        endDate: enrollment.endDate,
       },
-    });
-  } catch (error: any) {
-    console.error("Error fetching course progress:", error.message);
-    return res.status(500).json({
-      success: false,
-      error: "Internal server error",
+      course: {
+        id: enrollment.course.id,
+        title: enrollment.course.title,
+        totalChapters,
+        completedChapters,
+        progress: overallProgress,
+      },
+      sections: sectionsWithProgress,
+      chapterProgress: enrollment.ChapterProgress,
     });
   }
-};
+);
 
 // -------------------------------------- SECTIONS -------------------------------------------
 
-export const getAllCourseSections = async (req: Request, res: Response) => {
-  try {
+export const getAllCourseSections = asyncHandler(
+  async (req: Request, res: Response) => {
     const course = (req as any).course;
-
-    return res.status(200).json({
-      success: true,
-      data: course.sections,
-    });
-  } catch (error: any) {
-    console.log("ERROR in fetching course sections: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    sendSuccess(res, course.sections);
   }
-};
+);
 
-export const createSection = async (req: Request, res: Response) => {
-  try {
+export const createSection = asyncHandler(
+  async (req: Request, res: Response) => {
     const courseId = req.params.courseId;
     const { title, description } = req.body;
 
@@ -819,36 +696,25 @@ export const createSection = async (req: Request, res: Response) => {
         position:
           course.sections.length === 0
             ? 1
-            : Math.max(...course.sections.map((s: any) => s.position || 0), 0) +
-            1,
+            : Math.max(
+                ...course.sections.map((s: any) => s.position || 0),
+                0
+              ) + 1,
         course: { connect: { id: courseId } },
       },
     });
 
-    return res.status(200).json({
-      success: true,
-      data: createdSection,
-    });
-  } catch (error: any) {
-    console.log("ERROR in fetching course sections: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    sendSuccess(res, createdSection, "Section created successfully");
   }
-};
+);
 
-export const editSection = async (req: Request, res: Response) => {
-  try {
-    // Update an existing course section
+export const editSection = asyncHandler(
+  async (req: Request, res: Response) => {
     const sectionId = req.params.sectionId;
     const { title: newTitle, description: newDescription } = req.body;
 
     if (!sectionId) {
-      return res.status(400).json({
-        success: false,
-        message: "sectionId is required to update a section",
-      });
+      throw new AppError("sectionId is required to update a section", 400);
     }
 
     const updatedSection = await prisma.courseSection.update({
@@ -859,97 +725,53 @@ export const editSection = async (req: Request, res: Response) => {
       },
     });
 
-    return res.status(200).json({
-      success: true,
-      data: updatedSection,
-    });
-  } catch (error: any) {
-    console.log("ERROR in fetching course sections: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    sendSuccess(res, updatedSection, "Section updated successfully");
   }
-};
+);
 
-export const deleteSection = async (req: Request, res: Response) => {
-  try {
+export const deleteSection = asyncHandler(
+  async (req: Request, res: Response) => {
     const sectionId = req.params.sectionId;
 
     if (!sectionId) {
-      return res.status(400).json({
-        success: false,
-        message: "sectionId is required to delete a section",
-      });
+      throw new AppError("sectionId is required to delete a section", 400);
     }
 
     await prisma.courseSection.delete({
       where: { id: sectionId },
     });
 
-    return res.status(200).json({
-      success: true,
-      message: "Section deleted successfully",
-    });
-  } catch (error: any) {
-    console.log("ERROR in deleting course section: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    sendSuccess(res, null, "Section deleted successfully");
   }
-};
+);
 
 // --------------------------------------- CHAPTERS -----------------------------------------
-export const getAllCourseSectionChapters = async (
-  req: Request,
-  res: Response
-) => {
-  try {
-    const { courseId, sectionId } = req.params;
 
-    // Get all chapters of the section
+export const getAllCourseSectionChapters = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { sectionId } = req.params;
+
     const chapters = await prisma.chapter.findMany({
       where: { sectionId },
       orderBy: { position: "asc" },
     });
 
-    return res.status(200).json({
-      success: true,
-      data: chapters,
-    });
-  } catch (error: any) {
-    console.log("ERROR in fetching chapters: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    sendSuccess(res, chapters);
   }
-};
+);
 
-export const getChapterById = async (req: Request, res: Response) => {
-  try {
+export const getChapterById = asyncHandler(
+  async (req: Request, res: Response) => {
     const chapter = (req as any).chapter;
-
-    return res.status(200).json({
-      success: true,
-      data: chapter,
-    });
-  } catch (error: any) {
-    console.log("ERROR in fetching chapter: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    sendSuccess(res, chapter);
   }
-};
+);
 
-export const createChapter = async (req: Request, res: Response) => {
-  try {
+export const createChapter = asyncHandler(
+  async (req: Request, res: Response) => {
     const {
       title,
       description,
-      videoUrl,
       position,
       content,
       contentType,
@@ -978,13 +800,14 @@ export const createChapter = async (req: Request, res: Response) => {
     });
 
     if (!parseResult.success) {
-      return res.status(400).json({
+      // Preserves the { success, error: issues } shape frontends expect for Zod errors
+      res.status(400).json({
         success: false,
         error: parseResult.error.issues,
       });
+      return;
     }
 
-    // Create chapter
     const chapter = await prisma.chapter.create({
       data: {
         id: generateResourceId("chapter"),
@@ -1002,36 +825,16 @@ export const createChapter = async (req: Request, res: Response) => {
       },
     });
 
-    return res.status(201).json({ success: true, data: chapter });
-  } catch (error: any) {
-    console.log("ERROR in creating chapter: ", error.message);
-    return res.status(500).json({ success: false, error: error.message });
+    sendSuccess(res, chapter, "Chapter created successfully", 201);
   }
-};
+);
 
-export const editChapter = async (req: Request, res: Response) => {
-  try {
-    const { courseId, sectionId, chapterId } = req.params;
-    const {
-      title,
-      description,
-      videoUrl,
-      position,
-      content,
-      contentType,
-      newSectionId,
-    } = req.body;
+export const editChapter = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { chapterId } = req.params;
+    const { title, description, position, content, contentType, newSectionId } =
+      req.body;
 
-    console.log("📥 Received update data:", {
-      title,
-      description,
-      contentType,
-      content,
-      position,
-      newSectionId,
-    });
-
-    // Helper function to normalize content type
     const normalizeContentType = (contentType: string): string => {
       const typeMap: Record<string, string> = {
         video: "VIDEO",
@@ -1041,11 +844,9 @@ export const editChapter = async (req: Request, res: Response) => {
         resource: "RESOURCE",
         live: "LIVE",
       };
-
       return typeMap[contentType.toLowerCase()] || contentType.toUpperCase();
     };
 
-    // Define valid content types based on your Prisma enum
     const validContentTypes = [
       "VIDEO",
       "TEXT",
@@ -1069,9 +870,7 @@ export const editChapter = async (req: Request, res: Response) => {
         .or(z.null()),
       contentType: z
         .enum(validContentTypes, {
-          message: `Content type must be one of: ${validContentTypes.join(
-            ", "
-          )}`,
+          message: `Content type must be one of: ${validContentTypes.join(", ")}`,
         })
         .optional()
         .or(z.null()),
@@ -1084,7 +883,6 @@ export const editChapter = async (req: Request, res: Response) => {
         .or(z.null()),
     });
 
-    // Normalize contentType before validation
     const normalizedContentType = contentType
       ? normalizeContentType(contentType)
       : contentType;
@@ -1092,16 +890,15 @@ export const editChapter = async (req: Request, res: Response) => {
     const parseResult = chapterUpdateSchema.safeParse({
       title,
       description,
-      contentType: normalizedContentType, // Use normalized value
+      contentType: normalizedContentType,
       position,
       content,
       newSectionId,
     });
 
     if (!parseResult.success) {
-      console.log("❌ Validation errors:", parseResult.error.issues);
-
-      // Transform Zod errors into user-friendly messages
+      // Preserves the { success, error, details, fields } shape the frontend
+      // uses for per-field validation error display.
       const errorMessages = parseResult.error.issues.map((issue) => {
         const rawField = issue.path[0];
         const field = String(rawField ?? "");
@@ -1111,26 +908,24 @@ export const editChapter = async (req: Request, res: Response) => {
 
         switch (issue.code) {
           case "too_small":
-            return `${capitalizedField} ${issue.message}`;
           case "too_big":
+          case "invalid_value":
+          case "invalid_format":
             return `${capitalizedField} ${issue.message}`;
           case "invalid_type":
             return `${capitalizedField} has invalid type`;
-          case "invalid_value":
-            return `${capitalizedField} ${issue.message}`;
-          case "invalid_format":
-            return `${capitalizedField} ${issue.message}`;
           default:
             return `${capitalizedField} is invalid`;
         }
       });
 
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: "Validation failed",
         details: errorMessages,
         fields: parseResult.error.issues.map((issue) => issue.path[0]),
       });
+      return;
     }
 
     const updatedChapter = await prisma.chapter.update({
@@ -1141,49 +936,31 @@ export const editChapter = async (req: Request, res: Response) => {
         ...(position !== undefined && { position }),
         ...(content !== undefined && { content }),
         ...(normalizedContentType !== undefined && {
-          contentType: normalizedContentType as any, // Use normalized value for Prisma
+          contentType: normalizedContentType as any,
         }),
         ...(newSectionId !== undefined && { sectionId: newSectionId }),
       },
     });
 
-    console.log("✅ Chapter updated successfully:", updatedChapter.id);
-    return res.status(200).json({ success: true, data: updatedChapter });
-  } catch (error: any) {
-    console.log("ERROR in updating chapter: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: "Internal server error",
-      details:
-        process.env.NODE_ENV === "development" ? error.message : undefined,
-    });
+    sendSuccess(res, updatedChapter, "Chapter updated successfully");
   }
-};
+);
 
-export const deleteChapter = async (req: Request, res: Response) => {
-  try {
-    const { courseId, sectionId, chapterId } = req.params;
+export const deleteChapter = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { chapterId } = req.params;
 
     await prisma.chapter.delete({ where: { id: chapterId } });
 
-    return res.status(200).json({
-      success: true,
-      message: "Chapter deleted successfully",
-    });
-  } catch (error: any) {
-    console.log("ERROR in deleting chapter: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    sendSuccess(res, null, "Chapter deleted successfully");
   }
-};
+);
 
 // ---------------------------------------- CHAPTER PROGRESS --------------------------------
 
-export const getChapterProgress = async (req: Request, res: Response) => {
-  try {
-    const userId = req.user?.id || "";
+export const getChapterProgress = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = requireUserId(req);
     const chapterId = req.params.chapterId;
 
     const chapterProgress = await prisma.chapterProgress.findUnique({
@@ -1207,32 +984,19 @@ export const getChapterProgress = async (req: Request, res: Response) => {
     });
 
     if (!chapterProgress) {
-      return res.status(404).json({
-        success: false,
-        message: "Chapter progress not found",
-      });
+      throw new AppError("Chapter progress not found", 404);
     }
 
-    return res.status(200).json({
-      success: true,
-      data: chapterProgress,
-    });
-  } catch (error: any) {
-    console.error("Error fetching chapter progress:", error.message);
-    return res.status(500).json({
-      success: false,
-      error: "Internal server error",
-    });
+    sendSuccess(res, chapterProgress);
   }
-};
+);
 
-export const updateChapterProgress = async (req: Request, res: Response) => {
-  try {
-    const userId = req.user?.id || "";
+export const updateChapterProgress = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = requireUserId(req);
     const chapterId = req.params.chapterId;
     const { isCompleted, progress: chapterProgress } = req.body;
 
-    // Get chapter with course info
     const chapter = await prisma.chapter.findUnique({
       where: { id: chapterId },
       include: {
@@ -1245,13 +1009,9 @@ export const updateChapterProgress = async (req: Request, res: Response) => {
     });
 
     if (!chapter) {
-      return res.status(404).json({
-        success: false,
-        message: "Chapter not found",
-      });
+      throw new AppError("Chapter not found", 404);
     }
 
-    // Check enrollment
     const enrollment = await prisma.enrollment.findUnique({
       where: {
         userId_courseId: {
@@ -1262,15 +1022,10 @@ export const updateChapterProgress = async (req: Request, res: Response) => {
     });
 
     if (!enrollment) {
-      return res.status(403).json({
-        success: false,
-        message: "Not enrolled in this course",
-      });
+      throw new AppError("Not enrolled in this course", 403);
     }
 
-    // Update chapter progress within transaction
     const result = await prisma.$transaction(async (tx) => {
-      // Update chapter progress
       const updatedChapterProgress = await tx.chapterProgress.upsert({
         where: {
           chapterId_userId: {
@@ -1298,7 +1053,6 @@ export const updateChapterProgress = async (req: Request, res: Response) => {
         },
       });
 
-      // Calculate overall course progress
       const allChapterProgress = await tx.chapterProgress.findMany({
         where: {
           userId,
@@ -1325,7 +1079,6 @@ export const updateChapterProgress = async (req: Request, res: Response) => {
           ? Math.round((completedChapters / totalChapters) * 100)
           : 0;
 
-      // Update course progress
       const courseProgress = await tx.courseProgress.upsert({
         where: {
           courseId_userId: {
@@ -1348,7 +1101,6 @@ export const updateChapterProgress = async (req: Request, res: Response) => {
         },
       });
 
-      // Update enrollment progress if needed
       if (overallProgress === 100) {
         await tx.enrollment.update({
           where: { id: enrollment.id },
@@ -1372,296 +1124,227 @@ export const updateChapterProgress = async (req: Request, res: Response) => {
       };
     });
 
-    // Notify on course completion
     if (result.overallProgress === 100) {
-      const courseTitle = chapter!.CourseSection.course.title;
-      const courseId = chapter!.CourseSection.courseId;
-      notifyCourseComplete(userId, courseTitle, courseId);
+      const courseTitle = chapter.CourseSection.course.title;
+      const courseIdForNotify = chapter.CourseSection.courseId;
+      notifyCourseComplete(userId, courseTitle, courseIdForNotify);
     }
 
-    return res.status(200).json({
-      success: true,
-      data: result,
-    });
-  } catch (error: any) {
-    console.error("Error updating chapter progress:", error.message);
-    return res.status(500).json({
-      success: false,
-      error: "Internal server error",
-    });
+    sendSuccess(res, result);
   }
-};
+);
 
 // ---------------------------------------- REVIEWS --------------------------------
 
-export const getAllReviewsForCourseId = async (req: Request, res: Response) => {
-  try {
+export const getAllReviewsForCourseId = asyncHandler(
+  async (req: Request, res: Response) => {
     const reviews = await getAllReviewsForCourseIdService(req.params.courseId);
-    return res.status(200).json({ success: true, data: reviews });
-  } catch (error: any) {
-    return res.status(500).json({ success: false, error: error.message });
+    sendSuccess(res, reviews);
   }
-};
+);
 
-export const writeReview = async (req: Request, res: Response) => {
+export const writeReview = asyncHandler(async (req: Request, res: Response) => {
+  const { rating, comment } = req.body;
   try {
-    const { rating, comment } = req.body;
     const review = await writeReviewService({
       courseId: req.params.courseId,
-      userId: req.user?.id || "",
+      userId: requireUserId(req),
       rating,
       comment,
     });
-    return res.status(201).json({ success: true, data: review });
-  } catch (error: any) {
-    return res
-      .status(error.code || 500)
-      .json({ success: false, error: error.message });
+    sendSuccess(res, review, "Review created successfully", 201);
+  } catch (err: any) {
+    throwAsAppError(err);
   }
-};
+});
 
-export const editReview = async (req: Request, res: Response) => {
+export const editReview = asyncHandler(async (req: Request, res: Response) => {
+  const { rating, comment } = req.body;
   try {
-    const { rating, comment } = req.body;
     const updatedReview = await editReviewService({
       courseId: req.params.courseId,
       reviewId: req.params.reviewId,
-      userId: req.user?.id || "",
+      userId: requireUserId(req),
       rating,
       comment,
     });
-    return res.status(200).json({ success: true, data: updatedReview });
-  } catch (error: any) {
-    return res
-      .status(error.code || 500)
-      .json({ success: false, error: error.message });
+    sendSuccess(res, updatedReview, "Review updated successfully");
+  } catch (err: any) {
+    throwAsAppError(err);
   }
-};
+});
 
-export const deleteReview = async (req: Request, res: Response) => {
-  try {
-    await deleteReviewService({
-      courseId: req.params.courseId,
-      reviewId: req.params.reviewId,
-      userId: req.user?.id || "",
-    });
-    return res.status(200).json({
-      success: true,
-      message: "Review deleted successfully.",
-    });
-  } catch (error: any) {
-    return res
-      .status(error.code || 500)
-      .json({ success: false, error: error.message });
+export const deleteReview = asyncHandler(
+  async (req: Request, res: Response) => {
+    try {
+      await deleteReviewService({
+        courseId: req.params.courseId,
+        reviewId: req.params.reviewId,
+        userId: requireUserId(req),
+      });
+      sendSuccess(res, null, "Review deleted successfully.");
+    } catch (err: any) {
+      throwAsAppError(err);
+    }
   }
-};
+);
 
 // ---------------------------------------- NOTES -----------------------------------
 
-// GET all notes for a chapter
-export const getAllCourseNotes = async (req: Request, res: Response) => {
-  try {
+export const getAllCourseNotes = asyncHandler(
+  async (req: Request, res: Response) => {
     const { chapterId } = req.params;
-    const userId = req.user?.id || "";
+    const userId = requireUserId(req);
 
     const notes = await getNotesByChapter({ chapterId, userId });
 
-    return res.status(200).json({
+    // Preserves legacy shape: { success, notes } with `notes` at root
+    res.status(200).json({
       success: true,
       notes,
     });
-  } catch (error: any) {
-    console.error("ERROR in getting notes:", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
   }
-};
+);
 
-// POST create new note
-export const addNote = async (req: Request, res: Response) => {
-  try {
-    const { chapterId } = req.params;
-    const userId = req.user?.id || "";
-    const { content } = req.body;
+export const addNote = asyncHandler(async (req: Request, res: Response) => {
+  const { chapterId } = req.params;
+  const userId = requireUserId(req);
+  const { content } = req.body;
 
-    if (!content || typeof content !== "string") {
-      return res.status(400).json({
-        success: false,
-        error: "Note content is required.",
-      });
-    }
-
-    const note = await createNote({ content, chapterId, userId });
-
-    return res.status(201).json({
-      success: true,
-      note,
-    });
-  } catch (error: any) {
-    console.error("ERROR in adding note:", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+  if (!content || typeof content !== "string") {
+    throw new AppError("Note content is required.", 400);
   }
-};
 
-// PUT edit a note
-export const editNote = async (req: Request, res: Response) => {
-  try {
-    const { noteId } = req.params;
-    const userId = req.user?.id;
-    const { content } = req.body;
+  const note = await createNote({ content, chapterId, userId });
 
-    if (!content || typeof content !== "string") {
-      return res.status(400).json({
-        success: false,
-        error: "Note content is required.",
-      });
-    }
+  // Preserves legacy shape: { success, note } with `note` at root
+  res.status(201).json({
+    success: true,
+    note,
+  });
+});
 
-    const note = await getNoteById(noteId);
-    if (!note) {
-      return res.status(404).json({
-        success: false,
-        error: "Note not found.",
-      });
-    }
+export const editNote = asyncHandler(async (req: Request, res: Response) => {
+  const { noteId } = req.params;
+  const userId = requireUserId(req);
+  const { content } = req.body;
 
-    if (note.userId !== userId) {
-      return res.status(403).json({
-        success: false,
-        error: "You are not authorized to edit this note.",
-      });
-    }
-
-    const updatedNote = await updateNoteById({ noteId, content });
-
-    return res.status(200).json({
-      success: true,
-      note: updatedNote,
-    });
-  } catch (error: any) {
-    console.error("ERROR in editing note:", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+  if (!content || typeof content !== "string") {
+    throw new AppError("Note content is required.", 400);
   }
-};
 
-// DELETE a note
-export const deleteNote = async (req: Request, res: Response) => {
-  try {
-    const { noteId } = req.params;
-    const userId = req.user?.id;
-
-    const note = await getNoteById(noteId);
-    if (!note) {
-      return res.status(404).json({
-        success: false,
-        error: "Note not found.",
-      });
-    }
-
-    if (note.userId !== userId) {
-      return res.status(403).json({
-        success: false,
-        error: "You are not authorized to delete this note.",
-      });
-    }
-
-    await deleteNoteById(noteId);
-
-    return res.status(200).json({
-      success: true,
-      message: "Note deleted successfully.",
-    });
-  } catch (error: any) {
-    console.error("ERROR in deleting note:", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+  const note = await getNoteById(noteId);
+  if (!note) {
+    throw new AppError("Note not found.", 404);
   }
-};
+
+  if (note.userId !== userId) {
+    throw new AppError("You are not authorized to edit this note.", 403);
+  }
+
+  const updatedNote = await updateNoteById({ noteId, content });
+
+  // Preserves legacy shape: { success, note } with `note` at root
+  res.status(200).json({
+    success: true,
+    note: updatedNote,
+  });
+});
+
+export const deleteNote = asyncHandler(async (req: Request, res: Response) => {
+  const { noteId } = req.params;
+  const userId = requireUserId(req);
+
+  const note = await getNoteById(noteId);
+  if (!note) {
+    throw new AppError("Note not found.", 404);
+  }
+
+  if (note.userId !== userId) {
+    throw new AppError("You are not authorized to delete this note.", 403);
+  }
+
+  await deleteNoteById(noteId);
+
+  sendSuccess(res, null, "Note deleted successfully.");
+});
+
 // ---------------------------------------- ATTACHMENTS -----------------------------
 
-// GET: /attachments/:courseId
-export const getAllCourseAttachments = async (req: Request, res: Response) => {
-  const courseId = req.params.courseId;
-
-  const attachments = await getAllAttachmentsForCourse(courseId);
-  sendSuccess(res, attachments, "Course attachments fetched successfully");
-};
-
-// GET: /attachment/:attachmentId
-export const getAttachmentById = async (req: Request, res: Response) => {
-  const attachmentId = req.params.attachmentId;
-
-  const attachment = await getAttachmentService(attachmentId);
-  if (!attachment) return sendNotFound(res, "Attachment not found");
-
-  sendSuccess(res, attachment, "Attachment fetched successfully");
-};
-
-// POST: /attachments
-export const createAttachment = async (req: Request, res: Response) => {
-  try {
-    const { name, url, courseId } = req.body;
-    const attachment = await createAttachmentService(
-      name,
-      url,
-      courseId,
-      req.instructor.id
-    );
-
-    sendSuccess(res, attachment, "Attachment created successfully", 201);
-  } catch (err: any) {
-    const statusCode = err.message.includes("Unauthorized") ? 403 : 404;
-    sendError(res, err.message, statusCode);
+export const getAllCourseAttachments = asyncHandler(
+  async (req: Request, res: Response) => {
+    const courseId = req.params.courseId;
+    const attachments = await getAllAttachmentsForCourse(courseId);
+    sendSuccess(res, attachments, "Course attachments fetched successfully");
   }
-};
+);
 
-// PUT: /attachment/:attachmentId
-export const updateAttachment = async (req: Request, res: Response) => {
-  try {
+export const getAttachmentById = asyncHandler(
+  async (req: Request, res: Response) => {
+    const attachmentId = req.params.attachmentId;
+    const attachment = await getAttachmentService(attachmentId);
+    if (!attachment) {
+      throw new AppError("Attachment not found", 404);
+    }
+    sendSuccess(res, attachment, "Attachment fetched successfully");
+  }
+);
+
+export const createAttachment = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { name, url, courseId } = req.body;
+    try {
+      const attachment = await createAttachmentService(
+        name,
+        url,
+        courseId,
+        (req as any).instructor.id
+      );
+      sendSuccess(res, attachment, "Attachment created successfully", 201);
+    } catch (err: any) {
+      const status = err?.message?.includes("Unauthorized") ? 403 : 404;
+      throw new AppError(err.message, status);
+    }
+  }
+);
+
+export const updateAttachment = asyncHandler(
+  async (req: Request, res: Response) => {
     const attachmentId = req.params.attachmentId;
     const { name, url } = req.body;
-
-    const updatedAttachment = await updateExistingAttachment(
-      attachmentId,
-      name,
-      url,
-      req.instructor.id
-    );
-
-    sendSuccess(res, updatedAttachment, "Attachment updated successfully");
-  } catch (err: any) {
-    const statusCode = err.message.includes("Unauthorized") ? 403 : 404;
-    sendError(res, err.message, statusCode);
+    try {
+      const updatedAttachment = await updateAttachmentService(
+        attachmentId,
+        name,
+        url,
+        (req as any).instructor.id
+      );
+      sendSuccess(res, updatedAttachment, "Attachment updated successfully");
+    } catch (err: any) {
+      const status = err?.message?.includes("Unauthorized") ? 403 : 404;
+      throw new AppError(err.message, status);
+    }
   }
-};
+);
 
-// DELETE: /attachment/:attachmentId
-export const deleteAttachment = async (req: Request, res: Response) => {
-  try {
+export const deleteAttachment = asyncHandler(
+  async (req: Request, res: Response) => {
     const attachmentId = req.params.attachmentId;
-
-    await deleteAttachmentService(attachmentId, req.instructor.id);
-    sendSuccess(res, null, "Attachment deleted successfully");
-  } catch (err: any) {
-    const statusCode = err.message.includes("Unauthorized") ? 403 : 404;
-    sendError(res, err.message, statusCode);
+    try {
+      await deleteAttachmentService(attachmentId, (req as any).instructor.id);
+      sendSuccess(res, null, "Attachment deleted successfully");
+    } catch (err: any) {
+      const status = err?.message?.includes("Unauthorized") ? 403 : 404;
+      throw new AppError(err.message, status);
+    }
   }
-};
+);
 
-// -------------------------------------------- LEARNING DASHBORAD ------------------------------
-export const getLearningDashboard = async (req: Request, res: Response) => {
-  try {
-    const userId = req.user?.id;
+// -------------------------------------------- LEARNING DASHBOARD ------------------------------
+
+export const getLearningDashboard = asyncHandler(
+  async (req: Request, res: Response) => {
+    const userId = requireUserId(req);
 
     const enrollments = await prisma.enrollment.findMany({
       where: { userId },
@@ -1728,15 +1411,6 @@ export const getLearningDashboard = async (req: Request, res: Response) => {
       };
     });
 
-    return res.status(200).json({
-      success: true,
-      data: dashboard,
-    });
-  } catch (error: any) {
-    console.error("Error fetching learning dashboard:", error.message);
-    return res.status(500).json({
-      success: false,
-      error: "Internal server error",
-    });
+    sendSuccess(res, dashboard);
   }
-};
+);
