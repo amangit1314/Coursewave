@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { stripe } from "../../../config/stripe";
+import { env } from "../../../config/config";
 import { SubscriptionStatus } from "@prisma/client";
 import {
   handleSubscriptionCheckoutSessionComplted,
@@ -42,7 +43,7 @@ export const handleWebhookEvent = async (
     event = stripe.webhooks.constructEvent(
       rawBody,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      env.STRIPE_WEBHOOK_SECRET
     );
   } catch (err: any) {
     // Load-bearing: signature failures MUST throw 400 so Stripe marks the

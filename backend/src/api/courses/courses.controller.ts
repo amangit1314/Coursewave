@@ -37,6 +37,7 @@ import {
   notifyInstructorNewStudent,
 } from "../../core/services/notificationService";
 import { ERRORS } from "../../config/constants/messages";
+import { env, features } from "../../config/config";
 
 const requireUserId = (req: Request): string => {
   const userId = req.user?.id;
@@ -518,11 +519,11 @@ export const createCheckout = asyncHandler(
 
     // --- Frontend URLs ---
     const frontendUrl =
-      process.env.NODE_ENV === "production"
-        ? process.env.FRONTEND_URL_PROD
-        : process.env.FRONTEND_URL;
+      features.isProd && env.FRONTEND_URL_PROD
+        ? env.FRONTEND_URL_PROD
+        : env.FRONTEND_URL;
 
-    if (!frontendUrl || !frontendUrl.startsWith("http")) {
+    if (!frontendUrl.startsWith("http")) {
       throw new AppError(
         `Invalid FRONTEND_URL: ${frontendUrl}. Must include http:// or https://`,
         500

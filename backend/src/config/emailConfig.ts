@@ -1,6 +1,10 @@
+import { env } from "./config";
+
 export const EMAIL_CONFIG = {
+  // Legacy hardcoded "from" address — kept for compatibility with existing
+  // email templates that expect amansoni53453@gmail.com as the sender.
   FROM_EMAIL: "amansoni53453@gmail.com",
-  FROM_NAME: process.env.FROM_NAME || "Amanic",
-  SENDGRID_API_KEY: process.env.SENDGRID_API_KEY!,
-  FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:3000",
+  FROM_NAME: env.FROM_NAME,
+  SENDGRID_API_KEY: env.SENDGRID_API_KEY ?? "",
+  FRONTEND_URL: env.FRONTEND_URL,
 };

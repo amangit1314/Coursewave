@@ -1,9 +1,10 @@
 import * as amqp from "amqplib";
+import { env } from "./config";
 
 let channel: any = null;
 
 export async function connectRabbitMQ() {
-  const conn = await amqp.connect(process.env.RABBITMQ_URL || "amqp://localhost");
+  const conn = await amqp.connect(env.RABBITMQ_URL);
   channel = await conn.createChannel();
   await channel.assertQueue("notificationQueue", { durable: true });
   console.log("RabbitMQ connected and notificationQueue asserted.");
@@ -13,5 +14,9 @@ export async function publishNotification(eventData: any) {
   if (!channel) {
     throw new Error("RabbitMQ channel not initialized. Call connectRabbitMQ first.");
   }
-  channel.sendToQueue("notificationQueue", Buffer.from(JSON.stringify(eventData)), { persistent: true });
+  channel.sendToQueue(
+    "notificationQueue",
+    Buffer.from(JSON.stringify(eventData)),
+    { persistent: true }
+  );
 }

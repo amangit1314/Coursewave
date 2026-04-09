@@ -2,6 +2,7 @@ import { Role } from "@prisma/client";
 import { prisma } from "../../config/prisma";
 import nodemailer from "nodemailer";
 import { AppError } from "../../core/middleware/errorHandler";
+import { env } from "../../config/config";
 
 export const getAllUsers = async () => {
   return prisma.user.findMany({
@@ -174,20 +175,20 @@ export const contactSupport = async (data: ContactSupportData) => {
   }
 
   // Create email transporter
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || "587"),
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+  const transporter = nodemailer.createTransport({
+    host: env.SMTP_HOST,
+    port: env.SMTP_PORT,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: env.SMTP_USER,
+      pass: env.SMTP_PASS,
+    },
+  });
 
-    // Email content for CourseWave support team
-    const supportEmailContent = {
-      from: process.env.SMTP_FROM_EMAIL || "noreply@coursewave.com",
-      to: process.env.SUPPORT_EMAIL || "support@coursewave.com",
+  // Email content for CourseWave support team
+  const supportEmailContent = {
+    from: env.SMTP_FROM_EMAIL,
+    to: env.SUPPORT_EMAIL,
       subject: `Support Request: ${subject}`,
       html: `
         <!DOCTYPE html>
@@ -247,7 +248,7 @@ export const contactSupport = async (data: ContactSupportData) => {
 
     // Optional: Send confirmation email to the user
     const userConfirmationEmail = {
-      from: process.env.SMTP_FROM_EMAIL || "noreply@coursewave.com",
+      from: env.SMTP_FROM_EMAIL,
       to: email,
       subject: "We've Received Your Support Request - CourseWave",
       html: `

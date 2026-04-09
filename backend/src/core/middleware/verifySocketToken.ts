@@ -2,12 +2,13 @@
 import jwt from "jsonwebtoken";
 import { Socket } from "socket.io";
 import { ExtendedError } from "socket.io/dist/namespace";
+import { env } from "../../config/config";
 
 export function verifySocketToken(socket: Socket, next: (err?: ExtendedError) => void) {
   try {
     // Option 1: From query params
-    const token = socket.handshake.auth?.token 
-      || socket.handshake.query?.token 
+    const token = socket.handshake.auth?.token
+      || socket.handshake.query?.token
       || socket.handshake.headers?.authorization?.split(" ")[1];
 
     if (!token) {
@@ -15,7 +16,7 @@ export function verifySocketToken(socket: Socket, next: (err?: ExtendedError) =>
     }
 
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string; email: string };
+    const decoded = jwt.verify(token, env.JWT_SECRET) as { id: string; email: string };
 
     // Attach user data to socket for later use
     socket.data.userId = decoded.id;

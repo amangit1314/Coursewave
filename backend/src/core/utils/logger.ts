@@ -1,7 +1,8 @@
 import { createLogger, format, transports } from "winston";
+import { env, features } from "../../config/config";
 
 const logger = createLogger({
-  level: process.env.LOG_LEVEL || (process.env.NODE_ENV === "production" ? "info" : "debug"),
+  level: env.LOG_LEVEL ?? (features.isProd ? "info" : "debug"),
   format: format.combine(
     format.timestamp(),
     format.errors({ stack: true }),
@@ -10,9 +11,9 @@ const logger = createLogger({
   ),
   transports: [
     new transports.Console(),
-    ...(process.env.NODE_ENV === "production"
+    ...(features.isProd
       ? [new transports.File({ filename: "logs/app.log" })]
-      : [])
+      : []),
   ],
 });
 

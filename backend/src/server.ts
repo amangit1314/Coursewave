@@ -1,6 +1,10 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+// Load & validate env BEFORE any other module imports (config.ts will
+// fail-fast at startup if anything required is missing or malformed).
+import { env, features } from "./config/config";
+
 import express from "express";
 import cors from "cors";
 import http from "http";
@@ -35,20 +39,6 @@ import { errorHandler, notFound } from "./core/middleware/errorHandler";
 import { logger } from "./core/utils/logger";
 import { connectRabbitMQ } from "./config/rabbitmq";
 import multer from "multer";
-
-///? <=================================== Load environment variables ==============>
-
-///? <==================================== Check for required environment variables ========>
-const requiredEnvVars = ["DATABASE_URL", "JWT_SECRET", "JWT_REFRESH_SECRET"];
-
-const missingEnvVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
-
-if (missingEnvVars.length > 0) {
-  console.error(
-    `Missing required environment variables: ${missingEnvVars.join(", ")}`
-  );
-  console.error("Server will start but some features may not work correctly");
-}
 
 /// ? <=================================== CREATING EXPRESS APP ============================>
 const app = express();
@@ -99,19 +89,17 @@ app.use(
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:3001",
-        process.env.FRONTEND_URL_PROD,
-      ];
+        env.FRONTEND_URL_PROD,
+      ].filter(Boolean) as string[];
 
       // Check if the origin is in allowed origins
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
+      } else if (features.isDev) {
+        // For development, allow all origins
+        callback(null, true);
       } else {
-        // For development, you might want to allow all origins
-        if (process.env.NODE_ENV === "development") {
-          callback(null, true);
-        } else {
-          callback(new Error("Not allowed by CORS"));
-        }
+        callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
@@ -172,22 +160,11 @@ app.use((req, res, next) => {
   next();
 });
 
-///* ------------------------- Error handling middleware --------------------------------
-app.use(
-  (
-    err: any,
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
-  ) => {
-    console.error(err.stack);
-    res.status(err.status || 500).json({
-      success: false,
-      message: err.message || "Internal Server Error",
-      ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
-    });
-  }
-);
+// NOTE: the centralized errorHandler is registered at the end of this file,
+// after all routes. A duplicate error-handling middleware used to live here
+// but it was dead code — Express only invokes error middleware registered
+// AFTER the route that throws, so any handler registered before the routes
+// can never catch their errors. Removed to avoid confusion.
 
 ///? <==================================== API routes ====================================>
 app.post("/api/your-form-route", upload.none(), (req, res) => {
@@ -236,7 +213,7 @@ app.use(errorHandler);
 initJobs();
 
 /// ? <=================================== CREATING HTTP SERVER APP ============================>
-const PORT = process.env.PORT || 5002;
+const PORT = env.PORT;
 const server = http.createServer(app);
 
 ///? <==================================== LISTEN TO HTTP SERVER ON PORT ======================================>

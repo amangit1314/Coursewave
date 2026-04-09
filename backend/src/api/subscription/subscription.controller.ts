@@ -5,6 +5,7 @@ import { ensureStripeCustomerForUser } from "../../core/middleware/ensureStripeC
 import Stripe from "stripe";
 import { mapStripeStatus, SubscribeUserInput } from "./subscription.service";
 import { stripe } from "../../config/stripe";
+import { env } from "../../config/config";
 import {
   asyncHandler,
   sendSuccess,
@@ -71,7 +72,7 @@ export const createSubscriptionCheckoutLink = asyncHandler(
       req.user?.email
     );
 
-    const APP_URL = process.env.APP_URL || "http://localhost:3000";
+    const APP_URL = env.APP_URL;
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",

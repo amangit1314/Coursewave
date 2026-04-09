@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { PrismaClientKnownRequestError, PrismaClientValidationError } from '@prisma/client/runtime/library';
 import { logger } from '../utils/logger';
+import { features } from '../../config/config';
 
 /**
  * Custom error class for application errors
@@ -102,7 +103,7 @@ export const errorHandler = (
     success: false,
     message,
     requestId: req.requestId,
-    ...(process.env.NODE_ENV === 'development' && {
+    ...(features.isDev && {
       stack: error.stack,
       error: error.message
     })
@@ -144,7 +145,7 @@ export const sendError = (res: Response, message: string, statusCode: number = 5
   res.status(statusCode).json({
     success: false,
     message,
-    ...(process.env.NODE_ENV === 'development' && error && { error })
+    ...(features.isDev && error && { error })
   });
 };
 

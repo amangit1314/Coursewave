@@ -5,6 +5,7 @@ import { verifySocketToken } from "../core/middleware/verifySocketToken";
 import { ReactionType } from "@prisma/client";
 import { slugify } from "../core/utils/slugify";
 import { SOCKET_EVENTS } from "./constants";
+import { env, features } from "./config";
 
 interface ServerSocket extends Socket {
   data: {
@@ -35,12 +36,12 @@ export function initSocket(server: HttpServer) {
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:3001",
-    process.env.FRONTEND_URL_PROD,
+    env.FRONTEND_URL_PROD,
   ].filter(Boolean) as string[];
 
   const io = new SocketIOServer(server, {
     cors: {
-      origin: process.env.NODE_ENV === "development" ? "*" : allowedOrigins,
+      origin: features.isDev ? "*" : allowedOrigins,
       credentials: true,
     },
   });

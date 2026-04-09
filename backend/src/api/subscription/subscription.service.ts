@@ -10,6 +10,7 @@ import {
 } from "@prisma/client";
 import { ensureStripeCustomerForUser } from "../../core/middleware/ensureStripeCustomerForUser";
 import { AppError } from "../../core/middleware/errorHandler";
+import { env } from "../../config/config";
 
 const requireInstructorProfile = async (userId: string) => {
   const userRoles = await prisma.userRole.findMany({ where: { userId } });
@@ -225,7 +226,7 @@ export const getSubscriptionCheckoutUrl = async (
 
   const stripeCustomerId = await ensureStripeCustomerForUser(userId);
 
-  const APP_URL = process.env.APP_URL!;
+  const APP_URL = env.APP_URL;
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
     customer: stripeCustomerId,

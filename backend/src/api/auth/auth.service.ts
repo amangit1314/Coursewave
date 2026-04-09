@@ -5,7 +5,7 @@ import EmailService from "../../core/services/emailService";
 import TokenService from "../../core/services/tokenService";
 import CSRFService from "../../core/services/csrfService";
 import { generateResourceId } from "../../core/utils/idGenerator";
-import { env } from "../../config/config";
+import { env, features } from "../../config/config";
 import { prisma } from "../../config/prisma";
 
 const JWT_SECRET = env.JWT_SECRET;
@@ -26,7 +26,7 @@ class AuthService {
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) throw { status: 400, message: "User already exists" };
 
-    const saltRounds = process.env.ENVIRONMENT === "DEVELOPMENT" ? 4 : 10;
+    const saltRounds = features.isDev ? 4 : 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Create user + role + fetch roles in transaction
