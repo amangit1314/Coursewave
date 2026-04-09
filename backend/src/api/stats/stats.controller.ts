@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { prisma } from "../../config/prisma";
+import { asyncHandler, sendSuccess } from "../../core/middleware/errorHandler";
 
-export const getPlatformLandingStats = async (req: Request, res: Response) => {
-  try {
-    // Execute all count queries in parallel for better performance
+export const getPlatformLandingStats = asyncHandler(
+  async (_req: Request, res: Response) => {
     const [
       totalCourses,
       totalInstructors,
@@ -12,56 +12,32 @@ export const getPlatformLandingStats = async (req: Request, res: Response) => {
       totalProjects,
       totalArticles,
     ] = await Promise.all([
-      // Total courses (all courses, not just published)
       prisma.course.count(),
-
-      // Total instructors (users with instructor role)
-      prisma.userRole.count({
-        where: { role: "INSTRUCTOR" },
-      }),
-
-      // Total users
+      prisma.userRole.count({ where: { role: "INSTRUCTOR" } }),
       prisma.user.count(),
-
-      // Total sessions
       prisma.session.count(),
-
-      // Total projects
       prisma.project.count(),
-
-      // Total articles (published blogs)
-      prisma.blog.count({
-        where: { isPublished: true },
-      }),
+      prisma.blog.count({ where: { isPublished: true } }),
     ]);
 
-    return res.status(200).json({
-      success: true,
-      data: {
-        totalCourses,
-        totalInstructors,
-        totalUsers,
-        totalSessions,
-        totalProjects,
-        totalArticles,
-      },
-    });
-  } catch (error: any) {
-    console.error("ERROR in fetching platform stats: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
+    sendSuccess(res, {
+      totalCourses,
+      totalInstructors,
+      totalUsers,
+      totalSessions,
+      totalProjects,
+      totalArticles,
     });
   }
-};
+);
 
-export const getLandingReviews = async (req: Request, res: Response) => {
-  try {
+export const getLandingReviews = asyncHandler(
+  async (req: Request, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 6;
 
     const reviews = await prisma.review.findMany({
       where: {
-        rating: { gte: 4.5 }, // Only show high-rated reviews for landing page
+        rating: { gte: 4.5 },
       },
       include: {
         user: {
@@ -91,7 +67,6 @@ export const getLandingReviews = async (req: Request, res: Response) => {
       take: limit,
     });
 
-    // Transform the data for frontend
     const transformedReviews = reviews.map((review: any) => ({
       id: review.id,
       comment: review.comment,
@@ -110,15 +85,6 @@ export const getLandingReviews = async (req: Request, res: Response) => {
       },
     }));
 
-    return res.status(200).json({
-      success: true,
-      data: transformedReviews,
-    });
-  } catch (error: any) {
-    console.error("ERROR in fetching landing reviews: ", error.message);
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    sendSuccess(res, transformedReviews);
   }
-};
+);

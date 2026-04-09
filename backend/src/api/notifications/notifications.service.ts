@@ -1,5 +1,6 @@
 import { generateResourceId } from "../../core/utils/idGenerator";
 import { prisma } from "../../config/prisma";
+import { AppError } from "../../core/middleware/errorHandler";
 
 export const NotificationsService = {
     /**
@@ -56,11 +57,11 @@ export const NotificationsService = {
         });
 
         if (!notification) {
-            throw new Error("Notification not found");
+            throw new AppError("Notification not found", 404);
         }
 
         if (notification.userId !== userId) {
-            throw new Error("Unauthorized");
+            throw new AppError("Unauthorized", 403);
         }
 
         return await prisma.notification.update({
@@ -97,11 +98,11 @@ export const NotificationsService = {
         });
 
         if (!notification) {
-            throw new Error("Notification not found");
+            throw new AppError("Notification not found", 404);
         }
 
         if (notification.userId !== userId) {
-            throw new Error("Unauthorized");
+            throw new AppError("Unauthorized", 403);
         }
 
         return await prisma.notification.delete({

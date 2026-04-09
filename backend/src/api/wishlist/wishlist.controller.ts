@@ -1,80 +1,52 @@
 import { Request, Response } from "express";
 import * as wishlistService from "./wishlist.service";
+import {
+  asyncHandler,
+  sendSuccess,
+  AppError,
+} from "../../core/middleware/errorHandler";
 
-export const getWishlist = async (req: Request, res: Response) => {
-  try {
-    const result = await wishlistService.getWishlist(req.user?.id || "");
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch wishlist",
-      error: error.message
-    });
-  }
+const requireUserId = (req: Request): string => {
+  const userId = req.user?.id;
+  if (!userId) throw new AppError("Unauthorized", 401);
+  return userId;
 };
 
-export const addToWishlist = async (req: Request, res: Response) => {
-  try {
-    const result = await wishlistService.addToWishlist(req.user?.id || "", req.body.courseId);
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to add course to wishlist",
-      error: error.message
-    });
-  }
-};
+export const getWishlist = asyncHandler(async (req: Request, res: Response) => {
+  const data = await wishlistService.getWishlist(requireUserId(req));
+  sendSuccess(res, data, "Wishlist fetched successfully");
+});
 
-export const removeFromWishlist = async (req: Request, res: Response) => {
-  try {
-    const result = await wishlistService.removeFromWishlist(req.user?.id || "", req.params.courseId);
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to remove course from wishlist",
-      error: error.message
-    });
-  }
-};
+export const addToWishlist = asyncHandler(async (req: Request, res: Response) => {
+  const data = await wishlistService.addToWishlist(
+    requireUserId(req),
+    req.body.courseId
+  );
+  sendSuccess(res, data, "Course added to wishlist", 201);
+});
 
-export const checkWishlistStatus = async (req: Request, res: Response) => {
-  try {
-    const result = await wishlistService.checkWishlistStatus(req.user?.id || "", req.params.courseId);
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to check wishlist status",
-      error: error.message
-    });
-  }
-};
+export const removeFromWishlist = asyncHandler(async (req: Request, res: Response) => {
+  const data = await wishlistService.removeFromWishlist(
+    requireUserId(req),
+    req.params.courseId
+  );
+  sendSuccess(res, data, "Course removed from wishlist");
+});
 
-export const getWishlistCount = async (req: Request, res: Response) => {
-  try {
-    const result = await wishlistService.getWishlistCount(req.user?.id || "");
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch wishlist count",
-      error: error.message
-    });
-  }
-};
+export const checkWishlistStatus = asyncHandler(async (req: Request, res: Response) => {
+  const data = await wishlistService.checkWishlistStatus(
+    requireUserId(req),
+    req.params.courseId
+  );
+  sendSuccess(res, data, "Wishlist status checked successfully");
+});
 
-export const clearWishlist = async (req: Request, res: Response) => {
-  try {
-    const result = await wishlistService.clearWishlist(req.user?.id || "");
-    res.status(result.status).json(result);
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to clear wishlist",
-      error: error.message
-    });
-  }
-};
+export const getWishlistCount = asyncHandler(async (req: Request, res: Response) => {
+  const data = await wishlistService.getWishlistCount(requireUserId(req));
+  sendSuccess(res, data, "Wishlist count fetched successfully");
+});
+
+export const clearWishlist = asyncHandler(async (req: Request, res: Response) => {
+  await wishlistService.clearWishlist(requireUserId(req));
+  sendSuccess(res, null, "Wishlist cleared successfully");
+});
