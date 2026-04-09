@@ -1,5 +1,4 @@
 import Stripe from "stripe";
-// import { createEnrollment } from "../../../core/services/enrollmentService";
 import { stripe } from "../../../config/stripe";
 import { SubscriptionStatus } from "@prisma/client";
 import {
@@ -8,14 +7,7 @@ import {
   handleSubscriptionUpdated,
 } from "../../subscription/subscription.service";
 import { activateEnrollmentAfterPayment } from "../../../core/services/enrollmentService";
-
-interface ServiceResponse {
-  success: boolean;
-  data?: any;
-  message: string;
-  status: number;
-  error?: string;
-}
+import { AppError } from "../../../core/middleware/errorHandler";
 
 export function mapStripeStatus(status: string): SubscriptionStatus {
   switch (status) {
@@ -36,86 +28,67 @@ export function mapStripeStatus(status: string): SubscriptionStatus {
   }
 }
 
-// Webhook handler (resolves by unique stripeSubscriptionId)
+// Webhook handler. Stripe expects:
+//   - 400 if signature verification fails (Stripe won't retry)
+//   - 500 if event handler throws (Stripe will retry)
+//   - 200 on success
 export const handleWebhookEvent = async (
   rawBody: Buffer,
   signature: string
-): Promise<ServiceResponse> => {
+) => {
+  let event: Stripe.Event;
+
   try {
-    let event: Stripe.Event;
-
-    try {
-      event = stripe.webhooks.constructEvent(
-        rawBody,
-        signature,
-        process.env.STRIPE_WEBHOOK_SECRET!
-      );
-    } catch (err: any) {
-      console.error("Webhook signature verification failed.", err.message);
-      return {
-        success: false,
-        message: `Webhook Error: ${err.message}`,
-        status: 400,
-        error: err.message,
-      };
-    }
-
-    // Handle different webhook events
-    switch (event.type) {
-      case "checkout.session.completed":
-        await handleCheckoutSessionCompleted(event);
-        await handleSubscriptionCheckoutSessionComplted(event);
-
-        break;
-
-      case "payment_intent.succeeded":
-        await handlePaymentIntentSucceeded(event);
-        break;
-
-      case "payment_intent.payment_failed":
-        await handlePaymentIntentFailed(event);
-        break;
-
-      case "charge.refunded":
-        await handleChargeRefunded(event);
-        break;
-
-      case "customer.subscription.created":
-        break;
-
-      case "customer.subscription.updated": {
-        await handleSubscriptionUpdated(event);
-        break;
-      }
-
-      case "customer.subscription.deleted": {
-        await handleSubscriptionDeleted(event);
-        break;
-      }
-
-      case "invoice.payment_failed":
-        // todo: ...Implement PAST_DUE logic as needed
-        break;
-
-      default:
-      console.log(`Unhandled event type: ${event.type}`);
-    }
-
-    return {
-      success: true,
-      data: { received: true },
-      message: "Webhook processed successfully",
-      status: 200,
-    };
-  } catch (error: any) {
-    console.error("Error processing webhook:", error);
-    return {
-      success: false,
-      message: "Failed to process webhook",
-      error: error.message,
-      status: 500,
-    };
+    event = stripe.webhooks.constructEvent(
+      rawBody,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET!
+    );
+  } catch (err: any) {
+    // Load-bearing: signature failures MUST throw 400 so Stripe marks the
+    // request as malformed instead of retrying indefinitely.
+    console.error("Webhook signature verification failed.", err.message);
+    throw new AppError(`Webhook Error: ${err.message}`, 400);
   }
+
+  switch (event.type) {
+    case "checkout.session.completed":
+      await handleCheckoutSessionCompleted(event);
+      await handleSubscriptionCheckoutSessionComplted(event);
+      break;
+
+    case "payment_intent.succeeded":
+      await handlePaymentIntentSucceeded(event);
+      break;
+
+    case "payment_intent.payment_failed":
+      await handlePaymentIntentFailed(event);
+      break;
+
+    case "charge.refunded":
+      await handleChargeRefunded(event);
+      break;
+
+    case "customer.subscription.created":
+      break;
+
+    case "customer.subscription.updated":
+      await handleSubscriptionUpdated(event);
+      break;
+
+    case "customer.subscription.deleted":
+      await handleSubscriptionDeleted(event);
+      break;
+
+    case "invoice.payment_failed":
+      // todo: Implement PAST_DUE logic as needed
+      break;
+
+    default:
+      console.log(`Unhandled event type: ${event.type}`);
+  }
+
+  return { received: true };
 };
 
 /// -------------------------------------------------------------------------------------------------------------
