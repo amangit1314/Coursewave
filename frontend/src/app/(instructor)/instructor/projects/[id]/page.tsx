@@ -155,7 +155,7 @@ const InstructorProjectPage = () => {
 
   return (
     <div
-      className={`min-h-screen  transition-colors duration-300 dark:bg-zinc-900 bg-gradient-to-br from-zinc-50 dark:from-zinc-900  via-blue-50 dark:via-zinc-950 to-purple-50"}`}
+      className={`min-h-screen  transition-colors duration-300 dark:bg-zinc-900 bg-gradient-to-br from-zinc-50 dark:from-zinc-900  via-blue-50 dark:via-zinc-950 to-purple-50`}
     >
       <main className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-0 md:pb-12 md:pt-24">
         {/* Hero Section */}

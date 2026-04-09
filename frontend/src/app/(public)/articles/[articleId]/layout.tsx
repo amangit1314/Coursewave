@@ -1,6 +1,6 @@
 "use client";
 
-import { Footer } from "@/components/LandingPage/footer";
+import { Footer } from "@/components/landing-page/footer";
 import { usePathname } from "next/navigation";
 
 interface ArticleLayoutProps {

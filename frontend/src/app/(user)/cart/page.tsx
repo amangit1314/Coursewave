@@ -36,7 +36,7 @@ import {
   useClearCart,
   useAddToCart,
 } from "@/hooks/useCart";
-import { useAddToWishlist, useRemoveFromWishlist } from "@/hooks/useWishlist";
+import { useAddToWishlist, useRemoveFromWishlist, useWishlist } from "@/hooks/useWishlist";
 import Link from "next/link";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
@@ -55,6 +55,10 @@ const CartPage = () => {
   const { mutate: clearCart, isPending: clearing } = useClearCart();
   const { mutate: addToWishlist } = useAddToWishlist();
   const { mutate: removeFromWishlist } = useRemoveFromWishlist();
+  const { data: wishlistItems } = useWishlist();
+
+  const isInWishlist = (courseId: string) =>
+    wishlistItems?.some((item) => item.id === courseId) ?? false;
 
   // Coupon UI state (handled locally)
   const [couponCode, setCouponCode] = useState("");
@@ -265,7 +269,7 @@ const CartPage = () => {
                             onClick={() =>
                               handleToggleWishlist(
                                 item.Course.id,
-                                false /* TODO: Add real status */
+                                isInWishlist(item.Course.id)
                               )
                             }
                             className="h-9 w-9 rounded-full text-gray-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all hover:scale-110"

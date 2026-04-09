@@ -17,9 +17,50 @@ import {
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import NotificationItem from "../notifications/notification-item";
 import { BellRing, X } from "lucide-react";
 import { CiBellOn } from "react-icons/ci";
+
+function NotificationItem({
+  id,
+  title,
+  icon,
+  color,
+  message,
+  isReaded,
+}: {
+  id: string;
+  title: string;
+  icon: React.ReactNode;
+  color: string;
+  message: string;
+  isReaded: boolean;
+}) {
+  return (
+    <div
+      className={`flex items-start gap-3 p-3 rounded-md mb-2 ${
+        isReaded ? "bg-transparent" : "bg-blue-50 dark:bg-zinc-800"
+      }`}
+    >
+      <div
+        className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center"
+        style={{ backgroundColor: color || "#3b82f6" }}
+      >
+        <span className="text-white text-sm">{icon}</span>
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          {title}
+        </p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+          {message}
+        </p>
+      </div>
+      {!isReaded && (
+        <span className="flex-shrink-0 w-2 h-2 rounded-full bg-blue-500 mt-2" />
+      )}
+    </div>
+  );
+}
 
 export default function Notifications() {
   const notifications = useNotificationsStore((state) => state.notifications);

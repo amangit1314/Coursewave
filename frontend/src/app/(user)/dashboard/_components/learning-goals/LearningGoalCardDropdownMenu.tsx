@@ -10,15 +10,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import React from "react";
-import { LearningGoal } from "./learning-goal";
-import { useZustandStore } from "@/zustand/store";
+import { LearningGoal } from "@/types/learning-goal";
+import { useLearningGoalsStore } from "@/zustand/learningGoalsStore";
 
 const LearningGoalCardDropdownMenu = ({
   learningGoal,
 }: {
   learningGoal: LearningGoal;
 }) => {
-  const { removeLearningGoal } = useZustandStore();
+  const { removeLearningGoal } = useLearningGoalsStore();
 
   return (
     <DropdownMenu>

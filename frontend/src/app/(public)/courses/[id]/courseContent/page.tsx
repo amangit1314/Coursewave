@@ -22,7 +22,7 @@ import { useCoursesStore } from "@/zustand/coursesStore";
 // import CourseVideo from "./_components/CourseVideoNew";
 
 const CourseContentPage = () => {
-  const { courseId } = useParams<{ courseId: string }>();
+  const { id: courseId } = useParams<{ id: string }>();
   const { user } = useUserStore();
   const userId = user?.id;
 

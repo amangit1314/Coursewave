@@ -11,17 +11,10 @@ export function useLogin() {
   return useMutation({
     mutationFn: (data: LoginRequest) => authService.login(data),
     onSuccess: (data) => {
-      console.log("Data on success:", JSON.stringify(data, null, 2));
       const { data: loginData } = data;
-      console.log("loginData:", loginData);
-      console.log("User:", loginData?.user);
-      console.log("Token:", loginData?.accessToken);
-
       loginStore(loginData.user, loginData.accessToken);
-      console.log("✅ [useLogin.onSuccess] Stored in Zustand store");
     },
     onError: (error) => {
-      console.error("❌ [useLogin.onError]", error);
       toast.error(error.message ?? "🚨 Failed to sign ...");
     },
   });

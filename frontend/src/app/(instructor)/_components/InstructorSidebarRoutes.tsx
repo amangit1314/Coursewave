@@ -69,12 +69,12 @@ const InstructorSideBarRoutes = () => {
           href: `/instructor/projects`,
           isLocked: !user,
         },
-        // {
-        //   icon: <MdOndemandVideo size={18} />,
-        //   label: "Live Sessions",
-        //   href: `/instructor/sessions`,
-        //   isLocked: !user,
-        // },
+        {
+          icon: <MdOndemandVideo size={18} />,
+          label: "Live Sessions",
+          href: `/instructor/sessions`,
+          isLocked: !user,
+        },
       ],
     },
     // {

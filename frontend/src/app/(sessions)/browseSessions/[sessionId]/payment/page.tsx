@@ -31,7 +31,7 @@ export default function PaymentPage() {
   const sessionId = params.sessionId as string;
   const { user, isLoggedIn } = useUserStore();
 
-  const [session, setSession] = useState<Session | null>(null);
+  const [session, setSession] = useState<any>(null);
   const [paymentState, setPaymentState] = useState<PaymentState>("loading");
   const [error, setError] = useState("");
 

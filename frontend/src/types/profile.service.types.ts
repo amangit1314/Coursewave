@@ -52,11 +52,6 @@ export interface PrivacySettings {
   allowMessagesFrom: "everyone" | "friends" | "no-one";
 }
 
-export interface ChangePasswordData {
-  oldPassword: string;
-  newPassword: string;
-}
-
 export interface ProfileData {
   name?: string;
   email?: string;

@@ -37,7 +37,136 @@ type CreatedCourseProps = {
   status: "published" | "draft";
 };
 
-const router = useRouter();
+function ImageCell({ imageUrl }: { imageUrl: string }) {
+  const [showPreview, setShowPreview] = useState(false);
+  return (
+    <>
+      <Button
+        variant="ghost"
+        onClick={() => setShowPreview(true)}
+        className="p-1 rounded-full"
+      >
+        <img
+          src={imageUrl}
+          alt="Thumbnail"
+          className="w-10 h-10 rounded-full object-cover border-2 border-gray-300 dark:border-zinc-700 shadow-sm"
+          style={{ minWidth: "2.5rem", minHeight: "2.5rem", background: "#fff" }}
+        />
+      </Button>
+      {showPreview && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70"
+          onClick={() => setShowPreview(false)}
+        >
+          <img
+            src={imageUrl}
+            alt="Preview"
+            className="max-w-full max-h-[90vh] rounded-lg shadow-2xl border-4 border-white"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
+    </>
+  );
+}
+
+function ActionsCell({ course }: { course: CreatedCourseProps }) {
+  const [copied, setCopied] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const router = useRouter();
+  const { mutate: deleteCourse, isPending: isDeleting } = useDeleteCourse();
+
+  const handleDelete = () => setDeleteDialogOpen(true);
+  const confirmDelete = () => {
+    deleteCourse(course.id, {
+      onSuccess: () => {
+        toast.success("Course deleted successfully!");
+        setDeleteDialogOpen(false);
+      },
+      onError: (error) => {
+        toast.error("Failed to delete course. Please try again.");
+      },
+    });
+  };
+
+  const handleCopyId = async () => {
+    try {
+      await navigator.clipboard.writeText(course.id);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      // silently fail
+    }
+  };
+
+  const handleEditRedirection = () => {
+    router.push(`/instructor/courses/${course.id}`);
+  };
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            className="h-9 w-9 p-0 rounded-full shadow flex items-center justify-center bg-gray-100 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 transition-all duration-200 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:scale-105 group"
+          >
+            <span className="sr-only">Actions</span>
+            <MoreHorizontal className="h-5 w-5 text-zinc-500 group-hover:text-blue-700 dark:text-zinc-400 dark:group-hover:text-blue-300 transition-colors" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          className="w-56 rounded-2xl border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 backdrop-blur-xl shadow-lg shadow-black/5 p-2"
+        >
+          <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-700 mb-1">
+            <DropdownMenuLabel className="flex justify-center items-center text-center text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+              Course Actions
+            </DropdownMenuLabel>
+          </div>
+          <DropdownMenuItem
+            className="flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer transition-all hover:bg-blue-50 dark:hover:bg-blue-900/40 group"
+            onClick={handleCopyId}
+          >
+            <span className="flex items-center justify-center h-7 w-7 rounded-full border border-blue-200 dark:border-blue-700 bg-blue-100 dark:bg-blue-900">
+              {copied ? <Check className="h-4 w-4 text-blue-600 dark:text-blue-300" /> : <Copy className="h-4 w-4 text-blue-600 dark:text-blue-300" />}
+            </span>
+            <span className="font-mono text-xs font-semibold text-blue-900 dark:text-blue-200 tracking-wider px-2">
+              {copied ? "Copied!" : course.id.slice(0, 8) + "..."}
+            </span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator className="my-2 bg-gray-100 dark:bg-zinc-800" />
+          <DropdownMenuItem
+            className="flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer transition-all hover:bg-green-50 dark:hover:bg-green-900/40 group"
+            onClick={handleEditRedirection}
+          >
+            <span className="flex items-center justify-center h-7 w-7 rounded-full border border-green-200 dark:border-green-700 bg-green-100 dark:bg-green-900">
+              <Edit className="h-4 w-4 text-green-600 dark:text-green-300" />
+            </span>
+            <span className="text-xs font-semibold text-green-700 dark:text-green-300 px-2">Edit Course</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer transition-all hover:bg-red-50 dark:hover:bg-red-900/40 group"
+            onClick={handleDelete}
+            disabled={isDeleting}
+          >
+            <span className="flex items-center justify-center h-7 w-7 rounded-full border border-red-200 dark:border-red-700 bg-red-100 dark:bg-red-900">
+              {isDeleting ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-600 dark:border-red-400 border-t-transparent" /> : <Trash2 className="h-4 w-4 text-red-600 dark:text-red-400" />}
+            </span>
+            <span className="text-xs font-semibold text-red-700 dark:text-red-400 px-2">{isDeleting ? "Deleting..." : "Delete"}</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <DeleteConfirmationDialog
+        isOpen={deleteDialogOpen}
+        onClose={() => setDeleteDialogOpen(false)}
+        onConfirm={confirmDelete}
+        courseTitle={course.name}
+        isDeleting={isDeleting}
+      />
+    </>
+  );
+}
 
 export const columns: ColumnDef<CreatedCourseProps>[] = [
   // {
@@ -80,43 +209,7 @@ export const columns: ColumnDef<CreatedCourseProps>[] = [
   {
     accessorKey: "image",
     header: "Image",
-    cell: ({ row }) => {
-      const [showPreview, setShowPreview] = useState(false);
-      const imageUrl = row.getValue("image") as string;
-      return (
-        <>
-          <Button
-            variant="ghost"
-            onClick={() => setShowPreview(true)}
-            className="p-1 rounded-full"
-          >
-            <img
-              src={imageUrl}
-              alt="Thumbnail"
-              className="w-10 h-10 rounded-full object-cover border-2 border-gray-300 dark:border-zinc-700 shadow-sm"
-              style={{
-                minWidth: "2.5rem",
-                minHeight: "2.5rem",
-                background: "#fff",
-              }}
-            />
-          </Button>
-          {showPreview && (
-            <div
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/70"
-              onClick={() => setShowPreview(false)}
-            >
-              <img
-                src={imageUrl}
-                alt="Preview"
-                className="max-w-full max-h-[90vh] rounded-lg shadow-2xl border-4 border-white"
-                onClick={(e) => e.stopPropagation()}
-              />
-            </div>
-          )}
-        </>
-      );
-    },
+    cell: ({ row }) => <ImageCell imageUrl={row.getValue("image") as string} />,
   },
 
   {
@@ -347,139 +440,11 @@ export const columns: ColumnDef<CreatedCourseProps>[] = [
 
   {
     id: "actions",
-    cell: ({ row }) => {
-      const course = row.original;
-      const [copied, setCopied] = useState(false);
-      const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-      const { mutate: deleteCourse, isPending: isDeleting } = useDeleteCourse();
-
-      const handleDelete = () => setDeleteDialogOpen(true);
-      const confirmDelete = () => {
-        deleteCourse(course.id, {
-          onSuccess: () => {
-            toast.success("Course deleted successfully!");
-            setDeleteDialogOpen(false);
-          },
-          onError: (error) => {
-            toast.error("Failed to delete course. Please try again.");
-            console.error("Delete course error:", error);
-          },
-        });
-      };
-
-      const handleCopyId = async () => {
-        try {
-          await navigator.clipboard.writeText(course.id);
-          setCopied(true);
-          setTimeout(() => setCopied(false), 2000);
-        } catch (err) {
-          console.error("Failed to copy:", err);
-        }
-      };
-
-      const handleEditRedirection = () => {
-        router.push(`/instructor/courses/${course.id}`);
-      };
-
-      return (
-        <>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="
-                h-9 w-9 p-0 rounded-full shadow
-                flex items-center justify-center
-                bg-gray-100 dark:bg-zinc-800
-                border border-gray-200 dark:border-zinc-700
-                transition-all duration-200
-                hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:scale-105
-                group
-              "
-              >
-                <span className="sr-only">Actions</span>
-                <MoreHorizontal className="h-5 w-5 text-zinc-500 group-hover:text-blue-700 dark:text-zinc-400 dark:group-hover:text-blue-300 transition-colors" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              className="w-56 rounded-2xl border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 backdrop-blur-xl shadow-lg shadow-black/5 p-2"
-            >
-              {/* Header */}
-              <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-700 mb-1">
-                <DropdownMenuLabel className="flex justify-center items-center text-center text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-                  Course Actions
-                </DropdownMenuLabel>
-              </div>
-
-              {/* Copy ID */}
-              <DropdownMenuItem
-                className="flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer transition-all hover:bg-blue-50 dark:hover:bg-blue-900/40 group"
-                onClick={handleCopyId}
-              >
-                <span className="flex items-center justify-center h-7 w-7 rounded-full border border-blue-200 dark:border-blue-700 bg-blue-100 dark:bg-blue-900">
-                  {copied ? (
-                    <Check className="h-4 w-4 text-blue-600 dark:text-blue-300" />
-                  ) : (
-                    <Copy className="h-4 w-4 text-blue-600 dark:text-blue-300" />
-                  )}
-                </span>
-                <span className="font-mono text-xs font-semibold text-blue-900 dark:text-blue-200 tracking-wider px-2">
-                  {copied ? "Copied!" : course.id.slice(0, 8) + "..."}
-                </span>
-              </DropdownMenuItem>
-
-              <DropdownMenuSeparator className="my-2 bg-gray-100 dark:bg-zinc-800" />
-
-              {/* Edit Action */}
-              <DropdownMenuItem
-                className="flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer transition-all hover:bg-green-50 dark:hover:bg-green-900/40 group"
-                onClick={handleEditRedirection}
-              >
-                <span className="flex items-center justify-center h-7 w-7 rounded-full border border-green-200 dark:border-green-700 bg-green-100 dark:bg-green-900">
-                  <Edit className="h-4 w-4 text-green-600 dark:text-green-300" />
-                </span>
-                <span className="text-xs font-semibold text-green-700 dark:text-green-300 px-2">
-                  Edit Course
-                </span>
-              </DropdownMenuItem>
-
-              {/* Delete Action */}
-              <DropdownMenuItem
-                className="flex items-center gap-2 px-3 py-2 rounded-full cursor-pointer transition-all hover:bg-red-50 dark:hover:bg-red-900/40 group"
-                onClick={handleDelete}
-                disabled={isDeleting}
-              >
-                <span className="flex items-center justify-center h-7 w-7 rounded-full border border-red-200 dark:border-red-700 bg-red-100 dark:bg-red-900">
-                  {isDeleting ? (
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-red-600 dark:border-red-400 border-t-transparent" />
-                  ) : (
-                    <Trash2 className="h-4 w-4 text-red-600 dark:text-red-400" />
-                  )}
-                </span>
-                <span className="text-xs font-semibold text-red-700 dark:text-red-400 px-2">
-                  {isDeleting ? "Deleting..." : "Delete"}
-                </span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* Delete Confirmation Dialog */}
-          <DeleteConfirmationDialog
-            isOpen={deleteDialogOpen}
-            onClose={() => setDeleteDialogOpen(false)}
-            onConfirm={confirmDelete}
-            courseTitle={course.name}
-            isDeleting={isDeleting}
-          />
-        </>
-      );
-    },
+    cell: ({ row }) => <ActionsCell course={row.original} />,
   },
 ];
 
-// Updated DeleteConfirmationDialog component with loading state
+// DeleteConfirmationDialog component
 const DeleteConfirmationDialog = ({
   isOpen,
   onClose,

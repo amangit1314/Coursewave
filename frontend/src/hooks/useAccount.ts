@@ -44,18 +44,7 @@ export function useDeleteAccount() {
   });
 }
 
-export function useUpdateProfile() {
-  const updateUser = useUserStore((s) => s.updateUser);
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (data: any) => profileService.updateProfile(data),
-    onSuccess: (data) => {
-      updateUser(data.user); // todo: verify this
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-    },
-  });
-}
+// useUpdateProfile is in useProfile.ts — single source of truth
 
 export const useEnrolledCourses = () => {
   const fetchEnrolledCourses = async () => {

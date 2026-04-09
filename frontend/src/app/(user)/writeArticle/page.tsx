@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { dmSans } from "@/lib/config/fonts";
 import { useRouter } from "next/navigation";
+import { useCreateArticle } from "@/hooks/useArticles";
 
 // Dynamically import EditorJS and tools on the client only
 const EditorJSDynamic = dynamic(
@@ -135,6 +136,7 @@ const PremiumArticleEditor = () => {
   const [isPublishing, setIsPublishing] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
+  const { mutateAsync: createArticle } = useCreateArticle();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFeaturedImageUpload = async (
@@ -173,10 +175,23 @@ const PremiumArticleEditor = () => {
   };
 
   const handleSave = async () => {
+    if (!user?.id) {
+      toast.error("User not authenticated");
+      return;
+    }
+    if (!title.trim()) {
+      toast.error("Please enter a title");
+      return;
+    }
     setIsSaving(true);
     try {
-      // Here you would call your API to save as draft
-      // data: outputData
+      await createArticle({
+        title: title.trim(),
+        content: JSON.stringify(outputData),
+        thumbnailUrl: featuredImage || null,
+        estimatedReadingTime: `${Math.max(1, Math.ceil((outputData?.blocks?.length ?? 0) / 3))} min`,
+        authorId: user.id,
+      });
       toast.success("Draft saved!");
     } catch {
       toast.error("Failed to save draft");
@@ -196,8 +211,13 @@ const PremiumArticleEditor = () => {
     }
     setIsPublishing(true);
     try {
-      // Replace with your publish API
-      // send { title, content: JSON.stringify(outputData), thumbnailUrl: featuredImage, userId: user.id }
+      await createArticle({
+        title: title.trim(),
+        content: JSON.stringify(outputData),
+        thumbnailUrl: featuredImage || null,
+        estimatedReadingTime: `${Math.max(1, Math.ceil((outputData?.blocks?.length ?? 0) / 3))} min`,
+        authorId: user.id,
+      });
       toast.success("Article Published Successfully!");
       setTimeout(() => {
         router.push("/articles");

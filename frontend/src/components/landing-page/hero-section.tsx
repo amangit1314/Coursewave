@@ -7,7 +7,7 @@ import { ArrowRight, Play, Sparkles, Users, Star } from "lucide-react";
 import { dmSans } from "@/lib/config/fonts";
 import { Button } from "@/components/ui/button";
 
-const fadeUp = {
+const fadeUp: any = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
     opacity: 1,

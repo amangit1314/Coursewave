@@ -38,7 +38,7 @@ import {
   Edit,
 } from "lucide-react";
 import { supabase } from "@/lib/config/supabase";
-// import { Chapter } from "@/types/course-details-api-response";
+import { generateQuizFromContent } from "@/lib/ai/quiz-generator";
 import { CustomSwitch } from "./PublishCourseForm";
 import { dmSans } from "@/lib/config/fonts";
 import RichTextEditor from "./RichTextEditor";
@@ -72,19 +72,6 @@ export const EditChapterSheet = ({
   isLoading = false,
 }: EditChapterSheetProps) => {
   if (!chapter) return null;
-
-  // In EditChapterSheet.tsx - at the top of component
-  // ✅ Only log when chapter changes
-  useEffect(() => {
-    console.log("📋 Original chapter data:", {
-    title: chapter.title,
-      description: chapter.description,
-        contentType: chapter.contentType,
-          content: chapter.content,
-            isPublished: chapter.isPublished,
-              isFree: chapter.isFree,
-    });
-}, [chapter]); // Only re-run when chapter object changes
 
 const [formData, setFormData] = useState({
   title: chapter.title,
@@ -187,58 +174,6 @@ const validateForm = (): boolean => {
   return Object.keys(errors).length === 0;
 };
 
-// const handleSubmit = async (e: React.FormEvent) => {
-//   e.preventDefault();
-
-//   if (!validateForm()) {
-//     toast.error("Please fix the form errors before saving");
-//     return;
-//   }
-
-//   if (!chapter) return;
-
-//   let finalContent = {};
-
-//   try {
-//     // Structure content based on content type
-//     if (formData.contentType === "text") {
-//       finalContent = {
-//         text: formData.content,
-//       };
-//     } else if (formData.contentType === "video") {
-//       finalContent = {
-//         videoUrl: formData.videoUrl,
-//         notes: formData.content,
-//       };
-//     } else if (formData.contentType === "quiz") {
-//       finalContent = {
-//         questions: quizQuestions,
-//         totalPoints: quizQuestions.reduce((sum, q) => sum + q.points, 0),
-//         totalQuestions: quizQuestions.length,
-//       };
-//     }
-
-//     // Prepare the chapter data for update
-//     const chapterData: Partial<Chapter> = {
-//       id: chapter.id,
-//       title: formData.title,
-//       description: formData.description,
-//       contentType: formData.contentType,
-//       content: JSON.stringify(finalContent),
-//       isPublished: formData.isPublished,
-//       isFree: formData.isFree,
-//     };
-
-//     await onSave(chapterData);
-//   } catch (error) {
-//     console.error("Error preparing chapter data:", error);
-//     toast.error("Failed to prepare chapter data");
-//   }
-// };
-
-// Video upload handler
-
-// In EditChapterSheet.tsx - handleSubmit function
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
@@ -264,8 +199,6 @@ const handleSubmit = async (e: React.FormEvent) => {
         notes: formData.content || "", // Optional notes
       };
 
-      console.log("🎥 Video content:", finalContent);
-
       // Validate that videoUrl exists for video content
       if (!formData.videoUrl) {
         toast.error("Video URL is required for video content");
@@ -289,8 +222,6 @@ const handleSubmit = async (e: React.FormEvent) => {
       isPublished: formData.isPublished,
       isFree: formData.isFree,
     };
-
-    console.log("📤 Final chapter data to send:", chapterData);
 
     await onSave(chapterData);
   } catch (error) {
@@ -383,6 +314,22 @@ const addQuestion = () => {
     points: 1,
   };
   setQuizQuestions([...quizQuestions, newQuestion]);
+};
+
+const [isGeneratingQuiz, setIsGeneratingQuiz] = useState(false);
+
+const handleAIGenerateQuiz = async () => {
+  try {
+    setIsGeneratingQuiz(true);
+    const content = formData.content || formData.title;
+    const questions = await generateQuizFromContent(content, formData.title, 5);
+    setQuizQuestions(questions);
+    toast.success(`Generated ${questions.length} quiz questions`);
+  } catch (err) {
+    toast.error("Failed to generate quiz. Check your Gemini API key.");
+  } finally {
+    setIsGeneratingQuiz(false);
+  }
 };
 
 const removeQuestion = (id: string) => {
@@ -1055,15 +1002,30 @@ return (
                   ))}
                 </div>
 
-                <Button
-                  type="button"
-                  onClick={addQuestion}
-                  variant="outline"
-                  className="w-full border-dashed"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Question
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    onClick={addQuestion}
+                    variant="outline"
+                    className="flex-1 border-dashed"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Question
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={handleAIGenerateQuiz}
+                    disabled={isGeneratingQuiz}
+                    className="flex-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white"
+                  >
+                    {isGeneratingQuiz ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Sparkles className="h-4 w-4 mr-2" />
+                    )}
+                    AI Generate
+                  </Button>
+                </div>
 
                 {quizQuestions.length > 0 && (
                   <div className="bg-blue-50 dark:bg-blue-950/20 p-3 rounded-lg">
@@ -1113,22 +1075,6 @@ return (
                     Make this chapter visible to students
                   </p>
                 </div>
-                {/* <Switch
-                    checked={formData.isPublished}
-                    onCheckedChange={(checked) =>
-                      handleInputChange("isPublished", checked)
-                    }
-                    className="data-[state=checked]:bg-green-500/30 data-[state=unchecked]:bg-gray-200/30 dark:data-[state=unchecked]:bg-gray-700/30 [&>span]:bg-green-500 dark:[&>span]:bg-green-400"
-                  /> */}
-                {/* <CustomSwitch
-                    checked={formData.isPublished}
-                    onCheckedChange={(checked) => {
-                      console.log("Current isPublished:", formData.isPublished);
-                      console.log("New value:", checked);
-                      handleInputChange("isPublished", checked);
-                    }}
-                    // className="data-[state=checked]:bg-green-500/30 data-[state=unchecked]:bg-gray-200/30 dark:data-[state=unchecked]:bg-gray-700/30 [&>span]:bg-green-500 dark:[&>span]:bg-green-400"
-                  /> */}
                 <CustomSwitch
                   checked={formData.isPublished}
                   color={"green"}

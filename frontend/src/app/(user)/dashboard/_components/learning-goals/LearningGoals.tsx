@@ -1,17 +1,15 @@
 import React from "react";
 import { TargetIcon } from "lucide-react";
 import { dmSans } from "@/lib/config/fonts";
-import { LearningGoal } from "./learning-goal";
-import { useZustandStore } from "@/zustand/store";
+import { LearningGoal } from "@/types/learning-goal";
+import { useLearningGoalsStore } from "@/zustand/learningGoalsStore";
 
 import LearningGoalCard from "./LearningGoalCard";
 import LearningGoalsSkeleton from "./LearningGoalsSkeleton";
 import AddLearningGoalButton from "./AddLearningGoal";
 
 const LearningGoals = () => {
-  const learningGoals = useZustandStore((state: any) => state.learningGoals);
-  const isLearningGoalsLoading = useZustandStore((state: any) => state.loading);
-  const learningGoalsError = useZustandStore((state: any) => state.error);
+  const learningGoals = useLearningGoalsStore((s) => s.learningGoals);
 
   return (
     <div className="w-full space-y-6">
@@ -36,28 +34,7 @@ const LearningGoals = () => {
       </div>
 
       <div className="space-y-3">
-        {isLearningGoalsLoading ? (
-          <LearningGoalsSkeleton />
-        ) : learningGoalsError ? (
-          <div className="rounded-2xl bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800">
-            <div className="flex items-start">
-              <div className="flex-shrink-0">
-                <TargetIcon className="h-5 w-5 text-red-500" />
-              </div>
-              <div className="ml-3">
-                <h3
-                  className={`${dmSans.className} text-sm font-medium text-red-800 dark:text-red-300 `}
-                >
-                  Error Loading Goals
-                </h3>
-                <div className="mt-1 text-sm text-red-700 dark:text-red-400">
-                  <p>{learningGoalsError}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-3">
+        <div className="space-y-3">
             {learningGoals?.length > 0 ? (
               <>
                 {learningGoals.map((goal: LearningGoal) => (
@@ -83,7 +60,6 @@ const LearningGoals = () => {
               </div>
             )}
           </div>
-        )}
       </div>
     </div>
   );

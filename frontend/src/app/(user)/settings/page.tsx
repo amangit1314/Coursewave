@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -9,18 +8,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Avatar } from "@/components/ui/avatar";
 import {
   Bell,
-  Lock,
-  Palette,
-  Shield,
-  Eye,
-  EyeOff,
-  Check,
   User,
 } from "lucide-react";
 import { usePreferencesStore } from "@/zustand/preferencesStore";
@@ -146,15 +136,6 @@ const CustomSwitch = ({
 // ---------------- Settings Page ----------------
 export default function SettingsPage() {
   const preferences = usePreferencesStore();
-  const [showPassword, setShowPassword] = useState({
-    current: false,
-    new: false,
-    confirm: false,
-  });
-
-  const togglePasswordVisibility = (field: "current" | "new" | "confirm") => {
-    setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }));
-  };
 
   // Card configuration for dynamic rendering
   const settingsConfig = [

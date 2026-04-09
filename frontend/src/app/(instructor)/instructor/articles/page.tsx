@@ -1,21 +1,16 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-export const fetchCache = "force-no-store";
-
 import React from "react";
 import toast from "react-hot-toast";
-import { Flex, Button } from "@tremor/react";
 
-import { columns } from "./_components/CreatedArticlesColumns"; // You'll need to create this
+import { columns } from "./_components/CreatedArticlesColumns";
 import { useUserStore } from "@/zustand/userStore";
 import { useRouter } from "next/navigation";
 import { FileTextIcon, PencilIcon } from "lucide-react";
 import { IoAddCircleOutline } from "react-icons/io5";
-import { useCreatedArticles } from "@/hooks/useArticles"; // Your existing hook
+import { useCreatedArticles } from "@/hooks/useArticles";
 import { DataTable } from "../courses/_components/DataTable";
 
-// Types for articles (adjust based on your Blog model)
 type Article = {
   id: string;
   title: string;
@@ -51,14 +46,12 @@ const CreatedArticles = () => {
   const authorId = user?.id;
   const router = useRouter();
 
-  // Use your existing hook for articles
   const {
     data: createdArticles,
     isLoading: isCreatedArticlesLoading,
     error: createdArticlesError,
   } = useCreatedArticles();
 
-  // Transform API response into DataTable props
   const transformedArticles = React.useMemo(() => {
     if (!createdArticles) return [];
 
@@ -71,29 +64,23 @@ const CreatedArticles = () => {
       readTime: article.readTime || 0,
       status: article.isPublished ? "published" : "draft",
       publishedAt: article.publishedAt,
-      // You can add views and likes if you have them in your schema
-      views: 0, // Replace with actual data from BlogView if available
-      likes: 0, // Replace with actual data from BlogLike if available
+      views: 0,
+      likes: 0,
     });
 
     return (createdArticles as Article[]).map(toCreatedArticleProps);
   }, [createdArticles, authorId]);
 
-  // Toast notifications for error/success
   React.useEffect(() => {
     if (createdArticlesError) {
       toast.error(`Error fetching articles: ${createdArticlesError}`);
     }
-    if (createdArticles && !isCreatedArticlesLoading) {
-      toast.success("Articles fetched successfully 📝 ...");
-    }
-  }, [createdArticlesError, createdArticles, isCreatedArticlesLoading]);
+  }, [createdArticlesError]);
 
   return (
     <div className="h-full pt-7 dark:bg-zinc-900">
       <div className="bg-white space-y-4 dark:bg-zinc-800 rounded-3xl shadow-sm border border-zinc-200 dark:border-zinc-700 p-4 sm:p-6">
-        <Flex className="flex-wrap gap-4">
-          {/* Header section */}
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3">
             <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex-shrink-0">
               <FileTextIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
@@ -108,17 +95,15 @@ const CreatedArticles = () => {
             </div>
           </div>
 
-          {/* Create button */}
-          <Button
+          <button
             onClick={() => router.push(`/writeArticle`)}
-            className="ml-auto flex items-center gap-1 border-none rounded-lg bg-blue-500 p-2 font-medium text-white shadow-xl hover:bg-blue-700 hover:font-semibold"
+            className="flex items-center gap-1 rounded-lg bg-blue-500 px-4 py-2 font-medium text-white shadow-xl hover:bg-blue-700"
           >
             <IoAddCircleOutline size={22} />
             <span className="hidden sm:inline">Create Article</span>
-          </Button>
-        </Flex>
+          </button>
+        </div>
 
-        {/* Table */}
         <div className="overflow-x-auto">
           {isCreatedArticlesLoading ? (
             <p className="text-sm text-zinc-500 dark:text-zinc-400">
@@ -145,12 +130,12 @@ const CreatedArticles = () => {
                 Share your knowledge and insights by creating your first
                 article.
               </p>
-              <Button
+              <button
                 onClick={() => router.push(`/writeArticle`)}
-                className="bg-blue-500 hover:bg-blue-600 border-none text-white rounded-xl px-4 py-2 font-medium"
+                className="bg-blue-500 hover:bg-blue-600 text-white rounded-xl px-4 py-2 font-medium"
               >
                 Create Your First Article
-              </Button>
+              </button>
             </div>
           )}
         </div>

@@ -24,7 +24,7 @@ const CourseRatingsSection = dynamic(
   { ssr: false }
 );
 const Footer = dynamic(
-  () => import("@/components/LandingPage/footer").then((m) => ({ default: m.Footer })),
+  () => import("@/components/landing-page/footer").then((m) => ({ default: m.Footer })),
   { ssr: false }
 );
 

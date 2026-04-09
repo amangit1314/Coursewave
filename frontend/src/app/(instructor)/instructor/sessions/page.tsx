@@ -1,83 +1,11 @@
-// import { SessionCard } from "@/app/(sessions)/browseSessions/_components/SessionCard";
-// import { Session } from "@/types/session";
-// import React from "react";
-
-// function CreatedSessions() {
-//   const dummySession: Session = {
-//     id: "session_dummy_id",
-//     title: "Intro to Full-Stack Development",
-//     description:
-//       "A demo session for learning how to build full-stack apps with Next.js.",
-//     imageUrl: "/assets/images/cover/cover-01.png", // or null
-//     status: "UPCOMING", // 'UPCOMING' | 'LIVE' | 'ENDED'
-//     type: "GROUP", // 'ONE_TO_ONE' | 'GROUP'
-//     rtcType: "WEBRTC", // 'WEBRTC' | 'ZOOM' | 'GOOGLE_MEET'
-//     rtcRoomId: "dummy_room_id",
-//     rtcToken: "dummy_rtc_token",
-//     rtcConfig: null, // or {} if you want
-//     isFree: false,
-//     price: 49,
-//     currency: "USD",
-//     scheduledAt: new Date().toISOString(),
-//     duration: 60, // in minutes
-//     endsAt: new Date(Date.now() + 60 * 60000).toISOString(), // scheduledAt + 1 hour
-//     instructorId: "instructor_dummy_id",
-//     createdAt: new Date().toISOString(),
-//     updatedAt: new Date().toISOString(),
-
-//     instructor: {
-//       id: "instructor_dummy_id",
-//       userId: "user_dummy_id",
-//       bio: "Expert in web development and teaching.",
-//       expertise: ["Next.js", "TypeScript", "React"],
-//       socialLinks: {
-//         twitter: "https://twitter.com/dummy",
-//         linkedin: "https://linkedin.com/in/dummy",
-//       },
-//       createdAt: new Date().toISOString(),
-//       updatedAt: new Date().toISOString(),
-//       user: {
-//         name: "John Doe",
-//         profileImageUrl: null,
-//       },
-//     },
-
-//     _count: {
-//       bookings: 10,
-//     },
-//   };
-
-//   return (
-//     <div className="mx-12 pt-[80px]">
-//       <div className="grid h-full w-full grid-cols-4 gap-4 rounded-xl bg-gray-200 p-8 dark:bg-gray-700">
-//         <SessionCard
-//           // sessionImage={"/assets/images/cover/cover-01.png"}
-//           // sessionName={"Webinar on building a course website"}
-//           // instructor={"Aman Soni"}
-//           session={dummySession}
-//           isBooked={false}
-//         />
-//         {/* <SessionCard />
-//           <SessionCard />
-//           <SessionCard />
-//           <SessionCard />
-//           <SessionCard /> */}
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default CreatedSessions;
-
-/// ============================================================
-
 "use client";
 
-import { SessionCard } from "@/app/(sessions)/browseSessions/_components/SessionCard";
 import { Session, SessionStatus } from "@/types/session";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { useSessions } from "@/hooks/useSessions";
 import { Button } from "@/components/ui/button";
-import { Plus, Calendar, Video, Users, Clock, Filter } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Plus, Calendar, Video, Users, Clock, Filter, Star, Play, CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -90,160 +18,84 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils/utils";
 import { dmSans } from "@/lib/config/fonts";
+import Image from "next/image";
+import Link from "next/link";
+
+function SessionCard({
+  session,
+  showActions,
+  onEdit,
+  onViewAnalytics,
+}: {
+  session: Session;
+  isBooked?: boolean;
+  showActions?: boolean;
+  onEdit?: () => void;
+  onViewAnalytics?: () => void;
+}) {
+  const isLive = session.status === "LIVE";
+  const isPast = new Date(session.scheduledAt).getTime() < Date.now();
+  const isGroup = session.type === "GROUP";
+  const formattedDate = new Date(session.scheduledAt).toLocaleString("en-US", {
+    month: "short", day: "numeric", hour: "numeric", minute: "2-digit",
+  });
+
+  return (
+    <Card className="group overflow-hidden hover:shadow-lg transition-all">
+      <div className="relative aspect-[16/9]">
+        <Image
+          src={session.imageUrl || "/assets/images/cards/default-session.png"}
+          alt={session.title}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          unoptimized
+        />
+        {isLive && (
+          <Badge className="absolute top-3 left-3 bg-red-500 text-white border-0">
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse mr-1" />
+            LIVE
+          </Badge>
+        )}
+        <Badge className={`absolute top-3 right-3 border-0 text-[10px] ${isGroup ? "bg-purple-500/90 text-white" : "bg-blue-500/90 text-white"}`}>
+          {isGroup ? "Group" : "1-on-1"}
+        </Badge>
+      </div>
+      <CardContent className="p-4 space-y-3">
+        <div className="flex items-center gap-2 text-xs text-gray-500">
+          <Calendar className="h-3 w-3" />
+          <span>{formattedDate}</span>
+          <span className="ml-auto">{session._count?.bookings || 0} booked</span>
+        </div>
+        <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-2 leading-snug">
+          {session.title}
+        </h3>
+        <div className="text-sm font-medium">
+          {session.isFree ? (
+            <span className="text-green-600">Free</span>
+          ) : (
+            <span>{session.currency} {session.price}</span>
+          )}
+        </div>
+        {showActions && (
+          <div className="flex gap-2 pt-1">
+            <Button variant="outline" size="sm" className="flex-1" onClick={onEdit}>
+              Edit
+            </Button>
+            <Button variant="outline" size="sm" className="flex-1" onClick={onViewAnalytics}>
+              Analytics
+            </Button>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
 
 function CreatedSessions() {
   const router = useRouter();
-  const [sessions, setSessions] = useState<Session[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { sessions, isLoading } = useSessions();
   const [filter, setFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("newest");
-
-  // Mock data - replace with actual API call
-  const dummySessions: Session[] = [
-    {
-      id: "session_1",
-      title: "Intro to Full-Stack Development",
-      description:
-        "A demo session for learning how to build full-stack apps with Next.js.",
-      imageUrl: "/assets/images/cover/cover-01.png",
-      status: "UPCOMING",
-      type: "GROUP",
-      rtcType: "WEBRTC",
-      rtcRoomId: "dummy_room_id_1",
-      rtcToken: "dummy_rtc_token_1",
-      rtcConfig: null,
-      isFree: false,
-      price: 49,
-      currency: "USD",
-      scheduledAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Tomorrow
-      duration: 60,
-      endsAt: new Date(Date.now() + 25 * 60 * 60 * 1000).toISOString(),
-      instructorId: "instructor_dummy_id",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      instructor: {
-        id: "instructor_dummy_id",
-        userId: "user_dummy_id",
-        bio: "Expert in web development and teaching.",
-        expertise: ["Next.js", "TypeScript", "React"],
-        socialLinks: {
-          twitter: "https://twitter.com/dummy",
-          linkedin: "https://linkedin.com/in/dummy",
-        },
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        user: {
-          name: "John Doe",
-          profileImageUrl: null,
-        },
-      },
-      _count: {
-        bookings: 10,
-      },
-    },
-    {
-      id: "session_2",
-      title: "Advanced React Patterns Workshop",
-      description: "Deep dive into advanced React patterns and best practices.",
-      imageUrl: "/assets/images/cover/cover-02.png",
-      status: "LIVE",
-      type: "ONE_TO_ONE",
-      rtcType: "WEBRTC",
-      rtcRoomId: "dummy_room_id_2",
-      rtcToken: "dummy_rtc_token_2",
-      rtcConfig: null,
-      isFree: true,
-      price: 0,
-      currency: "USD",
-      scheduledAt: new Date().toISOString(),
-      duration: 90,
-      endsAt: new Date(Date.now() + 90 * 60 * 1000).toISOString(),
-      instructorId: "instructor_dummy_id",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      instructor: {
-        id: "instructor_dummy_id",
-        userId: "user_dummy_id",
-        bio: "Expert in web development and teaching.",
-        expertise: ["Next.js", "TypeScript", "React"],
-        socialLinks: {
-          twitter: "https://twitter.com/dummy",
-          linkedin: "https://linkedin.com/in/dummy",
-        },
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        user: {
-          name: "John Doe",
-          profileImageUrl: null,
-        },
-      },
-      _count: {
-        bookings: 5,
-      },
-    },
-    {
-      id: "session_3",
-      title: "TypeScript Masterclass",
-      description: "Complete TypeScript guide from basics to advanced topics.",
-      imageUrl: "/assets/images/cover/cover-03.png",
-      status: "COMPLETED" as SessionStatus,
-      type: "GROUP",
-      rtcType: "WEBRTC",
-      rtcRoomId: "dummy_room_id_3",
-      rtcToken: "dummy_rtc_token_3",
-      rtcConfig: null,
-      isFree: false,
-      price: 79,
-      currency: "USD",
-      scheduledAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
-      duration: 120,
-      endsAt: new Date(
-        Date.now() - 2 * 24 * 60 * 60 * 1000 + 120 * 60 * 1000
-      ).toISOString(),
-      instructorId: "instructor_dummy_id",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      instructor: {
-        id: "instructor_dummy_id",
-        userId: "user_dummy_id",
-        bio: "Expert in web development and teaching.",
-        expertise: ["Next.js", "TypeScript", "React"],
-        socialLinks: {
-          twitter: "https://twitter.com/dummy",
-          linkedin: "https://linkedin.com/in/dummy",
-        },
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        user: {
-          name: "John Doe",
-          profileImageUrl: null,
-        },
-      },
-      _count: {
-        bookings: 25,
-      },
-    },
-  ];
-
-  useEffect(() => {
-    // Simulate API call
-    const fetchSessions = async () => {
-      setIsLoading(true);
-      try {
-        // Replace with actual API call
-        // const response = await fetch('/api/instructor/sessions');
-        // const data = await response.json();
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        setSessions(dummySessions);
-      } catch (error) {
-        console.error("Error fetching sessions:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchSessions();
-  }, []);
 
   const filteredAndSortedSessions = sessions
     .filter((session) => {
@@ -269,7 +121,7 @@ function CreatedSessions() {
     total: sessions.length,
     upcoming: sessions.filter((s) => s.status === "UPCOMING").length,
     live: sessions.filter((s) => s.status === "LIVE").length,
-    completed: sessions.filter((s) => s.status === "COMPLETED" as SessionStatus).length,
+    completed: sessions.filter((s) => (s.status as string) === "COMPLETED").length,
   };
 
   const SessionSkeleton = () => (
@@ -366,68 +218,7 @@ function CreatedSessions() {
         </div>
 
         {/* Filters and Controls */}
-        {/* <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-          <div className="flex flex-wrap items-center gap-3">
-            <Badge
-              variant={filter === "all" ? "default" : "outline"}
-              className={cn(
-                "cursor-pointer",
-                filter === "all" &&
-                  "bg-blue-100 text-blue-800 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300"
-              )}
-              onClick={() => setFilter("all")}
-            >
-              All ({stats.total})
-            </Badge>
-            <Badge
-              variant={filter === "upcoming" ? "default" : "outline"}
-              className={cn(
-                "cursor-pointer",
-                filter === "upcoming" &&
-                  "bg-green-100 text-green-800 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-300"
-              )}
-              onClick={() => setFilter("upcoming")}
-            >
-              Upcoming ({stats.upcoming})
-            </Badge>
-            <Badge
-              variant={filter === "live" ? "default" : "outline"}
-              className={cn(
-                "cursor-pointer",
-                filter === "live" &&
-                  "bg-orange-100 text-orange-800 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-300"
-              )}
-              onClick={() => setFilter("live")}
-            >
-              Live ({stats.live})
-            </Badge>
-            <Badge
-              variant={filter === "completed" ? "default" : "outline"}
-              className={cn(
-                "cursor-pointer",
-                filter === "completed" &&
-                  "bg-purple-100 text-purple-800 hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-300"
-              )}
-              onClick={() => setFilter("completed")}
-            >
-              Completed ({stats.completed})
-            </Badge>
-          </div>
-
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[180px]">
-              <Filter className="h-4 w-4" />
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Newest First</SelectItem>
-              <SelectItem value="oldest">Oldest First</SelectItem>
-              <SelectItem value="popular">Most Popular</SelectItem>
-            </SelectContent>
-          </Select>
-        </div> */}
-
-         <div className="mb-6 flex  items-start justify-between gap-4 sm:flex-row sm:items-center">
+        <div className="mb-6 flex items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div className="flex flex-wrap items-center gap-3">
             <Badge
               variant={filter === "all" ? "default" : "outline"}

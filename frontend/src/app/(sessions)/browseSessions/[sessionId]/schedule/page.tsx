@@ -52,7 +52,7 @@ export default function SchedulePage() {
   const sessionId = params.sessionId as string;
   const { isLoggedIn } = useUserStore();
 
-  const [session, setSession] = useState<Session | null>(null);
+  const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -233,7 +233,7 @@ export default function SchedulePage() {
             <div className="flex gap-3 justify-center pt-2">
               <Button
                 variant="outline"
-                onClick={() => router.push("/upcomingSessions")}
+                onClick={() => router.push("/mySessions")}
               >
                 View Upcoming
               </Button>

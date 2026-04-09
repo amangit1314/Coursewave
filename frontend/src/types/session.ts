@@ -1,4 +1,4 @@
-export type SessionStatus = 'UPCOMING' | 'LIVE' | 'ENDED';
+export type SessionStatus = 'UPCOMING' | 'LIVE' | 'ENDED' | 'COMPLETED';
 export type SessionType = 'ONE_TO_ONE' | 'GROUP';
 export type RtcType = 'WEBRTC' | 'ZOOM' | 'GOOGLE_MEET';
 

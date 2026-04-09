@@ -44,7 +44,7 @@ export const CourseDetailsRightSection = ({ course }: { course: Course }) => {
   const displayPrice = course?.isFree
     ? "Free"
     : hasDiscount
-      ? formatPrice(course.dealPrice)
+      ? formatPrice(course.dealPrice ?? 0)
       : course?.price && course.price > 0
         ? formatPrice(course.price)
         : COURSE_MESSAGES.PRICE_NOT_SET;
@@ -192,7 +192,7 @@ export const CourseDetailsRightSection = ({ course }: { course: Course }) => {
             </div>
             <div className="py-2">
               <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight whitespace-nowrap">
-                {(course?.level?.replace(/_/g, " ") ?? "All Levels").replace("ALL LEVELS", "All")}
+                {(((course as any)?.level?.replace(/_/g, " ")) ?? "All Levels").replace("ALL LEVELS", "All")}
               </p>
               <p className="text-[11px] text-gray-500 dark:text-gray-400 font-medium mt-0.5 flex items-center justify-center gap-1">
                 <BarChart3 className="h-3 w-3 text-emerald-500" />

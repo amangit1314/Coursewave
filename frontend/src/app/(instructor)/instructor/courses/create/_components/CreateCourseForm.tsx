@@ -24,6 +24,7 @@ import {
 import { useCreateCourse } from "@/hooks/useCourses";
 import { CreateCourseRequest } from "@/types/courses.service.types";
 import { supabase } from "@/lib/config/supabase";
+import { generateCourseDescription } from "@/lib/ai/course-description-generator";
 import toast from "react-hot-toast";
 import { dmSans } from "@/lib/config/fonts";
 import TagInput from "./TagInput";
@@ -87,6 +88,34 @@ const CreateCourseForm = () => {
     formState: { errors, isValid },
   } = form;
   const watchedFields = watch();
+  const [isAIGenerating, setIsAIGenerating] = useState(false);
+
+  const handleAIDescription = async () => {
+    const title = form.getValues("title");
+    if (!title || title.length < 3) {
+      form.setError("title", { message: "Enter a course title first" });
+      return;
+    }
+    try {
+      setIsAIGenerating(true);
+      const category = form.getValues("courseCategories");
+      const result = await generateCourseDescription(title, category);
+      form.setValue("courseDescription", result.description, { shouldValidate: true });
+      if (result.learningOutcomes?.length) {
+        form.setValue("whatYouWillLearn", result.learningOutcomes.join("\n"), { shouldValidate: true });
+      }
+      if (result.prerequisites?.length) {
+        form.setValue("prerequisits", result.prerequisites.join("\n"), { shouldValidate: true });
+      }
+      if (result.targetAudience) {
+        form.setValue("thisCourseIsFor", result.targetAudience, { shouldValidate: true });
+      }
+    } catch {
+      // Silently fail — user can still type manually
+    } finally {
+      setIsAIGenerating(false);
+    }
+  };
 
   const steps = [
     {
@@ -395,11 +424,26 @@ const CreateCourseForm = () => {
 
                 {/* Course Description */}
                 <div className="space-y-2">
-                  <label
-                    className={`${dmSans.className} block text-sm font-semibold text-gray-700 dark:text-zinc-200`}
-                  >
-                    Course Description *
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label
+                      className={`${dmSans.className} block text-sm font-semibold text-gray-700 dark:text-zinc-200`}
+                    >
+                      Course Description *
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleAIDescription}
+                      disabled={isAIGenerating}
+                      className="flex items-center gap-1.5 px-3 py-1 text-xs font-medium text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-500/10 rounded-full hover:bg-purple-100 dark:hover:bg-purple-500/20 transition-colors disabled:opacity-50"
+                    >
+                      {isAIGenerating ? (
+                        <span className="h-3 w-3 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Sparkles className="h-3 w-3" />
+                      )}
+                      {isAIGenerating ? "Generating..." : "AI Generate"}
+                    </button>
+                  </div>
                   <textarea
                     {...form.register("courseDescription")}
                     rows={6}

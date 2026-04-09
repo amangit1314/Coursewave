@@ -36,13 +36,11 @@ export const useLearningGoalsStore = create<
         }));
       },
       markLearningGoalAsDone: (id: string, isDone: boolean) => {
-        set((state) => {
-          const updatedGoals = state.learningGoals.map((goal) =>
+        set((state) => ({
+          learningGoals: state.learningGoals.map((goal) =>
             goal.id === id ? { ...goal, isDone } : goal
-          );
-          localStorage.setItem("learningGoals", JSON.stringify(updatedGoals));
-          return { learningGoals: updatedGoals };
-        });
+          ),
+        }));
       },
       editLearningGoal: (
         id: string,

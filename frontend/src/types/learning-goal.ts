@@ -3,6 +3,6 @@ export type LearningGoal = {
     title: string;
     tag: string;
     date: Date | string;
-    time: Date | string;
+    time: string;
     isDone: boolean;
   };

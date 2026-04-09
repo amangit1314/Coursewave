@@ -12,8 +12,6 @@ const AnalyticsPage = () => {
   const router = useRouter();
   const { user } = useUserStore();
 
-  console.log("User in the analytics page: ", JSON.stringify(user));
-
   // 🔹 Role check: Only allow users with INSTRUCTOR role
   const isInstructor = user?.roles?.includes("INSTRUCTOR");
 
@@ -87,7 +85,7 @@ const AnalyticsPage = () => {
           </p>
           <button
             onClick={() =>
-              (router.push(`/instructor/courses/createCourse`))
+              (router.push(`/instructor/courses/create`))
             }
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >

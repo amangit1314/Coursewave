@@ -6,7 +6,7 @@ export default function WriteArticleLayout({
   children,
 }: WriteArticleLayoutProps) {
   return (
-    <div className="dark:bg-zinc-9500 h-full min-h-screen">
+    <div className="dark:bg-zinc-950 h-full min-h-screen">
       {/* <div className="fixed inset-y-0 z-50 h-[60px] w-full">
         <Navbar />
       </div> */}

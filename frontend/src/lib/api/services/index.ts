@@ -7,5 +7,5 @@ export * from "./courseService";
 export * from "./instructorService";
 export * from "./profileService";
 export * from "./projectsService";
-// export * from "./sessionsService";
+export * from "./sessionsService";
 export * from "./userService";

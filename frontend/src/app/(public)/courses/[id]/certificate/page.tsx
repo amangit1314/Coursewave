@@ -24,9 +24,13 @@ export default function GenerateCertificate() {
 
   const isLoading = courseLoading || progressLoading;
 
+  const progress = useMemo(() => {
+    if (!progressData) return null;
+    return ((progressData as any)?.data ?? progressData) as Record<string, any>;
+  }, [progressData]);
+
   const completionPercentage = useMemo(() => {
-    if (!progressData) return 0;
-    const p = progressData?.data ?? progressData;
+    const p = progress;
     if (p?.totalChapters && p.totalChapters > 0) {
       return Math.round((p.completedChapters / p.totalChapters) * 100);
     }
@@ -34,14 +38,13 @@ export default function GenerateCertificate() {
   }, [progressData]);
 
   const enrollmentId = useMemo(() => {
-    const p = progressData?.data ?? progressData;
-    return p?.enrollmentId ?? "";
-  }, [progressData]);
+    return progress?.enrollmentId ?? "";
+  }, [progress]);
 
   const isCompleted = completionPercentage >= 100;
 
   const completionDate = useMemo(() => {
-    const p = progressData?.data ?? progressData;
+    const p = progress;
     if (p?.updatedAt) {
       return new Date(p.updatedAt).toLocaleDateString("en-US", {
         year: "numeric",
@@ -54,7 +57,7 @@ export default function GenerateCertificate() {
       month: "long",
       day: "numeric",
     });
-  }, [progressData]);
+  }, [progress]);
 
   const handleDownloadPDF = () => {
     window.print();
@@ -87,7 +90,7 @@ export default function GenerateCertificate() {
           <p className="mb-6 text-zinc-600 dark:text-zinc-400">
             Please sign in to view your certificate.
           </p>
-          <Link href="/sign-in">
+          <Link href="/login">
             <Button>Sign In</Button>
           </Link>
         </div>

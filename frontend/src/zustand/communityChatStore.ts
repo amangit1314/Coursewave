@@ -81,6 +81,7 @@ interface CommunityChatActions {
 
   // Pin
   setPinned: (messageId: string, isPinned: boolean) => void;
+  togglePinMessage: (messageId: string) => void;
 
   // Reply / Edit
   setReplyingTo: (msg: ChatMessage | null) => void;
@@ -194,6 +195,13 @@ export const useCommunityChatStore = create<CommunityChatState & CommunityChatAc
       set((s) => ({
         messages: s.messages.map((m) =>
           m.id === messageId ? { ...m, isPinned } : m
+        ),
+      })),
+
+    togglePinMessage: (messageId) =>
+      set((s) => ({
+        messages: s.messages.map((m) =>
+          m.id === messageId ? { ...m, isPinned: !m.isPinned } : m
         ),
       })),
 

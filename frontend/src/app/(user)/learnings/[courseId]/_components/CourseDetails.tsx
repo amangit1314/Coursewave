@@ -95,7 +95,7 @@ const CourseDetails: React.FC<CourseDetailsProps> = ({ courseId }) => {
   return (
     <div className="space-y-8">
       <LearningHeader title={course?.title || "Course"} />
-      <div className="mx-auto flex h-full w-full max-w-7xl flex-col items-start gap-8 px-4 md:flex-row md:px-6 lg:px-12">
+      <div className="flex h-full w-full flex-col items-start gap-6 px-4 sm:px-6 lg:px-8 md:flex-row">
         {/* Main Content */}
         <div className="flex-1 space-y-8">
           {/* Video + Actions */}

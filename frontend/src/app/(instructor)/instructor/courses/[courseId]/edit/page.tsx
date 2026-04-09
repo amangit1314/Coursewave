@@ -1,11 +1,16 @@
-import React from 'react'
+"use client";
 
-type Props = {}
+import { useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-const EditCoursePage = (props: Props) => {
-  return (
-    <div>EditCoursePage</div>
-  )
+export default function EditCoursePage() {
+  const router = useRouter();
+  const params = useParams();
+  const courseId = params.courseId as string;
+
+  useEffect(() => {
+    router.replace(`/instructor/courses/${courseId}`);
+  }, [router, courseId]);
+
+  return null;
 }
-
-export default EditCoursePage

@@ -1,12 +1,12 @@
-import { useZustandStore } from "@/zustand/store";
+import { useLearningGoalsStore } from "@/zustand/learningGoalsStore";
 import { Tag as TagIcon, Calendar, CheckCircle2, Circle } from "lucide-react";
 import React, { useState } from "react";
-import { LearningGoal } from "./learning-goal";
+import { LearningGoal } from "@/types/learning-goal";
 import EditLearningGoal from "./EditLearningGoal";
 import LearningGoalCardDropdownMenu from "./LearningGoalCardDropdownMenu";
 
 const LearningGoalCard = ({ learningGoal }: { learningGoal: LearningGoal }) => {
-  const { markLearningGoalAsDone } = useZustandStore();
+  const { markLearningGoalAsDone } = useLearningGoalsStore();
   const [isDone, setIsDone] = useState<boolean>(learningGoal.isDone);
 
   const markGoalAsCompleted = () => {

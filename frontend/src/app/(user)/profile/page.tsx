@@ -19,14 +19,14 @@ import DeleteAccountWidget from "./_components/DeleteAccountWidget";
 import ChangePasswordWidget from "./_components/ChangePasswordWidget";
 import EditProfileWidget from "./_components/EditProfileWidget";
 import { useUserStore } from "@/zustand/userStore";
-import { useMyInstructorProfile } from "@/hooks/useInstructor";
+import { useBecomeInstructor } from "@/hooks/useAccount";
 import QuickActions from "./_components/QuickActions";
 import { IMAGES } from "@/constants/images";
 
 const Profile = () => {
   const { user } = useUserStore();
   const router = useRouter();
-  user?.id || "";
+  const becomeInstructor = useBecomeInstructor();
 
   // Check if user is an instructor
   const isInstructor = user?.roles?.includes("INSTRUCTOR") || false;
@@ -37,18 +37,14 @@ const Profile = () => {
       return;
     }
 
-    const token = localStorage.getItem("coursewave_access_token");
-    if (!token) {
-      toast.error("Authentication error. Please log in again.");
-      return;
-    }
-
     try {
-      // todo: hit become instructor api
+      await becomeInstructor.mutateAsync({
+        bio: user?.about || "",
+        expertise: [],
+      });
       toast.success("Congratulations! You are now an instructor.");
       router.push(`/profile/${user.id}`);
     } catch (error: any) {
-      console.error("Error becoming instructor:", error);
       if (error.response?.status === 402) {
         toast.success("You are already an instructor. Redirecting...");
         router.push(`/profile/${user.id}`);
