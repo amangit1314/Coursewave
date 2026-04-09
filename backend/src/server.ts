@@ -176,25 +176,12 @@ app.post("/api/your-form-route", upload.none(), (req, res) => {
 app.use("/api/stats", statsRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/auth", authRoutes);
-app.use(
-  "/api/courses",
-  // courseCacheMiddleware,
-  courseRoutes
-);
-// app.use("/api/webhooks/stripe", stripeWebhookRoutes);
+app.use("/api/courses", courseRoutes);
 app.use("/api/users", usersRoutes);
-app.use(
-  "/api/blogs",
-  //  blogCacheMiddleware,
-  blogRoutes
-);
+app.use("/api/blogs", blogRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
-app.use(
-  "/api/categories",
-  // categoryCacheMiddleware,
-  categoriesRoutes
-);
+app.use("/api/categories", categoriesRoutes);
 app.use("/api/sessions", sessionsRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
 app.use("/api/instructor", instructorRoutes);
