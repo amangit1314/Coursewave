@@ -4,12 +4,14 @@ import {
   getMyInstructorAnalytics,
   getMyInstructorCourses,
   getMyInstructorStudents,
+  getMyInstructorStudentsList,
+  getMyInstructorEarnings,
+  getMyCourseEnrollments,
   getPublicInstructorProfile,
   getPublicInstructorCourses,
   getPublicInstructorAnalytics,
 } from "./instructor.controller";
 import { verifyToken } from "../../core/middleware";
-import { checkAccessToken } from "../../core/middleware";
 import { requireInstructor } from "../../core/middleware/roleCheck";
 
 const router: Router = Router();
@@ -32,6 +34,15 @@ router.get("/me/courses", getMyInstructorCourses);
 
 // Get logged-in instructor students count
 router.get("/me/students", getMyInstructorStudents);
+
+// Get logged-in instructor students list (detailed)
+router.get("/me/students/list", getMyInstructorStudentsList);
+
+// Get logged-in instructor earnings (detailed)
+router.get("/me/earnings", getMyInstructorEarnings);
+
+// Get enrollments for a specific course
+router.get("/me/courses/:courseId/enrollments", getMyCourseEnrollments);
 
 // ------------------------
 // PUBLIC INSTRUCTOR ROUTES

@@ -48,6 +48,38 @@ export const getMyInstructorStudents = asyncHandler(
   }
 );
 
+export const getMyInstructorStudentsList = asyncHandler(
+  async (req: Request, res: Response) => {
+    const data = await instructorsService.getInstructorStudentsList(
+      requireUserId(req)
+    );
+    sendSuccess(res, data, "Instructor students list fetched successfully");
+  }
+);
+
+export const getMyInstructorEarnings = asyncHandler(
+  async (req: Request, res: Response) => {
+    const data = await instructorsService.getInstructorEarnings(
+      requireUserId(req)
+    );
+    sendSuccess(res, data, "Instructor earnings fetched successfully");
+  }
+);
+
+export const getMyCourseEnrollments = asyncHandler(
+  async (req: Request, res: Response) => {
+    const courseId = req.params.courseId;
+    if (!courseId) {
+      throw new AppError("Course ID is required", 400);
+    }
+    const data = await instructorsService.getCourseEnrollments(
+      requireUserId(req),
+      courseId
+    );
+    sendSuccess(res, data, "Course enrollments fetched successfully");
+  }
+);
+
 export const getPublicInstructorProfile = asyncHandler(
   async (req: Request, res: Response) => {
     const instructorId = req.params.instructorid || "";
