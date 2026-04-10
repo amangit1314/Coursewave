@@ -175,30 +175,30 @@ const EditProfileWidget = () => {
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <div className="flex items-center justify-between p-4 rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-gradient-to-br from-white to-zinc-50 dark:from-zinc-800/80 dark:to-zinc-900/80 backdrop-blur-sm hover:shadow-lg hover:shadow-emerald-500/20 hover:border-emerald-300 dark:hover:border-emerald-700 transition-all duration-300 cursor-pointer group">
+          <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-card hover:shadow-md hover:border-emerald-500/30 transition-all duration-200 cursor-pointer group">
             <div className="flex items-center gap-3 overflow-hidden">
-              <div className="p-2.5 rounded-xl bg-gradient-to-tr from-emerald-500 via-green-500 to-teal-500 text-white flex-shrink-0 shadow-md shadow-emerald-500/30 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+              <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
                 <User className="h-5 w-5" />
               </div>
               <div className="overflow-hidden">
-                <p className="font-semibold text-sm text-zinc-900 dark:text-white truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                <p className="font-semibold text-sm text-foreground truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                   Edit Profile
                 </p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
+                <p className="text-xs text-muted-foreground truncate">
                   Update your profile information
                 </p>
               </div>
             </div>
-            <ChevronRight className="h-4 w-4 text-zinc-400 flex-shrink-0 group-hover:translate-x-1 group-hover:text-emerald-500 transition-all duration-300" />
+            <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0 group-hover:translate-x-1 group-hover:text-emerald-500 transition-all duration-200" />
           </div>
         </DialogTrigger>
 
-        <DialogContent className="sm:max-w-[550px] top-8 max-h-[90vh] overflow-y-auto border-zinc-200 dark:border-zinc-700">
+        <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-zinc-950 dark:text-white text-center bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+            <DialogTitle className="text-2xl font-bold text-center text-foreground">
               Edit Profile
             </DialogTitle>
-            <DialogDescription className="text-center text-zinc-600 dark:text-zinc-400">
+            <DialogDescription className="text-center text-muted-foreground">
               Update your username and profile image
             </DialogDescription>
           </DialogHeader>
@@ -213,14 +213,14 @@ const EditProfileWidget = () => {
                 name="image"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base font-semibold text-zinc-800 dark:text-gray-100">
+                    <FormLabel className="text-sm font-semibold text-foreground">
                       Profile Image
                     </FormLabel>
                     <FormControl>
                       <div className="flex flex-col items-center gap-4">
                         {/* Image Preview */}
-                        <div className="relative group">
-                          <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-emerald-500/20 shadow-xl shadow-emerald-500/10 bg-gradient-to-br from-zinc-100 to-zinc-200 dark:from-zinc-700 dark:to-zinc-800">
+                        <div className="relative w-32 h-32">
+                          <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-border shadow-lg bg-muted">
                             {previewUrl ? (
                               <img
                                 src={previewUrl}
@@ -229,7 +229,7 @@ const EditProfileWidget = () => {
                               />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center">
-                                <User className="w-16 h-16 text-zinc-400" />
+                                <User className="w-16 h-16 text-muted-foreground" />
                               </div>
                             )}
                           </div>
@@ -239,9 +239,9 @@ const EditProfileWidget = () => {
                             <button
                               type="button"
                               onClick={handleRemoveImage}
-                              className="absolute -top-2 -right-2 p-1.5 rounded-full bg-red-500 text-white shadow-lg hover:bg-red-600 transition-colors"
+                              className="absolute top-0 right-0 p-1.5 rounded-full bg-destructive text-white shadow-lg hover:bg-destructive/90 transition-colors"
                             >
-                              <X className="w-4 h-4" />
+                              <X className="w-3.5 h-3.5" />
                             </button>
                           )}
                         </div>
@@ -250,10 +250,10 @@ const EditProfileWidget = () => {
                         <div className="flex flex-col gap-3 w-full">
                           <label
                             htmlFor="file-upload"
-                            className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-dashed border-zinc-300 dark:border-zinc-600 hover:border-emerald-500 dark:hover:border-emerald-500 cursor-pointer transition-all duration-300 bg-zinc-50 dark:bg-zinc-800/50 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 group"
+                            className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-dashed border-border hover:border-primary cursor-pointer transition-all duration-200 bg-muted/50 hover:bg-primary/5 group"
                           >
-                            <Camera className="w-5 h-5 text-zinc-500 group-hover:text-emerald-600 transition-colors" />
-                            <span className="text-sm font-medium text-zinc-600 dark:text-zinc-300 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                            <Camera className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                            <span className="text-sm font-medium text-muted-foreground group-hover:text-primary transition-colors">
                               {selectedFile ? "Change Image" : "Choose Image"}
                             </span>
                           </label>
@@ -270,7 +270,7 @@ const EditProfileWidget = () => {
                               type="button"
                               onClick={handleUpload}
                               disabled={isUploading}
-                              className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-md hover:shadow-lg transition-all duration-300"
+                              className="w-full"
                             >
                               {isUploading ? (
                                 <>
@@ -288,7 +288,7 @@ const EditProfileWidget = () => {
                         </div>
                       </div>
                     </FormControl>
-                    <FormDescription className="text-center text-xs text-zinc-500 dark:text-zinc-400">
+                    <FormDescription className="text-center text-xs text-muted-foreground">
                       Supported formats: JPG, PNG, GIF (Max 5MB)
                     </FormDescription>
                     <FormMessage />
@@ -301,18 +301,18 @@ const EditProfileWidget = () => {
                 name="userName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base font-semibold text-zinc-800 dark:text-gray-100">
+                    <FormLabel className="text-sm font-semibold text-foreground">
                       Username
                     </FormLabel>
                     <FormControl>
                       <Input
                         disabled={isSubmitting}
-                        className="border-2 border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 focus:border-emerald-500 dark:focus:border-emerald-500 transition-colors rounded-xl h-12 px-4"
+                        className="border-input"
                         placeholder="Enter your username"
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription className="text-xs text-zinc-500 dark:text-zinc-400">
+                    <FormDescription className="text-xs text-muted-foreground">
                       This is your public display name
                     </FormDescription>
                     <FormMessage />
@@ -325,18 +325,18 @@ const EditProfileWidget = () => {
                 name="about"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-base font-semibold text-zinc-800 dark:text-gray-100">
+                    <FormLabel className="text-sm font-semibold text-foreground">
                       About
                     </FormLabel>
                     <FormControl>
                       <Input
                         disabled={isSubmitting}
-                        className="border-2 border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 focus:border-emerald-500 dark:focus:border-emerald-500 transition-colors rounded-xl h-12 px-4"
+                        className="border-input"
                         placeholder="Write about yourself"
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription className="text-xs text-zinc-500 dark:text-zinc-400">
+                    <FormDescription className="text-xs text-muted-foreground">
                       This is about yourself
                     </FormDescription>
                     <FormMessage />
@@ -344,13 +344,9 @@ const EditProfileWidget = () => {
                 )}
               />
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-700">
+              <div className="flex justify-end gap-3 pt-4 border-t border-border">
                 <DialogClose asChild>
-                  <Button
-                    variant="outline"
-                    type="button"
-                    className="rounded-xl border-2 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                  >
+                  <Button variant="outline" type="button">
                     Cancel
                   </Button>
                 </DialogClose>
@@ -359,7 +355,6 @@ const EditProfileWidget = () => {
                   disabled={
                     !isValid || isSubmitting || isUploading || isUpdating
                   }
-                  className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-md hover:shadow-lg transition-all duration-300"
                 >
                   {isSubmitting ? (
                     <>
