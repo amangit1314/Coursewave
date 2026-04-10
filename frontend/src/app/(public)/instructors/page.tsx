@@ -16,40 +16,40 @@ const InstructorsPage = () => {
   const { data: authors, isPending, isError } = useAuthors(searchQuery || undefined);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-zinc-900 pt-[80px] pb-16">
+    <div className="min-h-screen bg-background pt-[80px] pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-10 text-center">
           <h1
             className={cn(
-              "text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-3",
+              "text-3xl md:text-4xl font-bold text-foreground mb-3",
               dmSans.className
             )}
           >
             Our Instructors
           </h1>
-          <p className="text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             Learn from experienced instructors and authors across a wide range of topics.
           </p>
         </div>
 
         {/* Search */}
         <div className="max-w-md mx-auto mb-10 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             type="text"
             placeholder="Search instructors..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 h-11 rounded-xl border-zinc-200 dark:border-zinc-700"
+            className="pl-10 h-11 rounded-xl border-input"
           />
         </div>
 
         {/* Loading */}
         {isPending && (
           <div className="flex flex-col items-center justify-center py-20">
-            <Loader2 className="animate-spin h-10 w-10 text-blue-600 mb-3" />
-            <p className="text-zinc-500 dark:text-zinc-400">Loading instructors...</p>
+            <Loader2 className="animate-spin h-10 w-10 text-primary mb-3" />
+            <p className="text-muted-foreground">Loading instructors...</p>
           </div>
         )}
 
@@ -66,7 +66,7 @@ const InstructorsPage = () => {
             {authors && authors.length > 0 ? (
               authors.map((author) => (
                 <Link key={author.id} href={`/instructors/${author.id}`}>
-                  <Card className="border border-zinc-200 dark:border-zinc-800 hover:border-blue-400 dark:hover:border-blue-500 transition-all hover:shadow-lg cursor-pointer h-full">
+                  <Card className="border border-border hover:border-blue-400 dark:hover:border-blue-500 transition-all hover:shadow-lg cursor-pointer h-full">
                     <CardContent className="p-6 flex flex-col items-center text-center">
                       {author.profileImageUrl ? (
                         <Image
@@ -83,14 +83,14 @@ const InstructorsPage = () => {
                       )}
                       <h3
                         className={cn(
-                          "font-semibold text-zinc-900 dark:text-white mb-1",
+                          "font-semibold text-foreground mb-1",
                           dmSans.className
                         )}
                       >
                         {author.name}
                       </h3>
                       {author.about && (
-                        <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2 mb-3">
+                        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                           {author.about}
                         </p>
                       )}
@@ -114,7 +114,7 @@ const InstructorsPage = () => {
               ))
             ) : (
               <div className="col-span-full text-center py-12">
-                <p className="text-zinc-500 dark:text-zinc-400">
+                <p className="text-muted-foreground">
                   {searchQuery ? "No instructors found matching your search." : "No instructors available yet."}
                 </p>
               </div>

@@ -126,7 +126,7 @@ const CartPage = () => {
             <div className="w-16 h-16 border-4 border-blue-200 dark:border-blue-800 rounded-full"></div>
             <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin absolute top-0"></div>
           </div>
-          <p className="text-gray-600 dark:text-gray-400 font-medium">
+          <p className="text-muted-foreground font-medium">
             Loading your cart...
           </p>
         </div>
@@ -194,10 +194,10 @@ const CartPage = () => {
                    Cart
                 </h1>
               </div>
-              <p className="text-gray-600 dark:text-gray-400 text-base flex items-center justify-center gap-2">
-                <span className="inline-flex items-center gap-1.5 bg-white dark:bg-zinc-800 px-3 py-1 rounded-full border border-gray-200 dark:border-zinc-700 shadow-sm">
+              <p className="text-muted-foreground text-base flex items-center justify-center gap-2">
+                <span className="inline-flex items-center gap-1.5 bg-card px-3 py-1 rounded-full border border-border shadow-sm">
                   <Sparkles className="w-3.5 h-3.5 text-yellow-500" />
-                  <span className="font-semibold text-gray-900 dark:text-white">
+                  <span className="font-semibold text-foreground">
                     {items.length}
                   </span>
                   <span>{items.length === 1 ? "course" : "courses"}</span>
@@ -226,7 +226,7 @@ const CartPage = () => {
             {items.map((item, index) => (
               <Card
                 key={item.id}
-                className="border-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden group hover:scale-[1.02]"
+                className="border-0 bg-card/80 backdrop-blur-xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden group hover:scale-[1.02]"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <CardContent className="p-6">
@@ -256,7 +256,7 @@ const CartPage = () => {
                       <div className="flex justify-between items-start mb-2">
                         <h3
                           className={cn(
-                            "font-bold text-lg text-gray-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors",
+                            "font-bold text-lg text-foreground line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors",
                             dmSans.className
                           )}
                         >
@@ -287,7 +287,7 @@ const CartPage = () => {
                           </Button>
                         </div>
                       </div>
-                      <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 flex items-center gap-1.5">
+                      <p className="text-muted-foreground text-sm mb-3 flex items-center gap-1.5">
                         <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-xs font-bold">
                           {getInstructorName(item).charAt(0)}
                         </div>
@@ -333,7 +333,7 @@ const CartPage = () => {
                             : item.Course.price}
                         </span>
                         {item.Course.discount > 0 && (
-                          <span className="text-lg text-gray-400 dark:text-gray-500 line-through">
+                          <span className="text-lg text-muted-foreground/70 line-through">
                             ${item.Course.price}
                           </span>
                         )}
@@ -355,20 +355,20 @@ const CartPage = () => {
 
             {/* Empty State */}
             {items.length === 0 && (
-              <Card className="border-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-xl text-center py-20">
+              <Card className="border-0 bg-card/80 backdrop-blur-xl shadow-xl text-center py-20">
                 <CardContent>
                   <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-950 dark:to-indigo-950 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                     <ShoppingCart className="h-12 w-12 text-blue-600 dark:text-blue-400" />
                   </div>
                   <h3
                     className={cn(
-                      "text-2xl font-bold text-gray-900 dark:text-white mb-3",
+                      "text-2xl font-bold text-foreground mb-3",
                       dmSans.className
                     )}
                   >
                     Your cart is empty
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">
+                  <p className="text-muted-foreground mb-8 max-w-md mx-auto">
                     Discover amazing courses and start your learning journey
                     today!
                   </p>
@@ -383,12 +383,12 @@ const CartPage = () => {
 
           {/* Checkout Summary */}
           <div className="space-y-6">
-            <Card className="border-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-2xl sticky top-24 overflow-hidden">
+            <Card className="border-0 bg-card/80 backdrop-blur-xl shadow-2xl sticky top-24 overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
               <CardContent className="p-6">
                 <h2
                   className={cn(
-                    "text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2",
+                    "text-xl font-bold text-foreground mb-6 flex items-center gap-2",
                     dmSans.className
                   )}
                 >
@@ -398,7 +398,7 @@ const CartPage = () => {
                   Order Summary
                 </h2>
                 <div className="space-y-4 mb-6">
-                  <div className="flex justify-between text-gray-600 dark:text-gray-400">
+                  <div className="flex justify-between text-muted-foreground">
                     <span>
                       Subtotal ({items.length}{" "}
                       {items.length === 1 ? "course" : "courses"})
@@ -420,7 +420,7 @@ const CartPage = () => {
                   )}
                   <Separator />
                   <div className="flex justify-between text-xl font-bold">
-                    <span className="text-gray-900 dark:text-white">Total</span>
+                    <span className="text-foreground">Total</span>
                     <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
                       ${total.toFixed(2)}
                     </span>
@@ -454,7 +454,7 @@ const CartPage = () => {
 
                 {!appliedCoupon && (
                   <div className="mb-6">
-                    <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 block">
+                    <label className="text-sm font-semibold text-foreground mb-2 block">
                       Have a coupon code?
                     </label>
                     <div className="flex gap-2 mb-3">
@@ -462,7 +462,7 @@ const CartPage = () => {
                         placeholder="Enter code"
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value)}
-                        className="flex-1 rounded-xl border-gray-200 dark:border-zinc-700 focus:border-blue-500 dark:focus:border-blue-500"
+                        className="flex-1 rounded-xl border-border focus:border-blue-500 dark:focus:border-blue-500"
                       />
                       <Button
                         onClick={applyCoupon}
@@ -483,7 +483,7 @@ const CartPage = () => {
                 <div className="mb-6">
                   <h3
                     className={cn(
-                      "font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2",
+                      "font-semibold text-foreground mb-3 flex items-center gap-2",
                       dmSans.className
                     )}
                   >
@@ -494,7 +494,7 @@ const CartPage = () => {
                     {availableCoupons.map((coupon) => (
                       <div
                         key={coupon.code}
-                        className="group relative flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-zinc-800 dark:to-blue-950/30 rounded-xl hover:from-blue-50 hover:to-indigo-50 dark:hover:from-blue-950/30 dark:hover:to-indigo-950/30 cursor-pointer transition-all border border-gray-200 dark:border-zinc-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg "
+                        className="group relative flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-zinc-800 dark:to-blue-950/30 rounded-xl hover:from-blue-50 hover:to-indigo-50 dark:hover:from-blue-950/30 dark:hover:to-indigo-950/30 cursor-pointer transition-all border border-border hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg "
                         onClick={() => {
                           setCouponCode(coupon.code);
                           applyCoupon();
@@ -505,11 +505,11 @@ const CartPage = () => {
                             <div className="w-6 h-6 bg-blue-500 rounded-lg flex items-center justify-center">
                               <Tag className="h-3 w-3 text-white" />
                             </div>
-                            <span className="font-bold text-gray-900 dark:text-white">
+                            <span className="font-bold text-foreground">
                               {coupon.code}
                             </span>
                           </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <p className="text-sm text-muted-foreground">
                             {coupon.description}
                           </p>
                         </div>
@@ -533,13 +533,13 @@ const CartPage = () => {
                 </Button>
 
                 <div className="mt-6 space-y-3">
-                  <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400 p-3 bg-emerald-50 dark:bg-emerald-950/20 rounded-xl border border-emerald-100 dark:border-emerald-900">
+                  <div className="flex items-center gap-3 text-sm text-muted-foreground p-3 bg-emerald-50 dark:bg-emerald-950/20 rounded-xl border border-emerald-100 dark:border-emerald-900">
                     <Shield className="h-5 w-5 text-emerald-500 flex-shrink-0" />
                     <span className="font-medium">
                       Secure payment processing
                     </span>
                   </div>
-                  <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-xl border border-blue-100 dark:border-blue-900">
+                  <div className="flex items-center gap-3 text-sm text-muted-foreground p-3 bg-blue-50 dark:bg-blue-950/20 rounded-xl border border-blue-100 dark:border-blue-900">
                     <CheckCircle2 className="h-5 w-5 text-blue-500 flex-shrink-0" />
                     <span className="font-medium">
                       30-day money-back guarantee
@@ -549,11 +549,11 @@ const CartPage = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-xl hover:shadow-2xl transition-all">
+            <Card className="border-0 bg-card/80 backdrop-blur-xl shadow-xl hover:shadow-2xl transition-all">
               <CardContent className="p-6">
                 <h3
                   className={cn(
-                    "font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2",
+                    "font-semibold text-foreground mb-4 flex items-center gap-2",
                     dmSans.className
                   )}
                 >
@@ -562,7 +562,7 @@ const CartPage = () => {
                 </h3>
                 <Button
                   variant="outline"
-                  className="w-full rounded-xl border-2 border-gray-200 dark:border-zinc-700 hover:border-blue-500 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all hover:scale-[1.02] font-semibold"
+                  className="w-full rounded-xl border-2 border-border hover:border-blue-500 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all hover:scale-[1.02] font-semibold"
                 >
                   Continue Shopping
                   <ArrowRight className="ml-2 h-4 w-4" />

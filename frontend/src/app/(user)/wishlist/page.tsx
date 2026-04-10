@@ -90,7 +90,7 @@ const WishlistPage: React.FC = () => {
             <div className="w-16 h-16 border-4 border-blue-200 dark:border-blue-800 rounded-full"></div>
             <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin absolute top-0"></div>
           </div>
-          <p className="text-gray-600 dark:text-gray-400 font-medium">
+          <p className="text-muted-foreground font-medium">
             Loading your wishlist...
           </p>
         </div>
@@ -157,10 +157,10 @@ const WishlistPage: React.FC = () => {
                   Wishlist
                 </h1>
               </div>
-              <p className="text-gray-600 dark:text-gray-400 text-base flex items-center justify-center gap-2">
-                <span className="inline-flex items-center gap-1.5 bg-white dark:bg-zinc-800 px-3 py-1 rounded-full border border-gray-200 dark:border-zinc-700 shadow-sm">
+              <p className="text-muted-foreground text-base flex items-center justify-center gap-2">
+                <span className="inline-flex items-center gap-1.5 bg-white dark:bg-zinc-800 px-3 py-1 rounded-full border border-border shadow-sm">
                   <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" />
-                  <span className="font-semibold text-gray-900 dark:text-white">
+                  <span className="font-semibold text-foreground">
                     {wishlistCount ?? wishlist.length}
                   </span>
                   <span>{wishlist.length === 1 ? "course" : "courses"}</span>
@@ -197,20 +197,20 @@ const WishlistPage: React.FC = () => {
 
         {/* Empty State */}
         {wishlist.length === 0 && (
-          <Card className="border-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl shadow-xl text-center py-20 max-w-2xl mx-auto mt-12">
+          <Card className="border-0 bg-card/80 backdrop-blur-xl shadow-xl text-center py-20 max-w-2xl mx-auto mt-12">
             <CardContent>
               <div className="w-24 h-24 bg-gradient-to-br from-red-100 to-pink-100 dark:from-red-950 dark:to-pink-950 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <Heart className="h-12 w-12 text-red-500" fill="currentColor" />
               </div>
               <h3
                 className={cn(
-                  "text-2xl font-bold text-gray-900 dark:text-white mb-3",
+                  "text-2xl font-bold text-foreground mb-3",
                   dmSans.className
                 )}
               >
                 Your wishlist is empty
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">
+              <p className="text-muted-foreground mb-8 max-w-md mx-auto">
                 Start building your learning journey! Save courses you're
                 interested in and come back to them later.
               </p>
@@ -221,7 +221,7 @@ const WishlistPage: React.FC = () => {
                 </Button>
                 <Button
                   variant="outline"
-                  className="rounded-xl border-2 border-gray-200 dark:border-zinc-700 hover:border-blue-500 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all hover:scale-105 px-8 py-6 text-lg font-semibold"
+                  className="rounded-xl border-2 border-border hover:border-blue-500 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all hover:scale-105 px-8 py-6 text-lg font-semibold"
                 >
                   View Recommendations
                 </Button>
