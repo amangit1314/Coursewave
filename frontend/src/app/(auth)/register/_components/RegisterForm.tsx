@@ -1,7 +1,9 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRegister } from "@/hooks/useAuth";
-import { orbitron, poppins } from "@/lib/config/fonts";
+import { dmSans } from "@/lib/config/fonts";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, LucideLoader2, Mail, Lock } from "lucide-react";
 import React, { useEffect } from "react";
@@ -9,11 +11,10 @@ import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { fadeInUp } from "@/lib/config/motion";
 
-type Props = {};
-
-const RegisterForm = (props: Props) => {
-  const { mutate: register, isPending, error } = useRegister();
+const RegisterForm = () => {
+  const { mutate: register, isPending } = useRegister();
 
   const [user, setUser] = React.useState({
     email: "",
@@ -24,10 +25,6 @@ const RegisterForm = (props: Props) => {
   const [showPassword, setShowPassword] = React.useState(false);
 
   const router = useRouter();
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
 
   useEffect(() => {
     if (user.email.length > 0 && user.password.length > 0) {
@@ -40,8 +37,7 @@ const RegisterForm = (props: Props) => {
   const onRegister = async () => {
     register(user, {
       onSuccess: (data) => {
-        toast.success(data.message ?? "Registeration successful");
-        // Use immediate navigation for instant redirect
+        toast.success(data.message ?? "Registration successful");
         setTimeout(() => {
           router.push("/login");
         }, 100);
@@ -51,23 +47,20 @@ const RegisterForm = (props: Props) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6, delay: 0.2 }}
+      variants={fadeInUp}
+      initial="hidden"
+      animate="visible"
       className="flex items-center justify-center"
     >
-      {/* <Toaster /> */}
-      <div className="w-full max-w-md space-y-8 rounded-2xl bg-white/80 p-8 shadow-2xl backdrop-blur-xl dark:bg-gray-800/80">
+      <div className="w-full max-w-md space-y-8 rounded-xl border border-border bg-card/80 p-8 shadow-lg backdrop-blur-xl">
         <div className="text-center">
           <h2
-            className={`${poppins.className} text-2xl font-bold text-gray-900 dark:text-white`}
+            className={`${dmSans.className} text-2xl tracking-tight font-bold text-foreground`}
           >
             Create your account
           </h2>
-          <p
-            className={`${poppins.className} mt-2 text-sm text-gray-600 dark:text-gray-400`}
-          >
-            Start your learning journey today. It's completely free!
+          <p className="mt-2 text-sm text-muted-foreground">
+            Start your learning journey today. It&apos;s completely free!
           </p>
         </div>
 
@@ -75,7 +68,7 @@ const RegisterForm = (props: Props) => {
           {/* Google Sign Up */}
           <Button
             variant="outline"
-            className={`${poppins.className} group relative h-12 w-full overflow-hidden rounded-xl border-2 border-gray-300 bg-white font-medium text-gray-700 transition-all duration-300 hover:border-gray-400 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:border-gray-500 dark:hover:bg-gray-600`}
+            className="h-11 w-full rounded-lg font-medium transition-colors"
           >
             <FcGoogle className="mr-2 h-5 w-5" />
             Continue with Google
@@ -83,12 +76,10 @@ const RegisterForm = (props: Props) => {
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
+              <div className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span
-                className={`${poppins.className} bg-white px-2 text-gray-500 dark:bg-gray-800 dark:text-gray-400`}
-              >
+              <span className="bg-card px-2 text-muted-foreground">
                 Or sign up with email
               </span>
             </div>
@@ -97,21 +88,19 @@ const RegisterForm = (props: Props) => {
           {/* Email Input */}
           <div className="space-y-2">
             <label
-              className={`${poppins.className} text-sm font-medium text-gray-700 dark:text-gray-300`}
+              className={`${dmSans.className} text-sm font-medium text-foreground`}
             >
               Email address
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                className="pl-10 h-12 rounded-xl border-gray-300 bg-white/50 text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700/50 dark:text-white dark:placeholder:text-gray-400"
+                className="pl-10 h-11 rounded-lg border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring"
                 id="email"
                 type="email"
                 autoComplete="email"
                 value={user.email}
-                onChange={(e) => {
-                  setUser({ ...user, email: e.target.value });
-                }}
+                onChange={(e) => setUser({ ...user, email: e.target.value })}
                 placeholder="Enter your email"
               />
             </div>
@@ -120,14 +109,14 @@ const RegisterForm = (props: Props) => {
           {/* Password Input */}
           <div className="space-y-2">
             <label
-              className={`${poppins.className} text-sm font-medium text-gray-700 dark:text-gray-300`}
+              className={`${dmSans.className} text-sm font-medium text-foreground`}
             >
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                className="pl-10 pr-10 h-12 rounded-xl border-gray-300 bg-white/50 text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700/50 dark:text-white dark:placeholder:text-gray-400"
+                className="pl-10 pr-10 h-11 rounded-lg border-input bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-ring"
                 id="password"
                 type={showPassword ? "text" : "password"}
                 value={user.password}
@@ -138,7 +127,7 @@ const RegisterForm = (props: Props) => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
               >
                 {showPassword ? (
                   <EyeOff className="h-4 w-4" />
@@ -151,20 +140,18 @@ const RegisterForm = (props: Props) => {
 
           {/* Terms */}
           <div className="text-center">
-            <p
-              className={`${poppins.className} text-xs text-gray-500 dark:text-gray-400`}
-            >
+            <p className="text-xs text-muted-foreground">
               By creating an account, you agree to our{" "}
               <Link
                 href="/terms"
-                className="text-blue-600 hover:text-blue-500 dark:text-blue-400"
+                className="text-primary hover:text-primary/80 transition-colors"
               >
                 Terms of Service
               </Link>{" "}
               and{" "}
               <Link
                 href="/privacy"
-                className="text-blue-600 hover:text-blue-500 dark:text-blue-400"
+                className="text-primary hover:text-primary/80 transition-colors"
               >
                 Privacy Policy
               </Link>
@@ -175,27 +162,22 @@ const RegisterForm = (props: Props) => {
           <Button
             onClick={onRegister}
             disabled={isButtonDisabled || isPending}
-            className={`${orbitron.className} group relative h-12 w-full overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/25 disabled:opacity-50`}
+            className={`${dmSans.className} h-11 w-full rounded-lg font-semibold transition-all duration-200 disabled:opacity-50`}
           >
             {isPending ? (
               <LucideLoader2 className="h-5 w-5 animate-spin" />
             ) : (
-              <>
-                Create Account
-                <div className="absolute inset-0 -z-10 bg-gradient-to-r from-blue-600/0 to-cyan-600/0 transition-all duration-300 group-hover:from-blue-600/20 group-hover:to-cyan-600/20" />
-              </>
+              "Create Account"
             )}
           </Button>
 
           {/* Sign In Link */}
           <div className="text-center">
-            <p
-              className={`${poppins.className} text-sm text-gray-600 dark:text-gray-400`}
-            >
+            <p className="text-sm text-muted-foreground">
               Already have an account?{" "}
               <Link
                 href="/login"
-                className="font-semibold text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                className="font-semibold text-primary hover:text-primary/80 transition-colors"
               >
                 Sign in here
               </Link>
