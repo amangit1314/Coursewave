@@ -99,30 +99,30 @@ const ChangePasswordWidget = () => {
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
       <DialogTrigger asChild>
-        <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-card hover:shadow-md hover:border-emerald-500/30 transition-all duration-200 cursor-pointer group">
+        <div className="flex items-center justify-between p-4 rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-gradient-to-br from-white to-zinc-50 dark:from-zinc-800/80 dark:to-zinc-900/80 backdrop-blur-sm hover:shadow-lg hover:shadow-green-500/20 hover:border-green-300 dark:hover:border-green-700 transition-all duration-300 cursor-pointer group">
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
+            <div className="p-2.5 rounded-xl bg-gradient-to-tr from-green-500 via-emerald-500 to-teal-500 text-white flex-shrink-0 shadow-md shadow-green-500/30 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
               <Lock className="h-5 w-5" />
             </div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-foreground truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+              <p className="font-semibold text-sm text-zinc-900 dark:text-white truncate group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
                 Change Password
               </p>
-              <p className="text-xs text-muted-foreground truncate">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
                 Update your password securely
               </p>
             </div>
           </div>
-          <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0 group-hover:translate-x-1 group-hover:text-emerald-500 transition-all duration-200" />
+          <ChevronRight className="h-4 w-4 text-zinc-400 flex-shrink-0 group-hover:translate-x-1 group-hover:text-green-500 transition-all duration-300" />
         </div>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[550px]">
+      <DialogContent className="sm:max-w-[550px] top-8 max-h-[90vh] overflow-y-auto border-zinc-200 dark:border-zinc-700">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center text-foreground">
+          <DialogTitle className="text-2xl font-bold text-zinc-950 dark:text-white text-center bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
             Change Password
           </DialogTitle>
-          <DialogDescription className="text-center text-muted-foreground">
+          <DialogDescription className="text-center text-zinc-600 dark:text-zinc-400">
             Update your account password. Make sure to use a strong password.
           </DialogDescription>
         </DialogHeader>
@@ -137,7 +137,7 @@ const ChangePasswordWidget = () => {
               name="oldPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-semibold text-foreground">
+                  <FormLabel className="text-base font-semibold text-zinc-800 dark:text-gray-100">
                     Current Password
                   </FormLabel>
                   <FormControl>
@@ -146,7 +146,7 @@ const ChangePasswordWidget = () => {
                         type={showOldPassword ? "text" : "password"}
                         disabled={isSubmitting}
                         placeholder="Enter current password"
-                        className="pr-12"
+                        className="border-2 border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 focus:border-green-500 dark:focus:border-green-500 transition-colors rounded-xl h-12 px-4 pr-12"
                         {...field}
                       />
                       <Button
@@ -157,9 +157,9 @@ const ChangePasswordWidget = () => {
                         onClick={() => setShowOldPassword(!showOldPassword)}
                       >
                         {showOldPassword ? (
-                          <EyeOff className="h-4 w-4 text-muted-foreground" />
+                          <EyeOff className="h-4 w-4 text-zinc-500" />
                         ) : (
-                          <Eye className="h-4 w-4 text-muted-foreground" />
+                          <Eye className="h-4 w-4 text-zinc-500" />
                         )}
                       </Button>
                     </div>
@@ -174,7 +174,7 @@ const ChangePasswordWidget = () => {
               name="newPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-semibold text-foreground">
+                  <FormLabel className="text-base font-semibold text-zinc-800 dark:text-gray-100">
                     New Password
                   </FormLabel>
                   <FormControl>
@@ -183,7 +183,7 @@ const ChangePasswordWidget = () => {
                         type={showNewPassword ? "text" : "password"}
                         disabled={isSubmitting}
                         placeholder="Enter new password"
-                        className="pr-12"
+                        className="border-2 border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 focus:border-green-500 dark:focus:border-green-500 transition-colors rounded-xl h-12 px-4 pr-12"
                         {...field}
                       />
                       <Button
@@ -194,14 +194,14 @@ const ChangePasswordWidget = () => {
                         onClick={() => setShowNewPassword(!showNewPassword)}
                       >
                         {showNewPassword ? (
-                          <EyeOff className="h-4 w-4 text-muted-foreground" />
+                          <EyeOff className="h-4 w-4 text-zinc-500" />
                         ) : (
-                          <Eye className="h-4 w-4 text-muted-foreground" />
+                          <Eye className="h-4 w-4 text-zinc-500" />
                         )}
                       </Button>
                     </div>
                   </FormControl>
-                  <FormDescription className="text-xs text-muted-foreground dark:text-zinc-400">
+                  <FormDescription className="text-xs text-zinc-500 dark:text-zinc-400">
                     Must be at least 6 characters long
                   </FormDescription>
                   <FormMessage />
@@ -209,17 +209,19 @@ const ChangePasswordWidget = () => {
               )}
             />
 
-            <div className="flex justify-end gap-3 pt-4 border-t border-border">
+            <div className="flex justify-end gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-700">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setIsDialogOpen(false)}
+                className="rounded-xl border-2 hover:bg-zinc-100 dark:hover:bg-zinc-800"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={!isValid || isSubmitting || isPending}
+                className="rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-md hover:shadow-lg transition-all duration-300"
               >
                 {isSubmitting || isPending ? (
                   <>

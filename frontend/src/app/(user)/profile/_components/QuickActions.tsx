@@ -5,33 +5,12 @@ import { Card } from "@/components/ui/card";
 import { PlayCircle, BookOpen, Info, Share, Users } from "lucide-react";
 import { useUserStore } from "@/zustand/userStore";
 import { toast } from "react-hot-toast";
-import { useBecomeInstructor } from "@/hooks/useAccount";
 
 export default function QuickActions() {
   const router = useRouter();
   const { user } = useUserStore();
 
   const isInstructor = user?.roles?.includes("INSTRUCTOR");
-  const { mutateAsync: becomeInstructor, isPending: becomingInstructor } = useBecomeInstructor();
-
-  const handleBecomeInstructor = async () => {
-    if (!user?.id) {
-      toast.error("Please log in first.");
-      return;
-    }
-    try {
-      await becomeInstructor({ bio: user?.about || "", expertise: [] });
-      toast.success("Congratulations! You are now an instructor.");
-      router.push("/instructor/analytics");
-    } catch (error: any) {
-      if (error.response?.status === 402) {
-        toast.success("You are already an instructor!");
-        router.push("/instructor/analytics");
-        return;
-      }
-      toast.error(error.response?.data?.message || "Failed to become an instructor.");
-    }
-  };
 
   // Core actions visible to everyone
   const baseActions = [
@@ -83,10 +62,10 @@ export default function QuickActions() {
 
   // If user is NOT an instructor
   const nonInstructorAction = {
-    title: becomingInstructor ? "Processing..." : "Become Instructor",
+    title: "Become Instructor",
     desc: "Start teaching today",
     icon: <Users className="w-5 h-5" />,
-    onClick: handleBecomeInstructor,
+    onClick: () => router.push("/instructor/become"),
     color: "from-blue-600 to-indigo-500",
   };
 
@@ -118,7 +97,7 @@ export default function QuickActions() {
           <Card
             key={i}
             onClick={action.onClick}
-            className="flex items-center justify-between bg-card border border-border p-4 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md hover:border-primary/30"
+            className="flex items-center justify-between bg-white dark:bg-zinc-900 dark:hover:bg-zinc-950 border border-zinc-200 dark:border-zinc-700 dark:hover:border-none p-4 rounded-2xl cursor-pointer transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/10"
           >
             <div className="flex items-center space-x-3">
               <div
@@ -130,7 +109,7 @@ export default function QuickActions() {
                 <span className="font-semibold text-sm truncate max-w-[180px]">
                   {action.title}
                 </span>
-                <span className="text-xs text-muted-foreground truncate max-w-[180px]">
+                <span className="text-xs text-gray-400 truncate max-w-[180px]">
                   {action.desc}
                 </span>
               </div>

@@ -150,7 +150,7 @@ const Profile = () => {
 
           {/* user other info */}
           <div className="flex justify-center mx-auto flex-wrap gap-2 text-xs sm:text-sm">
-            <div className="flex items-center gap-1 bg-muted px-2 py-1 rounded-full">
+            <div className="flex items-center gap-1 bg-muted px-2 py-1 rounded-full bg-gray-200 dark:bg-zinc-800">
               <Mail className="h-4 w-4 flex-shrink-0 text-primary" />
               <span className="truncate">
                 {user?.email || "user@example.com"}
@@ -169,7 +169,7 @@ const Profile = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
             >
-              <Card className="border border-border shadow-sm bg-card">
+              <Card className="border-0 shadow-lg bg-white/80 dark:bg-zinc-900 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Settings className="h-5 w-5 text-blue-500" />
@@ -194,8 +194,8 @@ const Profile = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <Card className="border border-border shadow-sm bg-card overflow-hidden">
-                <CardHeader className="pb-3 border-b border-border">
+              <Card className="border-0 shadow-xl bg-white/80 dark:bg-zinc-900 backdrop-blur-sm overflow-hidden">
+                <CardHeader className="pb-3 border-b border-zinc-200 dark:border-zinc-700">
                   <CardTitle className="flex items-center gap-3 text-lg font-semibold">
                     <div className="p-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 shadow-lg">
                       <Globe className="h-5 w-5 text-white" />

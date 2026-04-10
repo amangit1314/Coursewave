@@ -71,11 +71,11 @@ const Analytics = ({
   const [selectedTab, setSelectedTab] = React.useState("overview");
 
   return (
-    <div className="container mx-auto py-8 space-y-8">
+    <div className="container mx-auto  py-8 space-y-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Analytics Dashboard</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <h1 className="text-3xl font-bold">Analytics Dashboard</h1>
+        <p className="text-zinc-600 dark:text-zinc-400">
           Comprehensive insights into your teaching performance
         </p>
       </div>
@@ -103,18 +103,38 @@ const Analytics = ({
         value={selectedTab}
         onValueChange={setSelectedTab}
       >
-        <TabsList className="grid w-full grid-cols-5 gap-1.5 bg-muted/50 rounded-xl p-1.5">
+        <TabsList className="grid w-full grid-cols-5 gap-2 bg-gray-50 dark:bg-zinc-900 rounded-lg overflow-hidden pb-10">
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.value}
               value={tab.value}
               onClick={() => setSelectedTab(tab.value)}
               className={cn(
-                "rounded-lg py-2 px-4 text-sm font-medium transition-all duration-200",
+                "relative py-2 px-4 font-medium text-sm transition-all duration-200 focus:outline-none z-10",
                 selectedTab === tab.value
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? `
+                bg-gradient-to-tr from-blue-600 to-cyan-500 text-white
+                shadow-lg
+                font-bold
+                rounded-full
+                -translate-y-1
+                ring-2 ring-blue-500/70
+                border-0
+                scale-105
+              `
+                  : `
+                text-gray-600 dark:text-gray-300 
+                bg-transparent
+                hover:bg-blue-50 dark:hover:bg-zinc-800
+                opacity-85
+                rounded-full
+              `
               )}
+              style={
+                selectedTab === tab.value
+                  ? { boxShadow: "0 6px 18px -6px #3b82f6cc" }
+                  : undefined
+              }
             >
               {tab.label}
             </TabsTrigger>
@@ -123,12 +143,12 @@ const Analytics = ({
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-8">
-          <div className="overflow-x-hidden flex space-x-5 h-auto justify-center">
+          <div className="overflow-x-hidden flex space-x-5 h-auto justify-center dark:bg-zinc-900">
             {/* first column */}
             <div className="space-y-8 flex-1">
               {/* <div className="space-y-3">
                 <div className="flex items-center justify-start md:flex-row md:justify-between">
-                  <div className="text-lg font-semibold tracking-tight text-foreground">
+                  <div className="text-xl font-semibold tracking-tight text-zinc-800 dark:text-white">
                     Analytics Stats
                   </div>
                   <AnalyticsStatsSelect />
@@ -141,14 +161,14 @@ const Analytics = ({
               </div> */}
 
               <div className="space-y-3">
-                <div className="text-lg font-semibold tracking-tight text-foreground">
+                <div className="text-xl font-semibold tracking-tight text-zinc-800 dark:text-white">
                   Earning Report
                 </div>
                 <EarningReportAreaChart data={earningChartData} />
               </div>
 
               {/* <div className="space-y-3">
-                <div className="text-lg font-semibold tracking-tight text-foreground">
+                <div className="text-xl font-semibold tracking-tight text-zinc-800 dark:text-white">
                   Students
                 </div>
                 <LineChartForStudents courses={createdCourses ?? []} />
