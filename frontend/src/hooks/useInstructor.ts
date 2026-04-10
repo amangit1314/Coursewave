@@ -2,7 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { Instructor } from "@/types/instructor";
 import { instructorService } from "@/lib/api/services/instructorService";
 import { Course } from "@/types/course-details-api-response";
-import { InstructorAnalytics } from "@/types/instructor.service.types";
+import {
+  InstructorAnalytics,
+  InstructorEarningsData,
+  InstructorStudentsData,
+  CourseEnrollmentsData,
+} from "@/types/instructor.service.types";
 
 
 // For logged-in user
@@ -72,9 +77,45 @@ export const useMyInstructorAnlaytics = () => {
       const res = await instructorService.getMyAnalytics();
       return res.data;
     },
-
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
+  });
+};
+
+export const useMyInstructorEarnings = () => {
+  return useQuery<InstructorEarningsData>({
+    queryKey: ["myInstructorEarnings"],
+    queryFn: async () => {
+      const res = await instructorService.getMyEarnings();
+      return res.data;
+    },
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useMyInstructorStudents = () => {
+  return useQuery<InstructorStudentsData>({
+    queryKey: ["myInstructorStudents"],
+    queryFn: async () => {
+      const res = await instructorService.getMyStudentsList();
+      return res.data;
+    },
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useMyCourseEnrollments = (courseId: string) => {
+  return useQuery<CourseEnrollmentsData>({
+    queryKey: ["myCourseEnrollments", courseId],
+    queryFn: async () => {
+      const res = await instructorService.getMyCourseEnrollments(courseId);
+      return res.data;
+    },
+    enabled: !!courseId,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 };

@@ -212,6 +212,9 @@ import {
   InstructorAnalytics,
   InstructorQueryParams,
   InstructorUpdateData,
+  InstructorEarningsData,
+  InstructorStudentsData,
+  CourseEnrollmentsData,
 } from "@/types/instructor.service.types";
 import { Review } from "@/types/review";
 
@@ -318,11 +321,21 @@ class InstructorService {
     return apiManager.get<InstructorAnalytics>(`/instructor/me/analytics`);
   }
 
-  async getMyEarnings(): Promise<
-    ApiResponse<{ totalEarnings: number; currency: string }>
-  > {
-    return apiManager.get<{ totalEarnings: number; currency: string }>(
-      `/instructor/me/earnings`
+  async getMyEarnings(): Promise<ApiResponse<InstructorEarningsData>> {
+    return apiManager.get<InstructorEarningsData>(`/instructor/me/earnings`);
+  }
+
+  async getMyStudentsList(): Promise<ApiResponse<InstructorStudentsData>> {
+    return apiManager.get<InstructorStudentsData>(
+      `/instructor/me/students/list`
+    );
+  }
+
+  async getMyCourseEnrollments(
+    courseId: string
+  ): Promise<ApiResponse<CourseEnrollmentsData>> {
+    return apiManager.get<CourseEnrollmentsData>(
+      `/instructor/me/courses/${courseId}/enrollments`
     );
   }
 
