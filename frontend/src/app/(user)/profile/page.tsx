@@ -209,25 +209,25 @@ const Profile = () => {
                 <CardContent className="p-6 flex items-center justify-center gap-5 flex-wrap">
                   {[
                     {
-                      href: "#",
+                      href: "https://www.instagram.com/soni.amanic/",
                       color: "from-pink-500 to-red-500",
                       icon: <RiInstagramFill size={22} />,
                       label: "Instagram",
                     },
                     {
-                      href: "#",
+                      href: "https://x.com/soni07_aman",
                       color: "from-blue-500 to-blue-600",
                       icon: <FaSquareXTwitter size={22} />,
                       label: "Twitter",
                     },
                     {
-                      href: "#",
+                      href: "https://www.linkedin.com/in/aman-soni1",
                       color: "from-blue-600 to-blue-700",
                       icon: <FaLinkedinIn size={22} />,
                       label: "LinkedIn",
                     },
                     {
-                      href: "#",
+                      href: "https://github.com/amangit1314",
                       color: "from-gray-700 to-gray-800",
                       icon: <FaGithub size={22} />,
                       label: "GitHub",
@@ -236,10 +236,12 @@ const Profile = () => {
                     <Link
                       key={idx}
                       href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       aria-label={`Follow us on ${social.label}`}
-                      className={`p-3 rounded-full bg-gradient-to-r ${social.color} text-white shadow-md 
-            hover:shadow-${social.color.split(" ")[1]}-500/40 
-            hover:scale-110 focus:ring-2 focus:ring-offset-2 focus:ring-${social.color.split(" ")[1]}-400 
+                      className={`p-3 rounded-full bg-gradient-to-r ${social.color} text-white shadow-md
+            hover:shadow-${social.color.split(" ")[1]}-500/40
+            hover:scale-110 focus:ring-2 focus:ring-offset-2 focus:ring-${social.color.split(" ")[1]}-400
             transition-all duration-300 ease-out`}
                     >
                       {social.icon}
