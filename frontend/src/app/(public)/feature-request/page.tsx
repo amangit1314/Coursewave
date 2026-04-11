@@ -14,9 +14,11 @@ import {
   Vote,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useSubmitFeatureRequest } from "@/hooks/useFeedback";
 
 export default function FeatureRequestPage() {
   const router = useRouter();
+  const featureRequestMutation = useSubmitFeatureRequest();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -26,8 +28,9 @@ export default function FeatureRequestPage() {
     email: "",
     allowContact: false,
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const isSubmitting = featureRequestMutation.isPending;
 
   const categories = [
     {
@@ -65,18 +68,21 @@ export default function FeatureRequestPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    // Simulate API call
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log("Feature request submitted:", formData);
-      setIsSubmitted(true);
-    } catch (error) {
-      console.error("Error submitting feature request:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    featureRequestMutation.mutate(
+      {
+        name: formData.title,
+        email: formData.email,
+        title: formData.title,
+        category: formData.category,
+        description: formData.description,
+        priority: formData.priority === "urgent" ? "high" : formData.priority,
+      },
+      {
+        onSuccess: () => {
+          setIsSubmitted(true);
+        },
+      }
+    );
   };
 
   const handleInputChange = (field: string, value: any) => {

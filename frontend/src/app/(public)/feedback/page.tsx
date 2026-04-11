@@ -15,9 +15,11 @@ import {
   Heart
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useSubmitFeedback } from "@/hooks/useFeedback";
 
 export default function FeedbackPage() {
    const router = useRouter();
+  const feedbackMutation = useSubmitFeedback();
   const [formData, setFormData] = useState({
     type: "general",
     rating: 0,
@@ -26,8 +28,9 @@ export default function FeedbackPage() {
     email: "",
     allowContact: false
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const isSubmitting = feedbackMutation.isPending;
 
   const feedbackTypes = [
     {
@@ -58,18 +61,20 @@ export default function FeedbackPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    // Simulate API call
-    try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log("Feedback submitted:", formData);
-      setIsSubmitted(true);
-    } catch (error) {
-      console.error("Error submitting feedback:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    feedbackMutation.mutate(
+      {
+        name: formData.title,
+        email: formData.email,
+        type: formData.type === "suggestion" ? "improvement" : formData.type === "praise" ? "general" : formData.type,
+        rating: formData.rating,
+        message: formData.message,
+      },
+      {
+        onSuccess: () => {
+          setIsSubmitted(true);
+        },
+      }
+    );
   };
 
   const handleInputChange = (field: string, value: any) => {
