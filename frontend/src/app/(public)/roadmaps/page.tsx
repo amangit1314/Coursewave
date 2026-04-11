@@ -24,15 +24,45 @@ import {
   Brain,
   Route,
   ArrowRight,
+  Database,
+  Code,
+  Smartphone,
+  Palette,
+  Shield,
+  Globe,
+  Star,
 } from "lucide-react";
 import { useDebounce } from "use-debounce";
 import { generateRoadmapWithAI } from "@/lib/ai/roadmap-generator";
-import { categories, popularSkills } from "@/lib/mock/mockData";
+import { useCategories } from "@/hooks/useCategories";
 import { RoadmapTimelineView } from "./_components/RoadmapTimeline";
 import { RoadmapListView } from "./_components/RoadmapList";
 import { downloadRoadmap, getTemplateRoadmap } from "@/lib/utils/roadmap-utils";
 import { dmSans } from "@/lib/config/fonts";
 import { cn } from "@/lib/utils/utils";
+
+/** Curated popular skills for the roadmap suggestions UI */
+const popularSkills = [
+  { name: "Backend Developer", icon: Database, category: "Development" },
+  { name: "Frontend Developer", icon: Code, category: "Development" },
+  { name: "Data Scientist", icon: TrendingUp, category: "Data Science" },
+  { name: "DevOps Engineer", icon: Zap, category: "Operations" },
+  { name: "Mobile Developer", icon: Smartphone, category: "Mobile" },
+  { name: "UI/UX Designer", icon: Palette, category: "Design" },
+  { name: "Full Stack Developer", icon: Globe, category: "Development" },
+  { name: "Cybersecurity Engineer", icon: Shield, category: "Security" },
+];
+
+/** Icon mapping for category filter tabs */
+const categoryIconMap: Record<string, React.ElementType> = {
+  All: Star,
+  Development: Code,
+  "Data Science": TrendingUp,
+  Operations: Zap,
+  Mobile: Smartphone,
+  Design: Palette,
+  Security: Shield,
+};
 
 const RoadmapPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,6 +74,24 @@ const RoadmapPage = () => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [progress, setProgress] = useState<Record<string, boolean>>({});
+  const { data: apiCategories } = useCategories();
+
+  // Build category tabs from API data with icon mapping, always include "All"
+  const categories = React.useMemo(() => {
+    const allTab = { name: "All", icon: Star };
+    if (!apiCategories || apiCategories.length === 0) {
+      // Fallback: derive unique categories from popularSkills
+      const uniqueNames = Array.from(new Set(popularSkills.map((s) => s.category)));
+      return [allTab, ...uniqueNames.map((name) => ({ name, icon: categoryIconMap[name] || BookOpen }))];
+    }
+    return [
+      allTab,
+      ...apiCategories.map((cat) => ({
+        name: cat.name,
+        icon: categoryIconMap[cat.name] || BookOpen,
+      })),
+    ];
+  }, [apiCategories]);
 
   const handleSearch = async (query?: string) => {
     const searchTerm = query || searchQuery;
