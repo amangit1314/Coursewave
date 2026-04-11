@@ -8,6 +8,7 @@ import {
   InstructorStudentsData,
   CourseEnrollmentsData,
 } from "@/types/instructor.service.types";
+import { Review } from "@/types/review";
 
 
 // For logged-in user
@@ -115,6 +116,32 @@ export const useMyCourseEnrollments = (courseId: string) => {
       return res.data;
     },
     enabled: !!courseId,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export interface MyReviewsResponse {
+  reviews: Array<{
+    id: string;
+    rating: number;
+    comment: string;
+    createdAt: string;
+    user: { id: string; name: string; profileImageUrl: string | null };
+    course: { id: string; title: string; slug: string };
+  }>;
+  totalReviews: number;
+  averageRating: number;
+  ratingDistribution: Record<number, number>;
+}
+
+export const useMyReviews = () => {
+  return useQuery<MyReviewsResponse>({
+    queryKey: ["instructor", "reviews"],
+    queryFn: async () => {
+      const res = await instructorService.getMyReviews();
+      return res.data as unknown as MyReviewsResponse;
+    },
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
