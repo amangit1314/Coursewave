@@ -2,19 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import {
-  Calendar,
   Code,
   BookOpen,
   Award,
   Tag,
   Link as LinkIcon,
-  Upload,
-  X,
   Save,
   ArrowLeft,
-  Plus,
-  Trash2,
-  Image as ImageIcon,
   AlertCircle,
   CheckCircle,
   CircleArrowLeft,
@@ -23,6 +17,9 @@ import {
 import { useProjectDetails } from "@/hooks/useProjects";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { ProjectBasicInfoForm } from "./_components/ProjectBasicInfoForm";
+import { ProjectTimelineForm } from "./_components/ProjectTimelineForm";
+import { ArrayFieldSection } from "./_components/ArrayFieldSection";
 
 const EditProjectPage = () => {
   const params = useParams<{ id: string }>();
@@ -98,9 +95,7 @@ const EditProjectPage = () => {
   }, [project]);
 
   const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -112,10 +107,7 @@ const EditProjectPage = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setThumbnailPreview(reader.result as string);
-        setFormData((prev) => ({
-          ...prev,
-          thumbnailUrl: reader.result as string,
-        }));
+        setFormData((prev) => ({ ...prev, thumbnailUrl: reader.result as string }));
       };
       reader.readAsDataURL(file);
     }
@@ -141,17 +133,10 @@ const EditProjectPage = () => {
     setIsSaving(true);
     setSaveSuccess(false);
 
-    // Simulate API call
     setTimeout(() => {
       setIsSaving(false);
       setSaveSuccess(true);
-
-      // Hide success message after 3 seconds
-      setTimeout(() => {
-        setSaveSuccess(false);
-        // Uncomment to redirect after save
-        // router.push(`/instructor/projects/${projectId}`);
-      }, 3000);
+      setTimeout(() => setSaveSuccess(false), 3000);
     }, 1500);
   };
 
@@ -225,683 +210,116 @@ const EditProjectPage = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6 pb-24">
-          {/* Basic Information */}
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl p-8 shadow-lg border border-zinc-200/50 dark:border-zinc-700/50">
-            <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-2">
-              <BookOpen className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-              Basic Information
-            </h2>
+          <ProjectBasicInfoForm
+            formData={formData}
+            thumbnailPreview={thumbnailPreview}
+            onInputChange={handleInputChange}
+            onThumbnailChange={handleThumbnailChange}
+            onThumbnailClear={() => {
+              setThumbnailPreview("");
+              setFormData((prev) => ({ ...prev, thumbnailUrl: "" }));
+            }}
+          />
 
-            <div className="space-y-6">
-              {/* Thumbnail Upload */}
-              <div>
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-3">
-                  Project Thumbnail
-                </label>
-                <div className="flex items-start gap-6">
-                  {thumbnailPreview ? (
-                    <div className="relative group">
-                      <img
-                        src={thumbnailPreview}
-                        alt="Thumbnail preview"
-                        className="w-48 h-48 object-cover rounded-xl border-2 border-zinc-200 dark:border-zinc-700 shadow-lg"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setThumbnailPreview("");
-                          setFormData((prev) => ({
-                            ...prev,
-                            thumbnailUrl: "",
-                          }));
-                        }}
-                        className="absolute -top-2 -right-2 bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-lg hover:bg-red-600 hover:scale-110"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-xl transition-colors" />
-                    </div>
-                  ) : (
-                    <div className="w-48 h-48 border-2 border-dashed border-zinc-300 dark:border-zinc-600 rounded-xl flex items-center justify-center bg-zinc-50 dark:bg-zinc-900/50">
-                      <ImageIcon className="w-16 h-16 text-zinc-400" />
-                    </div>
-                  )}
-                  <div className="flex-1">
-                    <label className="cursor-pointer block">
-                      <div className="border-2 border-dashed border-zinc-300 dark:border-zinc-600 rounded-xl p-8 text-center hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-all">
-                        <Upload className="w-10 h-10 mx-auto mb-3 text-zinc-400" />
-                        <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-1 font-medium">
-                          Click to upload or drag and drop
-                        </p>
-                        <p className="text-xs text-zinc-500 dark:text-zinc-500">
-                          PNG, JPG, GIF up to 5MB
-                        </p>
-                      </div>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleThumbnailChange}
-                        className="hidden"
-                      />
-                    </label>
-                  </div>
-                </div>
-              </div>
+          <ProjectTimelineForm
+            formData={formData}
+            onInputChange={handleInputChange}
+          />
 
-              {/* Title */}
-              <div>
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                  Project Title <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
-                  placeholder="Enter project title"
-                />
-              </div>
+          <ArrayFieldSection
+            title="Categories"
+            icon={<BookOpen className="w-6 h-6 text-blue-600 dark:text-blue-400" />}
+            iconColor="bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-500/30"
+            buttonColor="bg-blue-600 hover:bg-blue-700"
+            items={formData.categories}
+            inputValue={newCategory}
+            onInputChange={setNewCategory}
+            onAdd={() => { addArrayItem("categories", newCategory); setNewCategory(""); }}
+            onRemove={(idx) => removeArrayItem("categories", idx)}
+            placeholder="Add category and press Enter..."
+            emptyMessage="No categories added yet"
+            listStyle="badge"
+          />
 
-              {/* Slug */}
-              <div>
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                  Slug <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="slug"
-                  value={formData.slug}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-mono text-sm"
-                  placeholder="project-slug"
-                />
-                <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-                  URL-friendly version of the title. Use lowercase letters and
-                  hyphens only.
-                </p>
-              </div>
+          <ArrayFieldSection
+            title="Tags"
+            icon={<Tag className="w-6 h-6 text-green-600 dark:text-green-400" />}
+            iconColor="bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-300 border-green-200 dark:border-green-500/30"
+            buttonColor="bg-green-600 hover:bg-green-700"
+            items={formData.tags}
+            inputValue={newTag}
+            onInputChange={setNewTag}
+            onAdd={() => { addArrayItem("tags", newTag); setNewTag(""); }}
+            onRemove={(idx) => removeArrayItem("tags", idx)}
+            placeholder="Add tag and press Enter..."
+            emptyMessage="No tags added yet"
+            listStyle="badge"
+            focusColor="green"
+          />
 
-              {/* Description */}
-              <div>
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                  Description <span className="text-red-500">*</span>
-                </label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  required
-                  rows={6}
-                  className="w-full px-4 py-3 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all resize-none"
-                  placeholder="Describe your project in detail..."
-                />
-              </div>
+          <ArrayFieldSection
+            title="Learning Outcomes"
+            icon={<Award className="w-6 h-6 text-amber-600 dark:text-amber-400" />}
+            iconColor=""
+            buttonColor="bg-amber-600 hover:bg-amber-700"
+            items={formData.learningOutcomes}
+            inputValue={newLearningOutcome}
+            onInputChange={setNewLearningOutcome}
+            onAdd={() => { addArrayItem("learningOutcomes", newLearningOutcome); setNewLearningOutcome(""); }}
+            onRemove={(idx) => removeArrayItem("learningOutcomes", idx)}
+            placeholder="Add learning outcome and press Enter..."
+            emptyMessage="No learning outcomes added yet"
+            listStyle="list-check"
+            focusColor="amber"
+          />
 
-              {/* Status and Difficulty */}
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* Status */}
-                <div className="relative">
-                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                    Status
-                  </label>
-                  <select
-                    name="status"
-                    value={formData.status}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 pr-10 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all appearance-none"
-                  >
-                    <option value="active">Active</option>
-                    <option value="completed">Completed</option>
-                    <option value="upcoming">Upcoming</option>
-                    <option value="archived">Archived</option>
-                  </select>
-                  <svg
-                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400 dark:text-zinc-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
+          <ArrayFieldSection
+            title="Prerequisites"
+            icon={<Layers className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />}
+            iconColor=""
+            buttonColor="bg-indigo-600 hover:bg-indigo-700"
+            items={formData.prerequisites}
+            inputValue={newPrerequisite}
+            onInputChange={setNewPrerequisite}
+            onAdd={() => { addArrayItem("prerequisites", newPrerequisite); setNewPrerequisite(""); }}
+            onRemove={(idx) => removeArrayItem("prerequisites", idx)}
+            placeholder="Add prerequisite and press Enter..."
+            emptyMessage="No prerequisites added yet"
+            listStyle="list-bullet"
+          />
 
-                {/* Difficulty */}
-                <div className="relative">
-                  <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                    Difficulty
-                  </label>
-                  <select
-                    name="difficulty"
-                    value={formData.difficulty}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 pr-10 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all appearance-none"
-                  >
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="advanced">Advanced</option>
-                  </select>
-                  <svg
-                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400 dark:text-zinc-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
+          <ArrayFieldSection
+            title="Technologies"
+            icon={<Code className="w-6 h-6 text-purple-600 dark:text-purple-400" />}
+            iconColor=""
+            buttonColor="bg-purple-600 hover:bg-purple-700"
+            items={formData.technologies}
+            inputValue={newTechnology}
+            onInputChange={setNewTechnology}
+            onAdd={() => { addArrayItem("technologies", newTechnology); setNewTechnology(""); }}
+            onRemove={(idx) => removeArrayItem("technologies", idx)}
+            placeholder="Add technology and press Enter..."
+            emptyMessage="No technologies added yet"
+            listStyle="list-icon"
+            itemIcon={<Code className="w-5 h-5 text-purple-600 dark:text-purple-400" />}
+            focusColor="purple"
+          />
 
-          {/* Dates and Submissions */}
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl p-8 shadow-lg border border-zinc-200/50 dark:border-zinc-700/50">
-            <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-2">
-              <Calendar className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-              Timeline & Submissions
-            </h2>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                  Start Date
-                </label>
-                <input
-                  type="date"
-                  name="startDate"
-                  value={formData.startDate}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                  Deadline
-                </label>
-                <input
-                  type="date"
-                  name="deadline"
-                  value={formData.deadline}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                  End Date
-                </label>
-                <input
-                  type="date"
-                  name="endDate"
-                  value={formData.endDate}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                  Max Submissions
-                </label>
-                <input
-                  type="number"
-                  name="maxSubmissions"
-                  value={formData.maxSubmissions}
-                  onChange={handleInputChange}
-                  min="1"
-                  className="w-full px-4 py-3 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
-                  placeholder="Unlimited"
-                />
-                <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-                  Leave empty for unlimited submissions
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Categories */}
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl p-8 shadow-lg border border-zinc-200/50 dark:border-zinc-700/50">
-            <div className="flex justify-between items-center  mb-4">
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-                <BookOpen className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                Categories
-              </h2>
-
-              <Button
-                type="button"
-                onClick={() => {
-                  addArrayItem("categories", newCategory);
-                  setNewCategory("");
-                }}
-                className="h-full flex items-center justify-center px-6 bg-blue-600 hover:bg-blue-700 rounded-xl"
-              >
-                <Plus className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="flex gap-2 mb-4">
-              <input
-                type="text"
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addArrayItem("categories", newCategory);
-                    setNewCategory("");
-                  }
-                }}
-                className="flex-1 px-4 py-3 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
-                placeholder="Add category and press Enter..."
-              />
-            </div>
-            {formData.categories.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {formData.categories.map((cat, idx) => (
-                  <span
-                    key={idx}
-                    className="px-4 py-2 rounded-lg text-sm font-medium bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 flex items-center gap-2 border border-blue-200 dark:border-blue-500/30 hover:bg-blue-200 dark:hover:bg-blue-500/30 transition-colors"
-                  >
-                    {cat}
-                    <button
-                      type="button"
-                      onClick={() => removeArrayItem("categories", idx)}
-                      className="hover:text-red-600 dark:hover:text-red-400 transition-colors"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </span>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-zinc-500 dark:text-zinc-400 text-center py-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg">
-                No categories added yet
-              </p>
-            )}
-          </div>
-
-          {/* Tags */}
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl p-8 shadow-lg border border-zinc-200/50 dark:border-zinc-700/50">
-            <div className="flex justify-between items-center  mb-4">
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-                <Tag className="w-6 h-6 text-green-600 dark:text-green-400" />
-                Tags
-              </h2>
-
-              <Button
-                type="button"
-                onClick={() => {
-                  addArrayItem("categories", newCategory);
-                  setNewCategory("");
-                }}
-                className="h-full flex items-center justify-center px-6 bg-green-600 hover:bg-green-700 rounded-xl"
-              >
-                <Plus className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="flex gap-2 mb-4">
-              <input
-                type="text"
-                value={newTag}
-                onChange={(e) => setNewTag(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addArrayItem("tags", newTag);
-                    setNewTag("");
-                  }
-                }}
-                className="flex-1 px-4 py-3 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:border-green-500 dark:focus:border-green-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 transition-all"
-                placeholder="Add tag and press Enter..."
-              />
-            </div>
-            {formData.tags.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {formData.tags.map((tag, idx) => (
-                  <span
-                    key={idx}
-                    className="px-4 py-2 rounded-lg text-sm font-medium bg-green-100 dark:bg-green-500/20 text-green-700 dark:text-green-300 flex items-center gap-2 border border-green-200 dark:border-green-500/30 hover:bg-green-200 dark:hover:bg-green-500/30 transition-colors"
-                  >
-                    {tag}
-                    <button
-                      type="button"
-                      onClick={() => removeArrayItem("tags", idx)}
-                      className="hover:text-red-600 dark:hover:text-red-400 transition-colors"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </span>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-zinc-500 dark:text-zinc-400 text-center py-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg">
-                No tags added yet
-              </p>
-            )}
-          </div>
-
-          {/* Learning Outcomes */}
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl p-8 shadow-lg border border-zinc-200/50 dark:border-zinc-700/50">
-            {/* <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-2">
-              <Award className="w-6 h-6 text-amber-600 dark:text-amber-400" />
-              Learning Outcomes
-            </h2> */}
-            <div className="flex justify-between items-center  mb-4">
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-                <Award className="w-6 h-6 text-amber-600 dark:text-amber-400" />
-                Learning Outcomes
-              </h2>
-
-              <Button
-                type="button"
-                onClick={() => {
-                  addArrayItem("learningOutcomes", newLearningOutcome);
-                  setNewLearningOutcome("");
-                }}
-                className="h-full flex items-center justify-center px-6 bg-amber-600 hover:bg-amber-700 rounded-xl"
-              >
-                <Plus className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="flex gap-2 mb-4">
-              <input
-                type="text"
-                value={newLearningOutcome}
-                onChange={(e) => setNewLearningOutcome(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addArrayItem("learningOutcomes", newLearningOutcome);
-                    setNewLearningOutcome("");
-                  }
-                }}
-                className="flex-1 px-4 py-3 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:border-amber-500 dark:focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-500/20 transition-all"
-                placeholder="Add learning outcome and press Enter..."
-              />
-              {/* <Button
-                type="button"
-                onClick={() => {
-                  addArrayItem("learningOutcomes", newLearningOutcome);
-                  setNewLearningOutcome("");
-                }}
-                className="px-6 bg-amber-600 hover:bg-amber-700"
-              >
-                <Plus className="w-4 h-4" />
-              </Button> */}
-            </div>
-            {formData.learningOutcomes.length > 0 ? (
-              <ul className="space-y-2">
-                {formData.learningOutcomes.map((outcome, idx) => (
-                  <li
-                    key={idx}
-                    className="flex items-start gap-3 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors group"
-                  >
-                    <CheckCircle className="w-5 h-5 mt-0.5 text-green-600 dark:text-green-400 flex-shrink-0" />
-                    <span className="flex-1 text-sm text-zinc-700 dark:text-zinc-300">
-                      {outcome}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => removeArrayItem("learningOutcomes", idx)}
-                      className="text-zinc-400 hover:text-red-600 dark:hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-zinc-500 dark:text-zinc-400 text-center py-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg">
-                No learning outcomes added yet
-              </p>
-            )}
-          </div>
-
-          {/* Prerequisites */}
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl p-8 shadow-lg border border-zinc-200/50 dark:border-zinc-700/50">
-            <div className="flex justify-between items-center  mb-4">
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-                <Layers className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-                Prerequisites
-              </h2>
-
-              <Button
-                type="button"
-                onClick={() => {
-                  addArrayItem("prerequisites", newPrerequisite);
-                  setNewPrerequisite("");
-                }}
-                className="h-full flex items-center justify-center px-6 bg-indigo-600 hover:bg-indigo-700 rounded-xl"
-              >
-                <Plus className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="flex gap-2 mb-4">
-              <input
-                type="text"
-                value={newPrerequisite}
-                onChange={(e) => setNewPrerequisite(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addArrayItem("prerequisites", newPrerequisite);
-                    setNewPrerequisite("");
-                  }
-                }}
-                className="flex-1 px-4 py-3 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
-                placeholder="Add prerequisite and press Enter..."
-              />
-              {/* <Button
-                type="button"
-                onClick={() => {
-                  addArrayItem("prerequisites", newPrerequisite);
-                  setNewPrerequisite("");
-                }}
-                className="px-6"
-              >
-                <Plus className="w-4 h-4" />
-              </Button> */}
-            </div>
-            {formData.prerequisites.length > 0 ? (
-              <ul className="space-y-2">
-                {formData.prerequisites.map((pre, idx) => (
-                  <li
-                    key={idx}
-                    className="flex items-start gap-3 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors group"
-                  >
-                    <span className="mt-1.5 w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400 flex-shrink-0" />
-                    <span className="flex-1 text-sm text-zinc-700 dark:text-zinc-300">
-                      {pre}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => removeArrayItem("prerequisites", idx)}
-                      className="text-zinc-400 hover:text-red-600 dark:hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-zinc-500 dark:text-zinc-400 text-center py-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg">
-                No prerequisites added yet
-              </p>
-            )}
-          </div>
-
-          {/* Technologies */}
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl p-8 shadow-lg border border-zinc-200/50 dark:border-zinc-700/50">
-            {/* <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-2">
-              <Code className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-              Technologies
-            </h2> */}
-
-            <div className="flex justify-between items-center  mb-4">
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-                <Code className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                Technologies
-              </h2>
-
-              <Button
-                type="button"
-                onClick={() => {
-                  addArrayItem("technologies", newTechnology);
-                  setNewTechnology("");
-                }}
-                className="h-full flex items-center justify-center px-6 bg-purple-600 hover:bg-purple-700 rounded-xl"
-              >
-                <Plus className="w-4 h-4" />
-              </Button>
-            </div>
-
-            <div className="flex gap-2 mb-4">
-              <input
-                type="text"
-                value={newTechnology}
-                onChange={(e) => setNewTechnology(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addArrayItem("technologies", newTechnology);
-                    setNewTechnology("");
-                  }
-                }}
-                className="flex-1 px-4 py-3 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:border-purple-500 dark:focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all"
-                placeholder="Add technology and press Enter..."
-              />
-              {/* <Button
-                type="button"
-                onClick={() => {
-                  addArrayItem("technologies", newTechnology);
-                  setNewTechnology("");
-                }}
-                className="px-6 bg-purple-600 hover:bg-purple-700"
-              >
-                <Plus className="w-4 h-4" />
-              </Button> */}
-            </div>
-            {formData.technologies.length > 0 ? (
-              <ul className="space-y-2">
-                {formData.technologies.map((tech, idx) => (
-                  <li
-                    key={idx}
-                    className="flex items-start gap-3 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors group"
-                  >
-                    <Code className="w-5 h-5 mt-0.5 text-purple-600 dark:text-purple-400 flex-shrink-0" />
-                    <span className="flex-1 text-sm text-zinc-700 dark:text-zinc-300">
-                      {tech}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => removeArrayItem("technologies", idx)}
-                      className="text-zinc-400 hover:text-red-600 dark:hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-zinc-500 dark:text-zinc-400 text-center py-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg">
-                No technologies added yet
-              </p>
-            )}
-          </div>
-
-          {/* Resources */}
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl p-8 shadow-lg border border-zinc-200/50 dark:border-zinc-700/50">
-            {/* <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-2">
-              <LinkIcon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-              Resources
-            </h2> */}
-            <div className="flex justify-between items-center  mb-4">
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-                <LinkIcon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                Resources
-              </h2>
-
-              <Button
-                type="button"
-                onClick={() => {
-                  addArrayItem("resources", newResource);
-                  setNewResource("");
-                }}
-                className="h-full flex items-center justify-center px-6 bg-blue-600 hover:bg-blue-700 rounded-xl"
-              >
-                <Plus className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="flex gap-2 mb-4">
-              <input
-                type="url"
-                value={newResource}
-                onChange={(e) => setNewResource(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addArrayItem("resources", newResource);
-                    setNewResource("");
-                  }
-                }}
-                className="flex-1 px-4 py-3 rounded-xl border-2 border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
-                placeholder="Add resource URL and press Enter..."
-              />
-              {/* <Button
-                type="button"
-                onClick={() => {
-                  addArrayItem("resources", newResource);
-                  setNewResource("");
-                }}
-                className="px-6"
-              >
-                <Plus className="w-4 h-4" />
-              </Button> */}
-            </div>
-            {formData.resources.length > 0 ? (
-              <ul className="space-y-2">
-                {formData.resources.map((resource, idx) => (
-                  <li
-                    key={idx}
-                    className="flex items-start gap-3 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition-colors group"
-                  >
-                    <LinkIcon className="w-5 h-5 mt-0.5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-                    <a
-                      href={resource}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 text-sm text-blue-600 dark:text-blue-400 hover:underline truncate"
-                    >
-                      {resource}
-                    </a>
-                    <button
-                      type="button"
-                      onClick={() => removeArrayItem("resources", idx)}
-                      className="text-zinc-400 hover:text-red-600 dark:hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-zinc-500 dark:text-zinc-400 text-center py-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-lg">
-                No resources added yet
-              </p>
-            )}
-          </div>
+          <ArrayFieldSection
+            title="Resources"
+            icon={<LinkIcon className="w-6 h-6 text-blue-600 dark:text-blue-400" />}
+            iconColor=""
+            buttonColor="bg-blue-600 hover:bg-blue-700"
+            items={formData.resources}
+            inputValue={newResource}
+            onInputChange={setNewResource}
+            onAdd={() => { addArrayItem("resources", newResource); setNewResource(""); }}
+            onRemove={(idx) => removeArrayItem("resources", idx)}
+            placeholder="Add resource URL and press Enter..."
+            emptyMessage="No resources added yet"
+            listStyle="list-link"
+            inputType="url"
+          />
         </form>
 
         {/* Sticky Action Bar */}
