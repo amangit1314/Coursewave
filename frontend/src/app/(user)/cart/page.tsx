@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
 import { dmSans } from "@/lib/config/fonts";
 import { cn } from "@/lib/utils/utils";
 
@@ -17,7 +16,6 @@ import {
   Clock,
   Shield,
   CheckCircle2,
-  Tag,
   ShoppingCart,
   ArrowRight,
   X,
@@ -40,14 +38,6 @@ import { useAddToWishlist, useRemoveFromWishlist, useWishlist } from "@/hooks/us
 import Link from "next/link";
 import { IoMdArrowRoundBack } from "react-icons/io";
 
-// Optional: get coupon data from API/server in future for production
-const availableCoupons = [
-  { code: "WELCOME20", discount: 20, description: "20% off on all courses" },
-  { code: "STUDENT15", discount: 15, description: "15% off for students" },
-  { code: "SUMMER25", discount: 25, description: "25% off summer special" },
-  { code: "FIRST10", discount: 10, description: "10% off first purchase" },
-];
-
 const CartPage = () => {
   // Load cart reactively
   const { data: cart, isPending, isError } = useCart();
@@ -59,13 +49,6 @@ const CartPage = () => {
 
   const isInWishlist = (courseId: string) =>
     wishlistItems?.some((item) => item.id === courseId) ?? false;
-
-  // Coupon UI state (handled locally)
-  const [couponCode, setCouponCode] = useState("");
-  const [appliedCoupon, setAppliedCoupon] = useState<
-    (typeof availableCoupons)[0] | null
-  >(null);
-  const [couponError, setCouponError] = useState("");
 
   // Core items come from cart's CartItem[]
   const items = cart?.CartItem ?? [];
@@ -79,27 +62,7 @@ const CartPage = () => {
         : item.Course.price) || 0),
     0
   );
-  const discount = appliedCoupon
-    ? (subtotal * appliedCoupon.discount) / 100
-    : 0;
-  const total = subtotal - discount;
-
-  // Coupon logic
-  const applyCoupon = () => {
-    const coupon = availableCoupons.find(
-      (c) => c.code === couponCode.toUpperCase()
-    );
-    if (coupon) {
-      setAppliedCoupon(coupon);
-      setCouponError("");
-    } else {
-      setCouponError("Invalid coupon code");
-    }
-  };
-  const removeCoupon = () => {
-    setAppliedCoupon(null);
-    setCouponCode("");
-  };
+  const total = subtotal;
 
   // Remove from cart - use CartItem.courseId (not CartItem.id)
   const handleRemove = (courseId: string) => {
@@ -407,117 +370,12 @@ const CartPage = () => {
                       ${subtotal.toFixed(2)}
                     </span>
                   </div>
-                  {appliedCoupon && (
-                    <div className="flex justify-between text-green-600 dark:text-green-400">
-                      <span className="flex items-center gap-1">
-                        <Sparkles className="w-4 h-4" />
-                        Discount ({appliedCoupon.discount}%)
-                      </span>
-                      <span className="font-semibold">
-                        -${discount.toFixed(2)}
-                      </span>
-                    </div>
-                  )}
                   <Separator />
                   <div className="flex justify-between text-xl font-bold">
                     <span className="text-gray-900 dark:text-white">Total</span>
                     <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
                       ${total.toFixed(2)}
                     </span>
-                  </div>
-                  {appliedCoupon && (
-                    <div className="flex items-center justify-between bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-xl p-4 border border-green-200 dark:border-green-900">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
-                          <Tag className="h-4 w-4 text-white" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold text-green-700 dark:text-green-300">
-                            {appliedCoupon.code}
-                          </p>
-                          <p className="text-xs text-green-600 dark:text-green-400">
-                            {appliedCoupon.description}
-                          </p>
-                        </div>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={removeCoupon}
-                        className="h-8 w-8 p-0 rounded-full text-green-600 hover:text-green-700 hover:bg-green-100 dark:hover:bg-green-900"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  )}
-                </div>
-
-                {!appliedCoupon && (
-                  <div className="mb-6">
-                    <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 block">
-                      Have a coupon code?
-                    </label>
-                    <div className="flex gap-2 mb-3">
-                      <Input
-                        placeholder="Enter code"
-                        value={couponCode}
-                        onChange={(e) => setCouponCode(e.target.value)}
-                        className="flex-1 rounded-xl border-gray-200 dark:border-zinc-700 focus:border-blue-500 dark:focus:border-blue-500"
-                      />
-                      <Button
-                        onClick={applyCoupon}
-                        className="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white rounded-xl px-6 shadow-lg hover:shadow-xl transition-all hover:scale-105"
-                      >
-                        Apply
-                      </Button>
-                    </div>
-                    {couponError && (
-                      <p className="text-sm text-red-500 flex items-center gap-1">
-                        <X className="w-3 h-3" />
-                        {couponError}
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                <div className="mb-6">
-                  <h3
-                    className={cn(
-                      "font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2",
-                      dmSans.className
-                    )}
-                  >
-                    <Sparkles className="w-4 h-4 text-yellow-500" />
-                    Available Coupons
-                  </h3>
-                  <div className="space-y-2 max-h-64 overflow-y-auto">
-                    {availableCoupons.map((coupon) => (
-                      <div
-                        key={coupon.code}
-                        className="group relative flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-zinc-800 dark:to-blue-950/30 rounded-xl hover:from-blue-50 hover:to-indigo-50 dark:hover:from-blue-950/30 dark:hover:to-indigo-950/30 cursor-pointer transition-all border border-gray-200 dark:border-zinc-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg "
-                        onClick={() => {
-                          setCouponCode(coupon.code);
-                          applyCoupon();
-                        }}
-                      >
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <div className="w-6 h-6 bg-blue-500 rounded-lg flex items-center justify-center">
-                              <Tag className="h-3 w-3 text-white" />
-                            </div>
-                            <span className="font-bold text-gray-900 dark:text-white">
-                              {coupon.code}
-                            </span>
-                          </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {coupon.description}
-                          </p>
-                        </div>
-                        <Badge className="bg-gradient-to-r from-green-500 to-emerald-600 text-white border-0 shadow-lg px-3 py-1 font-bold">
-                          {coupon.discount}% OFF
-                        </Badge>
-                      </div>
-                    ))}
                   </div>
                 </div>
 
