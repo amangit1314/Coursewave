@@ -3,6 +3,7 @@ import { Router } from "express";
 import {
   bookSession,
   cancelBooking,
+  createCheckout,
   createSession,
   getAllSessions,
   getMyFutureScheduledSessions,
@@ -38,6 +39,14 @@ router.post(
   verifyToken,
   validateUUID("sessionId"),
   bookSession
+);
+
+// Create Stripe checkout session for session payment
+router.post(
+  "/:sessionId/checkout",
+  verifyToken,
+  validateUUID("sessionId"),
+  createCheckout
 );
 
 // Process payment for session booking

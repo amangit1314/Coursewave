@@ -8,6 +8,8 @@ import {
 import { prisma } from "../../config/prisma";
 import { generateResourceId } from "../../core/utils/idGenerator";
 import { AppError } from "../../core/middleware/errorHandler";
+import { stripe } from "../../config/stripe";
+import { env } from "../../config/config";
 
 export interface SessionData {
   title: string;
@@ -412,6 +414,74 @@ export const getInstructorSessions = async (instructorId: string) => {
       scheduledAt: "desc",
     },
   });
+};
+
+export const createSessionCheckout = async (
+  sessionId: string,
+  userId: string
+) => {
+  const session = await prisma.session.findUnique({
+    where: { id: sessionId },
+  });
+
+  if (!session) {
+    throw new AppError("Session not found", 404);
+  }
+
+  if (session.isFree) {
+    throw new AppError("This session is free and does not require payment", 400);
+  }
+
+  const booking = await prisma.sessionBooking.findFirst({
+    where: {
+      sessionId,
+      userId,
+      paymentStatus: PaymentStatus.PENDING,
+    },
+  });
+
+  if (!booking) {
+    throw new AppError(
+      "No pending booking found. Please book the session first.",
+      404
+    );
+  }
+
+  const unitAmount = Math.round((session.price ?? 0) * 100);
+
+  const frontendUrl = env.FRONTEND_URL;
+  const successUrl = `${frontendUrl}/sessions/${sessionId}/payment?success=true`;
+  const cancelUrl = `${frontendUrl}/sessions/${sessionId}/payment?canceled=true`;
+
+  const checkoutSession = await stripe.checkout.sessions.create({
+    mode: "payment",
+    payment_method_types: ["card"],
+    line_items: [
+      {
+        price_data: {
+          currency: session.currency ?? "usd",
+          product_data: {
+            name: session.title,
+            description: session.description ?? undefined,
+          },
+          unit_amount: unitAmount,
+        },
+        quantity: 1,
+      },
+    ],
+    metadata: {
+      sessionId,
+      userId,
+      bookingId: booking.id,
+    },
+    success_url: successUrl,
+    cancel_url: cancelUrl,
+  });
+
+  return {
+    checkoutUrl: checkoutSession.url,
+    sessionId: checkoutSession.id,
+  };
 };
 
 export const leaveSession = async (sessionId: string, userId: string) => {

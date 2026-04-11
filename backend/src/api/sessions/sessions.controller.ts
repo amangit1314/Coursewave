@@ -74,6 +74,17 @@ export const cancelBooking = asyncHandler(
   }
 );
 
+export const createCheckout = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { sessionId } = req.params;
+    const result = await liveSessionsService.createSessionCheckout(
+      sessionId,
+      requireUserId(req)
+    );
+    sendSuccess(res, result, "Checkout session created successfully");
+  }
+);
+
 export const getMyFutureScheduledSessions = asyncHandler(
   async (req: Request, res: Response) => {
     const bookings = await liveSessionsService.getMyFutureScheduledSessions(
