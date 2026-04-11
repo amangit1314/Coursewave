@@ -1,27 +1,105 @@
 "use client";
 
-import React from "react";
-import { Users } from "lucide-react";
+import React, { useState } from "react";
+import { Users, Loader2, MessageSquare } from "lucide-react";
+import {
+  useCommunities,
+  useCreateCommunity,
+  useJoinCommunity,
+  useLeaveCommunity,
+} from "@/hooks/useCommunities";
+import { Community } from "@/types/community";
+import CommunityList from "./_components/CommunityList";
+import CreateCommunityDialog from "./_components/CreateCommunityDialog";
+import CommunityChat from "./_components/CommunityChat";
 
 export default function CommunitiesPage() {
+  const { data, isLoading, isError } = useCommunities();
+  const createCommunity = useCreateCommunity();
+  const joinCommunity = useJoinCommunity();
+  const leaveCommunity = useLeaveCommunity();
+
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  // Extract communities array from paginated response
+  const communities: Community[] = Array.isArray(data?.data)
+    ? data.data
+    : data?.data
+      ? [data.data]
+      : [];
+
+  const selectedCommunity = communities.find((c) => c.id === selectedId) || null;
+
+  if (isLoading) {
+    return (
+      <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-zinc-400" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex h-[calc(100vh-4rem)] flex-col items-center justify-center gap-2">
+        <Users className="h-8 w-8 text-red-400" />
+        <p className="text-sm text-red-500">Failed to load communities.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-zinc-900">
-      <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-zinc-300 bg-white py-16 dark:border-zinc-600 dark:bg-zinc-800">
-          <div className="rounded-full bg-zinc-100 p-4 dark:bg-zinc-700">
-            <Users className="h-10 w-10 text-zinc-400" />
-          </div>
-          <h2 className="mt-6 text-2xl font-bold text-zinc-900 dark:text-white">
+    <div className="h-[calc(100vh-4rem)] bg-gray-50 dark:bg-zinc-900">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-zinc-200 bg-white px-6 py-4 dark:border-zinc-700 dark:bg-zinc-800">
+        <div className="flex items-center gap-2">
+          <Users className="h-5 w-5 text-zinc-600 dark:text-zinc-400" />
+          <h1 className="text-lg font-bold text-zinc-900 dark:text-white">
             Communities
-          </h2>
-          <p className="mt-1 text-sm font-medium text-amber-600 dark:text-amber-400">
-            Coming Soon
-          </p>
-          <p className="mt-4 max-w-md text-center text-sm text-zinc-600 dark:text-zinc-400">
-            Community management requires backend integration. This feature will
-            let you create and manage communities for your students once the API
-            is available.
-          </p>
+          </h1>
+          <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400">
+            {communities.length}
+          </span>
+        </div>
+        <CreateCommunityDialog
+          onCreate={(data) => createCommunity.mutate(data)}
+          isPending={createCommunity.isPending}
+        />
+      </div>
+
+      {/* Two-column layout */}
+      <div className="flex h-[calc(100%-4.25rem)]">
+        {/* Left: Community list */}
+        <div className="w-80 shrink-0 overflow-y-auto border-r border-zinc-200 bg-white p-3 dark:border-zinc-700 dark:bg-zinc-800">
+          <CommunityList
+            communities={communities}
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+            onJoin={(id) => joinCommunity.mutate(id)}
+            onLeave={(id) => leaveCommunity.mutate(id)}
+            isJoining={joinCommunity.isPending}
+            isLeaving={leaveCommunity.isPending}
+          />
+        </div>
+
+        {/* Right: Chat area */}
+        <div className="flex-1 bg-white dark:bg-zinc-800">
+          {selectedCommunity ? (
+            <CommunityChat community={selectedCommunity} />
+          ) : (
+            <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
+              <div className="rounded-full bg-zinc-100 p-4 dark:bg-zinc-700">
+                <MessageSquare className="h-8 w-8 text-zinc-400" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  Select a community
+                </p>
+                <p className="mt-1 text-xs text-zinc-400">
+                  Choose a community from the list to view messages
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
