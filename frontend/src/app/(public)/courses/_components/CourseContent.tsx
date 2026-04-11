@@ -10,7 +10,6 @@ import { Chapter, CourseSection } from "@/types/course-details-api-response";
 
 export const CourseContent = ({ courseId }: { courseId: string }) => {
   const fetchCourseSections = async () => {
-    // TODO:
     const res = await fetch(`/api/courses/${courseId}/sections`);
 
     if (!res.ok) {
