@@ -20,7 +20,6 @@ import {
   ArrowRight,
   X,
   Star,
-  ArrowLeft,
   Sparkles,
   TrendingUp,
   Award,
@@ -32,7 +31,6 @@ import {
   useCart,
   useRemoveFromCart,
   useClearCart,
-  useAddToCart,
 } from "@/hooks/useCart";
 import { useAddToWishlist, useRemoveFromWishlist, useWishlist } from "@/hooks/useWishlist";
 import Link from "next/link";
