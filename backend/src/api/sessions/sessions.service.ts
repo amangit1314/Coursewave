@@ -141,7 +141,11 @@ export const createSession = async (
   });
 };
 
-export const bookSession = async (sessionId: string, userId: string) => {
+export const bookSession = async (
+  sessionId: string,
+  userId: string,
+  scheduledAt?: string
+) => {
   const session = await prisma.session.findUnique({
     where: { id: sessionId },
   });
@@ -163,6 +167,19 @@ export const bookSession = async (sessionId: string, userId: string) => {
 
   if (existingBooking) {
     throw new AppError("You have already booked this session", 409);
+  }
+
+  // If a specific date/time was selected, update the session's scheduledAt
+  if (scheduledAt) {
+    const newScheduledAt = new Date(scheduledAt);
+    const endsAt = new Date(newScheduledAt.getTime() + session.duration * 60000);
+    await prisma.session.update({
+      where: { id: sessionId },
+      data: {
+        scheduledAt: newScheduledAt,
+        endsAt,
+      },
+    });
   }
 
   const paymentStatus = session.isFree

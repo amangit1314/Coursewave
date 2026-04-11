@@ -205,8 +205,11 @@ class SessionService {
   // Booking & Joining
   // -----------------------
 
-  async bookSession(sessionId: string): Promise<ApiResponse<any>> {
-    return apiManager.post<any>(`/sessions/${sessionId}/book`);
+  async bookSession(
+    sessionId: string,
+    data?: { scheduledAt?: string }
+  ): Promise<ApiResponse<any>> {
+    return apiManager.post<any>(`/sessions/${sessionId}/book`, data);
   }
 
   async createSessionCheckout(

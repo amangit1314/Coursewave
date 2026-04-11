@@ -160,8 +160,13 @@ export default function SchedulePage() {
 
     setConfirming(true);
     try {
-      // Book the session
-      const res = await sessionService.bookSession(sessionId);
+      // Combine selected date and time into an ISO string
+      const scheduledAt = new Date(
+        `${selectedDate.toDateString()} ${selectedTime}`
+      ).toISOString();
+
+      // Book the session with the selected schedule
+      const res = await sessionService.bookSession(sessionId, { scheduledAt });
       if (res.success) {
         setConfirmed(true);
       } else {

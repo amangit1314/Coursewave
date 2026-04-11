@@ -39,7 +39,12 @@ export const createSession = asyncHandler(
 
 export const bookSession = asyncHandler(async (req: Request, res: Response) => {
   const { sessionId } = req.params;
-  const booking = await liveSessionsService.bookSession(sessionId, requireUserId(req));
+  const { scheduledAt } = req.body || {};
+  const booking = await liveSessionsService.bookSession(
+    sessionId,
+    requireUserId(req),
+    scheduledAt
+  );
   sendSuccess(res, booking, "Session booked successfully", 201);
 });
 
