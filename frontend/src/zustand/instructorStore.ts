@@ -5,6 +5,7 @@ import { create } from "zustand";
 import { Course } from "@/types/course";
 import { Instructor } from "@/types/instructor";
 import { InstructorPreference, getErrorMessage } from "@/types/common-types";
+import { instructorService } from "@/lib/api/services/instructorService";
 
 // =================== TYPES ===================
 type InstructorStore = {
@@ -35,10 +36,8 @@ export const useInstructorStore = create<InstructorStore>((set) => ({
   fetchInstructorInfo: async (instructorId: string) => {
     set({ instructorLoading: true, instructorError: null });
     try {
-      // TODO: Implement API call
-      // const response = await instructorService.getInstructorById(instructorId);
-      // set({ instructor: response.data, instructorLoading: false });
-      set({ instructorLoading: false });
+      const response = await instructorService.getInstructorById(instructorId);
+      set({ instructor: response.data, instructorLoading: false });
     } catch (error: unknown) {
       const errorMessage = getErrorMessage(error);
       console.error("Error fetching instructor info:", errorMessage);
@@ -50,10 +49,8 @@ export const useInstructorStore = create<InstructorStore>((set) => ({
   fetchInstructorCourses: async (instructorId: string) => {
     set({ instructorLoading: true, instructorError: null });
     try {
-      // TODO: Implement API call
-      // const response = await instructorService.getInstructorCourses(instructorId);
-      // set({ instructorCourses: response.data, instructorLoading: false });
-      set({ instructorLoading: false });
+      const response = await instructorService.getInstructorCourses(instructorId);
+      set({ instructorCourses: response.data, instructorLoading: false });
     } catch (error: unknown) {
       const errorMessage = getErrorMessage(error);
       console.error("Error fetching instructor courses:", errorMessage);
