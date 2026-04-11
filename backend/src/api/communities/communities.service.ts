@@ -145,3 +145,60 @@ export const deleteMessage = async (
 
   return null;
 };
+
+export const sendMessage = async (
+  communityId: string,
+  userId: string,
+  content: string,
+  parentId?: string
+) => {
+  const isMember = await prisma.communityMember.findUnique({
+    where: { userId_communityId: { userId, communityId } },
+  });
+
+  if (!isMember) {
+    throw new AppError(
+      "Access denied. You are not a member of this community.",
+      403
+    );
+  }
+
+  const slug = `msg-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+
+  return prisma.message.create({
+    data: {
+      slug,
+      content,
+      senderId: userId,
+      communityId,
+      ...(parentId && { parentId }),
+    },
+    include: {
+      sender: {
+        select: { id: true, name: true, profileImageUrl: true },
+      },
+    },
+  });
+};
+
+export const leaveCommunity = async (
+  communityId: string,
+  userId: string
+) => {
+  const member = await prisma.communityMember.findUnique({
+    where: { userId_communityId: { userId, communityId } },
+  });
+
+  if (!member) {
+    throw new AppError(
+      "You are not a member of this community.",
+      404
+    );
+  }
+
+  await prisma.communityMember.delete({
+    where: { userId_communityId: { userId, communityId } },
+  });
+
+  return null;
+};

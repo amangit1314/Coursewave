@@ -9,6 +9,8 @@ import {
   joinCommunity,
   getCommunityMessages,
   deleteMessage,
+  sendMessage,
+  leaveCommunity,
 } from "./communitites.controller";
 
 const router: Router = Router();
@@ -27,6 +29,12 @@ router.post("/:communityId/join", verifyToken, joinCommunity);
 
 // Get messages for a community (requires membership)
 router.get("/:communityId/messages", verifyToken, getCommunityMessages);
+
+// Send a message to a community (requires membership)
+router.post("/:communityId/messages", verifyToken, sendMessage);
+
+// Leave a community (requires membership)
+router.post("/:communityId/leave", verifyToken, leaveCommunity);
 
 // Delete a message (requires admin/moderator role)
 router.delete(

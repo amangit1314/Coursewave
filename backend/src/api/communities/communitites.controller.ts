@@ -76,3 +76,33 @@ export const deleteMessage = asyncHandler(
     sendSuccess(res, null, "Message deleted successfully");
   }
 );
+
+export const sendMessage = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { communityId } = req.params;
+    const userId = requireUserId(req);
+    const { content, parentId } = req.body;
+
+    if (!content || !content.trim()) {
+      throw new AppError("Message content cannot be empty", 400);
+    }
+
+    const message = await communitiesService.sendMessage(
+      communityId,
+      userId,
+      content,
+      parentId
+    );
+    sendSuccess(res, message, "Message sent successfully", 201);
+  }
+);
+
+export const leaveCommunity = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { communityId } = req.params;
+    const userId = requireUserId(req);
+
+    await communitiesService.leaveCommunity(communityId, userId);
+    sendSuccess(res, null, "Left community successfully");
+  }
+);
