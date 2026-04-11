@@ -1,8 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { useLogout } from "@/hooks/useAuth";
 
 const UserDropdown = () => {
+  const { mutate: logout } = useLogout();
   return (
     <div>
       {/* user image */}
@@ -62,7 +66,7 @@ const UserDropdown = () => {
         {/* signout */}
         <div className="py-1">
           <button
-            onClick={() => { /* TODO: implement logout */ }}
+            onClick={() => logout()}
             className="hover-bg-gray-100 dark:hover-bg-gray-600 dark:hover-text-white block w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200"
           >
             Sign out
