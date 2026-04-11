@@ -209,6 +209,14 @@ class SessionService {
     return apiManager.post<any>(`/sessions/${sessionId}/book`);
   }
 
+  async createSessionCheckout(
+    sessionId: string
+  ): Promise<ApiResponse<{ checkoutUrl: string; sessionId: string }>> {
+    return apiManager.post<{ checkoutUrl: string; sessionId: string }>(
+      `/sessions/${sessionId}/checkout`
+    );
+  }
+
   async payForSession(
     sessionId: string,
     paymentMethod: string,

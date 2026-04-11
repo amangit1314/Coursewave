@@ -23,7 +23,7 @@ import { useUserStore } from "@/zustand/userStore";
 import { sessionService } from "@/lib/api/services/sessionsService";
 import type { Session } from "@/types/session";
 
-type PaymentState = "loading" | "ready" | "processing" | "success" | "error";
+type PaymentState = "loading" | "ready" | "processing" | "success" | "error" | "canceled";
 
 export default function PaymentPage() {
   const params = useParams();
@@ -35,7 +35,30 @@ export default function PaymentPage() {
   const [paymentState, setPaymentState] = useState<PaymentState>("loading");
   const [error, setError] = useState("");
 
+  // Handle Stripe redirect return (success or canceled)
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const success = searchParams.get("success");
+    const canceled = searchParams.get("canceled");
+
+    if (success === "true") {
+      // Fetch session data for the success screen
+      sessionService.getSessionById(sessionId).then((res) => {
+        if (res.success && res.data) setSession(res.data);
+      });
+      setPaymentState("success");
+      return;
+    }
+    if (canceled === "true") {
+      setPaymentState("canceled");
+      return;
+    }
+  }, []);
+
+  useEffect(() => {
+    // Skip fetching if we already resolved from URL params
+    if (paymentState === "success" || paymentState === "canceled") return;
+
     if (!isLoggedIn) {
       router.push("/login");
       return;
@@ -94,21 +117,15 @@ export default function PaymentPage() {
         return;
       }
 
-      // Step 2: In a real app, redirect to Stripe Checkout here.
-      // For now, simulate payment completion with a mock payment ID.
-      // TODO: Replace with actual Stripe checkout session creation
-      const payRes = await sessionService.payForSession(
-        sessionId,
-        "STRIPE",
-        `pay_sim_${Date.now()}`
-      );
-
-      if (payRes.success) {
-        setPaymentState("success");
-      } else {
-        setError(payRes.message || "Payment failed.");
-        setPaymentState("error");
+      // Step 2: Create Stripe checkout session and redirect
+      const checkoutRes = await sessionService.createSessionCheckout(sessionId);
+      if (checkoutRes.success && checkoutRes.data?.checkoutUrl) {
+        window.location.href = checkoutRes.data.checkoutUrl;
+        return;
       }
+
+      setError(checkoutRes.message || "Failed to create checkout session.");
+      setPaymentState("error");
     } catch {
       setError("Payment processing failed. Please try again.");
       setPaymentState("error");
@@ -176,9 +193,9 @@ export default function PaymentPage() {
             <div className="flex gap-3 justify-center pt-2">
               <Button
                 variant="outline"
-                onClick={() => router.push("/browseSessions")}
+                onClick={() => router.push("/mySessions")}
               >
-                Browse More
+                My Sessions
               </Button>
               <Button
                 onClick={() =>
@@ -187,6 +204,36 @@ export default function PaymentPage() {
                 className="bg-green-600 hover:bg-green-700"
               >
                 Go to Meeting
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Canceled
+  if (paymentState === "canceled") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-zinc-900">
+        <Card className="max-w-md w-full mx-4">
+          <CardContent className="p-8 text-center space-y-4">
+            <AlertCircle className="h-12 w-12 text-yellow-500 mx-auto" />
+            <h2 className="text-xl font-semibold">Payment Canceled</h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              Your payment was canceled. No charges were made.
+            </p>
+            <div className="flex gap-3 justify-center">
+              <Button
+                variant="outline"
+                onClick={() => router.push("/browseSessions")}
+              >
+                Browse Sessions
+              </Button>
+              <Button
+                onClick={() => router.push(`/browseSessions/${sessionId}/payment`)}
+              >
+                Try Again
               </Button>
             </div>
           </CardContent>
