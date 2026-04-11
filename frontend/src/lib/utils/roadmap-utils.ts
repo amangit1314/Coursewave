@@ -1,4 +1,4 @@
-import { roadmapTemplates } from "@/lib/config/roadmap-templates";
+import { roadmapTemplates } from "@/lib/mock/mockData";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
