@@ -6,6 +6,7 @@ import {
   getMyInstructorStudents,
   getMyInstructorStudentsList,
   getMyInstructorEarnings,
+  getMyInstructorReviews,
   getMyCourseEnrollments,
   getPublicInstructorProfile,
   getPublicInstructorCourses,
@@ -40,6 +41,9 @@ router.get("/me/students/list", getMyInstructorStudentsList);
 
 // Get logged-in instructor earnings (detailed)
 router.get("/me/earnings", getMyInstructorEarnings);
+
+// Get all reviews across instructor's courses
+router.get("/me/reviews", getMyInstructorReviews);
 
 // Get enrollments for a specific course
 router.get("/me/courses/:courseId/enrollments", getMyCourseEnrollments);

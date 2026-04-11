@@ -427,6 +427,69 @@ export const getCourseEnrollments = async (
 // Public instructor routes
 // -------------------------------------------------------------------------
 
+// -------------------------------------------------------------------------
+// Reviews (all reviews across instructor's courses)
+// -------------------------------------------------------------------------
+
+export const getMyReviews = async (userId: string) => {
+  const instructor = await prisma.instructor.findFirst({
+    where: { userId },
+    include: { courses: { select: { id: true } } },
+  });
+
+  if (!instructor) {
+    throw new AppError("Instructor not found", 404);
+  }
+
+  const courseIds = instructor.courses.map((c) => c.id);
+
+  const reviews = await prisma.review.findMany({
+    where: { courseId: { in: courseIds } },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          profileImageUrl: true,
+        },
+      },
+      course: {
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const totalReviews = reviews.length;
+
+  const ratingDistribution: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+  let ratingSum = 0;
+
+  for (const review of reviews) {
+    ratingSum += review.rating;
+    ratingDistribution[review.rating] = (ratingDistribution[review.rating] || 0) + 1;
+  }
+
+  const averageRating = totalReviews > 0
+    ? Math.round((ratingSum / totalReviews) * 10) / 10
+    : 0;
+
+  return {
+    reviews,
+    totalReviews,
+    averageRating,
+    ratingDistribution,
+  };
+};
+
+// -------------------------------------------------------------------------
+// Public instructor routes
+// -------------------------------------------------------------------------
+
 export const getPublicInstructorCourses = async (instructorId: string) => {
   return prisma.course.findMany({
     where: { instructorId },

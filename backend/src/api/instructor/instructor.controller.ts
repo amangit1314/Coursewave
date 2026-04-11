@@ -80,6 +80,13 @@ export const getMyCourseEnrollments = asyncHandler(
   }
 );
 
+export const getMyInstructorReviews = asyncHandler(
+  async (req: Request, res: Response) => {
+    const data = await instructorsService.getMyReviews(requireUserId(req));
+    sendSuccess(res, data, "Instructor reviews fetched successfully");
+  }
+);
+
 export const getPublicInstructorProfile = asyncHandler(
   async (req: Request, res: Response) => {
     const instructorId = req.params.instructorid || "";
