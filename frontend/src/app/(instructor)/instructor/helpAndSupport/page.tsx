@@ -9,7 +9,6 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -17,34 +16,26 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
-import toast from "react-hot-toast";
 
 import {
   PhoneCallIcon,
   MailIcon,
   MapPinIcon,
   ClockIcon,
-  MessageSquareIcon,
   CheckCircleIcon,
-  AlertCircleIcon,
   SendIcon,
   Loader2Icon,
 } from "lucide-react";
 import {
-  FaDiscord,
-  FaFacebook,
   FaGithub,
   FaXTwitter,
   FaLinkedin,
-  FaYoutube,
 } from "react-icons/fa6";
-import { RiInstagramFill } from "react-icons/ri";
-import axios from "axios";
-
 import { ThemeModeToggle } from "@/components/common/ThemeModeToggle";
 import { motion } from "framer-motion";
 import { useUserStore } from "@/zustand/userStore";
 import { dmSans } from "@/lib/config/fonts";
+import { useContact } from "@/hooks/useContact";
 
 const HelpAndSupport = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -288,7 +279,7 @@ const formSchema = z.object({
 
 const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
   const { user } = useUserStore();
-  const userId = user?.id;
+  const contactMutation = useContact();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -302,30 +293,25 @@ const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
     },
   });
 
-  const { isSubmitting, isValid } = form.formState;
+  const { isValid } = form.formState;
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      const response = await axios.post(`/api/profile/${userId}/contact`, {
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    if (!user?.id) return;
+    contactMutation.mutate(
+      {
         fromEmail: values.email,
-        toEmail: "instructors@coursewave.com",
-        phone: values.phone,
         name: `${values.firstName} ${values.lastName}`,
+        phone: values.phone,
         subject: values.subject,
         message: values.message,
-      });
-
-      if (response.data.status) {
-        toast.success("Message sent successfully! We'll get back to you soon.");
-        form.reset();
-        onSuccess();
-      } else {
-        toast.error("Failed to send message. Please try again.");
+      },
+      {
+        onSuccess: () => {
+          form.reset();
+          onSuccess();
+        },
       }
-    } catch (error: any) {
-      console.error("Error sending contact email:", error);
-      toast.error("Something went wrong. Please try again later.");
-    }
+    );
   };
 
   return (
@@ -343,7 +329,7 @@ const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                    disabled={isSubmitting}
+                    disabled={contactMutation.isPending}
                     className="h-11 border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
                     placeholder="Enter your first name"
                     {...field}
@@ -364,7 +350,7 @@ const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                    disabled={isSubmitting}
+                    disabled={contactMutation.isPending}
                     className="h-11 border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
                     placeholder="Enter your last name"
                     {...field}
@@ -388,7 +374,7 @@ const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                    disabled={isSubmitting}
+                    disabled={contactMutation.isPending}
                     type="email"
                     className="h-11 border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
                     placeholder="Enter your email address"
@@ -410,7 +396,7 @@ const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
                 </FormLabel>
                 <FormControl>
                   <Input
-                    disabled={isSubmitting}
+                    disabled={contactMutation.isPending}
                     className="h-11 border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
                     placeholder="Enter your phone number"
                     {...field}
@@ -433,7 +419,7 @@ const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
               </FormLabel>
               <FormControl>
                 <Input
-                  disabled={isSubmitting}
+                  disabled={contactMutation.isPending}
                   className="h-11 border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
                   placeholder="What is this about?"
                   {...field}
@@ -455,7 +441,7 @@ const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
               </FormLabel>
               <FormControl>
                 <Textarea
-                  disabled={isSubmitting}
+                  disabled={contactMutation.isPending}
                   rows={6}
                   className="border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400"
                   placeholder="Tell us how we can help you..."
@@ -470,10 +456,10 @@ const ContactForm = ({ onSuccess }: { onSuccess: () => void }) => {
         {/* Submit Button */}
         <Button
           type="submit"
-          disabled={!isValid || isSubmitting}
+          disabled={!isValid || contactMutation.isPending}
           className={`${dmSans.className} h-12 w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg transition-all hover:from-blue-700 hover:to-blue-800 hover:shadow-xl disabled:opacity-50 dark:from-blue-500 dark:to-blue-600 dark:hover:from-blue-600 dark:hover:to-blue-700`}
         >
-          {isSubmitting ? (
+          {contactMutation.isPending ? (
             <>
               <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
               Sending...
