@@ -94,15 +94,6 @@ export const SectionsForm = ({
       // Check if we're editing or creating
       if (editingSectionId) {
         // UPDATE EXISTING SECTION
-        console.log("🔍 Sending update with:", {
-        sectionId: editingSectionId,
-          updates: {
-          title: values.title,
-            position: sectionNumber,
-              description: values.sectionDescription,
-          },
-      });
-
       updateSection(
         {
           sectionId: editingSectionId,
@@ -128,12 +119,6 @@ export const SectionsForm = ({
       );
     } else {
       // CREATE NEW SECTION
-      console.log("🔍 Creating new section with:", {
-      title: values.title,
-        position: sectionNumber,
-          description: values.sectionDescription,
-        });
-
     createSection(
       {
         title: values.title,
@@ -155,7 +140,7 @@ export const SectionsForm = ({
     );
   }
 } catch (err: any) {
-  console.log("Error: ", err.message);
+  console.error("Error: ", err.message);
   toast.error("Something went wrong ❌");
 }
   };

@@ -49,13 +49,6 @@ const ChapterItem = (props: Props) => {
             : chapterData.description,
       };
 
-      console.log("📤 Sending chapter update:", {
-      chapterId: chapter.id,
-        updates: sanitizedData,
-          courseId,
-          sectionId,
-      });
-
     await updateChapterMutation.mutateAsync({
       chapterId: chapter.id,
       updates: sanitizedData, // This should now contain content as object

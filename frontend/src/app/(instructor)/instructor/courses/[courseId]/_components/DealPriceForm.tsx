@@ -37,25 +37,13 @@ export const DealPriceForm = ({ initialData, courseId }: DealPriceFormProps) => 
   const router = useRouter();
   const { mutate: updateCourse } = useUpdateCourse();
 
-  // Debug logging to see what's actually in the data
-  console.log('Initial Data:', {
-  price: initialData?.price,
-    discountPercent: initialData?.discount,
-      dealPrice: initialData?.dealPrice
-});
-
 // Calculate values properly
 const originalPrice = Number(initialData?.price) || 0;
 const discountPercent = Number(initialData?.discount) || 0;
 const calculatedDealPrice = originalPrice * (1 - discountPercent / 100);
 const currentDealPrice = Number(initialData?.dealPrice) || calculatedDealPrice;
 
-console.log('Calculations:', {
-originalPrice,
-  discountPercent,
-  calculatedDealPrice,
-  currentDealPrice
-  });
+
 
 const form = useForm<z.infer<typeof formSchema>>({
   resolver: zodResolver(formSchema),

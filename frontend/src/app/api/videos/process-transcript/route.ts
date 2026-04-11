@@ -18,8 +18,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('Starting transcription for:', videoUrl);
-
     // Step 1: Submit transcription request
     const submitResponse = await fetch('https://api.assemblyai.com/v2/transcript', {
       method: 'POST',
@@ -41,8 +39,6 @@ export async function POST(request: NextRequest) {
     const submitData = await submitResponse.json();
     const transcriptId = submitData.id;
 
-    console.log('Transcription submitted, ID:', transcriptId);
-
     // Step 2: Poll for results
     let transcriptData;
     let attempts = 0;
@@ -62,7 +58,6 @@ export async function POST(request: NextRequest) {
       transcriptData = await statusResponse.json();
 
       if (transcriptData.status === 'completed') {
-        console.log('Transcription completed successfully');
         break;
       } else if (transcriptData.status === 'error') {
         throw new Error(`Transcription failed: ${transcriptData.error}`);
@@ -72,7 +67,6 @@ export async function POST(request: NextRequest) {
       await new Promise(resolve => setTimeout(resolve, 6000));
       attempts++;
 
-      console.log(`Transcription status: ${transcriptData.status} (attempt ${attempts}/${maxAttempts})`);
     }
 
     if (transcriptData.status !== 'completed') {

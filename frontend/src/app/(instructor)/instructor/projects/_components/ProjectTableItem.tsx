@@ -70,7 +70,6 @@ const ProjectTableItem = ({ project }: ProjectItemProps) => {
   };
 
   const handleDelete = () => {
-    console.log("Deleting project:", project.id);
     setDeleteConfirm(false);
   };
 

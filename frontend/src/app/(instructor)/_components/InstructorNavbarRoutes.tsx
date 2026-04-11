@@ -15,9 +15,6 @@ const InstructorNavbarRoutes = () => {
   const pathname = usePathname();
 
   const { user } = useUserStore();
-
-  console.log("Navbar user: ", JSON.stringify(user));
-
   const gotToSignIn = () => {
     router.push("/login?from=" + encodeURIComponent(pathname));
   };

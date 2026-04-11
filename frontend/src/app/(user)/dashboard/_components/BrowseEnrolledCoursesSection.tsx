@@ -29,7 +29,6 @@ const BrowseEnrolledCoursesSection: React.FC<
         }
       })
       .then((data) => {
-        console.log(data); // Check the data in the console
 
         // Assuming your data.data is an array of courses
         setCategories([{ categoryName: "All" }, ...data.data]); // Add 'All' Category

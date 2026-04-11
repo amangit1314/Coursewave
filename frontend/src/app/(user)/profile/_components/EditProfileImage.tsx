@@ -25,8 +25,6 @@ const EditProfileImage = ({
       <UploadDropzone
         endpoint={"profileImageUpdater"}
         onClientUploadComplete={(res: any) => {
-          console.log("Uploadthing profile image upload response: ", res);
-          console.log("Uploaded profile img url: ", res[0].url);
           setImageUrl(res[0].url);
           setIsEditing(false);
           toast.success("Profile Image uploaded successfully!");

@@ -50,8 +50,6 @@ const DataComponent = () => {
     );
   }
 
-  console.log("Courses in the Data component : ", courses);
-
   return (
     <div className="mx-auto my-6 grid w-9/12 grid-cols-1 justify-start gap-10 md:grid-cols-2 lg:grid-cols-3">
       {Array.isArray(courses) ? (

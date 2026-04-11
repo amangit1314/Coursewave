@@ -27,8 +27,6 @@ export default function ArticlePage() {
     return <ArticleLoadingSkeleton />;
   }
 
-  console.log("Article data in page:", article);
-
   if (isError || !article) {
     return (
       <div className="min-h-screen flex items-center justify-center text-center p-8">

@@ -14,7 +14,6 @@ import { useCoursesStore } from "@/zustand/coursesStore";
 
 export default function CourseContentNavbar() {
   const { selectedCourse: course } = useCoursesStore();
-  console.log("Course in the course content navbar: ", course);
   const courseId = course?.id ?? "";
 
   const {

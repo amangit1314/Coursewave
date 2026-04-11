@@ -5,12 +5,33 @@ import { Card } from "@/components/ui/card";
 import { PlayCircle, BookOpen, Info, Share, Users } from "lucide-react";
 import { useUserStore } from "@/zustand/userStore";
 import { toast } from "react-hot-toast";
+import { useBecomeInstructor } from "@/hooks/useAccount";
 
 export default function QuickActions() {
   const router = useRouter();
   const { user } = useUserStore();
 
   const isInstructor = user?.roles?.includes("INSTRUCTOR");
+  const { mutateAsync: becomeInstructor, isPending: becomingInstructor } = useBecomeInstructor();
+
+  const handleBecomeInstructor = async () => {
+    if (!user?.id) {
+      toast.error("Please log in first.");
+      return;
+    }
+    try {
+      await becomeInstructor({ bio: user?.about || "", expertise: [] });
+      toast.success("Congratulations! You are now an instructor.");
+      router.push("/instructor/analytics");
+    } catch (error: any) {
+      if (error.response?.status === 402) {
+        toast.success("You are already an instructor!");
+        router.push("/instructor/analytics");
+        return;
+      }
+      toast.error(error.response?.data?.message || "Failed to become an instructor.");
+    }
+  };
 
   // Core actions visible to everyone
   const baseActions = [
@@ -33,7 +54,7 @@ export default function QuickActions() {
               text: "Check out Coursewave - Learn and Teach Online!",
               url: window.location.origin,
             })
-            .catch((error) => console.log("Error sharing", error));
+            .catch((error) => console.warn("Error sharing", error));
         } else {
           toast("Sharing not supported on this device.");
         }
@@ -62,10 +83,10 @@ export default function QuickActions() {
 
   // If user is NOT an instructor
   const nonInstructorAction = {
-    title: "Become Instructor",
+    title: becomingInstructor ? "Processing..." : "Become Instructor",
     desc: "Start teaching today",
     icon: <Users className="w-5 h-5" />,
-    onClick: () => router.push("/instructor/become"),
+    onClick: handleBecomeInstructor,
     color: "from-blue-600 to-indigo-500",
   };
 

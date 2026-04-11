@@ -42,14 +42,14 @@ const DeleteAccountWidget = () => {
           router.push("/login");
         },
         onError: (err: any) => {
-          console.log("Error deleting account: ", err.message);
+          console.error("Error deleting account: ", err.message);
           toast.error(
             err.response?.data?.message || "Failed to delete account"
           );
         },
       });
     } catch (err: any) {
-      console.log("Error deleting account in catch: ", err.message);
+      console.error("Error deleting account in catch: ", err.message);
       toast.error(err.response?.data?.message || "Failed to delete account");
     }
   };

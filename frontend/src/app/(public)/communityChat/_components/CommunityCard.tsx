@@ -22,7 +22,6 @@ export const CommunityCard = ({
   userId: string;
   isJoined: boolean;
 }) => {
-  console.log("Community: ", community);
   return (
     // hover:scale-[1.02]
     <Card className="group relative overflow-hidden transition-all duration-300 hover:shadow-lg  border-zinc-200 dark:border-zinc-700">

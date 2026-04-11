@@ -23,9 +23,6 @@ const SaveArticleButton = ({ articleId }: Props) => {
   const saveArticleMutation = useSaveArticle();
   const unsaveArticleMutation = useUnsaveArticle();
 
-  // Debugging helper (optional)
-  console.log("isSaved (from query):", isSaved);
-
   const handleSaveArticle = async () => {
     try {
       if (isSaved) {

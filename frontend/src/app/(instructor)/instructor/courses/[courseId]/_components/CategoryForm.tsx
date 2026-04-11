@@ -71,8 +71,6 @@ export const CategoryForm = ({ course }: CategoryFormProps) => {
 
   const categoriesArray = getCategoriesArray();
 
-  console.log("categories array in category form: ", categoriesArray);
-
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const categoriesArray = values.categories
@@ -123,10 +121,6 @@ export const CategoryForm = ({ course }: CategoryFormProps) => {
     const categoriesArray = getCategoriesArray();
     setPoints(categoriesArray);
   }, [form.watch("categories")]);
-
-  console.log("categories in categories form: ", course?.categories);
-  console.log(`Form values: `, form.getValues("categories"));
-  console.log("Points state: ", points);
 
   return (
     <div className="mt-6 rounded-2xl bg-slate-100 p-4 dark:bg-zinc-900">

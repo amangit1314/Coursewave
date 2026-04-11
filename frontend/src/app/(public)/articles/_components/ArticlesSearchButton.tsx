@@ -21,7 +21,6 @@ const ArticlesSearchButton = () => {
     event.preventDefault();
     const encodedSearchQuery = encodeURI(searchQuery);
     router.push(`/articles/?q=${encodedSearchQuery}`);
-    console.log("current query", encodedSearchQuery);
   };
 
   const form = (

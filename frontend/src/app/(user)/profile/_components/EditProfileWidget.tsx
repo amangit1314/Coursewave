@@ -158,7 +158,6 @@ const EditProfileWidget = () => {
         },
         {
           onSuccess: () => {
-            console.log("Profile updated successfully!");
             setOpen(false);
             // No need for toast here since it's handled in the hook
           },
@@ -166,7 +165,7 @@ const EditProfileWidget = () => {
         }
       );
     } catch (err: any) {
-      console.log("Error in updating profile: ", err.message);
+      console.error("Error in updating profile: ", err.message);
       toast.error(`Error: ${err.message}`);
     }
   };

@@ -71,7 +71,6 @@ export default function InstructorSettings() {
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     toast.success("Settings updated successfully!");
-    console.log("Form data:", data);
   };
 
   return (

@@ -44,8 +44,6 @@ const CourseIdPage = () => {
     );
   }
 
-  console.log("COURSE IN CONTENT BEFORE USE", JSON.stringify(course));
-
   return (
     <div>
       {course ? (

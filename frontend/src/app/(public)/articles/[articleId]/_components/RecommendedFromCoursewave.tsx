@@ -30,11 +30,6 @@ const RecommendedFromCoursewave = () => {
     );
   }
 
-  console.log(
-  "Articles in the recommended from coursewave before filtering: ",
-    articlesData.data
-  );
-
 const articles = articlesData.data?.filter(
   (article: BlogArticle) => article.id !== articleId
 );

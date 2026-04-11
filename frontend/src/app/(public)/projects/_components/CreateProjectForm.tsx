@@ -15,7 +15,6 @@ const CreateProjectForm = ({ onClose }: { onClose: () => void }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Creating project:", form);
     onClose();
   };
 

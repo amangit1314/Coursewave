@@ -70,7 +70,7 @@ const ChangePasswordWidget = () => {
             setIsDialogOpen(false);
           },
           onError: (err: any) => {
-            console.log("Error in updating password: ", err.message);
+            console.error("Error in updating password: ", err.message);
             toast.error(
               err.response?.data?.message || "Failed to change password"
             );
@@ -79,7 +79,7 @@ const ChangePasswordWidget = () => {
         }
       );
     } catch (err: any) {
-      console.log("Error in updating password in catch: ", err.message);
+      console.error("Error in updating password in catch: ", err.message);
       toast.error(
         err.response?.data?.message || "Failed to change password in catch"
       );

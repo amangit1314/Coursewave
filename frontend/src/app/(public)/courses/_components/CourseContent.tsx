@@ -18,7 +18,6 @@ export const CourseContent = ({ courseId }: { courseId: string }) => {
     }
 
     const data = await res.json();
-    console.log("Course Sections Data in course-content.tsx : ", data);
 
     return data;
   };
@@ -33,7 +32,6 @@ export const CourseContent = ({ courseId }: { courseId: string }) => {
   });
 
   const courseSections: CourseSection[] = sections?.data as CourseSection[];
-  console.log("Course Sections: ", courseSections);
 
   if (isLoading) {
     return (
@@ -48,7 +46,6 @@ export const CourseContent = ({ courseId }: { courseId: string }) => {
   }
 
   if (error) {
-    console.log("ERROR: in sections and chapters", error.message);
     return (
       <Callout
         className=""
@@ -157,13 +154,10 @@ const AccordionSectionItem = ({
     );
 
     if (!res.ok) {
-      console.log(
-      "ERROR, Failed to fetch chapters for a sectionId from api ...",
-      );
+      console.error("Failed to fetch chapters for sectionId from api");
     }
 
 const data = await res.json();
-console.log(`Chapters for sectionId: ${courseSectionId} :`, data);
 
 return data;
   };
@@ -186,7 +180,6 @@ if (isLoading) {
 }
 
 if (error) {
-  console.log("ERROR: in loading section chapters", error.message);
   return (
     <Callout
       className=""
@@ -199,7 +192,6 @@ if (error) {
 }
 
 const chapters: Chapter[] = data?.data as Chapter[];
-console.log(`Section Chapters for sectionId: ${courseSectionId}`, chapters);
 
 return (
   <div

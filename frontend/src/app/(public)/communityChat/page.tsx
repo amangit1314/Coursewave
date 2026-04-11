@@ -65,8 +65,6 @@ const CommunityChat = () => {
   }, [communitiesData]);
 
   const isInstructor = user?.roles?.includes("INSTRUCTOR") ?? false;
-  console.log("Is instructor in communities", isInstructor); // For debugging
-
   return (
     <div className="max-w-7xl space-y-6 overflow-x-hidden px-4 pb-16 md:mx-8">
       {/* Header */}

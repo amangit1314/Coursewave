@@ -145,7 +145,6 @@ const EditProjectPage = () => {
     setTimeout(() => {
       setIsSaving(false);
       setSaveSuccess(true);
-      console.log("Saving project:", formData);
 
       // Hide success message after 3 seconds
       setTimeout(() => {

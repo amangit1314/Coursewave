@@ -351,8 +351,6 @@ export const ImageForm = ({ course }: { course: Course }) => {
         .from('courses')
         .getPublicUrl(filePath);
 
-      console.log("Uploaded image URL:", publicUrl);
-
       // Submit the form with the image URL
       await onSubmit({ imageUrl: publicUrl });
 

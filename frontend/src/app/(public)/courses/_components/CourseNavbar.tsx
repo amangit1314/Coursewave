@@ -29,8 +29,6 @@ const CourseNavbar = ({ courseName }: { courseName: string }) => {
     router.back();
   };
 
-  console.log("Course name in Course Navbar: ", courseName);
-
   return (
     <>
 

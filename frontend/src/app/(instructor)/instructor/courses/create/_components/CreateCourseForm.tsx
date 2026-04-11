@@ -276,8 +276,6 @@ const CreateCourseForm = () => {
         prerequisits: values.prerequisits.split(",").map((item) => item.trim()),
       };
 
-      console.log("Course Created:", JSON.stringify(processedData));
-
       createCourse(processedData as unknown as CreateCourseRequest);
       setSubmitSuccess(true);
     } catch (error) {

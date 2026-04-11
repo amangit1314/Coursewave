@@ -16,7 +16,6 @@ const ProjectCardItem = (props: ProjectCardItemProps) => {
   const [deleteConfirm, setDeleteConfirm] = React.useState(false);
 
   const handleDelete = () => {
-    console.log("Deleting project:", project.id);
     setDeleteConfirm(false);
   };
 

@@ -24,11 +24,6 @@ const ArticlesSection = () => {
     error: savedArticlesError,
   } = useSavedArticles();
 
-  console.log(
-  "Created Articles in Articles Section:",
-    JSON.stringify(createdArticles, null, 2)
-  );
-
 return (
   <div className="bg-white dark:bg-zinc-900 rounded-3xl shadow-sm border border-zinc-200 dark:border-zinc-700 overflow-hidden h-full flex flex-col">
     <div className="p-6 border-b border-zinc-200 dark:border-zinc-700">
@@ -97,16 +92,6 @@ const Articles: React.FC<ArticlesProps> = ({
   createdArticlesLoading,
   createdArticlesError,
 }) => {
-  console.log(
-  "Created Articles in Articles:",
-    JSON.stringify(createdArticles, null, 2)
-  );
-
-console.log(
-"Saved Articles in Articles:",
-  JSON.stringify(savedArticles, null, 2)
-  );
-
 const [activeTab, setActiveTab] = useState<"saved" | "created">("saved");
 
 const tabs = [

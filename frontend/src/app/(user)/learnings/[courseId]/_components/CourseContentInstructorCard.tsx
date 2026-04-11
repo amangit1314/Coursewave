@@ -22,14 +22,6 @@ const CourseContentInstructorCard = ({
   //   `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Provident eos
   //    odit nam quae repellat quis cumque reiciendis autem ab expedita. Provident eos odit nam quae repellat.`;
 
-  console.log(
-  `Instructor id in the instructor-card inside (course)/courses/[id]/courseContent/page.tsx: ${instructorID}`
-  );
-console.log(
-"Instructor Info in instructor-card inside (course)/courses/[id]/courseContent/page.tsx: ",
-  instructor
-  );
-
 return (
   <div className="flex w-full max-w-3xl flex-col items-start justify-start space-y-4 rounded-xl py-4 md:py-2">
     <div className="flex items-center justify-start space-x-4">

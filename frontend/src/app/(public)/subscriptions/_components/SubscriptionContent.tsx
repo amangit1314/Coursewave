@@ -42,14 +42,6 @@ const SubscriptionContent = ({
       ? userSubscriptionPlans[0]
       : instructorSubscriptionPlans[0];
 
-  console.log(
-  "...............PLANS",
-    plans,
-    "SUBSCRIPTION",
-    subscription,
-    "SUBSCRIPTION PLAN PROP",
-    subscriptionPlan
-  );
 
 // Build actual list: always with free at the front, but avoid duplicates if backend also returns a Free
 const actualPlans = [

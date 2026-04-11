@@ -100,7 +100,7 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
         setIsShareOpen(false);
       } catch (error) {
         // User cancelled the share
-        console.log("Share cancelled");
+        // Share cancelled by user
       }
     } else {
       // Fallback to copy link

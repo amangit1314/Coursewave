@@ -259,7 +259,7 @@ export const ChaptersForm = ({ courseId, sectionId }: ChaptersFormProps) => {
       toggleCreating(sectionId);
       router.refresh();
     } catch (err: any) {
-      console.log("Error in creating chapter: ", err.message);
+      console.error("Error in creating chapter: ", err.message);
       toast.error(`Something went wrong, ${err.message}`);
     }
   };
