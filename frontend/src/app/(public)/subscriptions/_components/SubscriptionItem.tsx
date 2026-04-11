@@ -38,7 +38,6 @@ const SubscriptionItem = (props: Props) => {
         "rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-950",
         isSelected && "ring ring-blue-500"
       )}
-      onClick={() => {}}
     >
       <h3
         className={`${dmSans.className} mb-2 text-lg font-medium text-zinc-900 dark:text-white`}
