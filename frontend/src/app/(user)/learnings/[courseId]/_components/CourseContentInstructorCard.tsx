@@ -1,49 +1,8 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Button, Callout } from "@tremor/react";
-// import { Chapter, CourseAttachment, Instructor } from "@prisma/client";
-import { Course } from "@/types/course";
-import { FaNoteSticky, FaLink } from "react-icons/fa6";
-import { FaPauseCircle, FaPlayCircle } from "react-icons/fa";
-import { IoMdAddCircleOutline } from "react-icons/io";
-import { MdModeEditOutline } from "react-icons/md";
-
-//* -------------------- Custom Hooks ------------------------------
-import { courseChapters, sampleText } from "@/lib/mock/mockData";
-import { useInstructorStore } from "@/zustand/instructorStore";
-import { useCoursesStore } from "@/zustand/coursesStore";
-import { useUserStore } from "@/zustand/userStore";
-
-//? -------------------- Custom Components ------------------------------
-import { useParams, useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import { Chapter, Instructor } from "@/types/course-details-api-response";
+import { Instructor } from "@/types/course-details-api-response";
 
 
 type CourseContentInstructorCardProps = {
