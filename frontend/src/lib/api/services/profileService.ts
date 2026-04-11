@@ -102,7 +102,6 @@ export class ProfileService {
   }
 
   // -------------------- PREFERENCES --------------------
-  // TODO: verify
   async getUserPreferences(userId: string): Promise<any> {
     const response = await this.apiManager.get(
       `/profile/${userId}/preferences`
@@ -196,7 +195,6 @@ export class ProfileService {
     return response; // special case since no data will be available here
   }
 
-  /// --- TODO ---
   async verifyProfile(userId: string): Promise<any> {
     const { data } = await this.apiManager.post(
       `/api/profile/${userId}/verify`

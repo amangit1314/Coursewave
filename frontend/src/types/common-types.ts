@@ -204,7 +204,7 @@ export interface ChapterNote extends Note {
 
 /**
  * Instructor preferences structure
- * TODO: Finalize structure based on feature requirements
+ * Instructor preferences structure
  */
 export interface InstructorPreference {
     key: string;

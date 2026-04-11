@@ -59,7 +59,6 @@
 //                       <ChapterItem
 //                         title={chapter?.title}
 //                         duration={"0"}
-//                         // duration={chapter?.createdAt.toLocaleDateString.toString()} // TODO: use chapter duration here
 //                         isChapterFree={chapter?.isFree}
 //                         activeChapterIndex={activeChapterIndex as number}
 //                         index={index}

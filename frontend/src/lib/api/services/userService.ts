@@ -17,7 +17,6 @@ export class UserService {
   }
 
   // -------------------------------------- USER -------------------------------------------------
-  // TODO: verify
   async getUserById(userId: string): Promise<any> {
     const response = await this.apiManager.get(`/users/${userId}`);
     return response.data;
@@ -32,7 +31,6 @@ export class UserService {
   }
 
   // -------------------------------------- SESSIONS -------------------------------------------------
-  // TODO: verify
   async getScheduledSessions(userId: string): Promise<any> {
     const response = await this.apiManager.get(
       `/profile/${userId}/scheduledSessions`
@@ -41,13 +39,11 @@ export class UserService {
   }
 
   // -------------------------------------- WISHLIST -------------------------------------------------
-  // TODO: verify
   async getWishlist(userId: string): Promise<any> {
     const response = await this.apiManager.get(`/users/${userId}/wishlist`);
     return response.data;
   }
 
-  // TODO: verify
   async addToWishlist(userId: string, courseId: string): Promise<any> {
     const response = await this.apiManager.post(`/users/${userId}/wishlist`, {
       courseId,
@@ -55,7 +51,6 @@ export class UserService {
     return response.data;
   }
 
-  // TODO: verify
   async removeFromWishlist(userId: string, courseId: string): Promise<any> {
     const response = await this.apiManager.delete(
       `/users/${userId}/wishlist/${courseId}`
@@ -64,7 +59,6 @@ export class UserService {
   }
 
   // -------------------------------------- ARTICLES -------------------------------------------------
-  // TODO: verify
   async saveArticle(userId: string, articleId: string): Promise<any> {
     const response = await this.apiManager.post(
       `/users/${userId}/saved-articles`,
@@ -73,7 +67,6 @@ export class UserService {
     return response.data;
   }
 
-  // TODO: verify
   async unsaveArticle(userId: string, articleId: string): Promise<any> {
     const response = await this.apiManager.delete(
       `/users/${userId}/saved-articles/${articleId}`
@@ -93,7 +86,6 @@ export class UserService {
 
   // -------------------------------------- COURSES -------------------------------------------------
 
-  // TODO: verify
   async saveCourse(userId: string, courseId: string): Promise<any> {
     const response = await this.apiManager.post(
       `/users/${userId}/saved-courses`,
@@ -102,7 +94,6 @@ export class UserService {
     return response.data;
   }
 
-  // TODO: verify
   async removeSavedCourse(userId: string, courseId: string): Promise<any> {
     const response = await this.apiManager.delete(
       `/users/${userId}/saved-courses/${courseId}`
@@ -110,7 +101,6 @@ export class UserService {
     return response.data;
   }
 
-  // TODO: verify
   async getSavedCourses(userId: string): Promise<any> {
     const response = await this.apiManager.get(
       `/users/${userId}/saved-courses`
@@ -119,7 +109,7 @@ export class UserService {
   }
 
   // ------------------------------------------- ORDERS -------------------------------------------
-  // order related methods getOrders  // TODO: verify
+  // order related methods getOrders
   async getOrders(): Promise<any> {
     const response = await this.apiManager.get(`/users/me/orders`);
     return response.data;
