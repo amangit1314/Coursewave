@@ -8,7 +8,7 @@ export const CoursesPagination = ({ currentPage, totalPages, onPageChange }: any
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              href="#"
+              href=""
               // disabled={currentPage === 1}
               onClick={handlePrevious}
             />
@@ -17,7 +17,7 @@ export const CoursesPagination = ({ currentPage, totalPages, onPageChange }: any
             (pageNumber) => (
               <PaginationItem key={pageNumber}>
                 <PaginationLink
-                  href="#"
+                  href=""
                   isActive={currentPage === pageNumber}
                   onClick={() => onPageChange(pageNumber)}
                 >
@@ -28,7 +28,7 @@ export const CoursesPagination = ({ currentPage, totalPages, onPageChange }: any
           )}
           <PaginationItem>
             <PaginationNext
-              href="#"
+              href=""
             //   disabled={currentPage === totalPages}
               onClick={handleNext}
             ></PaginationNext>

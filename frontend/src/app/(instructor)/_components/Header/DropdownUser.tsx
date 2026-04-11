@@ -36,11 +36,10 @@ const DropdownUser = () => {
 
   return (
     <div className="relative">
-      <Link
+      <button
         ref={trigger}
         onClick={() => setDropdownOpen(!dropdownOpen)}
         className="flex items-center gap-4"
-        href="#"
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
@@ -73,7 +72,7 @@ const DropdownUser = () => {
             fill=""
           />
         </svg>
-      </Link>
+      </button>
 
       {/* <!-- Dropdown Start --> */}
       <div
@@ -112,7 +111,7 @@ const DropdownUser = () => {
           </li>
           <li>
             <Link
-              href="#"
+              href="/instructor/communities"
               className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
             >
               <svg
@@ -128,7 +127,7 @@ const DropdownUser = () => {
                   fill=""
                 />
               </svg>
-              My Contacts
+              My Communities
             </Link>
           </li>
           <li>

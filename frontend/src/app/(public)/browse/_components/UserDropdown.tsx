@@ -35,7 +35,7 @@ const UserDropdown = () => {
         >
           <li>
             <Link
-              href="#"
+              href="/dashboard"
               className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
             >
               Dashboard
@@ -43,7 +43,7 @@ const UserDropdown = () => {
           </li>
           <li>
             <Link
-              href="#"
+              href="/settings"
               className="hover-bg-gray-100 dark:hover-bg-gray-600 dark:hover-text-white block px-4 py-2"
             >
               Settings
@@ -51,22 +51,22 @@ const UserDropdown = () => {
           </li>
           <li>
             <Link
-              href="#"
+              href="/profile"
               className="hover-bg-gray-100 dark:hover-bg-gray-600 dark:hover-text-white block px-4 py-2"
             >
-              Earnings
+              Profile
             </Link>
           </li>
         </ul>
 
         {/* signout */}
         <div className="py-1">
-          <Link
-            href="#"
-            className="hover-bg-gray-100 dark:hover-bg-gray-600 dark:hover-text-white block px-4 py-2 text-sm text-gray-700 dark:text-gray-200"
+          <button
+            onClick={() => { /* TODO: implement logout */ }}
+            className="hover-bg-gray-100 dark:hover-bg-gray-600 dark:hover-text-white block w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-200"
           >
             Sign out
-          </Link>
+          </button>
         </div>
       </div>
     </div>

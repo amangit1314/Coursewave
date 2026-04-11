@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 
 const DropdownNotification = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -35,13 +34,12 @@ const DropdownNotification = () => {
 
   return (
     <li className="relative">
-      <Link
+      <button
         ref={trigger}
         onClick={() => {
           setNotifying(false);
           setDropdownOpen(!dropdownOpen);
         }}
-        href="#"
         className="h-8.5 w-8.5 border-stroke bg-gray dark:border-strokedark dark:bg-meta-4 relative flex items-center justify-center rounded-full border-[0.5px] hover:text-primary dark:text-white"
       >
         <span
@@ -65,7 +63,7 @@ const DropdownNotification = () => {
             fill=""
           />
         </svg>
-      </Link>
+      </button>
 
       <div
         ref={dropdown}
@@ -81,9 +79,9 @@ const DropdownNotification = () => {
 
         <ul className="flex h-auto flex-col overflow-y-auto">
           <li>
-            <Link
-              className="border-stroke px-4.5 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4 flex flex-col gap-2.5 border-t py-3"
-              href="#"
+            <button
+              className="border-stroke px-4.5 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4 flex w-full flex-col gap-2.5 border-t py-3 text-left"
+              onClick={() => { /* mark as read */ }}
             >
               <p className="text-sm">
                 <span className="text-black dark:text-white">
@@ -94,12 +92,12 @@ const DropdownNotification = () => {
               </p>
 
               <p className="text-xs">12 May, 2025</p>
-            </Link>
+            </button>
           </li>
           <li>
-            <Link
-              className="border-stroke px-4.5 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4 flex flex-col gap-2.5 border-t py-3"
-              href="#"
+            <button
+              className="border-stroke px-4.5 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4 flex w-full flex-col gap-2.5 border-t py-3 text-left"
+              onClick={() => { /* mark as read */ }}
             >
               <p className="text-sm">
                 <span className="text-black dark:text-white">
@@ -109,12 +107,12 @@ const DropdownNotification = () => {
               </p>
 
               <p className="text-xs">24 Feb, 2025</p>
-            </Link>
+            </button>
           </li>
           <li>
-            <Link
-              className="border-stroke px-4.5 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4 flex flex-col gap-2.5 border-t py-3"
-              href="#"
+            <button
+              className="border-stroke px-4.5 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4 flex w-full flex-col gap-2.5 border-t py-3 text-left"
+              onClick={() => { /* mark as read */ }}
             >
               <p className="text-sm">
                 <span className="text-black dark:text-white">
@@ -125,12 +123,12 @@ const DropdownNotification = () => {
               </p>
 
               <p className="text-xs">04 Jan, 2025</p>
-            </Link>
+            </button>
           </li>
           <li>
-            <Link
-              className="border-stroke px-4.5 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4 flex flex-col gap-2.5 border-t py-3"
-              href="#"
+            <button
+              className="border-stroke px-4.5 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4 flex w-full flex-col gap-2.5 border-t py-3 text-left"
+              onClick={() => { /* mark as read */ }}
             >
               <p className="text-sm">
                 <span className="text-black dark:text-white">
@@ -141,7 +139,7 @@ const DropdownNotification = () => {
               </p>
 
               <p className="text-xs">01 Dec, 2024</p>
-            </Link>
+            </button>
           </li>
         </ul>
       </div>

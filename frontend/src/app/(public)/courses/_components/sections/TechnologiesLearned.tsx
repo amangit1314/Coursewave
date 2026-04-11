@@ -51,9 +51,9 @@ export default function TechnologiesLearned() {
           ))}
         </div>
         <div className="mt-3 text-sm font-medium">
-          <a href="#" className="text-blue-500">
+          <button type="button" className="text-blue-500">
             + 198 others
-          </a>
+          </button>
         </div>
       </div>
     </div>

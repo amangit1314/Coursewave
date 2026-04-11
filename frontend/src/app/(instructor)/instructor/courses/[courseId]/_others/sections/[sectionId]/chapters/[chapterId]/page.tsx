@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { ChapterTitleForm } from "./_components/ChapterTitleForm";
@@ -82,13 +81,13 @@ const ChapterEditPage = () => {
           {/* back to course and text */}
           <div className="flex items-center justify-between">
             <div className="w-full">
-              <Link
-                href="#"
+              <button
+                onClick={() => router.back()}
                 className="mb-6 flex items-center text-sm transition hover:opacity-75"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to course setup
-              </Link>
+              </button>
 
               <div className="flex w-full items-center justify-between">
                 <div className="flex flex-col gap-y-2">
