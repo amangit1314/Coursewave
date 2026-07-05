@@ -29,6 +29,12 @@ const envSchema = z.object({
   STRIPE_API_KEY: z.string().min(1),
   STRIPE_WEBHOOK_SECRET: z.string().min(1),
 
+  // Cloudinary (community chat attachments — optional, upload endpoint
+  // degrades to a clear error if unset rather than crashing the server)
+  CLOUDINARY_CLOUD_NAME: z.string().optional(),
+  CLOUDINARY_API_KEY: z.string().optional(),
+  CLOUDINARY_API_SECRET: z.string().optional(),
+
   // Redis / cache (optional — cache middleware guards on presence)
   UPSTASH_REDIS_REST_URL: z.string().url().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
@@ -75,6 +81,11 @@ export const env = parsed.data;
 export const features = {
   cacheEnabled: !!(env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN),
   emailEnabled: !!(env.SENDGRID_API_KEY || (env.SMTP_USER && env.SMTP_PASS)),
+  cloudinaryEnabled: !!(
+    env.CLOUDINARY_CLOUD_NAME &&
+    env.CLOUDINARY_API_KEY &&
+    env.CLOUDINARY_API_SECRET
+  ),
   isDev: env.NODE_ENV === "development",
   isProd: env.NODE_ENV === "production",
 };

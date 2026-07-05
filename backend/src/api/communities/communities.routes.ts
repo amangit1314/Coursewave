@@ -12,6 +12,7 @@ import {
   sendMessage,
   leaveCommunity,
 } from "./communitites.controller";
+import { uploadMiddleware, uploadCommunityAttachment } from "./upload.controller";
 
 const router: Router = Router();
 
@@ -35,6 +36,14 @@ router.post("/:communityId/messages", verifyToken, sendMessage);
 
 // Leave a community (requires membership)
 router.post("/:communityId/leave", verifyToken, leaveCommunity);
+
+// Upload a chat attachment (requires membership)
+router.post(
+  "/:communityId/upload",
+  verifyToken,
+  uploadMiddleware,
+  uploadCommunityAttachment
+);
 
 // Delete a message (requires admin/moderator role)
 router.delete(
