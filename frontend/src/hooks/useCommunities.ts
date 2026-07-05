@@ -41,13 +41,11 @@ export const useCreateCommunity = () => {
     mutationFn: async (data: {
       title: string;
       description?: string;
+      categoryId: string;
       isPublic?: boolean;
       tags?: string[];
     }) => {
-      const response = await communitiesService.createCommunity({
-        name: data.title,
-        description: data.description,
-      });
+      const response = await communitiesService.createCommunity(data);
       return response.data;
     },
     onSuccess: () => {
@@ -114,6 +112,84 @@ export const useSendMessage = (communityId: string) => {
       queryClient.invalidateQueries({
         queryKey: ["community-messages", communityId],
       });
+    },
+  });
+};
+
+export const useCommunityMembers = (communityId: string) => {
+  return useQuery({
+    queryKey: ["community-members", communityId],
+    queryFn: async () => {
+      const response = await communitiesService.getCommunityMembers(communityId);
+      return response.data || [];
+    },
+    enabled: !!communityId,
+    staleTime: 30 * 1000,
+  });
+};
+
+export const useUpdateCommunity = (communityId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: {
+      title?: string;
+      description?: string;
+      tags?: string[];
+      isPublic?: boolean;
+    }) => {
+      const response = await communitiesService.updateCommunity(communityId, data);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["community", communityId] });
+      queryClient.invalidateQueries({ queryKey: ["communities"] });
+    },
+  });
+};
+
+export const useDeleteCommunity = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (communityId: string) => {
+      await communitiesService.deleteCommunity(communityId);
+      return communityId;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["communities"] });
+    },
+  });
+};
+
+export const useUpdateMemberRole = (communityId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: { userId: string; role: "MODERATOR" | "MEMBER" }) => {
+      const response = await communitiesService.updateMemberRole(
+        communityId,
+        data.userId,
+        data.role
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["community-members", communityId] });
+    },
+  });
+};
+
+export const useKickMember = (communityId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (userId: string) => {
+      await communitiesService.kickMember(communityId, userId);
+      return userId;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["community-members", communityId] });
     },
   });
 };

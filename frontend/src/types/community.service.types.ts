@@ -32,13 +32,29 @@ export interface Community {
 
 
 export interface CreateCommunityRequest {
-  name: string;
-  slug?: string;
+  title: string;
   description?: string;
+  categoryId: string;
+  isPublic?: boolean;
+  tags?: string[];
 }
 
 export interface UpdateCommunityRequest {
-  name?: string;
-  slug?: string;
+  title?: string;
   description?: string;
+  categoryId?: string;
+  isPublic?: boolean;
+  tags?: string[];
+}
+
+export interface CommunityMember {
+  userId: string;
+  role: "ADMIN" | "MODERATOR" | "MEMBER";
+  joinedAt: string;
+  isOnline: boolean;
+  user: {
+    id: string;
+    name: string | null;
+    profileImageUrl: string | null;
+  };
 }

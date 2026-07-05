@@ -2,6 +2,7 @@ import {
   Community,
   CreateCommunityRequest,
   UpdateCommunityRequest,
+  CommunityMember,
 } from "@/types/community.service.types";
 import { apiManager, ApiResponse, PaginatedResponse } from "../api-manager";
 
@@ -40,7 +41,7 @@ class CommunitiesService {
     id: string,
     data: UpdateCommunityRequest
   ): Promise<ApiResponse<Community>> {
-    return this.api.put<Community>(`/communities/${id}`, data);
+    return this.api.patch<Community>(`/communities/${id}`, data);
   }
 
   async deleteCommunity(id: string): Promise<ApiResponse<void>> {
@@ -56,10 +57,23 @@ class CommunitiesService {
     return this.api.post<void>(`/communities/${id}/leave`);
   }
 
-  async getCommunityMembers(
-    id: string
-  ): Promise<ApiResponse<{ userId: string; username: string }[]>> {
-    return this.api.get(`/communities/${id}/members`);
+  async getCommunityMembers(id: string): Promise<ApiResponse<CommunityMember[]>> {
+    return this.api.get<CommunityMember[]>(`/communities/${id}/members`);
+  }
+
+  async updateMemberRole(
+    communityId: string,
+    userId: string,
+    role: "MODERATOR" | "MEMBER"
+  ): Promise<ApiResponse<CommunityMember>> {
+    return this.api.patch<CommunityMember>(
+      `/communities/${communityId}/members/${userId}/role`,
+      { role }
+    );
+  }
+
+  async kickMember(communityId: string, userId: string): Promise<ApiResponse<void>> {
+    return this.api.delete<void>(`/communities/${communityId}/members/${userId}`);
   }
 
   // === Messages ===
