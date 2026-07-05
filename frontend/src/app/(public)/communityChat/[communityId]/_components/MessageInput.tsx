@@ -1,11 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, useState } from "react";
 import { BiHappy } from "react-icons/bi";
 import { MdSend, MdAttachFile, MdClose, MdEdit } from "react-icons/md";
+import { toast } from "sonner";
 import EmojiPicker from "@/components/EmojiPicker";
 import { useCommunityChatStore } from "@/zustand/communityChatStore";
+import { communitiesService } from "@/lib/api/services/communitiesService";
 import {
   sendMessage,
   editMessage,
@@ -67,17 +69,18 @@ const MessageInput = ({ communityId }: MessageInputProps) => {
     if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
   };
 
-  const handleFileUpload = (file: File) => {
-    // For now, send file name as message content with attachment metadata
-    // Full file upload requires a file storage service (S3/Cloudinary)
-    const attachment = {
-      type: file.type.startsWith("image/") ? "image" : "file",
-      url: URL.createObjectURL(file), // Local preview — production should use uploaded URL
-      name: file.name,
-      size: `${(file.size / 1024 / 1024).toFixed(1)} MB`,
-    };
+  const [isUploading, setIsUploading] = useState(false);
 
-    sendMessage(communityId, `Shared ${file.name}`, undefined, [attachment]);
+  const handleFileUpload = async (file: File) => {
+    setIsUploading(true);
+    try {
+      const attachment = await communitiesService.uploadAttachment(communityId, file);
+      sendMessage(communityId, `Shared ${file.name}`, undefined, [attachment]);
+    } catch (err) {
+      toast.error("Couldn't upload the file. Try again.");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -190,9 +193,14 @@ const MessageInput = ({ communityId }: MessageInputProps) => {
                 variant="outline"
                 size="icon"
                 onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading}
                 className="flex h-10 w-10 items-center justify-center rounded-md"
               >
-                <MdAttachFile className="h-5 w-5" />
+                {isUploading ? (
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                ) : (
+                  <MdAttachFile className="h-5 w-5" />
+                )}
               </Button>
             </>
           )}

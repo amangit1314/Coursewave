@@ -86,6 +86,20 @@ class CommunitiesService {
       `/communities/${communityId}/messages/${messageId}`
     );
   }
+
+  // === Attachments ===
+  async uploadAttachment(
+    communityId: string,
+    file: File
+  ): Promise<{ type: "image" | "file"; url: string; name: string; size: string }> {
+    const response = await this.api.upload<{
+      type: "image" | "file";
+      url: string;
+      name: string;
+      size: string;
+    }>(`/communities/${communityId}/upload`, file);
+    return response.data;
+  }
 }
 
 export const communitiesService = CommunitiesService.getInstance();
