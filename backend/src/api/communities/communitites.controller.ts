@@ -67,6 +67,78 @@ export const getCommunityMessages = asyncHandler(
   }
 );
 
+export const getCommunityMembers = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { communityId } = req.params;
+    const userId = requireUserId(req);
+
+    const members = await communitiesService.getCommunityMembers(
+      communityId,
+      userId
+    );
+    sendSuccess(res, members, "Members fetched successfully");
+  }
+);
+
+export const updateCommunity = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { communityId } = req.params;
+    const { title, description, tags, isPublic } = req.body;
+
+    const community = await communitiesService.updateCommunity(communityId, {
+      title,
+      description,
+      tags,
+      isPublic,
+    });
+    sendSuccess(res, community, "Community updated successfully");
+  }
+);
+
+export const deleteCommunity = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { communityId } = req.params;
+    await communitiesService.deleteCommunity(communityId);
+    sendSuccess(res, null, "Community deleted successfully");
+  }
+);
+
+export const updateMemberRole = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { communityId, userId: targetUserId } = req.params;
+    const actingUserId = requireUserId(req);
+    const { role } = req.body;
+
+    if (role !== "MODERATOR" && role !== "MEMBER") {
+      throw new AppError('Role must be "MODERATOR" or "MEMBER"', 400);
+    }
+
+    const member = await communitiesService.updateMemberRole(
+      communityId,
+      actingUserId,
+      targetUserId,
+      role
+    );
+    sendSuccess(res, member, "Member role updated successfully");
+  }
+);
+
+export const kickMember = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { communityId, userId: targetUserId } = req.params;
+    const actingUserId = requireUserId(req);
+    const actingRole = (req as any).communityRole as "ADMIN" | "MODERATOR";
+
+    await communitiesService.kickMember(
+      communityId,
+      actingUserId,
+      actingRole,
+      targetUserId
+    );
+    sendSuccess(res, null, "Member removed successfully");
+  }
+);
+
 export const deleteMessage = asyncHandler(
   async (req: Request, res: Response) => {
     const { communityId, messageId } = req.params;

@@ -42,6 +42,7 @@ export const isCommunityModerator = async (
     }
 
     // User has the required role, proceed
+    (req as any).communityRole = member.role;
     next();
   } catch (error: any) {
     console.error("ERROR in isCommunityModerator middleware: ", error.message);
