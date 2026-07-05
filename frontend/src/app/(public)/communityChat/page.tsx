@@ -1,18 +1,18 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import React, { useState, useMemo } from "react";
-import { MdSearch, MdAdd, MdGridOn, MdViewList } from "react-icons/md";
+import { MdSearch, MdGridOn, MdViewList, MdGroups } from "react-icons/md";
+import { Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Community } from "@/types/community";
 import { useCommunities } from "@/hooks/useCommunities";
 import { useUserStore } from "@/zustand/userStore";
 import { CommunityCard } from "./_components/CommunityCard";
 import { CommunityListCard } from "./_components/CommunityListCard";
+import { CreateCommunityDialog } from "./_components/CreateCommunityDialog";
 import { useSocket } from "@/hooks/useSocket";
 
 const CommunityChat = () => {
@@ -20,11 +20,11 @@ const CommunityChat = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const { data: communitiesData, isLoading } = useCommunities(); // <--- Call the hook
+  const { data: communitiesData, isLoading } = useCommunities();
   const { user, token } = useUserStore();
   const userId = user?.id!;
 
-  const socket = useSocket(token); // socket connects when this page renders
+  useSocket(token); // socket connects when this page renders
 
   const communities = communitiesData?.data || [];
 
@@ -49,22 +49,20 @@ const CommunityChat = () => {
 
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, selectedCategory, communitiesData]); // <--- Add communitiesData to dependencies
+  }, [searchQuery, selectedCategory, communitiesData, communities]);
 
-  // Update categories to use the real data
-  // Update categories to use the real data
   const categories = useMemo(() => {
     if (!communitiesData) {
       return ["all"];
     }
-    // Map to the category's name property
     const uniqueCategories = Array.from(
-      new Set(communities.map((c: any) => c.category.name))
+      new Set(communities.map((c: Community) => c.category.name))
     ) as string[];
     return ["all", ...uniqueCategories];
-  }, [communitiesData]);
+  }, [communitiesData, communities]);
 
-  const isInstructor = user?.roles?.includes("INSTRUCTOR") ?? false;
+  const isFiltered = searchQuery.trim().length > 0 || selectedCategory !== "all";
+
   return (
     <div className="max-w-7xl space-y-6 overflow-x-hidden px-4 pb-16 md:mx-8">
       {/* Header */}
@@ -78,12 +76,7 @@ const CommunityChat = () => {
           </p>
         </div>
 
-        {isInstructor && (
-          <Button className="flex items-center gap-2">
-            <MdAdd className="h-4 w-4" />
-            Create Community
-          </Button>
-        )}
+        {user && <CreateCommunityDialog />}
       </div>
 
       {/* Search, Filters, and View Toggle */}
@@ -95,7 +88,7 @@ const CommunityChat = () => {
               placeholder="Search communities..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-10 rounded-full focus-visible:ring-blue-500"
             />
           </div>
 
@@ -125,35 +118,55 @@ const CommunityChat = () => {
           </ToggleGroup>
         </div>
 
-        {/* tabs */}
-        <Tabs
-          value={selectedCategory}
-          onValueChange={setSelectedCategory}
-          className="w-full"
-        >
-          <TabsList className="flex flex-wrap w-full justify-center px-2 items-center h-12 bg-gray-100 dark:bg-zinc-800 rounded-lg gap-8">
-            {categories.map((category) => (
-              <TabsTrigger
-                key={category}
-                value={category}
-                className="flex-grow capitalize data-[state=active]:bg-blue-500 data-[state=active]:text-white data-[state=active]:shadow-sm rounded-sm transition-all duration-200 hover:bg-gray-200 dark:hover:bg-zinc-700 data-[state=active]:hover:bg-blue-600 px-4 py-2"
-              >
-                {category === "all" ? "All" : category}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+        {/* Category pills — matches the Browse Courses filter pattern */}
+        <div className="flex flex-wrap gap-2">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              aria-pressed={selectedCategory === category}
+              className={`capitalize flex h-9 items-center justify-center rounded-full px-5 text-sm font-medium transition-all duration-200
+                ${
+                  selectedCategory === category
+                    ? "bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white tracking-tight font-semibold shadow-lg shadow-blue-500/30 border-2 border-blue-600 scale-105"
+                    : "text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 dark:hover:border-blue-600 hover:text-blue-700 dark:hover:text-blue-400 hover:shadow-md"
+                }`}
+            >
+              {category === "all" ? "All" : category}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Communities Display */}
       <ScrollArea className="h-[calc(100vh-300px)]">
         {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <p>Loading communities...</p>
+          <div className="flex flex-col items-center justify-center h-64 gap-3">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-600 dark:text-blue-400" />
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">Loading communities…</p>
           </div>
         ) : filteredCommunities.length === 0 ? (
-          <div className="flex justify-center items-center h-64">
-            <p>No communities found.</p>
+          <div className="flex flex-col items-center justify-center h-64 gap-3 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 dark:bg-blue-500/10">
+              <MdGroups className="h-7 w-7 text-blue-600 dark:text-blue-400" />
+            </div>
+            {isFiltered ? (
+              <>
+                <p className="font-medium text-zinc-800 dark:text-zinc-100">No communities match your filters</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                  Try a different search term or category.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="font-medium text-zinc-800 dark:text-zinc-100">No communities yet</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-xs">
+                  {user
+                    ? "Be the first to start one for people to join."
+                    : "Sign in to be the first to start one."}
+                </p>
+              </>
+            )}
           </div>
         ) : viewMode === "grid" ? (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -168,7 +181,7 @@ const CommunityChat = () => {
                   community={community}
                   userId={userId}
                   isJoined={community.members?.some(
-                    (m: any) => m.id === userId
+                    (m) => m.user.id === userId
                   )}
                 />
               </motion.div>
@@ -187,7 +200,7 @@ const CommunityChat = () => {
                   community={community}
                   userId={userId}
                   isJoined={community.members?.some(
-                    (m: any) => m.id === userId
+                    (m) => m.user.id === userId
                   )}
                 />
               </motion.div>

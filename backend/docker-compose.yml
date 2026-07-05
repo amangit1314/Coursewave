@@ -1,0 +1,52 @@
+services:
+  postgres:
+    image: postgres:18.1
+    container_name: coursewave-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-coursewave}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-coursewave}
+      POSTGRES_DB: ${POSTGRES_DB:-coursewave}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-coursewave}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: coursewave-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Upstash REST proxy so the app's @upstash/redis client works unchanged
+  # against the local redis container above.
+  redis-http:
+    image: hiett/serverless-redis-http:latest
+    container_name: coursewave-redis-http
+    restart: unless-stopped
+    ports:
+      - "8079:80"
+    environment:
+      SRH_MODE: env
+      SRH_TOKEN: ${UPSTASH_REDIS_REST_TOKEN:-local-dev-token}
+      SRH_CONNECTION_STRING: redis://redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  redis_data:

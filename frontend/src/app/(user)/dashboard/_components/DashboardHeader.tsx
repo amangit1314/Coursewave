@@ -6,7 +6,7 @@ import Notifications from "../notifications/page";
 const DashboardHeader = () => {
   return (
     <div className="flex w-full max-w-7xl items-center justify-between md:mx-8">
-      <div className="text-md px-6 text-base font-semibold tracking-tight text-black dark:text-white md:pl-72">
+      <div className="text-md px-6 text-base font-semibold tracking-tight text-foreground md:pl-72">
         User Dashboard
       </div>
 

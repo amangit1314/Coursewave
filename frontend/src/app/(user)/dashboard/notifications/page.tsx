@@ -83,7 +83,7 @@ function getTypeColor(type: string): string {
     case "alert":
       return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
     default:
-      return "bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-400";
+      return "bg-muted text-muted-foreground";
   }
 }
 
@@ -163,7 +163,7 @@ export default function NotificationsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-zinc-400" />
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -173,8 +173,8 @@ export default function NotificationsPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <Card className="max-w-md w-full">
           <CardContent className="pt-6 text-center">
-            <BellOff className="h-12 w-12 mx-auto mb-4 text-zinc-400" />
-            <p className="text-zinc-600 dark:text-zinc-400">
+            <BellOff className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground">
               Failed to load notifications. Please try again later.
             </p>
           </CardContent>
@@ -192,12 +192,12 @@ export default function NotificationsPage() {
         <div className="mb-8 mt-16">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Bell className="h-7 w-7 text-zinc-900 dark:text-white" />
+              <Bell className="h-7 w-7 text-foreground" />
               <div>
-                <h1 className="text-3xl font-bold text-zinc-900 dark:text-white sm:text-4xl tracking-tight">
+                <h1 className="text-3xl font-bold text-foreground sm:text-4xl tracking-tight">
                   Notifications
                 </h1>
-                <p className="mt-1 text-zinc-600 dark:text-zinc-400">
+                <p className="mt-1 text-muted-foreground">
                   {unreadCount > 0
                     ? `You have ${unreadCount} unread notification${unreadCount !== 1 ? "s" : ""}`
                     : "You're all caught up"}
@@ -227,11 +227,11 @@ export default function NotificationsPage() {
         {notifications.length === 0 ? (
           <Card>
             <CardContent className="py-16 text-center">
-              <Inbox className="h-16 w-16 mx-auto mb-4 text-zinc-300 dark:text-zinc-600" />
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-2">
+              <Inbox className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">
                 No notifications yet
               </h3>
-              <p className="text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto">
+              <p className="text-muted-foreground max-w-sm mx-auto">
                 When you receive notifications about your courses, achievements,
                 or account activity, they will appear here.
               </p>
@@ -249,10 +249,10 @@ export default function NotificationsPage() {
                     animate="visible"
                     exit="exit"
                     layout
-                    className={`flex items-start gap-4 px-6 py-4 border-b border-zinc-100 dark:border-zinc-800 last:border-b-0 transition-colors ${
+                    className={`flex items-start gap-4 px-6 py-4 border-b border-border last:border-b-0 transition-colors ${
                       !notification.read
                         ? "bg-blue-50/50 dark:bg-blue-950/20"
-                        : "bg-white dark:bg-zinc-900"
+                        : "bg-card"
                     }`}
                   >
                     {/* Unread indicator */}
@@ -268,7 +268,7 @@ export default function NotificationsPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <h4
-                          className={`text-sm font-semibold text-zinc-900 dark:text-white truncate ${
+                          className={`text-sm font-semibold text-foreground truncate ${
                             !notification.read ? "" : "font-medium"
                           }`}
                         >
@@ -281,10 +281,10 @@ export default function NotificationsPage() {
                           {notification.type}
                         </Badge>
                       </div>
-                      <p className="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                      <p className="text-sm text-muted-foreground line-clamp-2">
                         {notification.message}
                       </p>
-                      <span className="text-xs text-zinc-400 dark:text-zinc-500 mt-1 block">
+                      <span className="text-xs text-muted-foreground mt-1 block">
                         {formatTimeAgo(notification.sentAt)}
                       </span>
                     </div>
@@ -295,7 +295,7 @@ export default function NotificationsPage() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400"
+                          className="h-8 w-8 text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400"
                           onClick={() => handleMarkAsRead(notification.id)}
                           disabled={markAsReadMutation.isPending}
                           title="Mark as read"
@@ -306,7 +306,7 @@ export default function NotificationsPage() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 text-zinc-400 hover:text-red-600 dark:hover:text-red-400"
+                        className="h-8 w-8 text-muted-foreground hover:text-red-600 dark:hover:text-red-400"
                         onClick={() => handleDelete(notification.id)}
                         disabled={deleteNotificationMutation.isPending}
                         title="Delete notification"
@@ -321,8 +321,8 @@ export default function NotificationsPage() {
 
             {/* Pagination */}
             {pagination && pagination.pages > 1 && (
-              <div className="flex items-center justify-between px-6 py-4 border-t border-zinc-100 dark:border-zinc-800">
-                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+              <div className="flex items-center justify-between px-6 py-4 border-t border-border">
+                <p className="text-sm text-muted-foreground">
                   Page {pagination.page} of {pagination.pages} ({pagination.total}{" "}
                   total)
                 </p>

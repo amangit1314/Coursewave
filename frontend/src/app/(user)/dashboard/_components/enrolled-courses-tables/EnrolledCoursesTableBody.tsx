@@ -60,7 +60,7 @@ const StatusBadge = ({ status }: { status: EnrollmentStatus }) => {
   const config = statusConfig[status];
   if (!config) {
     return (
-      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-400">
+      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border border-border text-muted-foreground">
         Unknown
       </div>
     );
@@ -77,13 +77,13 @@ const StatusBadge = ({ status }: { status: EnrollmentStatus }) => {
 
 const ProgressBar = ({ progress }: { progress: number }) => (
   <div className="flex items-center gap-3">
-    <div className="flex-1 bg-zinc-200 dark:bg-zinc-700 rounded-full h-2 overflow-hidden">
+    <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden">
       <div
         className="h-full bg-gradient-to-r from-green-500 to-green-600 transition-all duration-300 ease-out"
         style={{ width: `${progress}%` }}
       />
     </div>
-    <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300 min-w-[40px]">
+    <span className="text-sm font-medium text-muted-foreground min-w-[40px]">
       {progress}%
     </span>
   </div>
@@ -104,7 +104,7 @@ const SortButton = ({
 }) => (
   <button
     onClick={() => onSort(field)}
-    className="flex items-center gap-1 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors group"
+    className="flex items-center gap-1 hover:text-foreground transition-colors group"
   >
     {children}
     <div className="flex flex-col">
@@ -112,14 +112,14 @@ const SortButton = ({
         className={`w-3 h-3 transition-colors ${
           sortField === field && sortDirection === "asc"
             ? "text-green-600 dark:text-green-400"
-            : "text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300"
+            : "text-muted-foreground group-hover:text-foreground"
         }`}
       />
       <ChevronDown
         className={`w-3 h-3 -mt-1 transition-colors ${
           sortField === field && sortDirection === "desc"
             ? "text-green-600 dark:text-green-400"
-            : "text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300"
+            : "text-muted-foreground group-hover:text-foreground"
         }`}
       />
     </div>
@@ -144,18 +144,18 @@ export const EnrolledCoursesTableBody = ({
   return (
     <>
       {/* Table */}
-      <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+      <div className="rounded-xl border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead
-              className={`${dmSans.className} bg-zinc-50 text-sm dark:bg-zinc-900/50`}
+              className={`${dmSans.className} bg-muted text-sm`}
             >
               <tr>
                 {visibleColumns.courseTitle && (
                   <th className="px-6 py-4 text-left">
                     <SortButton field="course" sortField={sortField} sortDirection={sortDirection} onSort={onSort}>
                       <BookOpen className="w-4 h-4 mr-2" />
-                      <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+                      <span className="font-semibold text-muted-foreground">
                         Course
                       </span>
                     </SortButton>
@@ -163,14 +163,14 @@ export const EnrolledCoursesTableBody = ({
                 )}
                 {visibleColumns.category && (
                   <th className="px-6 py-4 text-left">
-                    <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+                    <span className="font-semibold text-muted-foreground">
                       Category
                     </span>
                   </th>
                 )}
                 {visibleColumns.status && (
                   <th className="px-6 py-4 text-left">
-                    <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+                    <span className="font-semibold text-muted-foreground">
                       Status
                     </span>
                   </th>
@@ -178,7 +178,7 @@ export const EnrolledCoursesTableBody = ({
                 {visibleColumns.progress && (
                   <th className="px-6 py-4 text-left">
                     <SortButton field="progress" sortField={sortField} sortDirection={sortDirection} onSort={onSort}>
-                      <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+                      <span className="font-semibold text-muted-foreground">
                         Progress
                       </span>
                     </SortButton>
@@ -187,7 +187,7 @@ export const EnrolledCoursesTableBody = ({
                 {visibleColumns.startDate && (
                   <th className="px-6 py-4 text-left">
                     <SortButton field="startDate" sortField={sortField} sortDirection={sortDirection} onSort={onSort}>
-                      <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+                      <span className="font-semibold text-muted-foreground">
                         Start Date
                       </span>
                     </SortButton>
@@ -195,14 +195,14 @@ export const EnrolledCoursesTableBody = ({
                 )}
                 {visibleColumns.certificate && (
                   <th className="px-6 py-4 text-left">
-                    <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+                    <span className="font-semibold text-muted-foreground">
                       Certificate
                     </span>
                   </th>
                 )}
                 {visibleColumns.validity && (
                   <th className="px-6 py-4 text-left">
-                    <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+                    <span className="font-semibold text-muted-foreground">
                       Validity
                     </span>
                   </th>
@@ -210,18 +210,18 @@ export const EnrolledCoursesTableBody = ({
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
+            <tbody className="divide-y divide-border">
               {paginatedData.length > 0 ? (
                 paginatedData.map((course) => (
                   <tr
                     key={course.id}
-                    className="hover:bg-zinc-50 dark:hover:bg-zinc-900/30 transition-colors"
+                    className="hover:bg-muted/30 transition-colors"
                     onClick={() => onRowClick(course.courseId)}
                   >
                     {visibleColumns.courseTitle && (
                       <td className="px-6 py-4">
                         <div>
-                          <div className="font-medium text-center line-clamp-3 overflow-ellipsis text-sm text-zinc-900 dark:text-zinc-100 mb-1">
+                          <div className="font-medium text-center line-clamp-3 overflow-ellipsis text-sm text-foreground mb-1">
                             {course.courseTitle}
                           </div>
                         </div>
@@ -254,7 +254,7 @@ export const EnrolledCoursesTableBody = ({
                     )}
                     {visibleColumns.startDate && (
                       <td className="px-6 py-4">
-                        <span className="text-zinc-700 text-sm text-center dark:text-zinc-300">
+                        <span className="text-muted-foreground text-sm text-center">
                           {course.startDate}
                         </span>
                       </td>
@@ -284,7 +284,7 @@ export const EnrolledCoursesTableBody = ({
                             </span>
                           </button>
                         ) : (
-                          <span className="text-zinc-400 dark:text-zinc-500 text-sm">
+                          <span className="text-muted-foreground dark:text-zinc-500 text-sm">
                             Not earned
                           </span>
                         )}
@@ -309,14 +309,14 @@ export const EnrolledCoursesTableBody = ({
                 <tr>
                   <td colSpan={8} className="px-6 py-12 text-center">
                     <div className="flex flex-col items-center gap-4">
-                      <div className="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-full">
-                        <BookOpen className="w-8 h-8 text-zinc-400" />
+                      <div className="p-3 bg-muted rounded-full">
+                        <BookOpen className="w-8 h-8 text-muted-foreground" />
                       </div>
                       <div>
-                        <h4 className="font-medium text-zinc-900 dark:text-zinc-100 mb-2">
+                        <h4 className="font-medium text-foreground mb-2">
                           No courses found
                         </h4>
-                        <p className="text-zinc-500 dark:text-zinc-400 text-sm">
+                        <p className="text-muted-foreground text-sm">
                           Try adjusting your search or filter criteria
                         </p>
                       </div>
@@ -332,7 +332,7 @@ export const EnrolledCoursesTableBody = ({
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between mt-6">
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="text-sm text-muted-foreground">
             Showing {startIndex + 1} to{" "}
             {Math.min(startIndex + itemsPerPage, totalItems)}{" "}
             of {totalItems} courses
@@ -342,7 +342,7 @@ export const EnrolledCoursesTableBody = ({
             <button
               onClick={() => onPageChange(Math.max(1, currentPage - 1))}
               disabled={currentPage === 1}
-              className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground bg-card border border-border rounded-lg hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               <ChevronLeft className="w-4 h-4" />
               Previous
@@ -368,7 +368,7 @@ export const EnrolledCoursesTableBody = ({
                     className={`px-3 py-2 text-sm font-medium rounded-lg transition-all ${
                       currentPage === pageNum
                         ? "bg-green-600 text-white"
-                        : "text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700"
+                        : "text-muted-foreground bg-card border border-border hover:bg-muted"
                     }`}
                   >
                     {pageNum}
@@ -380,7 +380,7 @@ export const EnrolledCoursesTableBody = ({
             <button
               onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
               disabled={currentPage === totalPages}
-              className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground bg-card border border-border rounded-lg hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               Next
               <ChevronRight className="w-4 h-4" />

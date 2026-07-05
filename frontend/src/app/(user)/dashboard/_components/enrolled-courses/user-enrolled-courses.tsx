@@ -5,7 +5,7 @@ const EnrolledCourses = () => {
   return (
     <div className="w-full">
       <div className="mb-6 flex items-center justify-between">
-        <div className="text-lg font-semibold text-gray-700 dark:text-gray-400">
+        <div className="text-lg font-semibold text-muted-foreground">
           Enrolled Courses
         </div>
 

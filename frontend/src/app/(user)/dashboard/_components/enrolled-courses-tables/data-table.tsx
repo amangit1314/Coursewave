@@ -85,7 +85,7 @@ export function DataTable<TData, TValue>({
   };
 
   return (
-    <div className="bg-white dark:bg-zinc-800 rounded-3xl shadow-sm border border-zinc-200 dark:border-zinc-700 p-6">
+    <div className="bg-card rounded-3xl shadow-sm border border-border p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
@@ -95,11 +95,11 @@ export function DataTable<TData, TValue>({
             </div>
           )}
           <div>
-            <h3 className="text-xl font-semibold text-zinc-900 dark:text-white">
+            <h3 className="text-xl font-semibold text-foreground">
               {title}
             </h3>
             {description && (
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              <p className="text-sm text-muted-foreground">
                 {description} • {totalRows} {totalRows === 1 ? 'item' : 'items'}
               </p>
             )}
@@ -112,7 +112,7 @@ export function DataTable<TData, TValue>({
         {/* Search */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
               type="text"
               placeholder={searchPlaceholder}
@@ -122,14 +122,14 @@ export function DataTable<TData, TValue>({
               onChange={(event) =>
                 table.getColumn(searchColumn)?.setFilterValue(event.target.value)
               }
-              className="w-full pl-10 pr-4 py-2.5 border border-zinc-200 dark:border-zinc-700 rounded-xl bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+              className="w-full pl-10 pr-4 py-2.5 border border-border rounded-xl bg-card text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
             />
           </div>
         </div>
 
         {/* Column Visibility Toggle */}
         <div className="flex flex-wrap gap-2">
-          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300 flex items-center gap-2">
+          <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
             <Eye className="w-4 h-4" />
             Columns:
           </span>
@@ -149,7 +149,7 @@ export function DataTable<TData, TValue>({
                   className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
                     column.getIsVisible()
                       ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                      : "bg-zinc-100 text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400"
+                      : "bg-muted text-muted-foreground"
                   }`}
                 >
                   {columnName}
@@ -160,19 +160,19 @@ export function DataTable<TData, TValue>({
       </div>
 
       {/* Table */}
-      <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+      <div className="rounded-xl border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-zinc-50 dark:bg-zinc-900/50">
+            <TableHeader className="bg-muted/50">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
                     <TableHead key={header.id} className="px-6 py-4">
                       {header.isPlaceholder ? null : (
                         <div
-                          className={`flex items-center gap-1 text-sm font-semibold text-zinc-700 dark:text-zinc-300 ${
+                          className={`flex items-center gap-1 text-sm font-semibold text-muted-foreground ${
                             header.column.getCanSort()
-                              ? "cursor-pointer select-none hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+                              ? "cursor-pointer select-none hover:text-foreground transition-colors"
                               : ""
                           }`}
                           onClick={header.column.getToggleSortingHandler()}
@@ -187,14 +187,14 @@ export function DataTable<TData, TValue>({
                                 className={`w-3 h-3 transition-colors ${
                                   header.column.getIsSorted() === "asc"
                                     ? "text-green-600 dark:text-green-400"
-                                    : "text-zinc-400"
+                                    : "text-muted-foreground"
                                 }`}
                               />
                               <ChevronDown
                                 className={`w-3 h-3 -mt-1 transition-colors ${
                                   header.column.getIsSorted() === "desc"
                                     ? "text-green-600 dark:text-green-400"
-                                    : "text-zinc-400"
+                                    : "text-muted-foreground"
                                 }`}
                               />
                             </div>
@@ -207,12 +207,12 @@ export function DataTable<TData, TValue>({
               ))}
             </TableHeader>
 
-            <TableBody className="divide-y divide-zinc-200 dark:divide-zinc-700">
+            <TableBody className="divide-y divide-border">
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
-                    className="hover:bg-zinc-50 dark:hover:bg-zinc-900/30 transition-colors"
+                    className="hover:bg-muted/30 transition-colors"
                     data-state={row.getIsSelected() && "selected"}
                   >
                     {row.getVisibleCells().map((cell) => (
@@ -232,14 +232,14 @@ export function DataTable<TData, TValue>({
                     className="px-6 py-12 text-center"
                   >
                     <div className="flex flex-col items-center gap-4">
-                      <div className="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-full">
-                        <Filter className="w-8 h-8 text-zinc-400" />
+                      <div className="p-3 bg-muted rounded-full">
+                        <Filter className="w-8 h-8 text-muted-foreground" />
                       </div>
                       <div>
-                        <h4 className="font-medium text-zinc-900 dark:text-zinc-100 mb-2">
+                        <h4 className="font-medium text-foreground mb-2">
                           No results found
                         </h4>
-                        <p className="text-zinc-500 dark:text-zinc-400 text-sm">
+                        <p className="text-muted-foreground text-sm">
                           Try adjusting your search or filter criteria
                         </p>
                       </div>
@@ -255,7 +255,7 @@ export function DataTable<TData, TValue>({
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between mt-6">
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="text-sm text-muted-foreground">
             Showing {startIndex + 1} to{" "}
             {Math.min(startIndex + pageSize, totalRows)} of {totalRows}{" "}
             {totalRows === 1 ? 'item' : 'items'}
@@ -267,7 +267,7 @@ export function DataTable<TData, TValue>({
               size="sm"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
-              className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground bg-card border border-border rounded-lg hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               <ChevronLeft className="w-4 h-4" />
               Previous
@@ -297,7 +297,7 @@ export function DataTable<TData, TValue>({
                     className={`px-3 py-2 text-sm font-medium rounded-lg transition-all ${
                       pageIndex + 1 === pageNum
                         ? "bg-green-600 text-white hover:bg-green-700"
-                        : "text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700"
+                        : "text-muted-foreground bg-card border border-border hover:bg-muted"
                     }`}
                   >
                     {pageNum}
@@ -311,7 +311,7 @@ export function DataTable<TData, TValue>({
               size="sm"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
-              className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-muted-foreground bg-card border border-border rounded-lg hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               Next
               <ChevronRight className="w-4 h-4" />
@@ -322,7 +322,7 @@ export function DataTable<TData, TValue>({
 
       {/* Selection Info */}
       {table.getFilteredSelectedRowModel().rows.length > 0 && (
-        <div className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
+        <div className="mt-4 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>

@@ -94,18 +94,18 @@ export const enrollmentColumns: ColumnDef<Enrollment>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="bg-white dark:bg-zinc-800"
+            className="bg-card"
           >
             <DropdownMenuLabel className="sr-only">Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              className="cursor-pointer transition-all duration-200 hover:bg-gray-100 hover:text-black dark:hover:bg-zinc-900 dark:hover:text-white"
+              className="cursor-pointer transition-all duration-200 hover:bg-muted hover:text-foreground"
               onClick={() => navigator.clipboard.writeText(enrollment.id)}
             >
               Copy enrollment ID
             </DropdownMenuItem>
-            <DropdownMenuSeparator className="bg-gray-600 dark:bg-zinc-400" />
+            <DropdownMenuSeparator className="bg-border" />
             <Link href={`/courses/${enrollment.courseId}/courseContent`}>
-              <DropdownMenuItem className="cursor-pointer transition-all duration-200 hover:bg-gray-100 hover:text-black dark:hover:bg-zinc-900 dark:hover:text-white">
+              <DropdownMenuItem className="cursor-pointer transition-all duration-200 hover:bg-muted hover:text-foreground">
                 View Course
               </DropdownMenuItem>
             </Link>

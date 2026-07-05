@@ -80,7 +80,7 @@ const DashboardPage = () => {
   return (
     <div className={poppins.className}>
       <motion.div
-        className="min-h-screen bg-gradient-to-br from-zinc-50 via-white to-blue-50/30 dark:from-zinc-900 dark:via-zinc-900 dark:to-blue-900/20"
+        className="min-h-screen bg-background"
         initial="hidden"
         animate="visible"
         variants={containerVariants}
@@ -91,17 +91,17 @@ const DashboardPage = () => {
             <div className="flex items-center justify-between">
               <div>
                 <h1
-                  className={`${dmSans.className} tracking-tight text-3xl font-bold text-zinc-900 dark:text-white sm:text-4xl`}
+                  className={`${dmSans.className} tracking-tight text-3xl font-bold text-foreground sm:text-4xl`}
                 >
                   {/* Welcome back!, */}
                   Hi, {user?.name} 👋
                 </h1>
-                <p className="mt-2 text-lg text-zinc-600 dark:text-zinc-400">
+                <p className="mt-2 text-lg text-muted-foreground">
                   Track your learning progress and stay motivated
                 </p>
               </div>
               <div className="hidden sm:flex items-center space-x-2">
-                <div className="flex items-center space-x-1 text-sm text-zinc-500 dark:text-zinc-400">
+                <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                   <ClockIcon className="h-4 w-4" />
                   <span>{new Date().toLocaleDateString("en-GB")}</span>
                 </div>
@@ -140,7 +140,7 @@ const DashboardPage = () => {
 
           {/* Learning Goals */}
           <motion.div variants={itemVariants}>
-            <div className="bg-white dark:bg-zinc-800 rounded-3xl shadow-sm border border-zinc-200 dark:border-zinc-700 p-6">
+            <div className="bg-card rounded-3xl shadow-sm border border-border p-6">
               <LearningGoals />
             </div>
           </motion.div>

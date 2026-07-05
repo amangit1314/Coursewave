@@ -59,7 +59,7 @@ const DateRangeFilter = () => {
           ${
             isFiltering
               ? "bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800"
-              : "bg-white dark:bg-zinc-900 border-gray-200 dark:border-gray-800"
+              : "bg-card border-border"
           }
         `}
         onClick={toggleCalendar}
@@ -70,7 +70,7 @@ const DateRangeFilter = () => {
           />
           <div>
             <span
-              className={`text-sm font-medium ${isFiltering ? "text-blue-700 dark:text-blue-400" : "text-gray-700 dark:text-gray-300"}`}
+              className={`text-sm font-medium ${isFiltering ? "text-blue-700 dark:text-blue-400" : "text-muted-foreground"}`}
             >
               {isFiltering ? "Filtered by date:" : "Filter by date"}
             </span>
@@ -89,7 +89,7 @@ const DateRangeFilter = () => {
                 e.stopPropagation();
                 handleClear();
               }}
-              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              className="text-muted-foreground hover:text-foreground"
             >
               <XCircleIcon className="w-4 h-4" />
             </button>
@@ -102,12 +102,12 @@ const DateRangeFilter = () => {
 
       {/* Calendar Dropdown */}
       {isOpen && (
-        <div className="absolute z-10 mt-2 w-full max-w-md bg-white dark:bg-zinc-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800 p-4">
+        <div className="absolute z-10 mt-2 w-full max-w-md bg-card rounded-lg shadow-lg border border-border p-4">
           <div className="mb-4">
-            <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <h4 className="text-sm font-medium text-muted-foreground mb-2">
               Select date range
             </h4>
-            <div className="bg-gray-50 dark:bg-zinc-800 p-3 rounded-md">
+            <div className="bg-muted p-3 rounded-md">
               <DateRange setDateRange={setDateRange} dateRange={dateRange} />
             </div>
           </div>
@@ -115,7 +115,7 @@ const DateRangeFilter = () => {
           <div className="flex justify-end gap-2">
             <button
               onClick={() => setIsOpen(false)}
-              className="px-3 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded"
+              className="px-3 py-1.5 text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-muted rounded"
             >
               Cancel
             </button>
@@ -154,10 +154,10 @@ const ScheduledSessions: React.FC<ScheduledSessionsProps> = ({ userId }) => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+          <h3 className="text-xl font-semibold tracking-tight text-foreground">
             Scheduled Sessions
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             View and manage your upcoming learning sessions
           </p>
         </div>
@@ -172,7 +172,7 @@ const ScheduledSessions: React.FC<ScheduledSessionsProps> = ({ userId }) => {
       <div className="mt-6">
         <div className="flex justify-between items-center mb-2">
           {" "}
-          <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300 mb-3">
+          <h4 className="text-md font-semibold text-muted-foreground mb-3">
             Upcoming Sessions
           </h4>
           {/* Date Range Filter */}
@@ -335,18 +335,18 @@ const DateRange = ({
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={previousMonth}
-          className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800"
+          className="p-1 rounded-full hover:bg-muted"
         >
-          <ChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+          <ChevronLeft className="w-5 h-5 text-muted-foreground" />
         </button>
-        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <h3 className="text-sm font-medium text-muted-foreground">
           {formatMonthYear(currentMonth)}
         </h3>
         <button
           onClick={nextMonth}
-          className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800"
+          className="p-1 rounded-full hover:bg-muted"
         >
-          <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+          <ChevronRight className="w-5 h-5 text-muted-foreground" />
         </button>
       </div>
 
@@ -355,7 +355,7 @@ const DateRange = ({
         {weekdays.map((day) => (
           <div
             key={day}
-            className="text-center text-xs font-medium text-gray-500 dark:text-gray-400 py-1"
+            className="text-center text-xs font-medium text-muted-foreground py-1"
           >
             {day}
           </div>
@@ -384,7 +384,7 @@ const DateRange = ({
                     ? "bg-blue-600 text-white"
                     : isInRange(day)
                       ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200"
-                      : "hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-700 dark:text-gray-300"
+                      : "hover:bg-muted text-muted-foreground"
                 }
               `}
             >
@@ -396,8 +396,8 @@ const DateRange = ({
 
       {/* Range display */}
       {(dateRange.start || dateRange.end) && (
-        <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
-          <p className="text-xs text-gray-600 dark:text-gray-400">
+        <div className="mt-4 pt-3 border-t border-border">
+          <p className="text-xs text-muted-foreground">
             {dateRange.start && (
               <span>From: {dateRange.start.toLocaleDateString()}</span>
             )}

@@ -16,6 +16,12 @@ const AvatarCircles = ({
   className,
   avatarUrls,
 }: AvatarCirclesProps) => {
+  const remaining = (numPeople ?? 0) - avatarUrls.length;
+
+  if (avatarUrls.length === 0 && remaining <= 0) {
+    return null;
+  }
+
   return (
     <div className={cn("z-10 flex -space-x-4 rtl:space-x-reverse", className)}>
       {avatarUrls.map((url, index) => (
@@ -28,12 +34,11 @@ const AvatarCircles = ({
           alt={`Avatar ${index + 1}`}
         />
       ))}
-      <a
-        className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-black text-center text-xs font-medium text-white hover:bg-gray-600 dark:border-gray-800 dark:bg-white dark:text-black"
-        href=""
-      >
-        +{numPeople}
-      </a>
+      {remaining > 0 && (
+        <span className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-black text-center text-xs font-medium text-white dark:border-gray-800 dark:bg-white dark:text-black">
+          +{remaining}
+        </span>
+      )}
     </div>
   );
 };

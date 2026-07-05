@@ -64,6 +64,71 @@ const categoryIconMap: Record<string, React.ElementType> = {
   Security: Shield,
 };
 
+/** Per-category accent so tabs, icon chips and card edges share one color language */
+const categoryColorMap: Record<
+  string,
+  { text: string; iconBg: string; activeBg: string; ring: string; edge: string; hoverBorder: string }
+> = {
+  All: {
+    text: "text-indigo-600 dark:text-indigo-400",
+    iconBg: "bg-indigo-50 dark:bg-indigo-500/10",
+    activeBg: "data-[state=active]:bg-indigo-600 data-[state=active]:text-white data-[state=active]:border-transparent data-[state=active]:shadow-none",
+    ring: "focus-visible:ring-indigo-500",
+    edge: "bg-indigo-500",
+    hoverBorder: "hover:border-indigo-400 dark:hover:border-indigo-500",
+  },
+  Development: {
+    text: "text-blue-600 dark:text-blue-400",
+    iconBg: "bg-blue-50 dark:bg-blue-500/10",
+    activeBg: "data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:border-transparent data-[state=active]:shadow-none",
+    ring: "focus-visible:ring-blue-500",
+    edge: "bg-blue-500",
+    hoverBorder: "hover:border-blue-400 dark:hover:border-blue-500",
+  },
+  "Data Science": {
+    text: "text-emerald-600 dark:text-emerald-400",
+    iconBg: "bg-emerald-50 dark:bg-emerald-500/10",
+    activeBg: "data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:border-transparent data-[state=active]:shadow-none",
+    ring: "focus-visible:ring-emerald-500",
+    edge: "bg-emerald-500",
+    hoverBorder: "hover:border-emerald-400 dark:hover:border-emerald-500",
+  },
+  Operations: {
+    text: "text-amber-600 dark:text-amber-400",
+    iconBg: "bg-amber-50 dark:bg-amber-500/10",
+    activeBg: "data-[state=active]:bg-amber-600 data-[state=active]:text-white data-[state=active]:border-transparent data-[state=active]:shadow-none",
+    ring: "focus-visible:ring-amber-500",
+    edge: "bg-amber-500",
+    hoverBorder: "hover:border-amber-400 dark:hover:border-amber-500",
+  },
+  Mobile: {
+    text: "text-violet-600 dark:text-violet-400",
+    iconBg: "bg-violet-50 dark:bg-violet-500/10",
+    activeBg: "data-[state=active]:bg-violet-600 data-[state=active]:text-white data-[state=active]:border-transparent data-[state=active]:shadow-none",
+    ring: "focus-visible:ring-violet-500",
+    edge: "bg-violet-500",
+    hoverBorder: "hover:border-violet-400 dark:hover:border-violet-500",
+  },
+  Design: {
+    text: "text-pink-600 dark:text-pink-400",
+    iconBg: "bg-pink-50 dark:bg-pink-500/10",
+    activeBg: "data-[state=active]:bg-pink-600 data-[state=active]:text-white data-[state=active]:border-transparent data-[state=active]:shadow-none",
+    ring: "focus-visible:ring-pink-500",
+    edge: "bg-pink-500",
+    hoverBorder: "hover:border-pink-400 dark:hover:border-pink-500",
+  },
+  Security: {
+    text: "text-red-600 dark:text-red-400",
+    iconBg: "bg-red-50 dark:bg-red-500/10",
+    activeBg: "data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=active]:border-transparent data-[state=active]:shadow-none",
+    ring: "focus-visible:ring-red-500",
+    edge: "bg-red-500",
+    hoverBorder: "hover:border-red-400 dark:hover:border-red-500",
+  },
+};
+
+const getCategoryColor = (name: string) => categoryColorMap[name] ?? categoryColorMap.Development;
+
 const RoadmapPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery] = useDebounce(searchQuery, 300);
@@ -192,36 +257,41 @@ const RoadmapPage = () => {
         </div>
 
         {/* Search Section */}
-        <div className="mb-10">
-          <div className="max-w-3xl mx-auto">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-400 pointer-events-none z-10" />
-              <Input
-                type="text"
-                placeholder="What skill do you want to learn? (e.g., React, Machine Learning, AWS)"
-                className="pl-12 pr-36 h-14 text-base border-2 border-zinc-200 dark:border-zinc-700 rounded-xl bg-zinc-50 dark:bg-zinc-800 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setShowSuggestions(e.target.value.length > 0);
-                }}
-                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              />
-              <div className="absolute inset-y-0 right-2 flex items-center">
-                <Button
-                  onClick={() => handleSearch()}
-                  disabled={isLoading || !searchQuery.trim()}
-                  className="h-10 px-5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold disabled:opacity-50"
-                >
-                  {isLoading ? (
-                    <Loader2 className="animate-spin h-4 w-4" />
-                  ) : (
-                    <>
-                      <Sparkles className="h-4 w-4 mr-1.5" />
-                      Generate
-                    </>
-                  )}
-                </Button>
+        <div className="mb-12 relative">
+          {/* Ambient glow tying the search back to the hero gradient above */}
+          <div className="pointer-events-none absolute -top-10 left-1/2 h-32 w-[min(90%,40rem)] -translate-x-1/2 rounded-full bg-gradient-to-r from-violet-500/20 via-indigo-500/20 to-blue-500/20 blur-3xl" />
+
+          <div className="max-w-3xl mx-auto relative">
+            <div className="group relative rounded-2xl bg-gradient-to-r from-violet-500/40 via-indigo-500/40 to-blue-500/40 p-[1.5px] focus-within:from-violet-500 focus-within:via-indigo-500 focus-within:to-blue-500 transition-colors duration-300">
+              <div className="relative rounded-[15px] bg-zinc-50 dark:bg-zinc-800">
+                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-400 pointer-events-none z-10" />
+                <Input
+                  type="text"
+                  placeholder="What skill do you want to learn? (e.g., React, Machine Learning, AWS)"
+                  className="pl-12 pr-36 h-14 text-base border-0 rounded-[15px] bg-transparent shadow-none focus-visible:ring-0"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setShowSuggestions(e.target.value.length > 0);
+                  }}
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                />
+                <div className="absolute inset-y-0 right-2 flex items-center">
+                  <Button
+                    onClick={() => handleSearch()}
+                    disabled={isLoading || !searchQuery.trim()}
+                    className="h-10 px-5 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-lg font-semibold disabled:opacity-50 disabled:from-zinc-400 disabled:to-zinc-400"
+                  >
+                    {isLoading ? (
+                      <Loader2 className="animate-spin h-4 w-4" />
+                    ) : (
+                      <>
+                        <Sparkles className="h-4 w-4 mr-1.5" />
+                        Generate
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -252,20 +322,27 @@ const RoadmapPage = () => {
         {/* Categories + Skills (only when no roadmap) */}
         {!isLoading && !roadmapData && (
           <>
-            {/* Category Tabs — left-aligned */}
-            <div className="mb-6">
+            {/* Category Tabs — pill segmented control, color-coded per category */}
+            <div className="mb-8">
               <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
-                <TabsList className="inline-flex flex-wrap gap-1 h-auto p-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 w-auto">
-                  {categories.map((category) => (
-                    <TabsTrigger
-                      key={category.name}
-                      value={category.name}
-                      className="px-3 py-1.5 rounded-md text-sm data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-sm"
-                    >
-                      <category.icon className="h-3.5 w-3.5 mr-1.5" />
-                      {category.name}
-                    </TabsTrigger>
-                  ))}
+                <TabsList className="h-auto w-auto flex-wrap justify-start gap-2 bg-transparent p-0">
+                  {categories.map((category) => {
+                    const color = getCategoryColor(category.name);
+                    const isActive = selectedCategory === category.name;
+                    return (
+                      <TabsTrigger
+                        key={category.name}
+                        value={category.name}
+                        className={cn(
+                          "px-3.5 py-1.5 rounded-full text-sm font-medium border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-300 transition-colors hover:border-zinc-300 dark:hover:border-zinc-600",
+                          color.activeBg
+                        )}
+                      >
+                        <category.icon className={cn("h-3.5 w-3.5 mr-1.5", isActive ? "text-white" : color.text)} />
+                        {category.name}
+                      </TabsTrigger>
+                    );
+                  })}
                 </TabsList>
               </Tabs>
             </div>
@@ -282,26 +359,37 @@ const RoadmapPage = () => {
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                {filteredSkills.map((skill) => (
-                  <button
-                    key={skill.name}
-                    onClick={() => {
-                      setSearchQuery(skill.name);
-                      handleSearch(skill.name);
-                    }}
-                    className="group flex flex-col items-center p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-800/50 hover:border-blue-400 dark:hover:border-blue-500 transition-colors duration-200 text-center"
-                  >
-                    <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-500/10 group-hover:bg-blue-100 dark:group-hover:bg-blue-500/20 transition-colors">
-                      <skill.icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-1.5 line-clamp-2">
-                      {skill.name}
-                    </span>
-                    <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">
-                      {skill.category}
-                    </span>
-                  </button>
-                ))}
+                {filteredSkills.map((skill) => {
+                  const color = getCategoryColor(skill.category);
+                  return (
+                    <button
+                      key={skill.name}
+                      onClick={() => {
+                        setSearchQuery(skill.name);
+                        handleSearch(skill.name);
+                      }}
+                      className={cn(
+                        "group relative flex flex-col items-center p-5 pt-6 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-800/50 transition-all duration-200 text-center overflow-hidden hover:-translate-y-0.5 hover:shadow-md",
+                        color.hoverBorder
+                      )}
+                    >
+                      {/* Category-colored top edge, brightens on hover */}
+                      <span className={cn("absolute top-0 left-0 right-0 h-0.5 opacity-40 group-hover:opacity-100 transition-opacity", color.edge)} />
+
+                      <div className={cn("mb-3 flex h-12 w-12 items-center justify-center rounded-xl transition-transform group-hover:scale-105", color.iconBg)}>
+                        <skill.icon className={cn("h-5 w-5", color.text)} />
+                      </div>
+                      <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-1.5 line-clamp-2">
+                        {skill.name}
+                      </span>
+                      <span className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">
+                        {skill.category}
+                      </span>
+
+                      <ArrowRight className={cn("absolute right-3 bottom-3 h-3.5 w-3.5 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all", color.text)} />
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </>

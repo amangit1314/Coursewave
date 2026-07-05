@@ -105,13 +105,13 @@ const ChartSkeleton = () => (
 // Empty State Component
 const EmptyState = ({ message }: { message: string }) => (
   <div className="flex flex-col items-center justify-center py-12 text-center">
-    <div className="p-4 bg-zinc-100 dark:bg-zinc-700 rounded-full mb-4">
-      <BarChart3Icon className="h-8 w-8 text-zinc-400" />
+    <div className="p-4 bg-muted rounded-full mb-4">
+      <BarChart3Icon className="h-8 w-8 text-muted-foreground" />
     </div>
-    <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-2">
+    <h3 className="text-lg font-semibold text-foreground mb-2">
       No Data Available
     </h3>
-    <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-sm">
+    <p className="text-sm text-muted-foreground max-w-sm">
       {message}
     </p>
   </div>
@@ -123,10 +123,10 @@ const ErrorState = ({ message, onRetry }: { message: string; onRetry: () => void
     <div className="p-4 bg-red-100 dark:bg-red-900/30 rounded-full mb-4">
       <AlertCircleIcon className="h-8 w-8 text-red-500" />
     </div>
-    <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-2">
+    <h3 className="text-lg font-semibold text-foreground mb-2">
       Something went wrong
     </h3>
-    <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-sm mb-4">
+    <p className="text-sm text-muted-foreground max-w-sm mb-4">
       {message}
     </p>
     <Button onClick={onRetry} variant="outline" size="sm">
@@ -236,7 +236,7 @@ const LearningActivityLineChart = () => {
         className="w-full"
       >
         <motion.div variants={itemVariants}>
-          <Card className="rounded-3xl p-6 transition-all duration-300 shadow-sm border border-zinc-200 dark:border-zinc-700 overflow-hidden bg-white dark:bg-zinc-800">
+          <Card className="rounded-3xl p-6 transition-all duration-300 shadow-sm border border-border overflow-hidden bg-card">
             <ChartSkeleton />
           </Card>
         </motion.div>
@@ -254,7 +254,7 @@ const LearningActivityLineChart = () => {
         className="w-full"
       >
         <motion.div variants={itemVariants}>
-          <Card className="rounded-3xl p-6 transition-all duration-300 shadow-sm border border-zinc-200 dark:border-zinc-700 overflow-hidden bg-white dark:bg-zinc-800">
+          <Card className="rounded-3xl p-6 transition-all duration-300 shadow-sm border border-border overflow-hidden bg-card">
             <ErrorState message={error} onRetry={handleRefresh} />
           </Card>
         </motion.div>
@@ -270,7 +270,7 @@ const LearningActivityLineChart = () => {
       className="w-full"
     >
       <motion.div variants={itemVariants}>
-        <Card className="rounded-3xl p-6 transition-all duration-300 shadow-sm border border-zinc-200 dark:border-zinc-700 overflow-hidden bg-white dark:bg-zinc-800">
+        <Card className="rounded-3xl p-6 transition-all duration-300 shadow-sm border border-border overflow-hidden bg-card">
           <motion.div
             className="flex flex-col space-y-4 md:space-y-0 md:flex-row items-center justify-between mb-6"
             initial={{ opacity: 0 }}
@@ -282,10 +282,10 @@ const LearningActivityLineChart = () => {
                 <TrendingUpIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <h3 className={`${dmSans.className} text-xl font-semibold text-zinc-900 dark:text-white`}>
+                <h3 className={`${dmSans.className} text-xl font-semibold text-foreground`}>
                   Your Learning Activity
                 </h3>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                <p className="text-sm text-muted-foreground">
                   Track your personal learning progress and engagement over time
                 </p>
               </div>
@@ -295,7 +295,7 @@ const LearningActivityLineChart = () => {
             <div className="flex items-center space-x-2">
               {/* Metric Selector */}
               <Select value={selectedMetric} onValueChange={setSelectedMetric}>
-                <SelectTrigger className="w-40 h-9 bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-600  rounded-xl">
+                <SelectTrigger className="w-40 h-9 bg-card border-border  rounded-xl">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className={`${dmSans.className}`}>
@@ -308,7 +308,7 @@ const LearningActivityLineChart = () => {
               {/* Date Range Picker */}
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-9 bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-600 rounded-xl">
+                  <Button variant="outline" size="sm" className="h-9 bg-card border-border rounded-xl">
                     <CalendarIcon className="h-4 w-4 mr-2" />
                     {dateRange.from && dateRange.to ? (
                       `${format(dateRange.from, 'MMM dd')} - ${format(dateRange.to, 'MMM dd')}`
@@ -338,7 +338,7 @@ const LearningActivityLineChart = () => {
 
               {/* Quick Date Ranges */}
               <Select onValueChange={(value) => handleQuickRangeSelect(Number(value))}>
-                <SelectTrigger className="w-32 h-9 rounded-xl bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-600">
+                <SelectTrigger className="w-32 h-9 rounded-xl bg-card border-border">
                   <SelectValue placeholder="Quick" />
                 </SelectTrigger>
                 <SelectContent>
@@ -356,7 +356,7 @@ const LearningActivityLineChart = () => {
                 size="sm"
                 onClick={handleRefresh}
                 disabled={isLoading}
-                className="h-9 bg-white rounded-xl dark:bg-zinc-800 border-zinc-200 dark:border-zinc-600"
+                className="h-9 bg-card rounded-xl border-border"
               >
                 <RefreshCwIcon className={cn("h-4 w-4", isLoading && "animate-spin")} />
               </Button>
@@ -393,8 +393,8 @@ const LearningActivityLineChart = () => {
                     : '[&_.recharts-cartesian-axis-tick-value]:!fill-zinc-700 [&_.recharts-cartesian-axis-tick-value]:!text-zinc-700 [&_.recharts-legend-item-text]:!fill-zinc-700 [&_.recharts-legend-item-text]:!text-zinc-700 [&_.recharts-legend-item]:!gap-1 [&_.recharts-legend-item]:!items-center [&_.recharts-cartesian-grid-horizontal]:!stroke-zinc-300 [&_.recharts-cartesian-grid-vertical]:!stroke-zinc-300 [&_.recharts-cartesian-axis-line]:!stroke-zinc-300 [&_.recharts-cartesian-axis-tick-line]:!stroke-zinc-300 [&_.recharts-dot]:!stroke-zinc-800 [&_.recharts-active-dot]:!stroke-zinc-800'
                 }`}
                 customTooltip={(props) => (
-                  <div className="rounded-xl border bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 shadow-lg p-3">
-                    <p className="text-zinc-900 dark:text-white font-semibold text-sm mb-2">
+                  <div className="rounded-xl border bg-card border-border shadow-lg p-3">
+                    <p className="text-foreground font-semibold text-sm mb-2">
                       {props.payload?.[0]?.payload.date}
                     </p>
                     {props.payload?.map((category, idx) => (
@@ -404,11 +404,11 @@ const LearningActivityLineChart = () => {
                             className="w-3 h-3 rounded-full mr-2"
                             style={{ backgroundColor: category.color }}
                           />
-                          <span className="text-zinc-700 dark:text-zinc-300 text-sm">
+                          <span className="text-muted-foreground text-sm">
                             {category.dataKey}
                           </span>
                         </div>
-                        <span className="text-zinc-900 dark:text-white font-medium text-sm">
+                        <span className="text-foreground font-medium text-sm">
                           {valueFormatter(Number(category.value))}
                           {category.dataKey === "Time Spent (hours)" ? "h" : ""}
                         </span>
@@ -486,7 +486,7 @@ const LearningActivityLineChart = () => {
               transition={{ delay: 0.8 }}
               className="mt-4 text-center"
             >
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-muted-foreground">
                 Showing {filteredData.length} data points from {dateRange.from && format(dateRange.from, 'MMM dd, yyyy')} to {dateRange.to && format(dateRange.to, 'MMM dd, yyyy')}
               </p>
             </motion.div>

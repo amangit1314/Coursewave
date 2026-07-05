@@ -12,7 +12,7 @@ type Props = {
 
 const LearningProgress = (props: Props) => {
   return (
-    <div className="bg-white dark:bg-zinc-800 rounded-3xl shadow-sm border border-zinc-200 dark:border-zinc-700 p-6">
+    <div className="bg-card rounded-3xl shadow-sm border border-border p-6">
       {/* header */}
       <div className="flex items-center justify-between mb-6">
         {/* heading */}
@@ -21,10 +21,10 @@ const LearningProgress = (props: Props) => {
             <TrendingUpIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <h3 className={`${dmSans.className} text-xl font-semibold text-zinc-900 dark:text-white`}>
+            <h3 className={`${dmSans.className} text-xl font-semibold text-foreground`}>
               Learning Progress
             </h3>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="text-sm text-muted-foreground">
               Your course completion overview
             </p>
           </div>
@@ -32,17 +32,17 @@ const LearningProgress = (props: Props) => {
 
         {/* completion rate */}
         <div className="text-right">
-          <div className={`${dmSans.className} text-2xl font-bold text-zinc-900 dark:text-white`}>
+          <div className={`${dmSans.className} text-2xl font-bold text-foreground`}>
             {props.completionRate}%
           </div>
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">
+          <div className="text-sm text-muted-foreground">
             Completion Rate
           </div>
         </div>
       </div>
 
       {/* progress bar of completion rate */}
-      <div className="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-3">
+      <div className="w-full bg-muted rounded-full h-3">
         <motion.div
           className="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full"
           initial={{ width: 0 }}
@@ -54,10 +54,10 @@ const LearningProgress = (props: Props) => {
       <div className="mt-4 grid grid-cols-3 gap-4 text-center">
         {/* Enrolled courses */}
         <div>
-          <div className="text-lg font-semibold text-zinc-900 dark:text-white">
+          <div className="text-lg font-semibold text-foreground">
             {props.totalEnrolledCourses}
           </div>
-          <div className={`${dmSans.className} text-sm text-zinc-600 dark:text-zinc-400`}>
+          <div className={`${dmSans.className} text-sm text-muted-foreground`}>
             Enrolled
           </div>
         </div>
@@ -67,7 +67,7 @@ const LearningProgress = (props: Props) => {
           <div className="text-lg font-semibold text-yellow-600 dark:text-yellow-400">
             {props.totalOngoingCourses}
           </div>
-          <div className={`${dmSans.className} text-sm text-zinc-600 dark:text-zinc-400`}>
+          <div className={`${dmSans.className} text-sm text-muted-foreground`}>
             In Progress
           </div>
         </div>
@@ -77,7 +77,7 @@ const LearningProgress = (props: Props) => {
           <div className="text-lg font-semibold text-green-600 dark:text-green-400">
             {props.totalCompletedCourses}
           </div>
-          <div className={`${dmSans.className} text-sm text-zinc-600 dark:text-zinc-400`}>
+          <div className={`${dmSans.className} text-sm text-muted-foreground`}>
             Completed
           </div>
         </div>

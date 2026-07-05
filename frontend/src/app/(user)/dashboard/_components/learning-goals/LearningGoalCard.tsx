@@ -45,7 +45,7 @@ const LearningGoalCard = ({ learningGoal }: { learningGoal: LearningGoal }) => {
   };
 
   return (
-    <div className="group relative overflow-hidden bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl p-4 hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-600 transition-all duration-200">
+    <div className="group relative overflow-hidden bg-card border border-border rounded-xl p-4 hover:shadow-md hover:border-muted-foreground/40 transition-all duration-200">
       {/* Completion Status Indicator */}
       <div
         className={`absolute top-0 left-0 w-1 h-full rounded-l-xl transition-all ${
@@ -63,7 +63,7 @@ const LearningGoalCard = ({ learningGoal }: { learningGoal: LearningGoal }) => {
             {learningGoal.isDone ? (
               <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 transition-all" />
             ) : (
-              <Circle className="w-5 h-5 text-zinc-400 dark:text-zinc-500 hover:text-blue-600 dark:hover:text-blue-400 transition-all" />
+              <Circle className="w-5 h-5 text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-all" />
             )}
           </button>
 
@@ -72,8 +72,8 @@ const LearningGoalCard = ({ learningGoal }: { learningGoal: LearningGoal }) => {
             <h3
               className={`text-sm font-medium tracking-tight transition-all ${
                 learningGoal.isDone
-                  ? "text-zinc-500 dark:text-zinc-400 line-through"
-                  : "text-zinc-900 dark:text-zinc-100"
+                  ? "text-muted-foreground line-through"
+                  : "text-foreground"
               }`}
             >
               {learningGoal.title || "Untitled Goal"}
@@ -92,7 +92,7 @@ const LearningGoalCard = ({ learningGoal }: { learningGoal: LearningGoal }) => {
               )}
 
               {/* Date */}
-              <div className="inline-flex items-center gap-1.5 text-xs text-zinc-600 dark:text-zinc-400">
+              <div className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
                 <Calendar className="w-3 h-3" />
                 <span>{formatDate(learningGoal.time)}</span>
               </div>

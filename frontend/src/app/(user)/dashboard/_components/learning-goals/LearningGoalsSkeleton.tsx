@@ -6,7 +6,7 @@ const LearningGoalsSkeleton = () => {
       {[...Array(3)].map((_, i) => (
         <div
           key={i}
-          className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-xl"
+          className="flex items-center space-x-3 p-3 bg-muted rounded-xl"
         >
           <ShimmerButton className="h-8 w-8 rounded-lg" />
           <div className="flex-1 space-y-2">

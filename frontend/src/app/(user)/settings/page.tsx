@@ -83,11 +83,11 @@ const CustomSwitch = ({
       disabled={disabled}
       onClick={() => !disabled && onCheckedChange()}
       className={`
-        relative inline-flex ${currentSize.switch} shrink-0 cursor-pointer rounded-full 
-        transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-offset-2 
-        focus:ring-offset-white dark:focus:ring-offset-gray-900
+        relative inline-flex ${currentSize.switch} shrink-0 cursor-pointer rounded-full
+        transition-all duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-offset-2
+        focus:ring-offset-background
         ${disabled ? "opacity-50 cursor-not-allowed" : "active:scale-95 hover:shadow-lg"}
-        ${checked ? `${currentColor.checked} ${currentColor.focus}` : `bg-gray-300 dark:bg-gray-600 focus:ring-gray-300/50 hover:bg-gray-400 dark:hover:bg-gray-500`}
+        ${checked ? `${currentColor.checked} ${currentColor.focus}` : `bg-input focus:ring-ring/30 hover:bg-muted-foreground/30`}
       `}
     >
       <span className="sr-only">Toggle setting</span>
@@ -142,7 +142,7 @@ export default function SettingsPage() {
     {
       title: "Notifications & Communication",
       description: "Choose what updates and alerts you want to receive.",
-      icon: <Bell className="h-5 w-5 text-white" />,
+      icon: <Bell className="h-5 w-5 text-primary-foreground" />,
       iconBg: "bg-gradient-to-br from-blue-500 to-blue-600",
       items: [
         {
@@ -177,20 +177,20 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-900">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto py-8 px-4 space-y-8 max-w-4xl">
         {/* Header */}
         <div className="text-center space-y-4 pb-6">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg">
-            <User className="h-8 w-8 text-white" />
+            <User className="h-8 w-8 text-primary-foreground" />
           </div>
           <div>
             <h1
-              className={`${dmSans.className} text-4xl tracking-tight font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent`}
+              className={`${dmSans.className} text-4xl tracking-tight font-bold bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent`}
             >
               Settings
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2 text-lg">
+            <p className="text-muted-foreground mt-2 text-lg">
               Manage your account settings and preferences in one place.
             </p>
           </div>
@@ -200,7 +200,7 @@ export default function SettingsPage() {
         {settingsConfig.map((card) => (
           <Card
             key={card.title}
-            className="border-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm  transition-all duration-300"
+            className="border-0 bg-card/80 backdrop-blur-sm transition-all duration-300"
           >
             <CardHeader className="pb-6">
               <CardTitle
@@ -220,14 +220,14 @@ export default function SettingsPage() {
 
               {card.items.map((item, index) => (
                 <div key={item.key}>
-                  <div className="flex items-center justify-between p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors">
+                  <div className="flex items-center justify-between p-4 rounded-xl hover:bg-muted/50 transition-colors">
                     <div className="flex-1">
                       <Label
-                        className={`${dmSans.className}  text-base font-semibold text-gray-900 dark:text-white`}
+                        className={`${dmSans.className}  text-base font-semibold text-foreground`}
                       >
                         {item.label}
                       </Label>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      <p className="text-sm text-muted-foreground mt-1">
                         {item.description}
                       </p>
                     </div>
@@ -249,7 +249,7 @@ export default function SettingsPage() {
                     />
                   </div>
                   {index < card.items.length - 1 && (
-                    <Separator className="my-2 bg-gray-200 dark:bg-gray-700" />
+                    <Separator className="my-2 bg-border" />
                   )}
                 </div>
               ))}
@@ -259,7 +259,7 @@ export default function SettingsPage() {
 
         {/* Footer */}
         <div className="text-center pt-6">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-muted-foreground">
             Changes are automatically saved when you toggle settings.
           </p>
         </div>

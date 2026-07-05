@@ -20,7 +20,7 @@
 //             className="flex h-[6rem] w-full max-w-[8rem] items-center justify-start rounded-md object-cover ring-1 ring-white md:w-[16rem]"
 //           />
 //           {/* 
-//           <p className="line-clamp-2 max-w-[8rem] overflow-hidden text-ellipsis text-sm font-semibold tracking-tight text-zinc-900 dark:text-white">
+//           <p className="line-clamp-2 max-w-[8rem] overflow-hidden text-ellipsis text-sm font-semibold tracking-tight text-foreground">
 //             {"Jemmison Carl"}
 //           </p> */}
 //         </div>
@@ -37,7 +37,7 @@
 //           </p>
 
 //           <div className="flex flex-col justify-start">
-//             <p className="line-clamp-1 w-full max-w-[20rem] overflow-hidden text-ellipsis text-sm font-semibold tracking-tight text-zinc-900 dark:text-white">
+//             <p className="line-clamp-1 w-full max-w-[20rem] overflow-hidden text-ellipsis text-sm font-semibold tracking-tight text-foreground">
 //               Introduction to Rust
 //               asdifapdfasdofmas;dkfmas;dfasdfjpasdfjpasdfpwiepqiewjrp;wekdmfa;sodf-pwoej=3=23rj23wejorq[woerjqwke;rjq;ewlrjwlekjrk]
 //             </p>
@@ -65,7 +65,7 @@ import { CalendarIcon, ClockIcon, CheckCircleIcon } from "lucide-react";
 
 const ScheduledSessionCard = () => {
   return (
-    <div className="min-w-[260px] max-w-xs md:max-w-sm flex flex-col rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-zinc-900 flex-shrink-0">
+    <div className="min-w-[260px] max-w-xs md:max-w-sm flex flex-col rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-lg border border-border bg-card flex-shrink-0">
       {/* Image Section */}
       <div className="relative h-36 w-full">
         <div className="absolute top-0 left-0 w-full h-full">
@@ -85,20 +85,20 @@ const ScheduledSessionCard = () => {
 
       {/* Content Section */}
       <div className="p-4 flex-1 flex flex-col">
-        <h3 className="font-semibold text-gray-900 dark:text-white text-lg mb-1 line-clamp-1">
+        <h3 className="font-semibold text-foreground text-lg mb-1 line-clamp-1">
           Introduction to Rust
         </h3>
-        <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-3">
+        <p className="text-xs font-medium text-muted-foreground mb-3">
           One-on-One Session (Duration: 40m)
         </p>
 
         {/* Date and Time */}
         <div className="mt-auto space-y-2">
-          <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+          <div className="flex items-center text-sm text-muted-foreground">
             <CalendarIcon className="w-4 h-4 mr-2 text-blue-600" />
             <span>Tuesday, Jan 3</span>
           </div>
-          <div className="flex items-center text-sm text-gray-700 dark:text-gray-300">
+          <div className="flex items-center text-sm text-muted-foreground">
             <ClockIcon className="w-4 h-4 mr-2 text-blue-600" />
             <span>3:40 PM (IST)</span>
           </div>
@@ -106,7 +106,7 @@ const ScheduledSessionCard = () => {
       </div>
 
       {/* Bottom Action Bar */}
-      <div className="px-4 py-3 bg-gray-50 dark:bg-zinc-800 flex justify-between items-center">
+      <div className="px-4 py-3 bg-muted flex justify-between items-center">
         <button className="text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400">
           Details
         </button>

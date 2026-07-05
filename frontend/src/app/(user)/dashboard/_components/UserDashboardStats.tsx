@@ -94,7 +94,7 @@ export default function UserDashboardStats({
             variants={statsVariants}
             className="group"
           >
-            <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-zinc-800 shadow-sm border border-zinc-200 dark:border-zinc-700 p-6 transition-all duration-300 hover:shadow-md">
+            <div className="relative overflow-hidden rounded-2xl bg-card shadow-sm border border-border p-6 transition-all duration-300 hover:shadow-md">
               {/* Gradient overlay on hover */}
               <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
               
@@ -104,17 +104,17 @@ export default function UserDashboardStats({
                     <stat.icon size={24} />
                   </div>
                   <div className="text-right sr-only">
-                    <div className="text-xs text-zinc-600 dark:text-zinc-400 font-medium">
+                    <div className="text-xs text-muted-foreground font-medium">
                       {stat.title}
                     </div>
                   </div>
                 </div>
                 
                 <div className="space-y-2">
-                  <div className="text-2xl font-bold tracking-tighter text-zinc-900 dark:text-white">
+                  <div className="text-2xl font-bold tracking-tighter text-foreground">
                     {stat.total}
                   </div>
-                  <div className="text-sm text-zinc-600 dark:text-zinc-400">
+                  <div className="text-sm text-muted-foreground">
                     {stat.title}
                   </div>
                 </div>
@@ -122,11 +122,11 @@ export default function UserDashboardStats({
                 {/* Progress indicator for ongoing courses */}
                 {/* {stat.title === "Ongoing Courses" && totalOngoingCourses > 0 && (
                   <div className="mt-4">
-                    <div className="flex items-center justify-between text-xs text-zinc-600 dark:text-zinc-400 mb-1">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
                       <span>Progress</span>
                       <span>{Math.round((totalOngoingCourses / totalEnrolledCourses) * 100)}%</span>
                     </div>
-                    <div className="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
+                    <div className="w-full bg-muted rounded-full h-1.5">
                       <motion.div
                         className={`bg-gradient-to-r ${stat.gradient} h-1.5 rounded-full`}
                         initial={{ width: 0 }}
@@ -140,11 +140,11 @@ export default function UserDashboardStats({
                 {/* Completion indicator for completed courses */}
                 {stat.title === "Completed Courses" && totalCompletedCourses > 0 && (
                   <div className="mt-4">
-                    <div className="flex items-center justify-between text-xs text-zinc-600 dark:text-zinc-400 mb-1">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
                       <span>Success Rate</span>
                       <span>{Math.round((totalCompletedCourses / totalEnrolledCourses) * 100)}%</span>
                     </div>
-                    <div className="w-full bg-zinc-200 dark:bg-zinc-700 rounded-full h-1.5">
+                    <div className="w-full bg-muted rounded-full h-1.5">
                       <motion.div
                         className={`bg-gradient-to-r ${stat.gradient} h-1.5 rounded-full`}
                         initial={{ width: 0 }}

@@ -34,26 +34,26 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   };
 
   return (
-    <div className="border rounded-md p-3 bg-white dark:bg-zinc-900">
-      <div className="flex gap-2 mb-3 border-b pb-2">
+    <div className="border border-border rounded-md p-3 bg-card">
+      <div className="flex gap-2 mb-3 border-b border-border pb-2">
         <button
           type="button"
           onClick={() => handleCommand("bold")}
-          className="font-bold border px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-zinc-800"
+          className="font-bold border border-border px-2 py-1 rounded hover:bg-muted"
         >
           B
         </button>
         <button
           type="button"
           onClick={() => handleCommand("italic")}
-          className="italic border px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-zinc-800"
+          className="italic border border-border px-2 py-1 rounded hover:bg-muted"
         >
           I
         </button>
         <button
           type="button"
           onClick={() => handleCommand("underline")}
-          className="underline border px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-zinc-800"
+          className="underline border border-border px-2 py-1 rounded hover:bg-muted"
         >
           U
         </button>
@@ -64,7 +64,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         contentEditable
         suppressContentEditableWarning
         onInput={handleInput}
-        className="min-h-[150px] outline-none text-zinc-900 dark:text-white"
+        className="min-h-[150px] outline-none text-foreground"
       />
     </div>
   );

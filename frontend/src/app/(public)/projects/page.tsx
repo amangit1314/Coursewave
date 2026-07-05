@@ -4,6 +4,13 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -18,10 +25,7 @@ import {
   Code2,
   Loader2,
   Rocket,
-  Trophy,
-  TrendingUp,
-  Filter,
-  SlidersHorizontal,
+  X,
 } from "lucide-react";
 import { Project } from "@/types/project";
 import { useProjects } from "@/hooks/useProjects";
@@ -141,92 +145,88 @@ const ProjectsPage = () => {
           </div>
         </div>
 
-        {/* Controls */}
-        <div className="mb-8 space-y-4">
-          {/* Search + View Toggle */}
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400 pointer-events-none" />
-              <Input
-                placeholder="Search projects, tags..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-10 bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 rounded-xl focus-visible:ring-blue-500"
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setViewMode("grid")}
-                className={`rounded-lg h-10 w-10 ${viewMode === "grid" ? "bg-blue-600 text-white border-blue-600 hover:bg-blue-700 hover:text-white" : "border-zinc-200 dark:border-zinc-700"}`}
-              >
-                <Grid3X3 className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setViewMode("list")}
-                className={`rounded-lg h-10 w-10 ${viewMode === "list" ? "bg-blue-600 text-white border-blue-600 hover:bg-blue-700 hover:text-white" : "border-zinc-200 dark:border-zinc-700"}`}
-              >
-                <List className="h-4 w-4" />
-              </Button>
-            </div>
+        {/* Controls — search, filters, and view toggle in one row */}
+        <div className="mb-8 flex flex-wrap items-center gap-2">
+          <div className="relative flex-1 min-w-[220px] basis-full sm:basis-auto">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+            <Input
+              placeholder="Search projects, tags..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 h-10 bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 rounded-xl focus-visible:ring-blue-500"
+            />
           </div>
 
-          {/* Filters */}
-          <div className="flex flex-wrap items-center gap-2">
-            <SlidersHorizontal className="h-4 w-4 text-zinc-400 mr-1" />
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <SelectTrigger className="h-10 w-auto min-w-[9.5rem] rounded-xl bg-zinc-50 dark:bg-zinc-800 gap-2">
+              <SelectValue placeholder="All Categories" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              <SelectItem value="Web Development">Web Development</SelectItem>
+              <SelectItem value="Mobile Development">Mobile</SelectItem>
+              <SelectItem value="AI/ML">AI / ML</SelectItem>
+              <SelectItem value="Data Science">Data Science</SelectItem>
+              <SelectItem value="DevOps">DevOps</SelectItem>
+              <SelectItem value="Design">Design</SelectItem>
+            </SelectContent>
+          </Select>
 
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="text-sm h-9 px-3 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+            <SelectTrigger className="h-10 w-auto min-w-[8.5rem] rounded-xl bg-zinc-50 dark:bg-zinc-800 gap-2">
+              <SelectValue placeholder="All Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="planning">Planning</SelectItem>
+              <SelectItem value="in-progress">In Progress</SelectItem>
+              <SelectItem value="completed">Completed</SelectItem>
+              <SelectItem value="on-hold">On Hold</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="h-10 w-auto min-w-[9rem] rounded-xl bg-zinc-50 dark:bg-zinc-800 gap-2">
+              <SelectValue placeholder="Most Recent" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="recent">Most Recent</SelectItem>
+              <SelectItem value="popular">Most Popular</SelectItem>
+              <SelectItem value="progress">By Progress</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {(searchTerm || selectedCategory !== "all" || selectedStatus !== "all") && (
+            <button
+              onClick={() => {
+                setSearchTerm("");
+                setSelectedCategory("all");
+                setSelectedStatus("all");
+              }}
+              className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium h-10 px-1"
             >
-              <option value="all">All Categories</option>
-              <option value="Web Development">Web Development</option>
-              <option value="Mobile Development">Mobile</option>
-              <option value="AI/ML">AI / ML</option>
-              <option value="Data Science">Data Science</option>
-              <option value="DevOps">DevOps</option>
-              <option value="Design">Design</option>
-            </select>
+              <X className="h-3.5 w-3.5" />
+              Clear
+            </button>
+          )}
 
-            <select
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className="text-sm h-9 px-3 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          <div className="flex items-center gap-2 ml-auto">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setViewMode("grid")}
+              className={`rounded-lg h-10 w-10 ${viewMode === "grid" ? "bg-blue-600 text-white border-blue-600 hover:bg-blue-700 hover:text-white" : "border-zinc-200 dark:border-zinc-700"}`}
             >
-              <option value="all">All Status</option>
-              <option value="planning">Planning</option>
-              <option value="in-progress">In Progress</option>
-              <option value="completed">Completed</option>
-              <option value="on-hold">On Hold</option>
-            </select>
-
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="text-sm h-9 px-3 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              <Grid3X3 className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setViewMode("list")}
+              className={`rounded-lg h-10 w-10 ${viewMode === "list" ? "bg-blue-600 text-white border-blue-600 hover:bg-blue-700 hover:text-white" : "border-zinc-200 dark:border-zinc-700"}`}
             >
-              <option value="recent">Most Recent</option>
-              <option value="popular">Most Popular</option>
-              <option value="progress">By Progress</option>
-            </select>
-
-            {(searchTerm || selectedCategory !== "all" || selectedStatus !== "all") && (
-              <button
-                onClick={() => {
-                  setSearchTerm("");
-                  setSelectedCategory("all");
-                  setSelectedStatus("all");
-                }}
-                className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium ml-1"
-              >
-                Clear filters
-              </button>
-            )}
+              <List className="h-4 w-4" />
+            </Button>
           </div>
         </div>
 

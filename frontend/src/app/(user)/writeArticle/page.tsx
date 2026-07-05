@@ -117,7 +117,7 @@ const EditorJSDynamic = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex items-center justify-center min-h-[200px] text-zinc-500">
+      <div className="flex items-center justify-center min-h-[200px] text-muted-foreground">
         <Loader2 className="h-5 w-5 animate-spin mr-2" />
         Loading editor...
       </div>
@@ -232,19 +232,19 @@ const PremiumArticleEditor = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white dark:from-zinc-900 dark:to-zinc-800 fixed inset-0 z-50 overflow-y-auto">
+    <div className="min-h-screen bg-background fixed inset-0 z-50 overflow-y-auto">
       {/* Header Bar */}
-      <div className="border-b border-zinc-200 dark:border-zinc-700 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm sticky top-0 z-40">
+      <div className="border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex justify-start items-center space-x-4">
             <button
               onClick={() => window.history.back()}
-              className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              className="p-2 rounded-lg hover:bg-muted transition-colors"
             >
               <ArrowLeft className="h-5 w-5" />
             </button>
             <h2
-              className={`${dmSans.className} font-semibold text-zinc-900 dark:text-white text-xl flex items-center gap-2`}
+              className={`${dmSans.className} font-semibold text-foreground text-xl flex items-center gap-2`}
             >
               New Article
             </h2>
@@ -255,14 +255,14 @@ const PremiumArticleEditor = () => {
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className={`${dmSans.className} px-4 py-1.5 rounded-lg border cursor-pointer border-gray-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors flex items-center space-x-1`}
+              className={`${dmSans.className} px-4 py-1.5 rounded-lg border cursor-pointer border-border hover:bg-muted transition-colors flex items-center space-x-1`}
             >
               {isSaving ? "Saving..." : "Save Draft"}
             </button>
             <button
               onClick={handlePublish}
               disabled={isPublishing || !title.trim()}
-              className={`${dmSans.className} px-4 py-1.5 bg-blue-600 hover:bg-blue-700 cursor-pointer disabled:bg-blue-100 disabled:dark:bg-blue-50 disabled:text-gray-200 disabled:cursor-not-allowed text-white rounded-lg transition-colors flex items-center space-x-1`}
+              className={`${dmSans.className} px-4 py-1.5 bg-primary hover:bg-primary/90 cursor-pointer disabled:bg-primary/30 disabled:text-primary-foreground/50 disabled:cursor-not-allowed text-primary-foreground rounded-lg transition-colors flex items-center space-x-1`}
             >
               {isPublishing ? "Publishing..." : "Publish"}
             </button>
@@ -273,11 +273,11 @@ const PremiumArticleEditor = () => {
       <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-5 gap-8">
         {/* Main Editor section */}
         <div className="lg:col-span-3">
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+          <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
             {/* Featured Image */}
-            <div className="p-6 border-b border-zinc-100 dark:border-zinc-700">
+            <div className="p-6 border-b border-border">
               <label
-                className={`${dmSans.className} block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-3`}
+                className={`${dmSans.className} block text-sm font-medium text-muted-foreground mb-3`}
               >
                 Featured Image
               </label>
@@ -293,7 +293,7 @@ const PremiumArticleEditor = () => {
                     <button
                       onClick={() => fileInputRef.current?.click()}
                       disabled={isUploadingImage}
-                      className="cursor-pointer p-2 bg-white rounded-lg hover:bg-zinc-100 transition-colors disabled:opacity-50"
+                      className="cursor-pointer p-2 bg-background rounded-lg hover:bg-muted transition-colors disabled:opacity-50"
                     >
                       {isUploadingImage ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -303,7 +303,7 @@ const PremiumArticleEditor = () => {
                     </button>
                     <button
                       onClick={handleRemoveFeaturedImage}
-                      className="cursor-pointer p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                      className="cursor-pointer p-2 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -312,19 +312,19 @@ const PremiumArticleEditor = () => {
               ) : (
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-zinc-300 dark:border-zinc-600 rounded-xl p-12 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-all group"
+                  className="border-2 border-dashed border-border rounded-xl p-12 text-center cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all group"
                 >
                   {isUploadingImage ? (
-                    <Loader2 className="h-12 w-12 text-blue-500 animate-spin mx-auto mb-4" />
+                    <Loader2 className="h-12 w-12 text-primary animate-spin mx-auto mb-4" />
                   ) : (
-                    <Upload className="h-12 w-12 text-zinc-400 group-hover:text-blue-500 mx-auto mb-4" />
+                    <Upload className="h-12 w-12 text-muted-foreground group-hover:text-primary mx-auto mb-4" />
                   )}
-                  <p className="text-zinc-600 dark:text-zinc-400 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                  <p className="text-muted-foreground group-hover:text-primary">
                     {isUploadingImage
                       ? "Uploading..."
                       : "Click to upload featured image"}
                   </p>
-                  <p className="text-sm text-zinc-400 mt-1">
+                  <p className="text-sm text-muted-foreground/70 mt-1">
                     Recommended: 1200x630px - Max 25MB
                   </p>
                 </div>
@@ -341,12 +341,12 @@ const PremiumArticleEditor = () => {
             </div>
 
             {/* Title Input */}
-            <div className="p-6 border-b border-zinc-100 dark:border-zinc-700">
+            <div className="p-6 border-b border-border">
               <input
                 placeholder="Your article title..."
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full text-3xl font-bold bg-transparent border-none outline-none resize-none placeholder-zinc-400 dark:placeholder-zinc-500 dark:text-white"
+                className="w-full text-3xl font-bold bg-transparent border-none outline-none resize-none placeholder:text-muted-foreground text-foreground"
                 style={{ lineHeight: "1.2" }}
               />
             </div>
@@ -364,21 +364,21 @@ const PremiumArticleEditor = () => {
 
         {/* Sidebar section - Article Stats */}
         <div className="lg:col-span-2">
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-700 p-6 sticky top-24">
+          <div className="bg-card rounded-2xl shadow-sm border border-border p-6 sticky top-24">
             <h3
-              className={`${dmSans.className} font-semibold text-zinc-900 dark:text-white mb-4`}
+              className={`${dmSans.className} font-semibold text-foreground mb-4`}
             >
               Article Stats
             </h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-zinc-600 dark:text-zinc-400">
+                <span className="text-muted-foreground">
                   Title Length
                 </span>
                 <span className="font-semibold">{title.length}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-zinc-600 dark:text-zinc-400">
+                <span className="text-muted-foreground">
                   Featured image
                 </span>
                 <span className="font-semibold">
@@ -386,7 +386,7 @@ const PremiumArticleEditor = () => {
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-zinc-600 dark:text-zinc-400">
+                <span className="text-muted-foreground">
                   Content Blocks
                 </span>
                 <span className="font-semibold">

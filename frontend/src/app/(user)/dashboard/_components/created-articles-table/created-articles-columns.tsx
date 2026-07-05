@@ -40,7 +40,7 @@ export const createdArticlesColumns: ColumnDef<BlogArticle>[] = [
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
-        className="border-zinc-300 dark:border-zinc-600"
+        className="border-border"
       />
     ),
     cell: ({ row }) => (
@@ -48,7 +48,7 @@ export const createdArticlesColumns: ColumnDef<BlogArticle>[] = [
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
-        className="border-zinc-300 dark:border-zinc-600"
+        className="border-border"
       />
     ),
     enableSorting: false,
@@ -58,8 +58,8 @@ export const createdArticlesColumns: ColumnDef<BlogArticle>[] = [
     accessorKey: "id",
     header: () => (
       <div className="flex items-center gap-2">
-        <FileText className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
-        <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+        <FileText className="w-4 h-4 text-muted-foreground" />
+        <span className="font-semibold text-muted-foreground">
           ID
         </span>
       </div>
@@ -67,7 +67,7 @@ export const createdArticlesColumns: ColumnDef<BlogArticle>[] = [
     cell: ({ row }) => {
       const id = row.getValue("id");
       return (
-        <div className="font-mono text-xs text-zinc-600 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded-md inline-block">
+        <div className="font-mono text-xs text-muted-foreground bg-muted px-2 py-1 rounded-md inline-block">
           {id ? String(id) : "N/A"}
         </div>
       );
@@ -80,13 +80,13 @@ export const createdArticlesColumns: ColumnDef<BlogArticle>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="hover:bg-zinc-100 dark:hover:bg-zinc-800 -ml-4"
+          className="hover:bg-muted -ml-4"
         >
-          <FileText className="w-4 h-4 mr-2 text-zinc-500 dark:text-zinc-400" />
-          <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+          <FileText className="w-4 h-4 mr-2 text-muted-foreground" />
+          <span className="font-semibold text-muted-foreground">
             Article Title
           </span>
-          <ArrowUpDown className="ml-2 h-4 w-4 text-zinc-400" />
+          <ArrowUpDown className="ml-2 h-4 w-4 text-muted-foreground" />
         </Button>
       );
     },
@@ -94,7 +94,7 @@ export const createdArticlesColumns: ColumnDef<BlogArticle>[] = [
       const title = row.getValue("title");
       return (
         <div className="max-w-md">
-          <div className="font-medium text-zinc-900 dark:text-zinc-100 line-clamp-2">
+          <div className="font-medium text-foreground line-clamp-2">
             {title ? String(title) : "Untitled"}
           </div>
         </div>
@@ -108,13 +108,13 @@ export const createdArticlesColumns: ColumnDef<BlogArticle>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="hover:bg-zinc-100 dark:hover:bg-zinc-800 -ml-4"
+          className="hover:bg-muted -ml-4"
         >
-          <Clock className="w-4 h-4 mr-2 text-zinc-500 dark:text-zinc-400" />
-          <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+          <Clock className="w-4 h-4 mr-2 text-muted-foreground" />
+          <span className="font-semibold text-muted-foreground">
             Reading Time
           </span>
-          <ArrowUpDown className="ml-2 h-4 w-4 text-zinc-400" />
+          <ArrowUpDown className="ml-2 h-4 w-4 text-muted-foreground" />
         </Button>
       );
     },
@@ -122,8 +122,8 @@ export const createdArticlesColumns: ColumnDef<BlogArticle>[] = [
       const readingTime = row.getValue("estimatedReadingTime");
       return (
         <div className="flex items-center gap-2">
-          <Clock className="w-3.5 h-3.5 text-zinc-400" />
-          <span className="text-sm text-zinc-700 dark:text-zinc-300">
+          <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">
             {readingTime ? `${readingTime} min` : "N/A"}
           </span>
         </div>
@@ -137,13 +137,13 @@ export const createdArticlesColumns: ColumnDef<BlogArticle>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="hover:bg-zinc-100 dark:hover:bg-zinc-800 -ml-4"
+          className="hover:bg-muted -ml-4"
         >
-          <Heart className="w-4 h-4 mr-2 text-zinc-500 dark:text-zinc-400" />
-          <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+          <Heart className="w-4 h-4 mr-2 text-muted-foreground" />
+          <span className="font-semibold text-muted-foreground">
             Likes
           </span>
-          <ArrowUpDown className="ml-2 h-4 w-4 text-zinc-400" />
+          <ArrowUpDown className="ml-2 h-4 w-4 text-muted-foreground" />
         </Button>
       );
     },
@@ -170,7 +170,7 @@ export const createdArticlesColumns: ColumnDef<BlogArticle>[] = [
   {
     id: "actions",
     header: () => (
-      <span className="font-semibold text-zinc-700 dark:text-zinc-300">
+      <span className="font-semibold text-muted-foreground">
         Actions
       </span>
     ),
@@ -216,24 +216,24 @@ export const createdArticlesColumns: ColumnDef<BlogArticle>[] = [
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-8 w-8 p-0 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+                className="h-8 w-8 p-0 hover:bg-muted rounded-lg transition-colors"
               >
                 <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4 text-zinc-600 dark:text-zinc-400" />
+                <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
-              className="w-56 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-lg"
+              className="w-56 bg-card border border-border rounded-xl shadow-lg"
             >
-              <DropdownMenuLabel className="text-zinc-900 dark:text-zinc-100 font-semibold px-3 py-2">
+              <DropdownMenuLabel className="text-foreground font-semibold px-3 py-2">
                 Article Actions
               </DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-zinc-200 dark:bg-zinc-800" />
+              <DropdownMenuSeparator className="bg-border" />
 
               {/* Copy ID with feedback */}
               <DropdownMenuItem
-                className="cursor-pointer px-3 py-2.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg mx-1 transition-colors group"
+                className="cursor-pointer px-3 py-2.5 hover:bg-muted rounded-lg mx-1 transition-colors group"
                 onClick={handleCopyId}
               >
                 <div className="flex items-center justify-center w-5 h-5 rounded-md bg-blue-100 dark:bg-blue-500/20 group-hover:bg-blue-200 dark:group-hover:bg-blue-500/30 transition-colors mr-3">
@@ -244,36 +244,36 @@ export const createdArticlesColumns: ColumnDef<BlogArticle>[] = [
                   )}
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  <span className="text-sm font-medium text-muted-foreground">
                     {copied ? "Copied!" : "Copy Article ID"}
                   </span>
-                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                  <span className="text-xs text-muted-foreground">
                     {article.id.slice(0, 8)}...
                   </span>
                 </div>
               </DropdownMenuItem>
 
-              <DropdownMenuSeparator className="bg-zinc-200 dark:bg-zinc-800" />
+              <DropdownMenuSeparator className="bg-border" />
 
               <Link href={`/articles/${article.id}/edit`}>
-                <DropdownMenuItem className="cursor-pointer px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg mx-1 transition-colors group">
-                  <Edit className="w-4 h-4 mr-3 text-zinc-500 dark:text-zinc-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
-                  <span className="text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-zinc-100">
+                <DropdownMenuItem className="cursor-pointer px-3 py-2 hover:bg-muted rounded-lg mx-1 transition-colors group">
+                  <Edit className="w-4 h-4 mr-3 text-muted-foreground group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+                  <span className="text-muted-foreground group-hover:text-foreground">
                     Edit Article
                   </span>
                 </DropdownMenuItem>
               </Link>
 
               <Link href={`/articles/${article.slug}`}>
-                <DropdownMenuItem className="cursor-pointer px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg mx-1 transition-colors group">
-                  <Eye className="w-4 h-4 mr-3 text-zinc-500 dark:text-zinc-400 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors" />
-                  <span className="text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-zinc-100">
+                <DropdownMenuItem className="cursor-pointer px-3 py-2 hover:bg-muted rounded-lg mx-1 transition-colors group">
+                  <Eye className="w-4 h-4 mr-3 text-muted-foreground group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors" />
+                  <span className="text-muted-foreground group-hover:text-foreground">
                     View Article
                   </span>
                 </DropdownMenuItem>
               </Link>
 
-              <DropdownMenuSeparator className="bg-zinc-200 dark:bg-zinc-800" />
+              <DropdownMenuSeparator className="bg-border" />
 
               <DropdownMenuItem
                 className="cursor-pointer px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg mx-1 transition-colors group"
@@ -287,7 +287,7 @@ export const createdArticlesColumns: ColumnDef<BlogArticle>[] = [
                     <Trash2 className="w-3 h-3 text-red-600 dark:text-red-400" />
                   )}
                 </div>
-                <span className="text-zinc-700 dark:text-zinc-300 group-hover:text-red-700 dark:group-hover:text-red-400">
+                <span className="text-muted-foreground group-hover:text-red-700 dark:group-hover:text-red-400">
                   {isDeleting ? "Deleting..." : "Delete Article"}
                 </span>
               </DropdownMenuItem>
@@ -330,24 +330,24 @@ export const DeleteConfirmationDialog = ({
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-2xl max-w-md w-full p-6">
+      <div className="relative bg-card rounded-2xl border border-border shadow-2xl max-w-md w-full p-6">
         <div className="flex items-center gap-3 mb-4">
           <div className="flex items-center justify-center h-10 w-10 rounded-full bg-red-100 dark:bg-red-500/20">
             <Trash2 className="h-5 w-5 text-red-600 dark:text-red-400" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-zinc-900 dark:text-white">
+            <h3 className="text-lg font-semibold text-foreground">
               Delete Article
             </h3>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            <p className="text-sm text-muted-foreground">
               This action cannot be undone
             </p>
           </div>
         </div>
 
-        <p className="text-zinc-600 dark:text-zinc-300 mb-6">
+        <p className="text-muted-foreground mb-6">
           Are you sure you want to delete{" "}
-          <span className="font-semibold text-zinc-900 dark:text-white">
+          <span className="font-semibold text-foreground">
             "{articleTitle}"
           </span>
           ? All article data, including likes and comments, will be permanently
@@ -358,7 +358,7 @@ export const DeleteConfirmationDialog = ({
           <button
             onClick={onClose}
             disabled={isDeleting}
-            className="px-4 py-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors rounded-lg border border-zinc-300 dark:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg border border-border hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>

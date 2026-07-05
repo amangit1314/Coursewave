@@ -36,15 +36,9 @@ html {
   -ms-text-size-adjust: 100%;
 }
 
-/* Light theme */
+/* Tremor charts use SVG text for axis; fill can't reference Tailwind classes, so use the CSS var directly */
 .recharts-cartesian-axis-tick-value {
-  /* Tremor charts use SVG text for axis; check with inspector the classname used in your version */
-  fill: #18181b; /* zinc-900 */
-}
-
-/* Dark theme override */
-.dark .recharts-cartesian-axis-tick-value {
-  fill: #fafafa; /* white text for dark mode */
+  fill: hsl(var(--foreground));
 }
 
 body {

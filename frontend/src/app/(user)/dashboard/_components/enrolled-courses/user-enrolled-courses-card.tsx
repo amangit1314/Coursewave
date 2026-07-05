@@ -21,7 +21,7 @@ const UserEnrolledCoursesCard = ({
 
   return (
     <Card
-      className="flex cursor-pointer flex-col justify-start rounded-xl border shadow-xl transition-all duration-300 hover:border-none dark:border-gray-600 dark:border-opacity-25 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+      className="flex cursor-pointer flex-col justify-start rounded-xl border shadow-xl transition-all duration-300 hover:border-none border-border bg-card hover:bg-muted"
       onClick={onClick}
     >
       <div className="flex items-center justify-start space-x-4">
@@ -32,7 +32,7 @@ const UserEnrolledCoursesCard = ({
           width={12}
           alt="courseImage..."
         />
-        <p className="line-clamp-2 overflow-ellipsis text-lg font-semibold text-gray-700 dark:text-gray-200">
+        <p className="line-clamp-2 overflow-ellipsis text-lg font-semibold text-muted-foreground">
           {courseName || "Version Control System with  Git & GitHub"}
         </p>
       </div>
@@ -40,27 +40,27 @@ const UserEnrolledCoursesCard = ({
       {/* <div className="mt-4 mb-2 flex justify-between">
         <div className="flex justify-center items-center py-auto">
           <FaPlay size={16} />
-          <p className="ml-2 text-xs tracking-tight dark:text-gray-500">
+          <p className="ml-2 text-xs tracking-tight dark:text-muted-foreground">
             {courseLessons || 64} lessons
           </p>
         </div>
 
         <div className="flex justify-center items-center py-auto">
           <MdAssignment size={16} />
-          <p className="ml-2 text-xs tracking-tight dark:text-gray-500">
+          <p className="ml-2 text-xs tracking-tight dark:text-muted-foreground">
             {courseAssignments || 5} assignments
           </p>
         </div>
 
         <div className="flex justify-start items-center py-auto">
           <IoIosTimer size={16} />
-          <p className="ml-2 text-xs tracking-tight dark:text-gray-500">
+          <p className="ml-2 text-xs tracking-tight dark:text-muted-foreground">
             {courseDuration || "8hr 45min"}
           </p>
         </div>
       </div> */}
 
-      <div className="my-1 text-sm text-gray-800 dark:text-gray-500">
+      <div className="my-1 text-sm text-muted-foreground">
         <span className="text-blue-500 dark:text-blue-600">{"70 %"} </span>
         Completed
       </div>

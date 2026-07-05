@@ -20,11 +20,11 @@ const LearningGoals = () => {
           </div>
           <div>
             <h3
-              className={`${dmSans.className} text-lg font-semibold text-gray-900 dark:text-white`}
+              className={`${dmSans.className} text-lg font-semibold text-foreground`}
             >
               Learning Goals
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-muted-foreground">
               Set and track your learning objectives
             </p>
           </div>
@@ -44,16 +44,16 @@ const LearningGoals = () => {
                 ))}
               </>
             ) : (
-              <div className="flex flex-col items-center justify-center text-center py-8 px-4 rounded-2xl bg-gray-50 dark:bg-gray-700/50 border-2 border-dashed border-gray-200 dark:border-gray-600">
-                <div className="bg-white dark:bg-gray-600 p-3 rounded-full mb-3">
+              <div className="flex flex-col items-center justify-center text-center py-8 px-4 rounded-2xl bg-muted/50 border-2 border-dashed border-border">
+                <div className="bg-card p-3 rounded-full mb-3">
                   <TargetIcon className="w-6 h-6 text-purple-500 dark:text-purple-400" />
                 </div>
                 <h4
-                  className={`${dmSans.className} text-sm font-medium text-gray-900 dark:text-white mb-1`}
+                  className={`${dmSans.className} text-sm font-medium text-foreground mb-1`}
                 >
                   No Learning Goals
                 </h4>
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-4">
+                <p className="text-xs text-muted-foreground mb-4">
                   Set your first learning goal to get started
                 </p>
                 <AddLearningGoalButton />

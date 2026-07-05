@@ -5,11 +5,15 @@ import { Button } from "@/components/ui/button";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 import { MdTrendingUp, MdPeople, MdStar } from "react-icons/md";
 import { Community } from "@/types/community";
 import { formatDateToMMDDYYYY } from "@/lib/utils/utils";
+import { useJoinCommunity } from "@/hooks/useCommunities";
+import { getCategoryColor } from "./categoryColors";
 
 export const CommunityListCard = ({
   community,
@@ -20,17 +24,35 @@ export const CommunityListCard = ({
   userId: string;
   isJoined: boolean;
 }) => {
+  const router = useRouter();
+  const { mutate: joinCommunity, isPending } = useJoinCommunity();
+  const color = getCategoryColor(community.category.name);
+
+  const handleClick = () => {
+    if (isJoined) {
+      router.push(`/communityChat/${community.id}`);
+      return;
+    }
+    joinCommunity(community.id, {
+      onSuccess: () => router.push(`/communityChat/${community.id}`),
+      onError: () => toast.error("Couldn't join this community. Try again."),
+    });
+  };
+
   return (
-    <Card className="group transition-all duration-300 hover:shadow-md border-zinc-200 dark:border-zinc-700">
-      <CardContent className="p-6">
+    <Card className="group relative overflow-hidden transition-all duration-300 hover:shadow-md border-zinc-200 dark:border-zinc-700">
+      <span className={`absolute top-0 bottom-0 left-0 w-1 ${color.ring}`} />
+      <CardContent className="p-6 pl-7">
         <div className="flex items-center gap-4">
           {/* Avatar Section */}
-          <div className="flex-shrink-0">
-            <AvatarCircles
-              numPeople={community.totalMembers}
-              avatarUrls={community.avatarUrls}
-            />
-          </div>
+          {community.totalMembers > 0 && (
+            <div className="flex-shrink-0">
+              <AvatarCircles
+                numPeople={community.totalMembers}
+                avatarUrls={community.avatarUrls}
+              />
+            </div>
+          )}
 
           {/* Content Section */}
           <div className="flex-1 min-w-0">
@@ -78,9 +100,11 @@ export const CommunityListCard = ({
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-xs">
+                  <span
+                    className={`text-[11px] font-semibold px-2 py-1 rounded-full ${color.bg} ${color.text}`}
+                  >
                     {community.category.name}
-                  </Badge>
+                  </span>
                   <div className="flex flex-wrap gap-1">
                     {community.tags.slice(0, 2).map((tag) => (
                       <Badge key={tag} variant="secondary" className="text-xs">
@@ -98,14 +122,15 @@ export const CommunityListCard = ({
 
               {/* Action Section */}
               <div className="flex-shrink-0 ml-4">
-                <Link href={`/communityChat/${community.id}`}>
-                  <Button
-                    size="sm"
-                    className="group-hover:bg-blue-600 group-hover:text-white transition-colors"
-                  >
-                   {isJoined ? "View" : "Join Now"}
-                  </Button>
-                </Link>
+                <Button
+                  size="sm"
+                  onClick={handleClick}
+                  disabled={isPending}
+                  className="group-hover:bg-blue-600 group-hover:text-white transition-colors"
+                >
+                  {isPending ? <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> : null}
+                  {isJoined ? "View" : "Join Now"}
+                </Button>
               </div>
             </div>
           </div>

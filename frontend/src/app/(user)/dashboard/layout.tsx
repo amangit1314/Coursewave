@@ -17,7 +17,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   );
 
   return (
-    <div className="h-full min-h-screen dark:bg-zinc-900">
+    <div className="h-full min-h-screen bg-background">
       <div className="fixed inset-y-0 z-50 h-[64px] w-full">
         <Navbar />
       </div>

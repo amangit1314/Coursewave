@@ -32,7 +32,7 @@ export function EnrolledCoursesTremorTable({
 }) {
   const [copiedText, setCopiedText] = React.useState("");
   return (
-    <div className="border-stroke overflow-hidden rounded-3xl border dark:border dark:border-transparent dark:bg-zinc-800">
+    <div className="overflow-hidden rounded-3xl border border-border bg-card">
       {/* <h3 className="text-tremor-content-strong dark:text-dark-tremor-content-strong  font-semibold">
         User Enrolled Courses
       </h3> */}
@@ -58,7 +58,7 @@ export function EnrolledCoursesTremorTable({
                   >
                     <AiTwotoneCopy
                       size={18}
-                      className="text-zinc-950  dark:text-white "
+                      className="text-foreground"
                     />
                   </CopyToClipboard>
                 </div>

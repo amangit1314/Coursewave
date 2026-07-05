@@ -48,17 +48,17 @@ const EnrolledCourses = () => {
 
   if (areEnrolledCoursesLoading)
     return (
-      <div className="bg-white dark:bg-zinc-800 rounded-3xl shadow-sm border border-zinc-200 dark:border-zinc-700 p-6">
+      <div className="bg-card rounded-3xl shadow-sm border border-border p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-xl">
               <GraduationCapIcon className="h-6 w-6 text-green-600 dark:text-green-400" />
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-zinc-900 dark:text-white">
+              <h3 className="text-xl font-semibold text-foreground">
                 Enrolled Courses
               </h3>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400">
+              <p className="text-sm text-muted-foreground">
                 Track your learning journey
               </p>
             </div>
@@ -70,7 +70,7 @@ const EnrolledCourses = () => {
 
   if (enrolledCoursesError)
     return (
-      <div className="bg-white dark:bg-zinc-800 rounded-3xl shadow-sm border border-zinc-200 dark:border-zinc-700 p-6">
+      <div className="bg-card rounded-3xl shadow-sm border border-border p-6">
         <ErrorMessage
           title="Error Fetching Enrolled Courses"
           message={enrolledCoursesError.message}
@@ -79,17 +79,17 @@ const EnrolledCourses = () => {
     );
 
   return (
-    <div className="bg-white dark:bg-zinc-800 rounded-3xl shadow-sm border border-zinc-200 dark:border-zinc-700 p-6">
+    <div className="bg-card rounded-3xl shadow-sm border border-border p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
           <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-xl">
             <GraduationCapIcon className="h-6 w-6 text-green-600 dark:text-green-400" />
           </div>
           <div>
-            <h3 className="text-xl font-semibold text-zinc-900 dark:text-white">
+            <h3 className="text-xl font-semibold text-foreground">
               Enrolled Courses
             </h3>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="text-sm text-muted-foreground">
               Track your learning journey
             </p>
           </div>

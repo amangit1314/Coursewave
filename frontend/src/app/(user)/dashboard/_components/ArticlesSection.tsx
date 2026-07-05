@@ -25,18 +25,18 @@ const ArticlesSection = () => {
   } = useSavedArticles();
 
 return (
-  <div className="bg-white dark:bg-zinc-900 rounded-3xl shadow-sm border border-zinc-200 dark:border-zinc-700 overflow-hidden h-full flex flex-col">
-    <div className="p-6 border-b border-zinc-200 dark:border-zinc-700">
+  <div className="bg-card rounded-3xl shadow-sm border border-border overflow-hidden h-full flex flex-col">
+    <div className="p-6 border-b border-border">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="p-2.5 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-sm">
-            <PencilIcon className="h-5 w-5 text-white" />
+            <PencilIcon className="h-5 w-5 text-primary-foreground" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">
+            <h2 className="text-xl font-semibold text-foreground">
               My Content
             </h2>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="text-sm text-muted-foreground">
               Articles and learning materials
             </p>
           </div>
@@ -112,7 +112,7 @@ const tabs = [
 return (
   <div className="h-full flex flex-col">
     {/* Custom Tab Navigation */}
-    <div className="flex space-x-1 p-1 bg-zinc-100 dark:bg-zinc-800 rounded-xl mb-6">
+    <div className="flex space-x-1 p-1 bg-muted rounded-xl mb-6">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
@@ -124,8 +124,8 @@ return (
             className={`
                 flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 relative overflow-hidden group
                 ${isActive
-                ? "bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm"
-                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-zinc-700/50"
+                ? "bg-card text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground hover:bg-card/50"
               }
               `}
           >
@@ -139,7 +139,7 @@ return (
                   px-1.5 py-0.5 rounded-full text-xs font-semibold min-w-[1.25rem] text-center
                   ${isActive
                     ? "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
-                    : "bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-400"
+                    : "bg-muted-foreground/20 text-muted-foreground"
                   }
                 `}
               >
