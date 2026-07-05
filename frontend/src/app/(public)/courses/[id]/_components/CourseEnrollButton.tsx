@@ -39,9 +39,9 @@ export const CourseEnrollButton = React.memo(
       setIsLoading(true);
       try {
         const response = await enrollMutation({ courseId, userId: user.id });
-        if (response.success && response.data?.url) {
+        if (response.success && response.data?.checkoutUrl) {
           // Paid course → redirect to Stripe checkout
-          window.location.assign(response.data.url);
+          window.location.assign(response.data.checkoutUrl);
           return;
         } else if (response.success) {
           // Free course → enrolled directly, redirect to course
