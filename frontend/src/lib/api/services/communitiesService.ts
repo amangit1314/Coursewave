@@ -77,21 +77,6 @@ class CommunitiesService {
   }
 
   // === Messages ===
-  async getMessages(communityId: string): Promise<ApiResponse<any[]>> {
-    return this.api.get(`/communities/${communityId}/messages`);
-  }
-
-  async sendMessage(
-    communityId: string,
-    content: string,
-    parentId?: string
-  ): Promise<ApiResponse<any>> {
-    return this.api.post(`/communities/${communityId}/messages`, {
-      content,
-      parentId,
-    });
-  }
-
   async deleteMessage(
     communityId: string,
     messageId: string

@@ -82,40 +82,6 @@ export const useLeaveCommunity = () => {
   });
 };
 
-export const useCommunityMessages = (communityId: string) => {
-  return useQuery({
-    queryKey: ["community-messages", communityId],
-    queryFn: async () => {
-      const response = await communitiesService.getMessages(communityId);
-      return response.data || [];
-    },
-    enabled: !!communityId,
-    staleTime: 30 * 1000,
-    refetchInterval: 15 * 1000,
-    retry: 1,
-  });
-};
-
-export const useSendMessage = (communityId: string) => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (data: { content: string; parentId?: string }) => {
-      const response = await communitiesService.sendMessage(
-        communityId,
-        data.content,
-        data.parentId
-      );
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["community-messages", communityId],
-      });
-    },
-  });
-};
-
 export const useCommunityMembers = (communityId: string) => {
   return useQuery({
     queryKey: ["community-members", communityId],

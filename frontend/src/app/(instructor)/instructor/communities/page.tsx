@@ -9,11 +9,13 @@ import {
   useLeaveCommunity,
 } from "@/hooks/useCommunities";
 import { Community } from "@/types/community";
+import { useUserStore } from "@/zustand/userStore";
 import CommunityList from "./_components/CommunityList";
 import CreateCommunityDialog from "./_components/CreateCommunityDialog";
-import CommunityChat from "./_components/CommunityChat";
+import CommunityChatWindow from "@/components/community/CommunityChatWindow";
 
 export default function CommunitiesPage() {
+  const { user, token } = useUserStore();
   const { data, isLoading, isError } = useCommunities();
   const createCommunity = useCreateCommunity();
   const joinCommunity = useJoinCommunity();
@@ -83,8 +85,17 @@ export default function CommunitiesPage() {
 
         {/* Right: Chat area */}
         <div className="flex-1 bg-white dark:bg-zinc-800">
-          {selectedCommunity ? (
-            <CommunityChat community={selectedCommunity} />
+          {selectedCommunity && token ? (
+            <CommunityChatWindow
+              communityId={selectedCommunity.id}
+              token={token}
+              communityTitle={selectedCommunity.title}
+              isAdmin={
+                selectedCommunity.members?.some(
+                  (m) => m.user.id === user?.id && m.role === "ADMIN"
+                ) ?? false
+              }
+            />
           ) : (
             <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
               <div className="rounded-full bg-zinc-100 p-4 dark:bg-zinc-700">
