@@ -2,22 +2,33 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { MdClose, MdSearch } from "react-icons/md";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { MdClose } from "react-icons/md";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCommunityChatStore } from "@/zustand/communityChatStore";
-import { useState } from "react";
+import { useCommunityMembers } from "@/hooks/useCommunities";
+import { useParams } from "next/navigation";
 
 const OnlineUsersSidebar = () => {
   const { showOnlineUsers, setShowOnlineUsers, onlineUsers } =
     useCommunityChatStore();
-  const [searchQuery, setSearchQuery] = useState("");
+  const params = useParams<{ communityId?: string }>();
+  const communityId = params?.communityId || "";
+  const { data: members } = useCommunityMembers(communityId);
 
   if (!showOnlineUsers) return null;
 
-  const online = onlineUsers.filter((u) => u.isOnline);
-  const offline = onlineUsers.filter((u) => !u.isOnline);
+  const presenceMap = new Map(onlineUsers.map((u) => [u.userId, u.isOnline]));
+
+  const rows = (members || []).map((member) => ({
+    userId: member.userId,
+    name: member.user.name || "Unknown",
+    avatar: member.user.profileImageUrl,
+    isOnline: presenceMap.has(member.userId) ? !!presenceMap.get(member.userId) : member.isOnline,
+  }));
+
+  const online = rows.filter((r) => r.isOnline);
+  const offline = rows.filter((r) => !r.isOnline);
 
   return (
     <motion.div
@@ -43,19 +54,17 @@ const OnlineUsersSidebar = () => {
 
         <ScrollArea className="h-[calc(100vh-200px)]">
           <div className="space-y-1">
-            {/* Online users */}
             {online.map((user) => (
-              <UserRow key={user.userId} userId={user.userId} isOnline={true} />
+              <UserRow key={user.userId} {...user} />
             ))}
 
-            {/* Offline section */}
             {offline.length > 0 && (
               <>
                 <div className="pb-1 pt-4 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">
                   Offline — {offline.length}
                 </div>
                 {offline.map((user) => (
-                  <UserRow key={user.userId} userId={user.userId} isOnline={false} />
+                  <UserRow key={user.userId} {...user} />
                 ))}
               </>
             )}
@@ -66,15 +75,22 @@ const OnlineUsersSidebar = () => {
   );
 };
 
-const UserRow = ({ userId, isOnline }: { userId: string; isOnline: boolean }) => {
-  // We only have userId from presence events — show a minimal row
-  const initials = userId.substring(0, 2).toUpperCase();
-
+const UserRow = ({
+  name,
+  avatar,
+  isOnline,
+}: {
+  userId: string;
+  name: string;
+  avatar: string | null;
+  isOnline: boolean;
+}) => {
   return (
     <div className="flex items-center space-x-3 rounded-lg p-2 transition-colors hover:bg-gray-50 dark:hover:bg-zinc-700">
       <div className="relative">
         <Avatar className="h-8 w-8">
-          <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+          <AvatarImage src={avatar || undefined} />
+          <AvatarFallback className="text-xs">{name.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
         <div
           className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white dark:border-zinc-800 ${
@@ -83,9 +99,7 @@ const UserRow = ({ userId, isOnline }: { userId: string; isOnline: boolean }) =>
         />
       </div>
       <div className="min-w-0 flex-1">
-        <div className="truncate text-sm font-medium text-gray-900 dark:text-white">
-          {userId.substring(0, 8)}...
-        </div>
+        <div className="truncate text-sm font-medium text-gray-900 dark:text-white">{name}</div>
         <div className="text-xs capitalize text-gray-500 dark:text-gray-400">
           {isOnline ? "Online" : "Offline"}
         </div>

@@ -36,6 +36,7 @@ export const MessageCard: React.FC<MessageCardProps> = ({ msg, communityId }) =>
     setShowReactionPicker,
     setReplyingTo,
     setEditingMessage,
+    setOpenThreadId,
   } = useCommunityChatStore();
 
   const reactionPickerRef = useRef<HTMLDivElement>(null);
@@ -61,6 +62,7 @@ export const MessageCard: React.FC<MessageCardProps> = ({ msg, communityId }) =>
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
+      id={`message-${msg.id}`}
       className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
     >
       <div className={`max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl`}>
@@ -177,6 +179,15 @@ export const MessageCard: React.FC<MessageCardProps> = ({ msg, communityId }) =>
             </span>
           </div>
         </div>
+
+        {msg.replyCount > 0 && (
+          <button
+            onClick={() => setOpenThreadId(msg.id)}
+            className="mt-1 text-xs font-medium text-blue-600 hover:underline dark:text-blue-400"
+          >
+            ↩ {msg.replyCount} {msg.replyCount === 1 ? "reply" : "replies"}
+          </button>
+        )}
 
         {/* Actions */}
         <div className={`mt-1 flex space-x-1 ${isOwn ? "justify-end" : "justify-start"}`}>

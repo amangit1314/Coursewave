@@ -67,6 +67,7 @@ interface CommunityChatState {
   showOnlineUsers: boolean;
   messageInput: string;
   quickReactions: string[];
+  openThreadId: string | null;
 }
 
 interface CommunityChatActions {
@@ -99,6 +100,7 @@ interface CommunityChatActions {
   setShowPinnedPanel: (v: boolean) => void;
   setShowOnlineUsers: (v: boolean) => void;
   setMessageInput: (v: string) => void;
+  setOpenThreadId: (id: string | null) => void;
 
   // Reset
   reset: () => void;
@@ -150,6 +152,7 @@ const initialState: CommunityChatState = {
   showOnlineUsers: false,
   messageInput: "",
   quickReactions: ["👍", "❤️", "😄", "🎉", "👏", "🔥", "💯", "🚀"],
+  openThreadId: null,
 };
 
 export const useCommunityChatStore = create<CommunityChatState & CommunityChatActions>(
@@ -238,6 +241,7 @@ export const useCommunityChatStore = create<CommunityChatState & CommunityChatAc
     setShowPinnedPanel: (v) => set({ showPinnedPanel: v }),
     setShowOnlineUsers: (v) => set({ showOnlineUsers: v }),
     setMessageInput: (v) => set({ messageInput: v }),
+    setOpenThreadId: (id) => set({ openThreadId: id }),
 
     reset: () => set(initialState),
   })

@@ -22,7 +22,7 @@ export interface Community {
       name: string;
       profileImageUrl?: string | null; // optional, can be null
     };
-    role: "member" | "admin" | "owner"; // role of the user in the community
+    role: "ADMIN" | "MODERATOR" | "MEMBER"; // matches the backend's CommunityRole enum
     joinedAt: string; // ISO date string
   }[],
   lastActiveAt?: string; // to indicate the last activity time if just now then just now otherwise 2 min / time ago
